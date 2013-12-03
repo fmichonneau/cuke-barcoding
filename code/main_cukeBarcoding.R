@@ -36,39 +36,52 @@ filename <- paste(format(Sys.time(), "%Y%m%d-%H%M%S"), "cukes.fas", sep="-")
 aligned <- gsub("fas$", "afa", filename)
 genFasta(holDB, out=file.path("/tmp", filename))
 system(paste("mafft --auto --op 10 --thread -1", file.path("/tmp", filename), ">", file.path("/tmp", aligned)))
-file.copy(file.path("/tmp", aligned), file.path("data/", filename))
-file.link(file.path("data/", filename), file.path("data/", "latestAlg.fas"))
+file.copy(file.path("/tmp", aligned), file.path("data", filename))
+file.remove(file.path("data", "latestAlg.fas"))
+file.link(file.path("data", filename), file.path("data", "latestAlg.fas"))
+
+### Identify sequences with internal gaps
+seqHolC <- read.dna(file="data/latestAlg.fas", format="fasta", as.character=TRUE)
+seqHolC <- apply(seqHolC, 1, function(x) paste(x, sep="", collapse=""))
+intGap <- sapply(seqHolC, function(x) gregexpr("[actgn]-+[actgn]", x)[[1]][1] != -1) # should I consider ambiguities here?
+seqWithIntGap <- names(intGap[intGap])
+
+### Identify sequences with stop codons
+seqHol <- read.dna(file="data/latestAlg.fas", format="fasta")
+tranE <- foreach (i = 1:nrow(seqHol)) %dopar% {
+  translate(as.character(seqHol[i, ]), frame=1, numcode=9)
+}
+seqWithStop <- dimnames(seqHol)[[1]][grep("\\*", tranE)]
+
+### Remove sequences with internal gaps and stop codons
+toRm <- union(seqWithStop, seqWithIntGap)
+toRmInd <- match(toRm, dimnames(seqHol)[[1]])
+seqHol <- seqHol[-toRmInd, ]
+
+### Write working copy of fasta file
+write.dna(seqHol, file="data/workingAlg.fas", format="fasta", colsep="")
 
 #########
 ######### ---- Can start from here
 #########
-allHol <- read.dna(file="data/latestAlg.fas", format="fasta")
 
-### Remove sequences with internal gaps
-seqHol <- read.dna(file="data/latestAlg.fas", format="fasta", as.character=TRUE)
-seqHol <- apply(seqHol, 1, function(x) paste(x, sep="", collapse=""))
-intGap <- sapply(seqHol, function(x) gregexpr("[actgn]-+[actgn]", x)[[1]][1] != -1) # should I consider ambiguities here?
-seqWithIntGap <- names(intGap[intGap])
+### identify sequences with ambiguities and rename them
+ambSeq <- checkAmbiguity(file="data/workingAlg.fas")
+oldNm <- names(ambSeq)
+newNm <- paste(oldNm, "_", sapply(ambSeq, length), "amb", sep="")
 
-### Remove sequences with stop codons
-## stop codons
-tranE <- foreach (i = 1:nrow(allHol)) %dopar% {
-  translate(as.character(allHol[i, ]), frame=1, numcode=9)
-}
-seqWithStop <- dimnames(allHol)[[1]][grep("\\*", tranE)]
+seqHol <- read.dna(file="data/workingAlg.fas", format="fasta")
+dimnames(seqHol)[[1]][match(oldNm, dimnames(seqHol)[[1]])] <- newNm
 
-toRm <- union(seqWithStop, seqWithIntGap)
+## Make NJ tree
+dimnames(seqHol)[[1]] <- make.unique(dimnames(seqHol)[[1]])
+treH <- nj(dist.dna(seqHol))
 
-toRmInd <- match(toRm, dimnames(allHol)[[1]])
-allHol <- allHol[-toRmInd, ]
+pdf(file="allHolothuroids.pdf", height=300, bg="white", fg="black")
+plot(treH, no.margin=TRUE, cex=.7)
+dev.off()
 
 
-## Holothuroids
-lblH <- sapply(1:nrow(holDB), function(i) genLabel(holDB[i, ]))
-keepH <- dimnames(allEch)[[1]] %in% lblH
-seqH <- allEch[keepH, ]
-dimnames(seqH)[[1]] <- make.unique(dimnames(seqH)[[1]])
-treH <- nj(dist.dna(seqH))
 treH$edge.length[treH$edge.length < 0] <- 0
 bootH <- boot.phylo(treH, seqH, function(xx) nj(dist.dna(xx)), B=100)
 treH$node.label <- bootH
