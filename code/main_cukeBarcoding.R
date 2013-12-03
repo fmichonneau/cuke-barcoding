@@ -1,254 +1,70 @@
-genLabel <- function(dbTmp) {
-  seqNm <- paste(dbTmp$genusorhigher, dbTmp$modifier, dbTmp$species, dbTmp$Loc,
-                 paste(dbTmp$"Collection.Code", dbTmp$Catalog_number, sep=""), sep="_")
-  seqNm <- gsub("_{2,}", "_", seqNm)
-  seqNm
-}
 
-genSp <- function(dbTmp) {
-  seqNm <- paste(dbTmp$genusorhigher, dbTmp$modifier, dbTmp$species, sep="_")
-  seqNm <- gsub("_{2,}", "_", seqNm)
-  seqNm
-}
-
-genFasta <- function(db, out=file.path("/tmp", paste(format(Sys.time(), "%Y%m%d-%H%M%S"), "seq.fas", sep="_"))) {
-### db -- database in which the data is stored
-### out -- file name of the fasta that will be generated
-  if (file.exists(out)) stop("file ", out, "already exists")
-  for (i in 1:nrow(db)) {
-    dbTmp <- db[i, ]
-    seqNm <- genLabel(dbTmp)
-    seqNm <- paste(">", seqNm, sep="")
-    cat(seqNm, "\n", dbTmp$Sequence, "\n", file=out, append=TRUE) 
-  }
-  TRUE
-}
-
-getUniqueSeq <- function(s, ...) {
-### returns the number of unique sequences in an alignment (and the names of the
-###   duplicated seq as an attribute "whichDup")
-### s -- is an DNA alignements
-### ... -- further arguments to be passed to dist.dna
-
-  d <- dist.dna(s, ..., as.matrix=TRUE)
-  d[upper.tri(d, diag=TRUE)] <- NA
-  lbl <- cbind(dimnames(d)[[1]][row(d)], dimnames(d)[[1]][col(d)])
-  whichDup <- lbl[which(d == 0), ]
-  res <- nrow(s) - length(unique(whichDup[,1]))
-  attr(res, "whichDup") <- whichDup
-  return(res)
-}
-
-getIntraInterDist <- function(tr, d, check.boot=NULL) {
-### tr -- phylogenetic tree that gives the groups (output of findGroups)
-### d -- distance *matrix* (from dist.dna(..., as.matrix=TRUE))
-### check.boot -- should interspecific distances be returned only for nodes
-###   above a certain bootstrap value? If NULL all nodes are considered,
-###   otherwise a numerical value indicating bootstrap values to be considered
-###   e.g., 90: only nodes with bootstrap values >= 90 will be included
-  
-  if(!inherits(tr, "phylo4"))
-    stop("tr must be a phylo4(d) object")
-  if(!inherits(d, "matrix"))
-    stop("d must be a matrix")
-  if(is.null(tipData(tr)$Group))
-    stop("The groups must be specified in a column named ", sQuote("Group"),
-         " in the ", sQuote("tr"), " object.")
-  if(!is.null(check.boot) && !inherits(tr, "phylo4d") &&
-     !is.null(tdata(tr)$labelValues))
-    stop(sQuote("tr"), "is not properly formatted if you want to use",
-         "the bootstrap values. Make sure it's a phylo4d object and that",
-         "the node labels are stored as *data* with the name",
-         sQuote("labelValues"))
-
-  iDimNm <- match(dimnames(d)[[1]], tipLabels(tr))
-  stopifnot(all(!is.na(iDimNm)))
-  tipLabels(tr) <- paste(tipData(tr)$Group, tipLabels(tr), sep="_")
-  dimnames(d)[[1]][iDimNm] <- tipLabels(tr)
-  dimnames(d)[[2]][iDimNm] <- tipLabels(tr)
-  
-  alrdy <- numeric(nTips(tr))
-  resIntra <- resInter <- vector("list", nTips(tr))
-  lAlrdy <- 1
-  for (i in 1:nTips(tr)) {
-    if (tipLabels(tr)[i] %in% alrdy) next
-    ancI <- ancestors(tr, i)
-    for (j in 1:length(ancI)) {
-      descI <- descendants(tr, ancI[j], "tips")
-      nmDescI <- names(descI)
-      prefix <- gsub("_.+", "", nmDescI)
-      if (length(unique(prefix)) == 2) {
-        allNd <- names(getNode(tr, nmDescI))
-        intraNd1 <- grep(paste("^", unique(prefix)[1], "_", sep=""), allNd, value=T)
-        intraNd2 <- grep(paste("^", unique(prefix)[2], "_", sep=""), allNd, value=T)
-        alrdy[lAlrdy:(lAlrdy+length(allNd)-1)] <- allNd
-        lAlrdy <- lAlrdy+length(allNd)+1        
-        if (length(intraNd1) < 2 || length(intraNd2) < 2)
-          next
-        else if (!is.null(check.boot)) {
-          mr <- MRCA(tr, descI)
-          bs <- tdata(tr)$labelValues[MRCA(tr, descI)]
-          if (bs < check.boot)
-            next
-          else {
-            iToSub <- match(allNd, dimnames(d)[[1]])
-            tmpD <- d[iToSub, iToSub]
-            tmpD[upper.tri(tmpD, diag=TRUE)] <- NA
-            interD <- tmpD[prefix[col(tmpD)] != prefix[row(tmpD)]]
-            intraD <- tmpD[prefix[col(tmpD)] == prefix[row(tmpD)]]
-            resInter[[i]] <- na.omit(interD)
-            names(resInter)[i] <- paste(unique(prefix), collapse="-")
-            resIntra[[i]] <- na.omit(intraD)
-            names(resIntra)[i] <- paste(unique(prefix), collapse="-")
-            break
-          }
-        }
-      }
-      else if (length(unique(prefix)) > 2) {
-        break
-      }
-      else next    
-    }
-  }
-  toRmIntra <- sapply(resIntra, is.null)
-  toRmInter <- sapply(resInter, is.null)
-  tmpIntra <- resIntra[!toRmIntra]
-  tmpInter <- resInter[!toRmInter]
-  toRepIntra <- lapply(tmpIntra, length)
-  toRepInter <- lapply(tmpInter, length)
-  nmIntra <- rep(names(tmpIntra), toRepIntra)
-  nmInter <- rep(names(tmpInter), toRepInter)
-  tmpIntra <- unlist(tmpIntra)
-  tmpInter <- unlist(tmpInter)
-  data.frame(typeDist=c(rep("intra", length(tmpIntra)),
-                       rep("inter", length(tmpInter))),
-             namePair=c(nmIntra, nmInter),
-             dist=c(tmpIntra, tmpInter))
-
-}
-
-
-#### ----- End of functions
+setwd("~/Documents/CukeBarcoding/")
+source("code/functions_cukeBarcoding.R")
+source("~/R-scripts/seqManagement.R")
 library(doMC)
 registerDoMC()
 library(ape)
+library(seqinr)
 library(phylobase)
-source("write.dna.R")
-source("findGroups.R")
-assignInNamespace("write.dna", write.dna, "ape")
-source("dist.topo.R")
-assignInNamespace("boot.phylo", boot.phylo, "ape")
-set.seed(10101)
 
-db <- read.csv(file="MARBoL_Echinos_VI_13.csv", header=T, stringsAsFactors=F)
+######## Converts XLSX spreadsheet into CSV
+### See here for more info https://github.com/dagwieers/unoconv
 
-## only pass == "yes" and Seq_length > 550
-db <- db[db$pass == "yes" & db$Seq_length > 550, ]
-dbH <- subset(db, class_ == "Holothuroidea")
-dbA <- subset(db, class_ == "Asteroidea")
-dbE <- subset(db, class_ == "Echinoidea")
-dbO <- subset(db, class_ == "Ophiuroidea")
-dbC <- subset(db, class_ == "Crinoidea")
+## system("unoconv -l&") # start listener
+## system("unoconv -f csv data/MARBoL_Echinos_VIII_2013.xlsx") # converts document
+## system("pkill unoconv") # kill process
 
-#### ----- Identify problematic sequences
-
-genFasta(dbHol, out="/tmp/allEchino.fas")
-system("mafft --auto --op 10 --thread -1 /tmp/allEchino.fas > /tmp/allEchino.afa")
-allEch <- read.dna(file="/tmp/allEchino.afa", format="fasta")
-
-### Remove sequences with stop codons
-### Remove sequences with more than 1 ambiguous (incl. N) base pair
-## stop codons
-tranE <- foreach (i = 1:nrow(allEch)) %dopar% {
-  translate(as.character(allEch[i, ]), frame=1, numcode=9)
-}
-seqWithStop <- dimnames(allEch)[[1]][grep("\\*", tranE)]
-
-## ambiguous nucleotides
-funnyLetters <- numeric(nrow(allEch))
-for (i in 1:nrow(allEch)) {
-  tmpTbl <- table(as.character(allEch[i, ]))
-  if (length(tmpTbl) == 4 && all(names(tmpTbl) %in% c("a", "c", "g", "t")))
-    funnyLetters[i] <- 0
-  else {
-    tmpRes <- try(sum(tmpTbl[-match(c("-", "a", "c", "g", "t"), names(tmpTbl))]))
-    funnyLetters[i] <- ifelse(inherits(tmpRes, "try-error"), browser(), tmpRes)
-  }
-}
-seqWithAmb <- dimnames(allEch)[[1]][funnyLetters > 1]
-toRm <- union(seqWithStop, seqWithAmb)
-
-toRmInd <- match(toRm, dimnames(allEch)[[1]])
-allEch <- allEch[-toRmInd, ]
-
-write.dna(allEch, file="~/Documents/echinoBarcode/20120621.allEchino.fas", format="fasta", colsep="")
+## Does not work, file too large?
+## library(xlsx)
+## db <- read.xlsx(file="data/MARBoL_Echinos_VIII_2013.xlsx", 1, stringsAsFactors=FALSE)
 
 
+######## makes fasta file from CSV
+allDB <- read.csv(file="data/MARBoL_Echinos_VIII_2013.csv", stringsAsFactors=FALSE) # nrow = 7017
+holDB <- subset(allDB, class_ == "Holothuroidea")  # nrow = 4385
+holDB <- subset(holDB, pass.seq != "GenBank")      # nrow = 4360
+holDB <- subset(holDB, pass.seq != "fix")          # nrow = 4358
+holDB <- subset(holDB, pass.seq != "no_seq_yet")   # nrow = 3466
+holDB <- subset(holDB, Notes != "MH sequence")     # nrow = 3443
+lSeq <- sapply(holDB$Sequence, function(x) length(gregexpr("[actgACTG]", x)[[1]])) # only non-ambiguous bp
+lAmb <- sapply(holDB$Sequence, function(x) length(gregexpr("[^-]", x)[[1]]))       # all bp
+## sum(table(lSeq)[as.numeric(names(table(lSeq))) > 500 ])
+holDB <- holDB[lAmb > 500, ] # nrow = 2894 -- this also takes care of empty sequences (only -)
+
+filename <- paste(format(Sys.time(), "%Y%m%d-%H%M%S"), "cukes.fas", sep="-")
+aligned <- gsub("fas$", "afa", filename)
+genFasta(holDB, out=file.path("/tmp", filename))
+system(paste("mafft --auto --op 10 --thread -1", file.path("/tmp", filename), ">", file.path("/tmp", aligned)))
+file.copy(file.path("/tmp", aligned), file.path("data/", filename))
+file.link(file.path("data/", filename), file.path("data/", "latestAlg.fas"))
 
 #########
 ######### ---- Can start from here
 #########
-allEch <- read.dna(file="20120621.allEchino.fas", format="fasta")
+allHol <- read.dna(file="data/latestAlg.fas", format="fasta")
 
-## All Echinos
-## seqAllEch <- allEch
-## dimnames(seqAllEch)[[1]] <- make.unique(dimnames(seqAllEch)[[1]])
-## treEch <- nj(dist.dna(seqAllEch))
-## treEch$edge.length[treEch$edge.length < 0] <- 0
-## bootEch <- boot.phylo(treEch, seqAllEch, function(xx) nj(dist.dna(xx)), B=100)
-## treEch$node.label <- bootEch
-## treEchr <- root(treEch, grep("Balanometra", treEch$tip.label), resolve.root=T)
+### Remove sequences with internal gaps
+seqHol <- read.dna(file="data/latestAlg.fas", format="fasta", as.character=TRUE)
+seqHol <- apply(seqHol, 1, function(x) paste(x, sep="", collapse=""))
+intGap <- sapply(seqHol, function(x) gregexpr("[actgn]-+[actgn]", x)[[1]][1] != -1) # should I consider ambiguities here?
+seqWithIntGap <- names(intGap[intGap])
 
-## treEch4 <- phylo4d(treEchr, check.node.labels="asdata")
+### Remove sequences with stop codons
+## stop codons
+tranE <- foreach (i = 1:nrow(allHol)) %dopar% {
+  translate(as.character(allHol[i, ]), frame=1, numcode=9)
+}
+seqWithStop <- dimnames(allHol)[[1]][grep("\\*", tranE)]
 
-## grpEch1 <- findGroups(treEch4, threshold=.005)
-## grpEch2 <- findGroups(treEch4, threshold=.010)
-## grpEch3 <- findGroups(treEch4, threshold=.015)
-## grpEch4 <- findGroups(treEch4, threshold=.020)
-## grpEch5 <- findGroups(treEch4, threshold=.025)
-## grpEch6 <- findGroups(treEch4, threshold=.030)
+toRm <- union(seqWithStop, seqWithIntGap)
 
-## Crinoids
-lblC <- sapply(1:nrow(dbC), function(i) genLabel(dbC[i, ]))
-keepC <- dimnames(allEch)[[1]] %in% lblC
-seqC <- allEch[keepC, ]
-dimnames(seqC)[[1]] <- make.unique(dimnames(seqC)[[1]])
-treC <- nj(dist.dna(seqC))
-treC$edge.length[treC$edge.length < 0] <- 0
-bootC <- boot.phylo(treC, seqC, function(xx) nj(dist.dna(xx)), B=100)
-treC$node.label <- bootC
-treCr <- root(treC, grep("Balanometra", treC$tip.label), resolve.root=T)
+toRmInd <- match(toRm, dimnames(allHol)[[1]])
+allHol <- allHol[-toRmInd, ]
 
-treC4 <- phylo4d(treCr, check.node.label="asdata")
-grpC3 <- findGroups(treC4, threshold=0.015)
-
-nrow(seqC)
-max(tipData(grpC3)$Group)
-c(getUniqueSeq(seqC))
-
-## Ophiuroids
-lblO <- sapply(1:nrow(dbO), function(i) genLabel(dbO[i, ]))
-keepO <- dimnames(allEch)[[1]] %in% lblO
-seqO <- allEch[keepO, ]
-dimnames(seqO)[[1]] <- make.unique(dimnames(seqO)[[1]])
-treO <- nj(dist.dna(seqO))
-treO$edge.length[treO$edge.length < 0] <- 0
-bootO <- boot.phylo(treO, seqO, function(xx) nj(dist.dna(xx)), B=100)
-treO$node.label <- bootO
-treOr <- root(treO, grep("Gorgonocephalidae", treO$tip.label), resolve.root=T)
-
-treO4 <- phylo4d(treOr, check.node.label="asdata")
-grpO3 <- findGroups(treO4, threshold=0.015)
-
-nrow(seqO)
-max(tipData(grpO3)$Group)
-c(getUniqueSeq(seqO))
-(table(table(tipData(grpO3)$Group)))
-
-save.image(file="20120703.CriOphBootGroup.RData")
 
 ## Holothuroids
-lblH <- sapply(1:nrow(dbH), function(i) genLabel(dbH[i, ]))
+lblH <- sapply(1:nrow(holDB), function(i) genLabel(holDB[i, ]))
 keepH <- dimnames(allEch)[[1]] %in% lblH
 seqH <- allEch[keepH, ]
 dimnames(seqH)[[1]] <- make.unique(dimnames(seqH)[[1]])
@@ -266,6 +82,16 @@ grpH3 <- findGroups(treH4, threshold=.015)
 grpH4 <- findGroups(treH4, threshold=.020)
 grpH5 <- findGroups(treH4, threshold=.025)
 grpH6 <- findGroups(treH4, threshold=.030)
+
+
+
+
+
+
+
+
+
+################## maybe for a later time, if doing analyses by family/orders.
 
 
 ## Dendro
@@ -356,83 +182,6 @@ table(table(tipData(grpH3)$Group))
 ## write.csv(unique(holnm[,2]), file="~/Documents/echinoBarcode/uniqueHolNm.csv")
 
 
-## Echinoids
-lblE <- sapply(1:nrow(dbE), function(i) genLabel(dbE[i, ]))
-keepE <- dimnames(allEch)[[1]] %in% lblE
-seqE <- allEch[keepE, ]
-dimnames(seqE)[[1]] <- make.unique(dimnames(seqE)[[1]])
-treE <- nj(dist.dna(seqE))
-treE$edge.length[treE$edge.length < 0] <- 0
-bootE <- boot.phylo(treE, seqE, function(xx) nj(dist.dna(xx)), B=100)
-treE$node.label <- bootE
-treEr <- root(treE, grep("Echinothrix|m_Echinoidea_Eparses", treE$tip.label), resolve.root=T)
-
-treE4 <- phylo4d(treEr, check.node.label="asdata")
-
-grpE1 <- findGroups(treE4, threshold=.005)
-grpE2 <- findGroups(treE4, threshold=.010)
-grpE3 <- findGroups(treE4, threshold=.015)
-grpE4 <- findGroups(treE4, threshold=.020)
-grpE5 <- findGroups(treE4, threshold=.025)
-grpE6 <- findGroups(treE4, threshold=.030)
-
-nrow(seqE)
-max(tipData(grpE3))
-c(getUniqueSeq(seqE))
-table(table(tipData(grpE3)))
-
-## echnm <- sapply(1:nrow(dbE), function(i) genSp(dbE[i, ]))
-## echnm <- cbind(lblE, echnm)
-## echnm <- echnm[lblE %in% dimnames(seqE)[[1]], ]
-## write.csv(unique(echnm[,2]), file="~/Documents/echinoBarcode/uniqueEchNm.csv")
-
-
-## Asteroids
-lblA <- sapply(1:nrow(dbA), function(i) genLabel(dbA[i, ]))
-keepA <- dimnames(allEch)[[1]] %in% lblA
-seqA <- allEch[keepA, ]
-dimnames(seqA)[[1]] <- make.unique(dimnames(seqA)[[1]])
-treA <- nj(dist.dna(seqA))
-treA$edge.length[treA$edge.length < 0] <- 0
-bootA <- boot.phylo(treA, seqA, function(xx) nj(dist.dna(xx)), B=100)
-treA$node.label <- bootA
-treAr <- root(treA, grep("UF226$|UF3915$", treA$tip.label), resolve.root=T)
-
-treA4 <- phylo4d(treAr, check.node.labels="asdata")
-
-grpA1 <- findGroups(treA4, threshold=.005)
-grpA2 <- findGroups(treA4, threshold=.010)
-grpA3 <- findGroups(treA4, threshold=.015)
-grpA4 <- findGroups(treA4, threshold=.020)
-grpA5 <- findGroups(treA4, threshold=.025)
-grpA6 <- findGroups(treA4, threshold=.030)
-
-nrow(seqA)
-c(getUniqueSeq(seqA))
-max(tipData(grpA3))
-table(table(tipData(grpA3)))
-
-## astnm <- sapply(1:nrow(dbA), function(i) genSp(dbA[i, ]))
-## astnm <- cbind(lblA, astnm)
-## astnm <- astnm[lblA %in% dimnames(seqA)[[1]], ]
-## astnm <- gsub("^m_", "", astnm)
-## astnm <- gsub("^X_", "", astnm)
-## astnm <- gsub("_$", "", astnm)
-## write.csv(unique(astnm[,2]), file="~/Documents/echinoBarcode/uniqueAstNm.csv")
-
-distA1 <- getIntraInterDist(grpA1, dist.dna(seqA, as.matrix=T), check.boot=80)
-distA2 <- getIntraInterDist(grpA2, dist.dna(seqA, as.matrix=T), check.boot=80)
-distA3 <- getIntraInterDist(grpA3, dist.dna(seqA, as.matrix=T), check.boot=80)
-distA4 <- getIntraInterDist(grpA4, dist.dna(seqA, as.matrix=T), check.boot=80)
-distA5 <- getIntraInterDist(grpA5, dist.dna(seqA, as.matrix=T), check.boot=80)
-distA6 <- getIntraInterDist(grpA6, dist.dna(seqA, as.matrix=T), check.boot=80)
-
-distE1 <- getIntraInterDist(grpE1, dist.dna(seqE, as.matrix=T), check.boot=80)
-distE2 <- getIntraInterDist(grpE2, dist.dna(seqE, as.matrix=T), check.boot=80)
-distE3 <- getIntraInterDist(grpE3, dist.dna(seqE, as.matrix=T), check.boot=80)
-distE4 <- getIntraInterDist(grpE4, dist.dna(seqE, as.matrix=T), check.boot=80)
-distE5 <- getIntraInterDist(grpE5, dist.dna(seqE, as.matrix=T), check.boot=80)
-distE6 <- getIntraInterDist(grpE6, dist.dna(seqE, as.matrix=T), check.boot=80)
 
 distH1 <- getIntraInterDist(grpH1, dist.dna(seqH, as.matrix=T), check.boot=80)
 distH2 <- getIntraInterDist(grpH2, dist.dna(seqH, as.matrix=T), check.boot=80)
