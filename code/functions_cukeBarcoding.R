@@ -3,9 +3,10 @@ genLabel <- function(dbTmp) {
   seqNm <- paste(dbTmp$genusorhigher, dbTmp$modifier, dbTmp$species, dbTmp$Loc,
                  paste(dbTmp$"Collection.Code", dbTmp$Catalog_number, sep=""), sep="_")
   seqNm <- gsub("_{2,}", "_", seqNm)
+  seqNm <- gsub("_$", "", seqNm)
+  seqNm <- gsub("\\s+$", "", seqNm)
   seqNm
 }
-
 genSp <- function(dbTmp) {
   seqNm <- paste(dbTmp$genusorhigher, dbTmp$modifier, dbTmp$species, sep="_")
   seqNm <- gsub("_{2,}", "_", seqNm)
@@ -15,13 +16,15 @@ genSp <- function(dbTmp) {
 genFasta <- function(db, out=file.path("/tmp", paste(format(Sys.time(), "%Y%m%d-%H%M%S"), "seq.fas", sep="_"))) {
 ### db -- database in which the data is stored
 ### out -- file name of the fasta that will be generated
-  if (file.exists(out)) stop("file ", out, "already exists")
+  ##if (file.exists(out)) stop("file ", out, "already exists")
   for (i in 1:nrow(db)) {
     dbTmp <- db[i, ]
     seqNm <- genLabel(dbTmp)
     seqNm <- paste(">", seqNm, sep="")
-    seqTmp <- dbTmp$Sequence    
-    cat(seqNm, "\n", dbTmp$Sequence, "\n", file=out, append=TRUE) 
+    seqNm <- gsub("\\s+", "", seqNm)
+    seqTmp <- dbTmp$Sequence
+    cat(seqNm, "\n", dbTmp$Sequence, "\n", file=out,
+        append=ifelse(i == 1, FALSE, TRUE), sep="")
   }
   TRUE
 }
@@ -131,57 +134,3 @@ getIntraInterDist <- function(tr, d, check.boot=NULL) {
 
 
 #### ----- End of functions
-library(doMC)
-registerDoMC()
-library(ape)
-library(phylobase)
-source("write.dna.R")
-source("findGroups.R")
-assignInNamespace("write.dna", write.dna, "ape")
-source("dist.topo.R")
-assignInNamespace("boot.phylo", boot.phylo, "ape")
-set.seed(10101)
-
-db <- read.csv(file="MARBoL_Echinos_VI_13.csv", header=T, stringsAsFactors=F)
-
-## only pass == "yes" and Seq_length > 550
-db <- db[db$pass == "yes" & db$Seq_length > 550, ]
-dbH <- subset(db, class_ == "Holothuroidea")
-dbA <- subset(db, class_ == "Asteroidea")
-dbE <- subset(db, class_ == "Echinoidea")
-dbO <- subset(db, class_ == "Ophiuroidea")
-dbC <- subset(db, class_ == "Crinoidea")
-
-#### ----- Identify problematic sequences
-
-genFasta(dbHol, out="/tmp/allEchino.fas")
-system("mafft --auto --op 10 --thread -1 /tmp/allEchino.fas > /tmp/allEchino.afa")
-allEch <- read.dna(file="/tmp/allEchino.afa", format="fasta")
-
-### Remove sequences with stop codons
-### Remove sequences with more than 1 ambiguous (incl. N) base pair
-## stop codons
-tranE <- foreach (i = 1:nrow(allEch)) %dopar% {
-  translate(as.character(allEch[i, ]), frame=1, numcode=9)
-}
-seqWithStop <- dimnames(allEch)[[1]][grep("\\*", tranE)]
-
-## ambiguous nucleotides
-funnyLetters <- numeric(nrow(allEch))
-for (i in 1:nrow(allEch)) {
-  tmpTbl <- table(as.character(allEch[i, ]))
-  if (length(tmpTbl) == 4 && all(names(tmpTbl) %in% c("a", "c", "g", "t")))
-    funnyLetters[i] <- 0
-  else {
-    tmpRes <- try(sum(tmpTbl[-match(c("-", "a", "c", "g", "t"), names(tmpTbl))]))
-    funnyLetters[i] <- ifelse(inherits(tmpRes, "try-error"), browser(), tmpRes)
-  }
-}
-seqWithAmb <- dimnames(allEch)[[1]][funnyLetters > 1]
-toRm <- union(seqWithStop, seqWithAmb)
-
-toRmInd <- match(toRm, dimnames(allEch)[[1]])
-allEch <- allEch[-toRmInd, ]
-
-write.dna(allEch, file="~/Documents/echinoBarcode/20120621.allEchino.fas", format="fasta", colsep="")
-
