@@ -11,9 +11,10 @@ library(phylobase)
 ######## Converts XLSX spreadsheet into CSV
 ### See here for more info https://github.com/dagwieers/unoconv
 
-## system("unoconv -l&") # start listener
-## system("unoconv -f csv data/MARBoL_Echinos_VIII_2013.xlsx") # converts document
-## system("pkill unoconv") # kill process
+system("unoconv -l&") # start listener
+system("sleep 2;")
+system("unoconv -f csv data/MARBoL_Echinos_VIII_2013.xlsx") # converts document
+system("pkill unoconv") # kill process
 
 ## Does not work, file too large?
 ## library(xlsx)
@@ -74,14 +75,48 @@ newNm <- paste(oldNm, "_", sapply(ambSeq, length), "amb", sep="")
 seqHol <- read.dna(file="data/workingAlg.fas", format="fasta")
 dimnames(seqHol)[[1]][match(oldNm, dimnames(seqHol)[[1]])] <- newNm
 
-## Make NJ tree
+### ---------  Make NJ tree
 dimnames(seqHol)[[1]] <- make.unique(dimnames(seqHol)[[1]])
-treH <- nj(dist.dna(seqHol))
 
+### ---------  Make tree for everything  
+treH <- nj(dist.dna(seqHol))
 pdf(file="allHolothuroids.pdf", height=300, bg="white", fg="black")
 plot(treH, no.margin=TRUE, cex=.7)
 dev.off()
 
+### --------  Make trees for each family
+## Get the families
+
+getFam <- sapply(dimnames(seqHol)[[1]], function(x) { unlist(strsplit(x, "_"))[1] })
+uniqFam <- unique(getFam)
+missing <- dimnames(seqHol)[[1]][which(getFam == "")]
+
+treeForEachFamily <- function(uniqFam, alg) {
+    for (i in 1:length(uniqFam)) {
+        fam <- uniqFam[i]
+        message(fam)
+        if (nchar(fam) == 0 || fam == "?") next
+        selSeqI <- grep(paste("^", fam, "_", sep=""), dimnames(seqHol)[[1]])
+        selSeq <- alg[selSeqI, ]
+        if (nrow(selSeq) < 3) {
+            message("not enough sequences for ", fam, " to make a tree.")
+            next
+        }
+        dimnames(selSeq)[[1]] <- gsub(paste("^", fam, "_", sep=""), "", dimnames(selSeq)[[1]])
+        treTmp <- nj(dist.dna(selSeq))
+        h <- (dim(selSeq)[1]/10) + 5
+        pdf(file=paste(fam, ".pdf", sep=""), height=h)
+        plot(ladderize(treTmp), no.margin=TRUE, cex=.7)
+        dev.off()
+        message("Done.")
+    }
+    TRUE
+}
+
+treeForEachFamily(uniqFam, seqHol)
+
+
+################# below is old code
 
 treH$edge.length[treH$edge.length < 0] <- 0
 bootH <- boot.phylo(treH, seqH, function(xx) nj(dist.dna(xx)), B=100)

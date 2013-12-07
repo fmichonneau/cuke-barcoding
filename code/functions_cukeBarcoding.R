@@ -1,12 +1,15 @@
 
 genLabel <- function(dbTmp) {
-  seqNm <- paste(dbTmp$genusorhigher, dbTmp$modifier, dbTmp$species, dbTmp$Loc,
-                 paste(dbTmp$"Collection.Code", dbTmp$Catalog_number, sep=""), sep="_")
+  seqNm <- paste(dbTmp$family, dbTmp$genusorhigher, dbTmp$modifier, dbTmp$species, dbTmp$Loc,
+                 paste(dbTmp$"Collection.Code", dbTmp$Catalog_number, sep=""), dbTmp$Type, sep="_")
+  if ( dbTmp$Type != "")
+      seqNm <- paste(seqNm, dbTmp$Sample, sep="_")
   seqNm <- gsub("_{2,}", "_", seqNm)
   seqNm <- gsub("_$", "", seqNm)
   seqNm <- gsub("\\s+$", "", seqNm)
   seqNm
 }
+
 genSp <- function(dbTmp) {
   seqNm <- paste(dbTmp$genusorhigher, dbTmp$modifier, dbTmp$species, sep="_")
   seqNm <- gsub("_{2,}", "_", seqNm)

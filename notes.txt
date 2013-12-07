@@ -1,0 +1,14 @@
+
+For the manual delineation, we take current IDs at face value.
+* untested -- we see genetic differences but can't say if morphology is different (only when we have genus level ID)
+* different -- there is different names
+* started the same - species level ID, but in fact multiple ESUs
+  - we looked a little we didn't find anything (no access to material, difficult group)
+  - we looked a lot we didn't find anything
+  - we looked and we found something
+
+use letters for ESUs only differentiated by genetic data
+use numbers to indicate ESUs that are different morphologically as well
+
+
+
