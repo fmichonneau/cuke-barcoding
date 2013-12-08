@@ -29,10 +29,15 @@ holDB <- subset(holDB, pass.seq != "fix")          # nrow = 4358
 holDB <- subset(holDB, pass.seq != "no_seq_yet")   # nrow = 3466
 holDB <- subset(holDB, pass.seq != "no")           # nrow = 3402
 holDB <- subset(holDB, Notes != "MH sequence")     # nrow = 3379
+holDB <- subset(holDB, pass.seq != "duplicate")    # 
 lSeq <- sapply(holDB$Sequence, function(x) length(gregexpr("[actgACTG]", x)[[1]])) # only non-ambiguous bp
 lAmb <- sapply(holDB$Sequence, function(x) length(gregexpr("[^-]", x)[[1]]))       # all bp
 ## sum(table(lSeq)[as.numeric(names(table(lSeq))) > 500 ])
 holDB <- holDB[lAmb > 500, ] # nrow = 2894 -- this also takes care of empty sequences (only -)
+
+### check for duplicated samples
+dup <- holDB[duplicated(holDB$Sample), "Sample"]
+stopifnot(length(dup) > 0)
 
 filename <- paste(format(Sys.time(), "%Y%m%d-%H%M%S"), "cukes.fas", sep="-")
 aligned <- gsub("fas$", "afa", filename)
