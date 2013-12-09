@@ -23,6 +23,84 @@ system("pkill unoconv") # kill process
 
 ######## makes fasta file from CSV
 allDB <- read.csv(file="data/MARBoL_Echinos_VIII_2013.csv", stringsAsFactors=FALSE) # nrow = 7017
+
+#######  Add GPS coordinates
+## load("20131115.guidm.RData") ## this file contains all the UF database
+## guidmHol <- subset(guidm, class == "Holothuroidea") ## keep only Cukes
+## save(guidmHol, file="guidmHol.RData") 
+## load("guidmHol.RData")
+## guidmHol$UFnumber <- sapply(guidmHol$catalogNumber, function(x) gsub("-.+$", "", x))
+## guidmHol$UFnumber <- paste("UF", guidmHol$UFnumber, sep="")
+## allDB$UFnumber <- paste(allDB$Collection.Code, allDB$Catalog_number, sep="")
+## holDBtmp <- merge(allDB, guidmHol[, c("UFnumber", "decimalLatitude", "decimalLongitude")],
+##                   by="UFnumber", all.x=TRUE, all.y=FALSE)
+
+formatCoords <- function(x) {
+    x <- gsub("\\s+$", "", x)
+    x <- gsub("º", "°", x)
+    x <- gsub("°$", "", x)
+    x <- gsub("(.+)[SW]$", "-\\1", x)
+    x <- gsub("[NE]$", "", x)
+    x <- gsub("\\s+$", "", x)
+    x <- gsub("°$", "", x)
+    ### klunky -- could be much improved
+    if(!nzchar(x)) {        
+        ""
+    }
+    ## format (X)X°( )(X)X
+    else if (length(grep("[0-9]{1,2}°\\s?[0-9]{1,2}\\.[0-9]{1,2}'?", x)) > 0) {
+        x <- gsub("'$", "", x)
+        tCoord <- unlist(strsplit(x, "°"))
+        tCoord <- as.numeric(tCoord)
+        -(tCoord[1] + tCoord[2]/60)
+    }
+    else if (length(grep("[0-9]{1,2}°\\s?[0-9]{1,2}'\\s?[0-9]{,2}\\\"?", x)) > 0) {
+        x <- gsub(" ", "", x)
+        tCoord <- unlist(strsplit(x, "[°'\"]"))
+        tCoord <- as.numeric(tCoord)
+        if (tCoord[1] < 0) {
+            tCoord[1] - tCoord[2]/60 - tCoord[3]/3600
+        }
+        else {
+            tCoord[1] + tCoord[2]/60 + tCoord[3]/3600
+        }
+    }
+    else if (length(grep("[0-9]{2}\\s{1}[0-9]{2}\\s{1}[0-9]{2}", x)) > 0) {
+        tCoord <- unlist(strsplit(x, " "))
+        tCoord <- as.numeric(tCoord)
+        if (tCoord[1] < 0)  tCoord[1] - tCoord[2]/60 - tCoord[3]/3600
+        else tCoord[1] + tCoord[2]/60 + tCoord[3]/3600            
+    }
+    else if (length(grep("[0-9]{1,2}\\.?[0-9]?", x, perl=TRUE)) > 0) {
+        x
+    }
+    else {
+        message("pb")
+        "pb"
+    }
+}
+
+molaf <- read.csv(file="MOL_data.csv", stringsAsFactors=FALSE)
+molaf$lat <- sapply(molaf$lat, formatCoords)
+molaf$long <- sapply(molaf$long, formatCoords)
+stopifnot(length(grep("°", molaf$lat)) == 0 &&
+          length(grep("°", molaf$long)) == 0 &&
+          !any(as.numeric(molaf$lat) > 90, na.rm=T) &&
+          !any(as.numeric(molaf$lat) < -90, na.rm=T) &&
+          !any(as.numeric(molaf$long) > 180, na.rm=T) &&
+          !any(as.numeric(molaf$long) < -180, na.rm=T))
+## write.csv(molaf, file="data/molaf_withDecCoord.csv")
+
+alltissues <- allDB$Sample[! allDB$Sample %in% molaf$Tissue]
+moltissues <- grep("^MOL|^NDMQ|^NIWAMOL", alltissues, value=T)
+moltissues
+
+indexMolTissues <- match(molaf$Tissue, allDB$Sample)
+allDB$decimalLatitude[indexMolTissues[!is.na(indexMolTissues)]] <- molaf$lat[which(!is.na(indexMolTissues))]
+allDB$decimalLongitude[indexMolTissues[!is.na(indexMolTissues)]] <- molaf$long[which(!is.na(indexMolTissues))]
+
+
+### Select sequences
 holDB <- subset(allDB, class_ == "Holothuroidea")  # nrow = 4385
 holDB <- subset(holDB, pass.seq != "GenBank")      # nrow = 4360
 holDB <- subset(holDB, pass.seq != "fix")          # nrow = 4358
@@ -37,9 +115,53 @@ holDB <- holDB[lAmb > 500, ] # nrow = 2894 -- this also takes care of empty sequ
 
 ### check for duplicated samples
 dup <- holDB[duplicated(holDB$Sample), "Sample"]
-stopifnot(length(dup) > 0)
+stopifnot(length(dup) == 0)
 
-filename <- paste(format(Sys.time(), "%Y%m%d-%H%M%S"), "cukes.fas", sep="-")
+### Summary coords
+library(maps)
+library(ggplot2)
+
+summGPS <- data.frame(uniq=paste(holDB$decimalLatitude, holDB$decimalLongitude, sep="/"))
+tabuGPS <- table(summGPS)
+summGPS <- data.frame(latitude=sapply(names(tabuGPS), function(x) strsplit(x, "/")[[1]][1]),
+                      longitude=sapply(names(tabuGPS), function(x) strsplit(x, "/")[[1]][2]),
+                      nInd=as.numeric(tabuGPS), row.names=1:length(tabuGPS), stringsAsFactors=FALSE)
+summGPS <- summGPS[-c(1, nrow(summGPS)), ]
+summGPS$latitude <- as.numeric(summGPS$latitude)
+summGPS$longitude <- as.numeric(summGPS$longitude)
+
+center <- 250
+summGPS$long.recenter <- ifelse(summGPS$longitude < center - 180, summGPS$longitude + 360, summGPS$longitude)
+globalMap <- map_data("world")
+
+pacificmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray70", colour="gray70") +
+    geom_point(aes(x = long.recenter, y = latitude, size= nInd), colour="red", data=summGPS) +
+    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+    theme(panel.background = element_rect(fill="aliceblue")) +
+    ylim(c(-45,45))
+pacificmap
+
+southmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray70", colour="gray70") +
+    geom_point(aes(x = long.recenter, y = latitude, size= nInd), colour="red", data=summGPS) +
+    coord_map(projection = "ortho", orientation=c(-90, 0, 0)) +
+    theme(panel.background = element_rect(fill="aliceblue"))
+southmap
+
+northmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray70", colour="gray70") +
+    geom_point(aes(x = long.recenter, y = latitude, size= nInd), colour="red", data=summGPS) +
+    coord_map(projection = "ortho", orientation=c(90, 0, 0)) +
+    theme(panel.background = element_rect(fill="aliceblue"))
+northmap
+
+pdf(file="cukebarcodingmaps.pdf", paper="USr", width=0, height=0)
+print(pacificmap)
+print(southmap)
+print(northmap)
+dev.off()
+
+
+### Generate FASTA file
+gfilename <- paste(format(Sys.time(), "%Y%m%d-%H%M%S"), "cukes.fas", sep="-")
 aligned <- gsub("fas$", "afa", filename)
 genFasta(holDB, out=file.path("/tmp", filename))
 system(paste("mafft --auto --op 10 --thread -1", file.path("/tmp", filename), ">", file.path("/tmp", aligned)))
