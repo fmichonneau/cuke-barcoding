@@ -12,14 +12,13 @@ library(phylobase)
 ### See here for more info https://github.com/dagwieers/unoconv
 
 system("unoconv -l&") # start listener
-system("sleep 2;")
+system("sleep 1;")
 system("unoconv -f csv data/MARBoL_Echinos_VIII_2013.xlsx") # converts document
 system("pkill unoconv") # kill process
 
 ## Does not work, file too large?
 ## library(xlsx)
 ## db <- read.xlsx(file="data/MARBoL_Echinos_VIII_2013.xlsx", 1, stringsAsFactors=FALSE)
-
 
 ######## makes fasta file from CSV
 allDB <- read.csv(file="data/MARBoL_Echinos_VIII_2013.csv", stringsAsFactors=FALSE) # nrow = 7017
@@ -42,7 +41,7 @@ dup <- holDB[duplicated(holDB$Sample), "Sample"]
 stopifnot(length(dup) == 0)
 
 ### Generate FASTA file
-gfilename <- paste(format(Sys.time(), "%Y%m%d-%H%M%S"), "cukes.fas", sep="-")
+filename <- paste(format(Sys.time(), "%Y%m%d-%H%M%S"), "cukes.fas", sep="-")
 aligned <- gsub("fas$", "afa", filename)
 genFasta(holDB, out=file.path("/tmp", filename))
 system(paste("mafft --auto --op 10 --thread -1", file.path("/tmp", filename), ">", file.path("/tmp", aligned)))
@@ -65,12 +64,79 @@ seqWithStop <- dimnames(seqHol)[[1]][grep("\\*", tranE)]
 
 ### Remove sequences with internal gaps and stop codons
 toRm <- union(seqWithStop, seqWithIntGap)
+## dimnames(seqHol)[[1]][match(toRm, dimnames(seqHol)[[1]])] <- paste("stop-intgap", toRm, sep="_")
 toRmInd <- match(toRm, dimnames(seqHol)[[1]])
 seqHol <- seqHol[-toRmInd, ]
+
+### These 3 sequences are not represented by other representative
+###  it might be worth trying to figure out if we can clean up the
+###  sequences to deal with the issues
+###  - FRM-194
+###  - NMV F112128
+###  - NIWA 38032
 
 ### Write working copy of fasta file
 write.dna(seqHol, file="data/workingAlg.fas", format="fasta", colsep="")
 
+### Compare with sequences submitted to genbank
+ufgb <- read.csv(file="data/UF_genbankSequences.csv", stringsAsFactors=FALSE)
+testGBseq <- function(gb, db) {
+    res <- array(, dim=c(nrow(gb), 8), dimnames=list(NULL, c("seqNm", "sameLength",
+                                           "seqLen1", "seqLen2",
+                                           "noAmb", "nAmb1", "nAmb2",
+                                           "distGenIs0")))
+    lFiles <- character(nrow(gb))
+    for (i in 1:nrow(gb)) {
+        res[i, 1] <- gb$genbankNb[i]
+        algPth <- "/tmp/seq"
+        fileNm <- paste(gb$genbankNb[i], ".fas", sep="")
+        algNm <- gsub("fas$", "afa", fileNm)
+        lFiles[i] <- fileNm
+        tmpDB <- subset(db, GenBankSubmission == gb$genbankNb[i])
+        if (nrow(tmpDB) == 0) {
+            res[i, ] <- c(NA, NA, NA, NA)
+        }
+        else {
+            ## Sequence 1 - what's in the database
+            ## Sequence 2 - what's in GenBank            
+            seqNm1 <- paste(">", tmpDB$GenBankSubmission, "_", tmpDB$Sample, sep="")
+            seqNm2 <- paste(">", gb$genbankNb[i], "_", gb$vou[i], sep="")
+            seq1 <- tmpDB$Sequence
+            seq2 <- gb$vdb.seq[i]
+            lSeq1 <- length(gregexpr("[actgACTG]", seq1)[[1]])            
+            lSeq2 <- length(gregexpr("[actgACTG]", seq2)[[1]])
+            if (lSeq1 < 100 || lSeq2 < 100) {
+                warning("sequence too short to be true")
+                browser()
+            }
+            res[i, 2] <- lSeq1 == lSeq2
+            res[i, 3] <- lSeq1
+            res[i, 4] <- lSeq2
+            cat(seqNm1, "\n", seq1, "\n", file=file.path(algPth, fileNm), append=FALSE, sep="")
+            cat(seqNm1, "\n", seq1, "\n", file=file.path(algPth, fileNm), append=FALSE, sep="")
+            tmpAmb <- "" ##checkAmbiguity(file=file.path(algPth, fileNm), quiet=T)
+            res[i, 5] <- ifelse(length(tmpAmb), 1, 0)
+            res[i, 6] <- ""
+            res[i, 7] <- ""
+            ## tmpAlg <- read.dna(file=algNm, format="fasta")
+            ## if (nrow(tmpAlg) < 2) {
+            ##     warning("only 1 sequence for ", seqNm1)
+            ##     next
+            ## }
+            res[i, 8] <- "" #dist.dna(tmpAlg)
+        }
+    }
+    mSeq <- mergeSeq(lFiles, output="/tmp", seqFolder="/tmp", markers="seq",
+                     convertEnds=FALSE, checkAmbiguity=FALSE)
+    res
+}
+compareSeqTmp <- testGBseq(gb=ufgb, db=allDB)
+
+compareSeq <- data.frame(compareSeqTmp, stringsAsFactors=FALSE)
+compareSeq$sameLength <- as.logical(compareSeq$sameLength)
+allGood <- compareSeq$sameLength & compareSeq$noAmb == 0 & compareSeq$distGenIs0 == 0
+compareSeqPb <- compareSeq[!allGood, ]
+write.csv(compareSeqPb, file="/tmp/compareSeq.csv")
 #########
 ######### ---- Can start from here
 #########
@@ -88,8 +154,8 @@ dimnames(seqHol)[[1]] <- make.unique(dimnames(seqHol)[[1]])
 
 ### ---------  Make tree for everything  
 treH <- nj(dist.dna(seqHol))
-pdf(file="allHolothuroids.pdf", height=300, bg="white", fg="black")
-plot(treH, no.margin=TRUE, cex=.7)
+pdf(file="allHolothuroids-withstops.pdf", height=300, bg="white", fg="black")
+plot(treH, no.margin=TRUE, cex=.8)
 dev.off()
 
 ### --------  Make trees for each family
