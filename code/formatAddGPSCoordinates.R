@@ -1,3 +1,6 @@
+
+##### ------- Need to load allDB in memory before using the code below -------- 
+
 #######  Add GPS coordinates
 ## load("20131115.guidm.RData") ## this file contains all the UF database
 ## guidmHol <- subset(guidm, class == "Holothuroidea") ## keep only Cukes
@@ -6,10 +9,11 @@
 ## guidmHol$UFnumber <- sapply(guidmHol$catalogNumber, function(x) gsub("-.+$", "", x))
 ## guidmHol$UFnumber <- paste("UF", guidmHol$UFnumber, sep="")
 ## allDB$UFnumber <- paste(allDB$Collection.Code, allDB$Catalog_number, sep="")
-## holDBtmp <- merge(allDB, guidmHol[, c("UFnumber", "decimalLatitude", "decimalLongitude")],
+## allDBtmp <- merge(allDB, guidmHol[, c("UFnumber", "decimalLatitude", "decimalLongitude")],
 ##                   by="UFnumber", all.x=TRUE, all.y=FALSE)
 
 formatCoords <- function(x) {
+    x <- gsub("’", "'", x)
     x <- gsub("\\s+$", "", x)
     x <- gsub("º", "°", x)
     x <- gsub("°$", "", x)
@@ -21,13 +25,19 @@ formatCoords <- function(x) {
     if(!nzchar(x)) {        
         ""
     }
-    ## format (X)X°( )(X)X
-    else if (length(grep("[0-9]{1,2}°\\s?[0-9]{1,2}\\.[0-9]{1,2}'?", x)) > 0) {
+    ## format (X)X°( )(X)X.(X)X(')(’)
+    else if (length(grep("[0-9]{1,2}°\\s?[0-9]{1,2}(\\.[0-9]{1,2}'?)?", x)) > 0) {
         x <- gsub("'$", "", x)
         tCoord <- unlist(strsplit(x, "°"))
         tCoord <- as.numeric(tCoord)
-        -(tCoord[1] + tCoord[2]/60)
+        if (tCoord[1] < 0) {
+            tCoord[1] - tCoord[2]/60
+        }
+        else {
+            tCoord[1] + tCoord[2]/60
+        }            
     }
+    ## format (X)X°( )(X)X'( )XX(")
     else if (length(grep("[0-9]{1,2}°\\s?[0-9]{1,2}'\\s?[0-9]{,2}\\\"?", x)) > 0) {
         x <- gsub(" ", "", x)
         tCoord <- unlist(strsplit(x, "[°'\"]"))
@@ -39,6 +49,7 @@ formatCoords <- function(x) {
             tCoord[1] + tCoord[2]/60 + tCoord[3]/3600
         }
     }
+    ## format XX XX XX
     else if (length(grep("[0-9]{2}\\s{1}[0-9]{2}\\s{1}[0-9]{2}", x)) > 0) {
         tCoord <- unlist(strsplit(x, " "))
         tCoord <- as.numeric(tCoord)
@@ -72,3 +83,12 @@ moltissues
 indexMolTissues <- match(molaf$Tissue, allDB$Sample)
 allDB$decimalLatitude[indexMolTissues[!is.na(indexMolTissues)]] <- molaf$lat[which(!is.na(indexMolTissues))]
 allDB$decimalLongitude[indexMolTissues[!is.na(indexMolTissues)]] <- molaf$long[which(!is.na(indexMolTissues))]
+
+######
+
+xx <- read.csv(file="/tmp/redSeaCoords.csv", stringsAsFactors=FALSE)
+
+xx$decLat <- sapply(xx$lat, formatCoords)
+xx$decLong <- sapply(xx$long, formatCoords)
+
+write.csv(xx, file="/tmp/redSeaCoords-fixed.csv")
