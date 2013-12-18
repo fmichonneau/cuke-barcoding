@@ -202,7 +202,7 @@ summGPS <- summGPS[-c(1, nrow(summGPS)), ]
 summGPS$latitude <- as.numeric(summGPS$latitude)
 summGPS$longitude <- as.numeric(summGPS$longitude)
 
-center <- 250
+center <- 0
 summGPS$long.recenter <- ifelse(summGPS$longitude < center - 180, summGPS$longitude + 360, summGPS$longitude)
 globalMap <- map_data("world")
 

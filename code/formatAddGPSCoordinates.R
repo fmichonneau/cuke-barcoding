@@ -244,6 +244,23 @@ for (i in 1:length(indexToMatch)) {
 
 write.csv(allDB, file="/tmp/allDB-withcoords.csv")
 
+
+#### Adding GPS coordinates for all NMV specimens
+## nmv <- read.csv(file="tmp/nmv-data.csv", stringsAsFactors=FALSE)
+## save(nmv, file="tmp/nmv-data.RData")
+load("tmp/nmv-data.RData")
+
+nmvNb <- subset(allDB, Collection.Code=="NMV")
+
+iNMV <- match(nmvNb$Catalog_number, nmv$Catalog.Number)
+iDB <- rownames(nmvNb)
+
+allDB[iDB, ]$decimalLatitude <- nmv$Latitude...processed[iNMV] # I'm erasing some data but it's ok as it's the same values
+allDB[iDB, ]$decimalLongitude <- nmv$Longitude...processed[iNMV] # I'm erasing some data but it's ok as it's the same values
+
+write.csv(allDB, file="/tmp/alluf_withgps.csv")
+
+
 #### Filling out the blanks
 ### for this last pass, I'm going to look for unique locations in the database
 ### create a little spreadsheet with coordinates for these locations
@@ -259,3 +276,19 @@ tmpUniq <- missingcoords[, c("Region", "Loc", "further.loc")]
 dupLoc <- duplicated(paste(tmpUniq$Region, tmpUniq$Loc, tmpUniq$further.loc))
 
 write.csv(tmpUniq[!dupLoc, ], file="/tmp/uniqLoc.csv")
+
+gpsLoc <- read.csv(file="data/uniqLoc_withGPS.csv", stringsAsFactors=FALSE)
+
+for (i in 1:nrow(gpsLoc)) {
+    if(is.na(gpsLoc$latitude[i]))
+        next
+    else {
+        cond <- allDB$Region == gpsLoc$Region[i] & allDB$Loc == gpsLoc$Loc[i] &
+            allDB$further.loc == gpsLoc$further.loc[i] & is.na(allDB$decimalLatitude) &
+                is.na(allDB$decimalLongitude)
+        allDB[cond, "decimalLatitude"] <- gpsLoc$latitude[i]
+        allDB[cond, "decimalLongitude"] <- gpsLoc$longitude[i]
+    }
+}
+
+write.csv(allDB, file="/tmp/alluf_withgps.csv")
