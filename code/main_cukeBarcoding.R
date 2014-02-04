@@ -12,7 +12,7 @@ library(phylobase)
 ### See here for more info https://github.com/dagwieers/unoconv
 
 system("unoconv -l&") # start listener
-system("sleep 1;")
+system("sleep 0.5;")
 system("unoconv -f csv data/MARBoL_Echinos_VIII_2013.xlsx") # converts document
 system("pkill unoconv") # kill process
 
@@ -35,6 +35,14 @@ lSeq <- sapply(holDB$Sequence, function(x) length(gregexpr("[actgACTG]", x)[[1]]
 lAmb <- sapply(holDB$Sequence, function(x) length(gregexpr("[^-]", x)[[1]]))       # all bp
 ## sum(table(lSeq)[as.numeric(names(table(lSeq))) > 500 ])
 holDB <- holDB[lAmb > 500, ] # nrow = 2894 -- this also takes care of empty sequences (only -)
+
+### Taxonomic check
+testGenera <- as.matrix(xtabs(~ genusorhigher + family, data=holDB, subset=family != "Uncertain"))
+resGenera <- apply(testGenera, 1, function(x) sum(x != 0))
+stopifnot(all(resGenera == 1))
+testFamily <- as.matrix(xtabs(~ family + order, data=holDB, subset=family != "Uncertain"))
+resFamily <- apply(testFamily, 1, function(x) sum(x != 0))
+stopifnot(all(resFamily == 1))
 
 ### check for duplicated samples
 dup <- holDB[duplicated(holDB$Sample), "Sample"]
@@ -164,6 +172,7 @@ dev.off()
 getFam <- sapply(dimnames(seqHol)[[1]], function(x) { unlist(strsplit(x, "_"))[1] })
 uniqFam <- unique(getFam)
 missing <- dimnames(seqHol)[[1]][which(getFam == "")]
+stopifnot(length(missing) == 0)
 
 treeForEachFamily <- function(uniqFam, alg) {
     for (i in 1:length(uniqFam)) {
