@@ -89,9 +89,12 @@ write.dna(seqHol, file="data/workingAlg.fas", format="fasta", colsep="")
 ### Compare with sequences submitted to genbank
 ufgb <- read.csv(file="data/UF_genbankSequences.csv", stringsAsFactors=FALSE)
 testGBseq <- function(gb, db) {
-    res <- array(, dim=c(nrow(gb), 8), dimnames=list(NULL, c("seqNm", "sameLength",
+    if (! file.exists("/tmp/seq")) {
+        stop("Create /tmp/seq before running this script.")
+    }
+    res <- array(, dim=c(nrow(gb), 7), dimnames=list(NULL, c("seqNm", "sameLength",
                                            "seqLen1", "seqLen2",
-                                           "noAmb", "nAmb1", "nAmb2",
+                                           "nAmb1", "nAmb2",
                                            "distGenIs0")))
     lFiles <- character(nrow(gb))
     for (i in 1:nrow(gb)) {
@@ -99,19 +102,19 @@ testGBseq <- function(gb, db) {
         algPth <- "/tmp/seq"
         fileNm <- paste(gb$genbankNb[i], ".fas", sep="")
         algNm <- gsub("fas$", "afa", fileNm)
-        lFiles[i] <- fileNm
         tmpDB <- subset(db, GenBankSubmission == gb$genbankNb[i])
         if (nrow(tmpDB) == 0) {
-            res[i, ] <- c(NA, NA, NA, NA)
+            res[i, ] <- c(NA, NA, NA, NA, NA, NA, NA)
         }
         else {
+            lFiles[i] <- algNm
             ## Sequence 1 - what's in the database
             ## Sequence 2 - what's in GenBank            
             seqNm1 <- paste(">", tmpDB$GenBankSubmission, "_", tmpDB$Sample, sep="")
             seqNm2 <- paste(">", gb$genbankNb[i], "_", gb$vou[i], sep="")
             seq1 <- tmpDB$Sequence
             seq2 <- gb$vdb.seq[i]
-            lSeq1 <- length(gregexpr("[actgACTG]", seq1)[[1]])            
+            lSeq1 <- length(gregexpr("[actgACTG]", seq1)[[1]])
             lSeq2 <- length(gregexpr("[actgACTG]", seq2)[[1]])
             if (lSeq1 < 100 || lSeq2 < 100) {
                 warning("sequence too short to be true")
@@ -121,28 +124,22 @@ testGBseq <- function(gb, db) {
             res[i, 3] <- lSeq1
             res[i, 4] <- lSeq2
             cat(seqNm1, "\n", seq1, "\n", file=file.path(algPth, fileNm), append=FALSE, sep="")
-            cat(seqNm1, "\n", seq1, "\n", file=file.path(algPth, fileNm), append=FALSE, sep="")
-            tmpAmb <- "" ##checkAmbiguity(file=file.path(algPth, fileNm), quiet=T)
-            res[i, 5] <- ifelse(length(tmpAmb), 1, 0)
-            res[i, 6] <- ""
-            res[i, 7] <- ""
-            ## tmpAlg <- read.dna(file=algNm, format="fasta")
-            ## if (nrow(tmpAlg) < 2) {
-            ##     warning("only 1 sequence for ", seqNm1)
-            ##     next
-            ## }
-            res[i, 8] <- "" #dist.dna(tmpAlg)
+            cat(seqNm2, "\n", seq2, "\n", file=file.path(algPth, fileNm), append=TRUE, sep="")
+            res[i, 5] <- length(gregexpr("[^-]", seq1)[[1]]) - lSeq1
+            res[i, 6] <- length(gregexpr("[^-]", seq2)[[1]]) - lSeq2
+            system(paste("muscle -in", file.path(algPth, fileNm), "-out", file.path(algPth, algNm)))
+            res[i, 7] <- dist.dna(read.dna(file=file.path(algPth, algNm), format="fasta"))
         }
     }
-    mSeq <- mergeSeq(lFiles, output="/tmp", seqFolder="/tmp", markers="seq",
-                     convertEnds=FALSE, checkAmbiguity=FALSE)
+    oFile <- paste("/tmp/", format(Sys.time(), "%Y%m%d-%H%M%S"), "allseq.fas", sep="")
+    mSeq <- mergeAlignment(lFiles[nzchar(lFiles)], output=oFile, seqFolder="/tmp/seq")
     res
 }
 compareSeqTmp <- testGBseq(gb=ufgb, db=allDB)
 
 compareSeq <- data.frame(compareSeqTmp, stringsAsFactors=FALSE)
 compareSeq$sameLength <- as.logical(compareSeq$sameLength)
-allGood <- compareSeq$sameLength & compareSeq$noAmb == 0 & compareSeq$distGenIs0 == 0
+allGood <- compareSeq$sameLength & compareSeq$nAmb1 == compareSeq$nAmb2 & compareSeq$distGenIs0 == 0
 compareSeqPb <- compareSeq[!allGood, ]
 write.csv(compareSeqPb, file="/tmp/compareSeq.csv")
 #########
