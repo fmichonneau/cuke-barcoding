@@ -171,7 +171,8 @@ uniqFam <- unique(getFam)
 missing <- dimnames(seqHol)[[1]][which(getFam == "")]
 stopifnot(length(missing) == 0)
 
-treeForEachFamily <- function(uniqFam, alg) {
+treeForEachFamily <- function(uniqFam, alg, drawTrees=TRUE) {
+    res <- vector("list", length(uniqFam))
     for (i in 1:length(uniqFam)) {
         fam <- uniqFam[i]
         message(fam)
@@ -184,16 +185,29 @@ treeForEachFamily <- function(uniqFam, alg) {
         }
         dimnames(selSeq)[[1]] <- gsub(paste("^", fam, "_", sep=""), "", dimnames(selSeq)[[1]])
         treTmp <- nj(dist.dna(selSeq))
-        h <- (dim(selSeq)[1]/10) + 5
-        pdf(file=paste(fam, ".pdf", sep=""), height=h)
-        plot(ladderize(treTmp), no.margin=TRUE, cex=.7)
-        dev.off()
+        res[[i]] <- treTmp
+        if (drawTrees) {
+            h <- (dim(selSeq)[1]/10) + 5
+            pdf(file=paste(fam, ".pdf", sep=""), height=h)
+            plot(ladderize(treTmp), no.margin=TRUE, cex=.7)
+            dev.off()
+        }
         message("Done.")
     }
-    TRUE
+    res
 }
 
 treeForEachFamily(uniqFam, seqHol)
+
+### make findGroup more efficient
+library(lineprof)
+
+synTr <- treeForEachFamily("Synaptidae", seqHol, drawTrees=FALSE)[[1]]
+synTr$edge.length[synTr$edge.length < 0] <- 1e-7
+synTr$tip.label <- make.unique(synTr$tip.label)
+synTr <- root(synTr, outgroup=grep("Leptosynapta|Patinapta", synTr$tip.label), resolve.root=TRUE)
+synTr4 <- as(synTr, "phylo4")
+lp <- lineprof(findGroups(synTr4))
 
 ### Summary coords
 library(maps)
