@@ -1,27 +1,9 @@
 
 setwd("~/Documents/CukeBarcoding/")
-source("code/functions_cukeBarcoding.R")
-source("~/R-scripts/seqManagement.R")
-library(doMC)
-registerDoMC()
-library(ape)
-library(seqinr)
-library(phylobase)
+source("code/data_preparation.R")
 
-######## Converts XLSX spreadsheet into CSV
-### See here for more info https://github.com/dagwieers/unoconv
-
-system("unoconv -l&") # start listener
-system("sleep 0.5;")
-system("unoconv -f csv data/MARBoL_Echinos_VIII_2013.xlsx") # converts document
-system("pkill unoconv") # kill process
-
-## Does not work, file too large?
-## library(xlsx)
-## db <- read.xlsx(file="data/MARBoL_Echinos_VIII_2013.xlsx", 1, stringsAsFactors=FALSE)
 
 ######## makes fasta file from CSV
-allDB <- read.csv(file="data/MARBoL_Echinos_VIII_2013.csv", stringsAsFactors=FALSE) # nrow = 7017
 
 ### Select sequences
 holDB <- subset(allDB, class_ == "Holothuroidea")  # nrow = 4385
@@ -200,14 +182,14 @@ treeForEachFamily <- function(uniqFam, alg, drawTrees=TRUE) {
 treeForEachFamily(uniqFam, seqHol)
 
 ### make findGroup more efficient
-library(lineprof)
 
 synTr <- treeForEachFamily("Synaptidae", seqHol, drawTrees=FALSE)[[1]]
 synTr$edge.length[synTr$edge.length < 0] <- 1e-7
 synTr$tip.label <- make.unique(synTr$tip.label)
 synTr <- root(synTr, outgroup=grep("Leptosynapta|Patinapta", synTr$tip.label), resolve.root=TRUE)
 synTr4 <- as(synTr, "phylo4")
-lp <- lineprof(findGroups(synTr4))
+
+system.time(synGr <- findGroups(synTr4, experimental=TRUE, parallel=TRUE))
 
 ### Summary coords
 library(maps)
