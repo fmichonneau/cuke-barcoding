@@ -1,151 +1,26 @@
 
-setwd("~/Documents/CukeBarcoding/")
-source("code/data_preparation.R")
 
 
-######## makes fasta file from CSV
-
-### Select sequences
-holDB <- subset(allDB, class_ == "Holothuroidea")  # nrow = 4385
-holDB <- subset(holDB, pass.seq != "GenBank")      # nrow = 4360
-holDB <- subset(holDB, pass.seq != "fix")          # nrow = 4358
-holDB <- subset(holDB, pass.seq != "no_seq_yet")   # nrow = 3466
-holDB <- subset(holDB, pass.seq != "no")           # nrow = 3402
-holDB <- subset(holDB, Notes != "MH sequence")     # nrow = 3379
-holDB <- subset(holDB, pass.seq != "duplicate")    # 
-lSeq <- sapply(holDB$Sequence, function(x) length(gregexpr("[actgACTG]", x)[[1]])) # only non-ambiguous bp
-lAmb <- sapply(holDB$Sequence, function(x) length(gregexpr("[^-]", x)[[1]]))       # all bp
-## sum(table(lSeq)[as.numeric(names(table(lSeq))) > 500 ])
-holDB <- holDB[lAmb > 500, ] # nrow = 2894 -- this also takes care of empty sequences (only -)
-
-### Taxonomic check
-testGenera <- as.matrix(xtabs(~ genusorhigher + family, data=holDB, subset=family != "Uncertain"))
-resGenera <- apply(testGenera, 1, function(x) sum(x != 0))
-stopifnot(all(resGenera == 1))
-testFamily <- as.matrix(xtabs(~ family + order, data=holDB, subset=family != "Uncertain"))
-resFamily <- apply(testFamily, 1, function(x) sum(x != 0))
-stopifnot(all(resFamily == 1))
-
-### check for duplicated samples
-dup <- holDB[duplicated(holDB$Sample), "Sample"]
-stopifnot(length(dup) == 0)
-
-### Generate FASTA file
-filename <- paste(format(Sys.time(), "%Y%m%d-%H%M%S"), "cukes.fas", sep="-")
-aligned <- gsub("fas$", "afa", filename)
-genFasta(holDB, out=file.path("/tmp", filename))
-system(paste("mafft --auto --op 10 --thread -1", file.path("/tmp", filename), ">", file.path("/tmp", aligned)))
-file.copy(file.path("/tmp", aligned), file.path("data", filename))
-file.remove(file.path("data", "latestAlg.fas"))
-file.link(file.path("data", filename), file.path("data", "latestAlg.fas"))
-
-### Identify sequences with internal gaps
-seqHolC <- read.dna(file="data/latestAlg.fas", format="fasta", as.character=TRUE)
-seqHolC <- apply(seqHolC, 1, function(x) paste(x, sep="", collapse=""))
-intGap <- sapply(seqHolC, function(x) gregexpr("[actgn]-+[actgn]", x)[[1]][1] != -1) # should I consider ambiguities here?
-seqWithIntGap <- names(intGap[intGap])
-
-### Identify sequences with stop codons
-seqHol <- read.dna(file="data/latestAlg.fas", format="fasta")
-tranE <- foreach (i = 1:nrow(seqHol)) %dopar% {
-  translate(as.character(seqHol[i, ]), frame=1, numcode=9)
-}
-seqWithStop <- dimnames(seqHol)[[1]][grep("\\*", tranE)]
-
-### Remove sequences with internal gaps and stop codons
-toRm <- union(seqWithStop, seqWithIntGap)
-## dimnames(seqHol)[[1]][match(toRm, dimnames(seqHol)[[1]])] <- paste("stop-intgap", toRm, sep="_")
-toRmInd <- match(toRm, dimnames(seqHol)[[1]])
-seqHol <- seqHol[-toRmInd, ]
-
-### These 3 sequences are not represented by other representative
-###  it might be worth trying to figure out if we can clean up the
-###  sequences to deal with the issues
-###  - FRM-194
-###  - NMV F112128
-###  - NIWA 38032
-
-### Write working copy of fasta file
-write.dna(seqHol, file="data/workingAlg.fas", format="fasta", colsep="")
-
-### Compare with sequences submitted to genbank
-ufgb <- read.csv(file="data/UF_genbankSequences.csv", stringsAsFactors=FALSE)
-testGBseq <- function(gb, db) {
-    if (! file.exists("/tmp/seq")) {
-        stop("Create /tmp/seq before running this script.")
-    }
-    res <- array(, dim=c(nrow(gb), 7), dimnames=list(NULL, c("seqNm", "sameLength",
-                                           "seqLen1", "seqLen2",
-                                           "nAmb1", "nAmb2",
-                                           "distGenIs0")))
-    lFiles <- character(nrow(gb))
-    for (i in 1:nrow(gb)) {
-        res[i, 1] <- gb$genbankNb[i]
-        algPth <- "/tmp/seq"
-        fileNm <- paste(gb$genbankNb[i], ".fas", sep="")
-        algNm <- gsub("fas$", "afa", fileNm)
-        tmpDB <- subset(db, GenBankSubmission == gb$genbankNb[i])
-        if (nrow(tmpDB) == 0) {
-            res[i, ] <- c(NA, NA, NA, NA, NA, NA, NA)
-        }
-        else {
-            lFiles[i] <- algNm
-            ## Sequence 1 - what's in the database
-            ## Sequence 2 - what's in GenBank            
-            seqNm1 <- paste(">", tmpDB$GenBankSubmission, "_", tmpDB$Sample, sep="")
-            seqNm2 <- paste(">", gb$genbankNb[i], "_", gb$vou[i], sep="")
-            seq1 <- tmpDB$Sequence
-            seq2 <- gb$vdb.seq[i]
-            lSeq1 <- length(gregexpr("[actgACTG]", seq1)[[1]])
-            lSeq2 <- length(gregexpr("[actgACTG]", seq2)[[1]])
-            if (lSeq1 < 100 || lSeq2 < 100) {
-                warning("sequence too short to be true")
-                browser()
-            }
-            res[i, 2] <- lSeq1 == lSeq2
-            res[i, 3] <- lSeq1
-            res[i, 4] <- lSeq2
-            cat(seqNm1, "\n", seq1, "\n", file=file.path(algPth, fileNm), append=FALSE, sep="")
-            cat(seqNm2, "\n", seq2, "\n", file=file.path(algPth, fileNm), append=TRUE, sep="")
-            res[i, 5] <- length(gregexpr("[^-]", seq1)[[1]]) - lSeq1
-            res[i, 6] <- length(gregexpr("[^-]", seq2)[[1]]) - lSeq2
-            system(paste("muscle -in", file.path(algPth, fileNm), "-out", file.path(algPth, algNm)))
-            res[i, 7] <- dist.dna(read.dna(file=file.path(algPth, algNm), format="fasta"))
-        }
-    }
-    oFile <- paste("/tmp/", format(Sys.time(), "%Y%m%d-%H%M%S"), "allseq.fas", sep="")
-    mSeq <- mergeAlignment(lFiles[nzchar(lFiles)], output=oFile, seqFolder="/tmp/seq")
-    res
-}
-compareSeqTmp <- testGBseq(gb=ufgb, db=allDB)
-
-compareSeq <- data.frame(compareSeqTmp, stringsAsFactors=FALSE)
-compareSeq$sameLength <- as.logical(compareSeq$sameLength)
-allGood <- compareSeq$sameLength & compareSeq$nAmb1 == compareSeq$nAmb2 & compareSeq$distGenIs0 == 0
-compareSeqPb <- compareSeq[!allGood, ]
-write.csv(compareSeqPb, file="/tmp/compareSeq.csv")
-#########
-######### ---- Can start from here
-#########
-
-### identify sequences with ambiguities and rename them
-ambSeq <- checkAmbiguity(file="data/workingAlg.fas")
-oldNm <- names(ambSeq)
-newNm <- paste(oldNm, "_", sapply(ambSeq, length), "amb", sep="")
-
-seqHol <- read.dna(file="data/workingAlg.fas", format="fasta")
-dimnames(seqHol)[[1]][match(oldNm, dimnames(seqHol)[[1]])] <- newNm
-
-### ---------  Make NJ tree
-dimnames(seqHol)[[1]] <- make.unique(dimnames(seqHol)[[1]])
+### --------   Prepare RAxML alignment
+seqHolClean <- cleanSeqLabels(seqHol)
+write.dna(seqHolClean, file=paste("RAxML_run/", format(Sys.time(), "%Y%m%d"), "allcukes.phy", sep=""),
+          colsep="", colw=10000)
+          
 
 ### ---------  Make tree for everything  
 treH <- nj(dist.dna(seqHol))
-pdf(file="allHolothuroids-withstops.pdf", height=300, bg="white", fg="black")
+
+pdf(file="allHolothuroids-withstops.pdf", height=350, bg="white", fg="black", width=50)
 plot(treH, no.margin=TRUE, cex=.8)
 dev.off()
 
-### --------  Make trees for each family
+treH$edge.length[treH$edge.length < 0] <- 1e-6
+treHr <- root(treH, 1, resolve.root=TRUE)
+treH4 <- as(treHr, "phylo4")
+
+treHgr <- findGroups(treH4, experimental=FALSE, parallel=TRUE)
+
+### ---------  Make trees for each family
 ## Get the families
 
 getFam <- sapply(dimnames(seqHol)[[1]], function(x) { unlist(strsplit(x, "_"))[1] })
@@ -172,7 +47,7 @@ treeForEachFamily <- function(uniqFam, alg, drawTrees=TRUE) {
             h <- (dim(selSeq)[1]/10) + 5
             pdf(file=paste(fam, ".pdf", sep=""), height=h)
             plot(ladderize(treTmp), no.margin=TRUE, cex=.7)
-            dev.off()
+            dev.off()g
         }
         message("Done.")
     }
@@ -189,7 +64,27 @@ synTr$tip.label <- make.unique(synTr$tip.label)
 synTr <- root(synTr, outgroup=grep("Leptosynapta|Patinapta", synTr$tip.label), resolve.root=TRUE)
 synTr4 <- as(synTr, "phylo4")
 
-system.time(synGr <- findGroups(synTr4, experimental=TRUE, parallel=TRUE))
+system.time(synGr <- findGroups(synTr4, experimental=FALSE, parallel=TRUE))
+
+library(microbenchmark)
+microbenchmark(
+    sapply(nodeId(synTr4, "internal"), function(x)
+           distFromTip(synTr4, x, parallel=FALSE)),
+    sapply((nTips(synTr4)+1):(nEdges(synTr4)), function(x)
+           distFromTip(synTr4, x, parallel=FALSE)),
+    times=50L
+    )
+
+microbenchmark(
+    nodeId(synTr4, "all"),
+    nodeId(synTr4, "all2"))
+
+microbenchmark(
+    findGroups(synTr4, experimental=FALSE, parallel=FALSE),
+    findGroups(synTr4, experimental=TRUE, parallel=FALSE))
+
+library(lineprof)
+lp <- lineprof(findGroups(synTr4, experimental=FALSE, parallel=FALSE))
 
 ### Summary coords
 library(maps)
