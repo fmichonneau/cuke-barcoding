@@ -1,0 +1,71 @@
+
+Main message (less than 25 words):
+
+There is a large amount of unrecognized diversity among Echinoderms.
+This diversity is mostly generated in allopatry, but rapid secondary sympatry is
+rampant. (23 words)
+
+Working abstract:
+
+Estimates for the number of species in the sea vary by orders of
+magnitude. Molecular taxonomy can greatly speed up screening for diversity and
+evaluating species boundaries.  DNA barcoding with a region of cytochrome
+oxidase 1 (COI) is now widely used as a first pass for molecular evaluation of
+diversity, as it has good potential for identifying cryptic species and improve
+our understanding of marine biodiversity. We present the results of a large
+scale barcoding effort for echinoderms, focusing here on asteroids, echinoids
+and holothuroids. We sequenced over 3,900 individuals from numerous localities
+across the Indo-Pacific and the Caribbean. Many species show genetic
+differentiation between ocean basins, and some are even differentiated among
+archipelagos. The number of cryptic species is much higher than currently
+recognized. The vast majority of sister species have allopatric
+distributions. However, many closely related and sympatric forms which exhibit
+distinct color patterns and/or ecology show little differentiation in and cannot
+be separated by COI sequence. This pattern is much more common among echinoderms
+than among molluscs or arthropods. This suggests that echinoderms acquire
+reproductive isolation at a much faster pace than other marine
+phyla. Understanding the causes behind such pattern will refine our
+understanding of diversification and biodiversity among echinoderms.
+
+\section{Materials and Methods}
+
+\subsection{Sequencing}
+
+DNA was extracted according to one of the following three protocols: (1) DNAzol
+followed by QIAGEN PCR clean up kit; (2) organic extractions at the Smithsonian
+Institution using robotic facilities; (3) EZNA Mollusc kit.
+
+We amplified the 5' end of COI using the echinoderm primers developed by
+\cite{Hoareau2010}. The sequencing was performed at the Interdisciplinary Center
+Biotechnology Research at the University of Florida. Chromatograms were
+assembled and edited using Geneious 5.5.8 \cite{Geneious558}.
+
+We kept all sequences that were more than 600 bp, 
+
+
+
+% tradeoff between many species 1 gene / multiple genes
+
+%% Geographical scale
+% see Bergsten+2012
+
+%% Neutrality of the sequences?
+% Are all protein sequences identical?
+% 
+
+%% Diversification rates
+ 
+%% Role of geography/latitude
+% diversification rates
+% intra- and interspecific genetic variation
+
+%% Cladogenetic breaks
+
+%% Error rates/Exceptions?
+% oversplitting
+% underspliting
+% hybridization
+% "Exceptions may give valuable insight into the mechanisms controlling
+% variiance withing & among species" \cite{Stoeckle2014}
+
+
