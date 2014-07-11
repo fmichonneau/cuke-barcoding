@@ -27,7 +27,24 @@ reproductive isolation at a much faster pace than other marine
 phyla. Understanding the causes behind such pattern will refine our
 understanding of diversification and biodiversity among echinoderms.
 
+\section{Introduction}
+
+Barcoding studies have typically two main goals: species discovery (how does the
+barcoding data compare to the taxonomy?), and specimen identification (can the
+barcode library be used to identify a species?) \cite{Collins2013}. In this
+study we focus on describing the patterns of unrecognized diversity, and testing
+the role of latitude and phylogeny in shaping these patterns.
+
+
 \section{Materials and Methods}
+
+\subsection{Specimen identification}
+
+Most specimens were individually identified by GP, FM, Mark O'Loughlin and other
+taxonomic specialists. For most group, survey of primary literature was used to
+assign the most accurate names. This effort led to the re-discovery of taxonomic
+names that have been forgotten/never used in the literature, and names were
+resurrected from synonymies. 
 
 \subsection{Sequencing}
 
@@ -41,6 +58,22 @@ Biotechnology Research at the University of Florida. Chromatograms were
 assembled and edited using Geneious 5.5.8 \cite{Geneious558}.
 
 We kept all sequences that were more than 600 bp, 
+
+\subsection{ESU delineation}
+
+\paragraph{The local barcoding gap method} The local barcoding gap clustering
+method (LBGM) is introduced here. It identifies monophyletic clusters of
+individuals from a neighbor-joining tree (other tree reconstruction methods can
+be used). Individuals are clustered so that the maximum genetic distance between
+two individuals belonging to the same cluster is less than a set
+threshold. Since it is based on the maximum intraspecific distance, it shares
+similarity with the local barcoding graphs, where maximum intra-specific
+distance between individuals is plotted against the distance to the closest
+neighboring species (see \cite[Fig.~4 in]{Robinson2009} for an example). It
+differs as it only uses information from the tree (no need to associate species
+names with the sequences), but suffers from the caveats associated with using
+thresholds.
+
 
 
 
