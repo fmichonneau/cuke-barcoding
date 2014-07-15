@@ -23,8 +23,8 @@ data-preprocessed: ${DATA_PREPROCESSED}
 
 data-processed: ${DATA_PROCESSED}
 
-data/raw/MARBoL_Echinos_VIII_2013.csv: make/build_cukeBarcodesCSV.R ${DATA_RAW} 
-	${RSCRIPT} $<
+#data/raw/MARBoL_Echinos_VIII_2013.csv: make/build_cukeBarcodesCSV.R ${DATA_RAW} 
+#	${RSCRIPT} $<
 
 data/raw/cukeBarcodes.csv.rds: ${DATA_PREPROCESSED}
 	${RSCRIPT} -e "saveRDS(read.csv(file='$<', stringsAsFactors=FALSE), file='data/raw/cukeBarcodes.csv.rds')"
@@ -50,7 +50,7 @@ data/cukeBarcodes-flagAmb.phy: data/cukeBarcodes-flagAmb.rds
 
 data/cukeBarcodes-raxml.tre: data/cukeBarcodes-flagAmb.phy
 	${RSCRIPT} -e "library(seqManagement); raxmlPartitionCreate('$<', file.out='data/cukeBarcodes-partition', overwrite=TRUE)"
-	raxmlHPC-PTHREADS-SSE3 -s $< -m GTRGAMMA -q data/cukeBarcodes-partition -T8 -f a -p 10101 -x 10101 -# 500 -n cukeBarcodes -w tmp
+	raxmlHPC-PTHREADS-SSE3 -s $< -m GTRGAMMA -q data/cukeBarcodes-partition -T8 -f a -p 10101 -x 10101 -# 500 -n cukeBarcodes
 	cp tmp/RAxML_bipartitions.cukeBarcodes $@
 
 ### figures
