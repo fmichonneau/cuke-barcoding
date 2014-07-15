@@ -27,6 +27,34 @@ reproductive isolation at a much faster pace than other marine
 phyla. Understanding the causes behind such pattern will refine our
 understanding of diversification and biodiversity among echinoderms.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+%% Figures
+
+%% graph that shows # of lineages vs. threshold used
+%%  - use different color lines for the methods
+%%  - bPTP, GMYC, distance threshold, LBGM
+%%  - include barplot in background that shows proportion of nodes supported by
+%%  high BS for each method
+%%  - do the graph for all species, and break down by Orders
+
+%% Maps of the geographical distribution of the samples
+
+%% barplot that shows number of
+%% - named species
+%% - ESUs
+%% - ESUs represented by 1 sequence
+
+%% scatterplot of:
+%% - % divergence between cluster vs. abs(latitude)
+%% - intraspp variation vs abs(latitude)
+
+%% barplot that shows taxonomic coverage of the sampling
+%% use different colors for each taxonomic group and shade to represent
+%% percentage covered by samples 
+
+
+
 \section{Introduction}
 
 Barcoding studies have typically two main goals: species discovery (how does the

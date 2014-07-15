@@ -39,11 +39,19 @@ data/cukeBarcodes-cleaned.fas: make/build_cleanedFasta.R data/cukeBarcodes-align
 data/cukeBarcodes-flagAmb.rds: make/build_flagAmbiguities.R data/cukeBarcodes-cleaned.fas
 	${RSCRIPT} $<
 
-data/cukeTree-k2p.rds: make/build_cukeTree.k2p.rds.R data/cukeBarcodes-flagAmb.rds
-	${RSCRIPT} $<
+data/cukeTree-k2p.rds: make/build_cukeTree_nj.R data/cukeBarcodes-flagAmb.rds
+	${RSCRIPT} $< "file.in='data/cukeBarcodes-flagAmb.rds', model='K80', file.out='$@', Nrep=200"
 
-data/cukeTree-raw.rds: make/build_cukeTree.raw.rds.R data/cukeBarcodes-flagAmb.rds
-	${RSCRIPT} $<
+data/cukeTree-raw.rds: make/build_cukeTree_nj.R data/cukeBarcodes-flagAmb.rds
+	${RSCRIPT} $< "file.in='data/cukeBarcodes-flagAmb.rds', model='raw', file.out='$@', Nrep=200"
+
+data/cukeBarcodes-flagAmb.phy: data/cukeBarcodes-flagAmb.rds
+	${RSCRIPT} -e "library(ape); write.dna(readRDS('$<'), format='sequential', colw=1000, file='data/cukeBarcodes-flagAmb.phy')"
+
+data/cukeBarcodes-raxml.tre: data/cukeBarcodes-flagAmb.phy
+	${RSCRIPT} -e "library(seqManagement); raxmlPartitionCreate('$<', file.out='data/cukeBarcodes-partition', overwrite=TRUE)"
+	raxmlHPC-PTHREADS-SSE3 -s $< -m GTRGAMMA -q data/cukeBarcodes-partition -T8 -f a -p 10101 -x 10101 -# 500 -n cukeBarcodes -w tmp
+	cp tmp/RAxML_bipartitions.cukeBarcodes $@
 
 ### figures
 
