@@ -1,38 +1,4 @@
 
-library(parallel)
-library(Rcpp)
-library(microbenchmark)
-library(phylobase)
-library(lineprof)
-
-## xTr <- as(rcoal(1000), "phylo4")
-
-## lp <- lineprof(replicate(1000, descendants(xTr, 342, "all")), interval=.005)
-
-## microbenchmark(
-##     getNodeOld(xTr, c("t30", "t60", "t90", "t120")),
-##     getNode(xTr, c("t30", "t60", "t90", "t120")),
-##     getNodeOld(xTr, "t100"),
-##     getNode(xTr, "t100"),
-##     getNodeOld(xTr, 1:10),
-##     getNode(xTr, 1:10),
-##     getNodeOld(xTr, type="all"),
-##     getNode(xTr, type="all")
-##     )
-
-## microbenchmark(
-##     nodeId(xTr, "tip"),
-##     nodeIdCpp(xTr, "tip"),
-##     nodeId(xTr, "all"),
-##     nodeIdCpp(xTr, "all"),
-##     nodeId(xTr, "internal"),
-##     nodeIdCpp(xTr, "internal"),
-##     nodeId(xTr, "root"),
-##     nodeIdCpp(xTr, "root")
-##     )
-
-
-
 distFromTip <- function(tr, node, trPost, parallel=TRUE) {
 ### trying to use Rcpp to do the intersect doesn't make it faster
     if (missing(trPost)) {
