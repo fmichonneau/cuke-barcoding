@@ -1,4 +1,5 @@
 
+library(methods)
 library(ape)
 library(phylobase)
 library(doMC)
@@ -6,9 +7,11 @@ registerDoMC()
 
 source("R/findGroups.R")
 
+phylobase.options(allow.duplicated.labels="ok")
+
 cuke_findGroups <- function(tree, threshold=0.015) {
-    if (! require(ape) && require(phylobase) &&
-        require(doMC)) {
+    if (! (require(ape) && require(phylobase) &&
+        require(doMC))) {
         stop("problem")
     }
 
