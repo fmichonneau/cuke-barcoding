@@ -1,0 +1,1 @@
+ python bPTP.py -t ~/Documents/CukeBarcoding/data/raxml/RAxML_bestTree.cukeBarcodes -r -o bPTP_fullTree -s 10101

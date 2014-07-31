@@ -1,24 +1,45 @@
 
+### ---- find-group-full-tree ----
+library(ape)
+library(phylobase)
+library(doMC)
+registerDoMC()
+source("R/findGroups.R")
+phylobase.options(allow.duplicated.labels="ok")
 
+## based on tree calculated from raw distances
+treeH <- readRDS(file="data/cukeTree-raw.rds")
 
-### --------   Prepare RAxML alignment
-seqHolClean <- cleanSeqLabels(seqHol)
-write.dna(seqHolClean, file=paste("RAxML_run/", format(Sys.time(), "%Y%m%d"), "allcukes.phy", sep=""),
-          colsep="", colw=10000)
-          
+treeH$edge.length[treeH$edge.length < 0] <- 1e-6
+treeHr <- ape::root(treeH, 1, resolve.root=TRUE)
+treeH4 <- as(treeHr, "phylo4")
+bs <- nodeLabels(treeH4)
+is.na(bs[as.character(rootNode(treeH4))]) <- TRUE
+bs <- data.frame(bs, stringsAsFactors=FALSE)
+bs$bs <- as.numeric(bs$bs)
+treeH4 <- phylo4d(treeH4, node.data=bs)
+treeH4 <- removeNodeLabels(treeH4)
 
-### ---------  Make tree for everything  
-treH <- nj(dist.dna(seqHol))
+treeHgr <- findGroups(treeH4, experimental=FALSE, parallel=TRUE)
 
-pdf(file="allHolothuroids-withstops.pdf", height=350, bg="white", fg="black", width=50)
-plot(treH, no.margin=TRUE, cex=.8)
-dev.off()
+saveRDS(treeHgr, file="data/cukeTree-raw-withGroups.rds")
 
-treH$edge.length[treH$edge.length < 0] <- 1e-6
-treHr <- root(treH, 1, resolve.root=TRUE)
-treH4 <- as(treHr, "phylo4")
+## based on tree calculated with K2P distances
+treeHk2p <- readRDS(file="data/cukeTree-k2p.rds")
 
-treHgr <- findGroups(treH4, experimental=FALSE, parallel=TRUE)
+treeHk2p$edge.length[treeHk2p$edge.length < 0] <- 1e-6
+treeHk2pr <- ape::root(treeHk2p, 1, resolve.root=TRUE)
+treeHk2p4 <- as(treeHk2pr, "phylo4")
+bs <- nodeLabels(treeHk2p4)
+is.na(bs[as.character(rootNode(treeHk2p4))]) <- TRUE
+bs <- data.frame(bs, stringsAsFactors=FALSE)
+bs$bs <- as.numeric(bs$bs)
+treeHk2p4 <- phylo4d(treeHk2p4, node.data=bs)
+treeHk2p4 <- removeNodeLabels(treeHk2p4)
+
+treHk2pgr <- findGroups(treeHk2p4, experimental=FALSE, parallel=TRUE)
+
+saveRDS(treHgr, file="data/cukeTree-k2p-withGroups.rds")
 
 ### ---------  Make trees for each family
 ## Get the families
