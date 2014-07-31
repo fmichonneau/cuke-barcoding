@@ -50,5 +50,6 @@ for (j in 1:length(inputFiles)) {
     for (i in 1:length(thresVec)) {
         treeRawTmp <- cuke_findGroups(tree=treeTmp, threshold=thresVec[i])
         saveRDS(treeRawTmp, file=outputFiles[i])
+        rm(treeRawTmp)
     }
 }
