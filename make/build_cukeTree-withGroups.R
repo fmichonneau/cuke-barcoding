@@ -6,6 +6,7 @@ library(doMC)
 registerDoMC()
 
 source("R/findGroups.R")
+source("R/removeNodeLabels.R")
 
 phylobase.options(allow.duplicated.labels="ok")
 
