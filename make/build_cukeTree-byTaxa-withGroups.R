@@ -47,8 +47,9 @@ thresVec <- c(seq(1, 5, by=.5), 6:8)/200
 cukeDB <- readRDS(file="data/cukeDB_withLabels.rds")
 uniqOrder <- unique(cukeDB$order)
 uniqFamily <- unique(cukeDB$family)
-uniqFamily <- uniqFamily[! uniqFamily %in% c("?", "Uncertain")]
+uniqFamily <- uniqFamily[! uniqFamily %in% c("Dactylochirotida", "?", "Uncertain")]
 uniqTaxa <- c(uniqOrder, uniqFamily)
+stopifnot(! any(duplicated(uniqTaxa)))
 overwrite <- FALSE
 
 for (j in 1:length(inputFiles)) {
@@ -68,7 +69,8 @@ for (j in 1:length(inputFiles)) {
             if (!file.exists(outputFiles[i]) || overwrite) {
                 stopifnot(all(toKeep %in% tipLabels(treeTmp)) || all(!is.na(toKeep)))
                 treeTmpSub <- subset(treeTmp, tips.include=toKeep)
-                treeTmpGrp <- findGroups(treeTmpSub, threshold=thresVec[i], experimental=FALSE, parallel=TRUE)
+                treeTmpGrp <- findGroups(treeTmpSub, threshold=thresVec[i],
+                                         experimental=FALSE, parallel=TRUE)
                 saveRDS(treeTmpGrp, file=outputFiles[i])
             }  else {
                 message(outputFiles[i], " already exists.")
