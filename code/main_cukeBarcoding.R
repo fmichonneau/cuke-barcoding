@@ -99,6 +99,10 @@ treeGrpsFiles <- list.files(pattern="cukeTree-.+-\\d+\\.rds$",
 
 treeGrps <- lapply(treeGrpsFiles, readRDS)
 nGrpsVec <- sapply(treeGrps, function(tr) max(tdata(tr, "tip")$Groups))
+pSnglVec <- sapply(treeGrps, function(tr) {
+    tabGrp <- table(tdata(tr, "tip")$Groups) == 1
+    sum(tabGrp)/length(tabGrp)
+})
 
 factStr <- lapply(treeGrpsFiles, function(x) {
     tmpStr <- gsub("^data/", "", x)
@@ -113,15 +117,11 @@ factDf <- do.call("rbind", factStr)
 factDf$threshold <- as.numeric(gsub("^0", "0.", factDf$threshold))
 factDf$threshold <- factDf$threshold*2
 
-nGrpsDf <- cbind(factDf, nGrps=nGrpsVec)
+nGrpsDf <- cbind(factDf, nGrps=nGrpsVec, pSngl=nSnglVec)
 nGrpsDf <- merge(nGrpsDf, taxonomyDf, all.x=TRUE)
 nGrpsDf$taxa <- factor(nGrpsDf$taxa)
 nGrpsDf$distance <- factor(nGrpsDf$distance)
 nGrpsDf$method <- "Clusters"
-
-ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
-              aes(x=threshold, y=nGrps, colour=interaction(distance, method), shape=distance)) + geom_line() +
-    geom_point() + facet_wrap( ~ taxa)
 
 
 ### ---- pairwise-groups ----
@@ -138,6 +138,13 @@ pairwiseGrps <- function(d, threshold) {
     c(split(V(g)$name, clusters(g)$membership), iGrp[sngl])
 }
 
+getPropSngl <- function(pairwiseGrp) {
+    sapply(pairwiseGrpRawAll, function(x) {
+        tt <- sapply(x, length)
+        sum(tt == 1)/length(tt)
+    })
+}
+
 thresVec <- c(seq(1, 5, by=.5), 6:8)/100
 cukeDB <- readRDS(file="data/cukeDB_withLabels.rds")
 aspLbl <- subset(cukeDB, order == "Aspidochirotida")$Labels_withAmb
@@ -151,14 +158,14 @@ stopifnot(! any(is.na(match(aspLbl, dimnames(cukeAlg)[[1]]))))
 stopifnot(! any(is.na(match(holLbl, dimnames(cukeAlg)[[1]]))))
 cukeDistRawAll <- dist.dna(cukeAlg, model="raw", as.matrix=TRUE)
 cukeDistK2pAll <- dist.dna(cukeAlg, model="K80", as.matrix=TRUE)
-cukeDistRawAsp <- dist.dna(cukeAlg[match(aspLbl, dimnames(cukeAlg)[[1]]), ], model="raw",
-                           as.matrix=TRUE)
-cukeDistK2pAsp <- dist.dna(cukeAlg[match(aspLbl, dimnames(cukeAlg)[[1]]), ], model="K80",
-                           as.matrix=TRUE)
-cukeDistRawHol <- dist.dna(cukeAlg[match(holLbl, dimnames(cukeAlg)[[1]]), ], model="raw",
-                           as.matrix=TRUE)
-cukeDistK2pHol <- dist.dna(cukeAlg[match(holLbl, dimnames(cukeAlg)[[1]]), ], model="K80",
-                           as.matrix=TRUE)
+cukeDistRawAsp <- dist.dna(cukeAlg[match(aspLbl, dimnames(cukeAlg)[[1]]), ],
+                           model="raw", as.matrix=TRUE)
+cukeDistK2pAsp <- dist.dna(cukeAlg[match(aspLbl, dimnames(cukeAlg)[[1]]), ],
+                           model="K80", as.matrix=TRUE)
+cukeDistRawHol <- dist.dna(cukeAlg[match(holLbl, dimnames(cukeAlg)[[1]]), ],
+                           model="raw", as.matrix=TRUE)
+cukeDistK2pHol <- dist.dna(cukeAlg[match(holLbl, dimnames(cukeAlg)[[1]]), ],
+                           model="K80", as.matrix=TRUE)
 
 pairwiseGrpRawAll <- lapply(thresVec, function(thres) pairwiseGrps(cukeDistRawAll, thres))
 pairwiseGrpK2pAll <- lapply(thresVec, function(thres) pairwiseGrps(cukeDistK2pAll, thres))
@@ -174,27 +181,41 @@ nGrpsPairwiseK2pAsp <- sapply(pairwiseGrpK2pAsp, length)
 nGrpsPairwiseRawHol <- sapply(pairwiseGrpRawHol, length)
 nGrpsPairwiseK2pHol <- sapply(pairwiseGrpK2pHol, length)
 
+pSnglPairwiseRawAll <- sapply(pairwiseGrpRawAll, getPropSngl)
+pSnglPairwiseK2pAll <- sapply(pairwiseGrpK2pAll, getPropSngl)
+pSnglPairwiseRawAsp <- sapply(pairwiseGrpRawAsp, getPropSngl)
+pSnglPairwiseK2pAsp <- sapply(pairwiseGrpK2pAsp, getPropSngl)
+pSnglPairwiseRawHol <- sapply(pairwiseGrpRawHol, getPropSngl)
+pSnglPairwiseK2pHol <- sapply(pairwiseGrpK2pHol, getPropSngl)
+
 nGrpsPairwiseDf <- data.frame(taxa=c(rep("all", length(thresVec) * 2),
-                     rep("Aspidochirotida", length(thresVec) * 2),
-                     rep("Holothuriidae", length(thresVec) * 2)),
-                 distance=rep(c(rep("raw", length(thresVec)),
-                     rep("k2p", length(thresVec))), 3),
-                 threshold=rep(thresVec, 6),
-                 nGrps=c(nGrpsPairwiseRawAll, nGrpsPairwiseK2pAll,
-                     nGrpsPairwiseRawAsp, nGrpsPairwiseK2pAsp,
-                     nGrpsPairwiseRawHol, nGrpsPairwiseK2pHol),
-                 rank=c(rep("Order", length(thresVec) * 2),
-                     rep("Order", length(thresVec) * 2),
-                     rep("Family", length(thresVec) * 2)))
+                                  rep("Aspidochirotida", length(thresVec) * 2),
+                                  rep("Holothuriidae", length(thresVec) * 2)),
+                              distance=rep(c(rep("raw", length(thresVec)),
+                                  rep("k2p", length(thresVec))), 3),
+                              threshold=rep(thresVec, 6),
+                              nGrps=c(nGrpsPairwiseRawAll, nGrpsPairwiseK2pAll,
+                                  nGrpsPairwiseRawAsp, nGrpsPairwiseK2pAsp,
+                                  nGrpsPairwiseRawHol, nGrpsPairwiseK2pHol),
+                              pSngl=c(pSnglPairwiseRawAll, pSnglPairwiseK2pAll,
+                                  pSnglPairwiseRawAsp, pSnglPairwiseK2pAsp,
+                                  pSnglPairwiseRawHol, pSnglPairwiseK2pHol),
+                              rank=c(rep("Order", length(thresVec) * 2),
+                                  rep("Order", length(thresVec) * 2),
+                                  rep("Family", length(thresVec) * 2)))
 nGrpsPairwiseDf$method <- "Pairwise"
 
 nGrpsDf <- rbind(nGrpsDf, nGrpsPairwiseDf)
 
-imp <- sapply(pairwiseGrpRaw[[5]], function(x) length(grep("impatiens", x)) > 0)
-impGrp <- pairwiseGrpRaw[[5]][imp]
 
-impGrDt <- tdata(treeGrps[[4]], "tip")[, "Groups", drop=FALSE]
-impGr <- impGrDt[grep("impatiens", rownames(impGrDt)),, drop=FALSE]
+ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
+              aes(x=threshold, y=nGrps, colour=interaction(distance, method), shape=distance)) + geom_line() +
+    geom_point() + facet_wrap( ~ taxa)
+
+ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
+              aes(x=threshold, y=pSngl, colour=interaction(distance, method), shape=distance)) + geom_line() +
+    geom_point() + facet_wrap( ~ taxa)
+
 
 ### ----- compare-genetic-geo-distances ----
 source("R/CalcGeoDist.R")
