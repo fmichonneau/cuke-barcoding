@@ -138,6 +138,33 @@ pairwiseGrps <- function(d, threshold) {
     c(split(V(g)$name, clusters(g)$membership), iGrp[sngl])
 }
 
+getPairwiseGrp <- function(alg=cukeAlg, model=c("raw", "K80"),
+                           db=cukeDB,
+                           taxonomySubset, threshold=thresVec,
+                           taxonomyData=taxonomyDf) {
+    model <- match.arg(model)
+    if (missing(taxonomySubset))
+        distAlg <- ape::dist.dna(alg, model=model, as.matrix=TRUE)
+    else {
+        taxLvl <- taxonomyData[taxonomyData$taxa == taxonomySubset, "rank"]
+        if (length(taxLvl) > 1)
+            stop("Something is wrong with this taxonomic name.")
+        if (taxLvl == "Order") {
+            distLbl <- subset(db, order == taxonomySubset)$Labels_withAmb
+
+        } else if (taxLvl == "Family") {
+            distLbl <- subset(db, family == taxonomySubset)$Labels_withAmb
+
+        }
+        else stop("Houston, we have a problem.")
+        distLbl <- gsub("\\\"", "", distLbl)
+        indexLbl <- match(distLbl, dimnames(alg)[[1]])
+        stopifnot(! any(is.na(indexLbl)))
+        distAlg <- dist.dna(alg[indexLbl, ], model=model, as.matrix=TRUE)
+    }
+    lapply(threshold, function(thres) pairwiseGrps(distAlg, thres))
+}
+
 getPropSngl <- function(pairwiseGrp) {
     sapply(pairwiseGrpRawAll, function(x) {
         tt <- sapply(x, length)
