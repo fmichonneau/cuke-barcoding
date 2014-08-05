@@ -52,6 +52,11 @@ uniqTaxa <- c(uniqOrder, uniqFamily)
 stopifnot(! any(duplicated(uniqTaxa)))
 overwrite <- FALSE
 
+taxonomyDf <- data.frame(rank = c(rep("Order", length(uniqOrder) + 1),
+                             rep("Family", length(uniqFamily))),
+                         taxa = c("all", uniqOrder, uniqFamily))
+saveRDS(taxonomyDf, file="data/taxonomyDf.rds")
+
 for (j in 1:length(inputFiles)) {
     treeTmp <- readRDS(file=inputFiles[j])
     

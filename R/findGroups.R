@@ -1,5 +1,5 @@
 
-distFromTip <- function(tr, node, trPost, parallel=TRUE) {
+distFromTip <- function(tr, node, trPost, parallel=TRUE, cores=8) {
 ### trying to use Rcpp to do the intersect doesn't make it faster
     if (missing(trPost)) {
         trPost <- reorder(tr, order="postorder")
@@ -10,7 +10,7 @@ distFromTip <- function(tr, node, trPost, parallel=TRUE) {
         tmpD <- mclapply(lDesc, function(x) {
             pth <- intersect(allDesc, ancestors(trPost, x, type="ALL"))
             sumEdgeLength(tr, pth)
-        }, mc.cores=7)
+        }, mc.cores=cores)
     }
     else {
         tmpD <- lapply(lDesc, function(x) {
