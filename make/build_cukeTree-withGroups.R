@@ -1,9 +1,4 @@
 
-library(methods)
-library(ape)
-library(phylobase)
-library(doMC)
-registerDoMC()
 
 source("R/findGroups.R")
 source("R/removeNodeLabels.R")

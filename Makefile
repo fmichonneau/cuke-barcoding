@@ -2,13 +2,18 @@
 RSCRIPT = Rscript
 
 ### Manuscript
-all: cuke-barcoding.tex clean-partial
+all: cuke-barcoding.tex cuke-barcoding_nourl.bib clean-partial
 	-xelatex -interaction=nonstopmode "\input" cuke-barcoding.tex
+	-bibtex cuke-barcoding
 	-xelatex -interaction=nonstopmode "\input" cuke-barcoding.tex
 	xelatex -interaction=nonstopmode "\input" cuke-barcoding.tex
 
 cuke-barcoding.tex: cuke-barcoding.Rnw code/cuke-barcoding.R
 	${RSCRIPT} -e "library(knitr); knit('cuke-barcoding.Rnw')"
+
+cuke-barcoding_nourl.bib: cuke-barcoding.Rnw
+	-cp ~/Library/Barcoding.bib cuke-barcoding.bib
+	${RSCRIPT} parseURLs.R
 
 clean-partial:
 	-rm *.bbl
@@ -36,7 +41,7 @@ data/cukeBarcodes-aligned.fas: make/build_alignedFasta.R data/raw/cukeBarcodes.c
 data/cukeBarcodes-cleaned.fas: make/build_cleanedFasta.R data/cukeBarcodes-aligned.fas
 	${RSCRIPT} $<
 
-data/cukeBarcodes-flagAmb.rds: make/build_flagAmbiguities.R data/cukeBarcodes-cleaned.fas
+data/cukeBarcodes-flagAmb.rds: make/cukeBarcodes-flagAmb.rds.R data/cukeBarcodes-cleaned.fas
 	${RSCRIPT} $<
 
 data/cukeTree-k2p.rds: make/build_cukeTree_nj.R data/cukeBarcodes-flagAmb.rds

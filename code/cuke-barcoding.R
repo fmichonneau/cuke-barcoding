@@ -1,9 +1,5 @@
 ### ---- load-packages ---
-library(ape)
-library(phylobase)
-library(ggplot2)
-library(igraph)
-
+source("R/packages.R")
 
 ### ---- find-group-full-tree ----
 ## library(ape)
@@ -74,32 +70,13 @@ for (i in 1:length(thres)) {
     res[[i]]$species <- unlist(sppPP)
 }
     
-### ---- add-labels-to-database ----
-treeH <- readRDS("data/cukeTree-raw-withGroups.rds")
 
-source("R/genFasta.R")
-echinoDB <- readRDS("data/raw/cukeBarcodes.csv.rds")
-cukeDB <- subset(echinoDB, class_ == "Holothuroidea")
 
-dataLbls <- character(nrow(cukeDB))
-for (i in 1:nrow(cukeDB)) {
-    dataLbls[i] <- genLabel(cukeDB[i, ])
-}
-
-## using the same pattern as in seqManagement::cleanSeqLabels
-cukeDB$Labels <- gsub(":|,|\\(|\\)|;|\\[|\\]|\\'|\\s|\t", "", dataLbls)
-
-treeTips <- data.frame(Labels_withAmb = tipLabels(treeH),
-                       Labels = gsub("_\\d+amb$", "", tipLabels(treeH)),
-                       stringsAsFactors=FALSE)
-
-stopifnot(all(treeTips$treeLabels %in% cukeDB$Labels))
-
-cukeDB_lbls <- merge(cukeDB, treeTips, by="Labels")
-saveRDS(cukeDB_lbls, "data/cukeDB_withLabels.rds")
+### ---- init-groups-data ----
+taxonomyDf <- readRDS(file="data/taxonomyDf.rds")
+source("R/build_cukeTree-byTaxa-withGroups.R")
 
 ### ---- cluster-groups-data ----
-taxonomyDf <- readRDS(file="data/taxonomyDf.rds")
 treeGrpsFiles <- list.files(pattern="cukeTree-.+-\\d+\\.rds$",
                             path="data", full.names=TRUE)
 
@@ -123,12 +100,11 @@ factDf <- do.call("rbind", factStr)
 factDf$threshold <- as.numeric(gsub("^0", "0.", factDf$threshold))
 factDf$threshold <- factDf$threshold*2
 
-nGrpsClustersDf <- cbind(factDf, nGrps=nGrpsVec, pSngl=nSnglVec)
+nGrpsClustersDf <- cbind(factDf, nGrps=nGrpsVec, pSngl=pSnglVec)
 nGrpsClustersDf <- merge(nGrpsClustersDf, taxonomyDf, all.x=TRUE)
 nGrpsClustersDf$taxa <- factor(nGrpsClustersDf$taxa)
 nGrpsClustersDf$distance <- factor(nGrpsClustersDf$distance)
 nGrpsClustersDf$method <- "Clusters"
-
 
 ### ---- pairwise-groups-data ----
 source("R/pairwise-groups-functions.R")
@@ -164,7 +140,7 @@ nGrpsPairwiseDf$method <- "Pairwise"
 nGrpsPairwiseDf <- merge(nGrpsPairwiseDf, taxonomyDf)
 
 
-### --- nGrps-groups-comparison-plot ----
+### ---- nGrps-groups-comparison-plot ----
 nGrpsDf <- rbind(nGrpsClustersDf, nGrpsPairwiseDf)
 levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "K80"] <- "K2P"
 levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "k2p"] <- "K2P"
