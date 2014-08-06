@@ -117,11 +117,11 @@ factDf <- do.call("rbind", factStr)
 factDf$threshold <- as.numeric(gsub("^0", "0.", factDf$threshold))
 factDf$threshold <- factDf$threshold*2
 
-nGrpsDf <- cbind(factDf, nGrps=nGrpsVec, pSngl=nSnglVec)
-nGrpsDf <- merge(nGrpsDf, taxonomyDf, all.x=TRUE)
-nGrpsDf$taxa <- factor(nGrpsDf$taxa)
-nGrpsDf$distance <- factor(nGrpsDf$distance)
-nGrpsDf$method <- "Clusters"
+nGrpsClustersDf <- cbind(factDf, nGrps=nGrpsVec, pSngl=nSnglVec)
+nGrpsClustersDf <- merge(nGrpsClustersDf, taxonomyDf, all.x=TRUE)
+nGrpsClustersDf$taxa <- factor(nGrpsClustersDf$taxa)
+nGrpsClustersDf$distance <- factor(nGrpsClustersDf$distance)
+nGrpsClustersDf$method <- "Clusters"
 
 
 ### ---- pairwise-groups ----
@@ -143,7 +143,7 @@ getPairwiseGrp <- function(alg=cukeAlg, model=c("raw", "K80"),
                            taxonomySubset, threshold=thresVec,
                            taxonomyData=taxonomyDf) {
     model <- match.arg(model)
-    if (missing(taxonomySubset))
+    if (missing(taxonomySubset) || taxonomySubset == "all")
         distAlg <- ape::dist.dna(alg, model=model, as.matrix=TRUE)
     else {
         taxLvl <- taxonomyData[taxonomyData$taxa == taxonomySubset, "rank"]
@@ -160,6 +160,7 @@ getPairwiseGrp <- function(alg=cukeAlg, model=c("raw", "K80"),
         distLbl <- gsub("\\\"", "", distLbl)
         indexLbl <- match(distLbl, dimnames(alg)[[1]])
         stopifnot(! any(is.na(indexLbl)))
+        stopifnot(length(indexLbl) > 3)
         distAlg <- dist.dna(alg[indexLbl, ], model=model, as.matrix=TRUE)
     }
     lapply(threshold, function(thres) pairwiseGrps(distAlg, thres))
@@ -174,68 +175,45 @@ getPropSngl <- function(pairwiseGrp) {
 
 thresVec <- c(seq(1, 5, by=.5), 6:8)/100
 cukeDB <- readRDS(file="data/cukeDB_withLabels.rds")
-aspLbl <- subset(cukeDB, order == "Aspidochirotida")$Labels_withAmb
-holLbl <- subset(cukeDB, family == "Holothuriidae")$Labels_withAmb
-aspLbl <- gsub("\\\"", "", aspLbl)
-holLbl <- gsub("\\\"", "", holLbl)
 
 cukeAlg <- ape::read.dna(file="data/cukeBarcodes-flagAmb.phy", format="seq")
 dimnames(cukeAlg)[[1]] <- gsub("\\\"", "", dimnames(cukeAlg)[[1]])
-stopifnot(! any(is.na(match(aspLbl, dimnames(cukeAlg)[[1]]))))
-stopifnot(! any(is.na(match(holLbl, dimnames(cukeAlg)[[1]]))))
-cukeDistRawAll <- dist.dna(cukeAlg, model="raw", as.matrix=TRUE)
-cukeDistK2pAll <- dist.dna(cukeAlg, model="K80", as.matrix=TRUE)
-cukeDistRawAsp <- dist.dna(cukeAlg[match(aspLbl, dimnames(cukeAlg)[[1]]), ],
-                           model="raw", as.matrix=TRUE)
-cukeDistK2pAsp <- dist.dna(cukeAlg[match(aspLbl, dimnames(cukeAlg)[[1]]), ],
-                           model="K80", as.matrix=TRUE)
-cukeDistRawHol <- dist.dna(cukeAlg[match(holLbl, dimnames(cukeAlg)[[1]]), ],
-                           model="raw", as.matrix=TRUE)
-cukeDistK2pHol <- dist.dna(cukeAlg[match(holLbl, dimnames(cukeAlg)[[1]]), ],
-                           model="K80", as.matrix=TRUE)
 
-pairwiseGrpRawAll <- lapply(thresVec, function(thres) pairwiseGrps(cukeDistRawAll, thres))
-pairwiseGrpK2pAll <- lapply(thresVec, function(thres) pairwiseGrps(cukeDistK2pAll, thres))
-pairwiseGrpRawAsp <- lapply(thresVec, function(thres) pairwiseGrps(cukeDistRawAsp, thres))
-pairwiseGrpK2pAsp <- lapply(thresVec, function(thres) pairwiseGrps(cukeDistK2pAsp, thres))
-pairwiseGrpRawHol <- lapply(thresVec, function(thres) pairwiseGrps(cukeDistRawHol, thres))
-pairwiseGrpK2pHol <- lapply(thresVec, function(thres) pairwiseGrps(cukeDistK2pHol, thres))
+pairwiseGrpMdl <- c("raw", "K80")
+pairwiseGrpTax <- c("all", "Aspidochirotida", "Holothuriidae", "Apodida", "Dendrochirotida")
+pairwiseGrpFactors <- expand.grid(threshold=thresVec, taxa=pairwiseGrpTax, distance=pairwiseGrpMdl)
+pairwiseGrpFactors <- merge(pairwiseGrpFactors, taxonomyDf)
 
-nGrpsPairwiseRawAll <- sapply(pairwiseGrpRawAll, length)
-nGrpsPairwiseK2pAll <- sapply(pairwiseGrpK2pAll, length)
-nGrpsPairwiseRawAsp <- sapply(pairwiseGrpRawAsp, length)
-nGrpsPairwiseK2pAsp <- sapply(pairwiseGrpK2pAsp, length)
-nGrpsPairwiseRawHol <- sapply(pairwiseGrpRawHol, length)
-nGrpsPairwiseK2pHol <- sapply(pairwiseGrpK2pHol, length)
+getPairwiseGrpRes <- function() {
+    pairwiseGrpRes <- vector("list", length(pairwiseGrpMdl) * length(pairwiseGrpTax))
+    nmGrpRes <- character(length(pairwiseGrpMdl) * length(pairwiseGrpTax))
+    i <- 1
+    for (eachMdl in 1:length(pairwiseGrpMdl)) {
+        for (eachTax in 1:length(pairwiseGrpTax)) {
+            pairwiseGrpRes[[i]] <- getPairwiseGrp(model=pairwiseGrpMdl[eachMdl],
+                                                  taxonomySubset=pairwiseGrpTax[eachTax])
+            nmGrpRes[i] <- paste(pairwiseGrpMdl[eachMdl], pairwiseGrpTax[eachTax], sep="-")
+            i <- i + 1
+        }
+    }
+    names(pairwiseGrpRes) <- nmGrpRes
+    pairwiseGrpRes
+}
 
-pSnglPairwiseRawAll <- sapply(pairwiseGrpRawAll, getPropSngl)
-pSnglPairwiseK2pAll <- sapply(pairwiseGrpK2pAll, getPropSngl)
-pSnglPairwiseRawAsp <- sapply(pairwiseGrpRawAsp, getPropSngl)
-pSnglPairwiseK2pAsp <- sapply(pairwiseGrpK2pAsp, getPropSngl)
-pSnglPairwiseRawHol <- sapply(pairwiseGrpRawHol, getPropSngl)
-pSnglPairwiseK2pHol <- sapply(pairwiseGrpK2pHol, getPropSngl)
+pairwiseGrpRes <- getPairwiseGrpRes()
+saveRDS(pairwiseGrpRes, file="data/pairwiseGrpRes.rds")
 
-nGrpsPairwiseDf <- data.frame(taxa=c(rep("all", length(thresVec) * 2),
-                                  rep("Aspidochirotida", length(thresVec) * 2),
-                                  rep("Holothuriidae", length(thresVec) * 2)),
-                              distance=rep(c(rep("raw", length(thresVec)),
-                                  rep("k2p", length(thresVec))), 3),
-                              threshold=rep(thresVec, 6),
-                              nGrps=c(nGrpsPairwiseRawAll, nGrpsPairwiseK2pAll,
-                                  nGrpsPairwiseRawAsp, nGrpsPairwiseK2pAsp,
-                                  nGrpsPairwiseRawHol, nGrpsPairwiseK2pHol),
-                              pSngl=c(pSnglPairwiseRawAll, pSnglPairwiseK2pAll,
-                                  pSnglPairwiseRawAsp, pSnglPairwiseK2pAsp,
-                                  pSnglPairwiseRawHol, pSnglPairwiseK2pHol),
-                              rank=c(rep("Order", length(thresVec) * 2),
-                                  rep("Order", length(thresVec) * 2),
-                                  rep("Family", length(thresVec) * 2)))
+nGrpsPairwise <- lapply(pairwiseGrpRes, function(x) sapply(x, length))
+pSnglPairwise <- lapply(pairwiseGrpRes, function(x) sapply(x, getPropSngl))
+
+nGrpsPairwiseDf <- data.frame(pairwiseGrpFactors, nGrps=unlist(nGrpsPairwise),
+                              pSngl=unlist(pSnglPairwise))
 nGrpsPairwiseDf$method <- "Pairwise"
 
-nGrpsDf <- rbind(nGrpsDf, nGrpsPairwiseDf)
+nGrpsDf <- rbind(nGrpsClustersDf, nGrpsPairwiseDf)
 
 
-ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
+ggplot(nGrpsDf,
               aes(x=threshold, y=nGrps, colour=interaction(distance, method), shape=distance)) + geom_line() +
     geom_point() + facet_wrap( ~ taxa)
 
