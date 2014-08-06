@@ -2,6 +2,7 @@
 cuke-barcoding.tex
 cuke-barcoding.pdf
 tmp/
+cache/
 *~
 .~lock*
 .#*
