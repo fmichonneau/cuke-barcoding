@@ -1,6 +1,26 @@
 
 RSCRIPT = Rscript
 
+### Manuscript
+all: cuke-barcoding.tex clean-partial
+	-xelatex -interaction=nonstopmode "\input" cuke-barcoding.tex
+	-xelatex -interaction=nonstopmode "\input" cuke-barcoding.tex
+	xelatex -interaction=nonstopmode "\input" cuke-barcoding.tex
+
+cuke-barcoding.tex: cuke-barcoding.Rnw code/cuke-barcoding.R
+	${RSCRIPT} -e "library(knitr); knit('cuke-barcoding.Rnw')"
+
+clean-partial:
+	-rm *.bbl
+	-rm *.blg
+	-rm *.aux
+	-rm *.log
+	-rm *~
+
+clean: clean-partial
+	-rm impatiens_phylogeography.pdf
+	-rm impatiens_phylogeography.tex
+
 ### Data preparation
 
 #data/raw/MARBoL_Echinos_VIII_2013.csv: make/build_cukeBarcodesCSV.R data/raw/MARBoL_Echinos_VIII_2013.xlsx
@@ -32,6 +52,8 @@ data/cukeBarcodes-raxml.tre: data/cukeBarcodes-flagAmb.phy
 	${RSCRIPT} -e "library(seqManagement); raxmlPartitionCreate('$<', file.out='data/cukeBarcodes-partition', overwrite=TRUE)"
 	raxmlHPC-PTHREADS-SSE3 -s $< -m GTRGAMMA -q data/cukeBarcodes-partition -T8 -f a -p 10101 -x 10101 -# 500 -n cukeBarcodes
 	cp tmp/RAxML_bipartitions.cukeBarcodes $@
+
+
 
 ### figures
 

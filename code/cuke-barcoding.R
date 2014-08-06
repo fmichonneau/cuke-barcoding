@@ -1,3 +1,9 @@
+### ---- load-packages ---
+library(ape)
+library(phylobase)
+library(ggplot2)
+library(igraph)
+
 
 ### ---- find-group-full-tree ----
 ## library(ape)
@@ -45,11 +51,6 @@
 source("make/build_cukeTree-withGroups.R")
 source("make/build_cukeTree-byTaxa-withGroups.R")
 
-### ---- init-barcoding ---
-library(ape)
-library(phylobase)
-library(ggplot2)
-library(igraph)
 
 ### ---- summary-bPTP-results ----
 resPTP <- readLines("data/bPTP/bPTP_fullTree.PTPPartitonSummary.txt")
@@ -148,9 +149,9 @@ pairwiseGrpRes <- readRDS(file="data/pairwiseGrpRes.rds")
 pairwiseGrpFactors <- rep(names(pairwiseGrpRes), each=length(thresVec))
 pairwiseGrpFactors <- strsplit(pairwiseGrpFactors, "-")
 pairwiseGrpFactors <- do.call("rbind", pairwiseGrpFactors)
-pairwiseGrpFactors <- data.frame(distance=pairwiseGrpFactors[, 1], taxa=pairwiseGrpFactors[, 2],
+pairwiseGrpFactors <- data.frame(distance=pairwiseGrpFactors[, 1],
+                                 taxa=pairwiseGrpFactors[, 2],
                                  threshold=rep(thresVec, length(getPairwiseGrpRes)))
-
 
 nGrpsPairwise <- lapply(pairwiseGrpRes, function(x) sapply(x, length))
 pSnglPairwise <- lapply(pairwiseGrpRes, function(x) sapply(x, getPropSngl))
@@ -163,15 +164,26 @@ nGrpsPairwiseDf$method <- "Pairwise"
 nGrpsPairwiseDf <- merge(nGrpsPairwiseDf, taxonomyDf)
 
 
-### --- groups-comparison-plot ----
+### --- nGrps-groups-comparison-plot ----
 nGrpsDf <- rbind(nGrpsClustersDf, nGrpsPairwiseDf)
+levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "K80"] <- "K2P"
+levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "k2p"] <- "K2P"
 
-ggplot(subset(nGrpsDf, taxa %in% c("all", "Aspidochirotida", "Dendrochirotida", "Apodida", "Holothuriidae", "Elasipodida")),
-              aes(x=threshold, y=nGrps, colour=interaction(distance, method), shape=distance)) + geom_line() +
-    geom_point() + facet_wrap( ~ taxa)
+tmpDt <- subset(nGrpsDf, taxa %in% c("all", "Aspidochirotida", "Holothuriidae"))
+ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
+                  shape=interaction(distance, method))) + geom_line() + geom_point() +
+    facet_wrap( ~ taxa)
+
+tmpDt <- subset(nGrpsDf, taxa %in% c("Dendrochirotida", "Apodida", "Elasipodida"))
+ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
+                  shape=interaction(distance, method))) + geom_line() + geom_point() +
+    facet_wrap( ~ taxa)
+
+### ---- pSngl-groups-comparison-plot ----
 
 ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
-              aes(x=threshold, y=pSngl, colour=interaction(distance, method), shape=distance)) + geom_line() +
+              aes(x=threshold, y=pSngl, colour=interaction(distance, method),
+                  shape=interaction(distance, method))) + geom_line() +
     geom_point() + facet_wrap( ~ taxa)
 
 
