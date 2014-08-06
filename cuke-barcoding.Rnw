@@ -162,19 +162,19 @@ thresholds.
 
 \section{Results}
 
-<<cluster-groups-data>>=
+<<cluster-groups-data, cache=TRUE>>=
 
 @ 
 
-<<pairwise-groups-data>>=
+<<pairwise-groups-data, cache=TRUE>>=
 
 @ 
 
-<<nGrps-groups-comparison-plot>>=
+<<nGrps-groups-comparison-plot, cache=TRUE>>=
 
 @ 
 
-<<pSngl-groups-comparison-plot>>=
+<<pSngl-groups-comparison-plot, cache=TRUE>>=
 
 @ 
 
@@ -202,4 +202,9 @@ thresholds.
 % "Exceptions may give valuable insight into the mechanisms controlling
 % variiance withing & among species" \cite{Stoeckle2014}
 
+\pagebreak
 
+\bibliographystyle{plos2009}
+\bibliography{cuke-barcoding_nourl}
+
+\end{document}

@@ -1,0 +1,32 @@
+\begin{thebibliography}{1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\bibAnnoteFile}[1]{%
+  \IfFileExists{#1}{\begin{quotation}\noindent\textsc{Key:} #1\\
+  \textsc{Annotation:}\ \input{#1}\end{quotation}}{}}
+\providecommand{\bibAnnote}[2]{%
+  \begin{quotation}\noindent\textsc{Key:} #1\\
+  \textsc{Annotation:}\ #2\end{quotation}}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem{Collins2013}
+Collins Ra, Cruickshank RH (2013) {The seven deadly sins of DNA barcoding.}
+\newblock Molecular ecology resources 13: 969--75.
+\bibAnnoteFile{Collins2013}
+
+\bibitem{Hoareau2010}
+Hoareau TB, Boissin E (2010) {Design of phylum-specific hybrid primers for DNA
+  barcoding: addressing the need for efficient COI amplification in the
+  Echinodermata.}
+\newblock Molecular ecology resources 10: 960--7.
+\bibAnnoteFile{Hoareau2010}
+
+\bibitem{Geneious558}
+{Geneious 5.5.8}.
+\bibAnnoteFile{Geneious558}
+
+\end{thebibliography}
