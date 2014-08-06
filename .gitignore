@@ -1,2 +1,21 @@
-.Rhistory
+## project specific
+cuke-barcoding.tex
+cuke-barcoding.pdf
 tmp/
+*~
+.~lock*
+.#*
+
+## latex files
+*.aux
+*.log
+
+
+## local only to keep the repository clean
+.Rhistory
+toadd.csv
+zzz_tmp-genbank/
+zzz_compareWithGenbank/
+zzz_external-data/
+zzz_misc/
+zzz_gps-coordinates-cleanup/
