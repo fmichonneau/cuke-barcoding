@@ -142,12 +142,50 @@ load_taxonomyDf <- function(overwrite=FALSE) {
     taxonomyDf
 }
 
+load_labelsFromTaxa <- function(taxa="all") {
+    taxonomyDf <- load_taxonomyDf()
+    taxa <- match.arg(taxa, taxonomyDf$taxa)
+    cukeDB <- load_cukeDB()
+
+    if (taxa == "all") {
+        lbls <- cukeDB[, "Labels_withAmb"]
+    } else if (taxonomyDf[taxonomyDf$taxa == taxa, "rank"] == "Order") {
+        lbls <- cukeDB[cukeDB$order == taxa, "Labels_withAmb"]
+    } else if (taxonomyDf[taxonomyDf$taxa == taxa, "rank"] == "Family") {
+        lbls <- cukeDB[cukeDB$family == taxa, "Labels_withAmb"]
+    } else {
+        stop("something is wrong with ", taxa)
+    }
+    lbls
+}
+
 load_thresholdPairwise <- function() {
     c(seq(1, 5, by=.5), 6:8)/100
 }
 
 load_thresholdClusters <- function() {
     load_thresholdPairwise()/2
+}
+
+load_tree_phylo4 <- function(distance="raw", taxa="all") {
+    distance <- match.arg(distance, c("raw", "K80"))
+    if(identical(distance, "raw")) {
+        tree <- load_cukeTree_raw_phylo4()
+    }
+    else {
+        tree <- load_cukeTree_k2p_phylo4()
+    }
+    
+    if (taxa == "all") {
+        tree
+    }
+    else {
+        toKeep <- load_labelsFromTaxa(taxa)
+        tree <- subset(tree, tips.include=toKeep)
+        stopifnot(all(toKeep %in% tipLabels(tree)) ||
+                  all(!is.na(toKeep)))
+        tree
+    }
 }
 
 load_species_pairwiseGrps <- function(distance="raw", taxa="all",
@@ -165,6 +203,19 @@ load_species_pairwiseGrps <- function(distance="raw", taxa="all",
     res <- pairwiseGrpRes[[match(nmRes, names(pairwiseGrpRes))]][which(thres == threshold)]
     stopifnot(! is.null(res[[1]]))
     res
+}
+
+load_tree_pairwiseGrps <- function(distance="raw", taxa="all",
+                                   threshold=0.03) {
+    spp <- load_species_pairwiseGrps(distance=distance, taxa=taxa,
+                                     threshold=threshold)
+    lSpp <- sapply(spp[[1]], length)
+    tmpGrps <- mapply(rep, 1:length(lSpp), lSpp)
+    tmpGrps <- data.frame(Groups=unlist(tmpGrps))
+    rownames(tmpGrps) <- unlist(spp)
+
+    tree <- load_tree_phylo4(distance=distance, taxa=taxa)
+    addData(tree, tip.data=tmpGrps)
 }
 
 load_tree_clusterGrps <- function(distance="raw", taxa="all",

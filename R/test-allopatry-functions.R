@@ -1,5 +1,5 @@
 spatialFromSpecies <- function(tree, cukeDB) {
-
+    
     grps <- tdata(tree, "tip")[, "Groups", drop=FALSE]
     uniqGrps <- unique(grps$Groups)
 
@@ -83,7 +83,7 @@ rangeTypePolygon <- function(i, j, poly, threshold=10) {
     }
 }
 
-testRangeType <- function(tr, poly, alg, threshold) {
+testRangeType <- function(tr, polygons, alg, threshold) {
     grps <- tdata(tr, "tip")[, "Groups", drop=FALSE]
     rownames(grps) <- gsub("\"$", "", rownames(grps))
     tipLabels(tr) <- gsub("\"$", "", tipLabels(tr))
@@ -98,41 +98,41 @@ testRangeType <- function(tr, poly, alg, threshold) {
             next
         }
         else {
-            res[[i]] <- tmpGrps            
+            res[[i]] <- tmpGrps   
         }
     }
     res <- res[!sapply(res, is.null)]
     res <- res[!duplicated(res)]
-    rType <- lapply(res, function(x) {
-        #iPoly1 <- grep(paste0("^", x[1], "-"), names(poly))
-        #iPoly2 <- grep(paste0("^", x[2], "-"), names(poly))
-        if (inherits(allSpatial[[x[1]]], "SpatialPolygons") &&
-            inherits(allSpatial[[x[2]]], "SpatialPolygons")) {
-            list(rangeTypePolygon(x[1], x[2], poly, threshold=threshold),
-                 species=paste(names(poly)[x[1]],
-                     names(poly)[x[2]], sep="/"))
-        } else if ((inherits(allSpatial[[x[1]]], "SpatialPoints") &&
-                    inherits(allSpatial[[x[2]]], "SpatialPolygons"))) {
-            isSympatric <- ifelse(gContains(allSpatial[[x[2]]], allSpatial[[x[1]]]),
+    
+    rgType <- lapply(res, function(x) {
+        if (inherits(polygons[[x[1]]], "SpatialPolygons") &&
+            inherits(polygons[[x[2]]], "SpatialPolygons")) {
+            list(rangeTypePolygon(x[1], x[2], polygons, threshold=threshold),
+                 species=paste(names(polygons)[x[1]],
+                     names(polygons)[x[2]], sep="/"))
+        } else if ((inherits(polygons[[x[1]]], "SpatialPoints") &&
+                    inherits(polygons[[x[2]]], "SpatialPolygons"))) {
+            isSympatric <- ifelse(gContains(polygons[[x[2]]], polygons[[x[1]]]),
                                   "sympatric", "allopatric")            
-            list(isSympatric, species=paste(names(poly)[x[1]],
-                                  names(poly)[x[2]], sep="/"))            
-        } else if ((inherits(allSpatial[[x[1]]], "SpatialPolygons") &&
-                    inherits(allSpatial[[x[2]]], "SpatialPoints"))) {
-            isSympatric <- ifelse(gContains(allSpatial[[x[1]]], allSpatial[[x[2]]]),
+            list(isSympatric, species=paste(names(polygons)[x[1]],
+                                  names(polygons)[x[2]], sep="/"))            
+        } else if ((inherits(polygons[[x[1]]], "SpatialPolygons") &&
+                    inherits(polygons[[x[2]]], "SpatialPoints"))) {
+            isSympatric <- ifelse(gContains(polygons[[x[1]]], polygons[[x[2]]]),
                                   "sympatric", "allopatric")
-            list(isSympatric, species=paste(names(poly)[x[1]],
-                                  names(poly)[x[2]], sep="/"))       
+            list(isSympatric, species=paste(names(polygons)[x[1]],
+                                  names(polygons)[x[2]], sep="/"))       
         } else {
             list(NA, NA)
         }
     })
+    
     interDist <- lapply(res, function(x) {
         ind1 <- rownames(grps)[grps$Groups == x[1]]
         ind2 <- rownames(grps)[grps$Groups == x[2]]
         if (length(ind1) && length(ind2)) {
             if (any(is.na(match(c(ind1, ind2), dimnames(alg)[[1]]))))
-                browser()
+                stop("problem")
             tmpAlg <- alg[c(ind1, ind2), ]
             tmpDist <- dist.dna(tmpAlg, model="raw", as.matrix=TRUE)
             list(mean=mean(tmpDist[ind1, ind2]), max=max(tmpDist[ind1, ind2]),
@@ -142,8 +142,8 @@ testRangeType <- function(tr, poly, alg, threshold) {
             NA
         }
     })
-    data.frame(species = unlist(do.call("rbind", lapply(rType, function(x) x[2]))),
-               rangeType = unlist(do.call("rbind", lapply(rType, function(x) x[1]))),
+    data.frame(species = unlist(do.call("rbind", lapply(rgType, function(x) x[2]))),
+               rangeType = unlist(do.call("rbind", lapply(rgType, function(x) x[1]))),
                meanInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$mean))),
                maxInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$max))),
                minInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$min))))

@@ -149,15 +149,12 @@ ggplot(subset(dat, nInd >= 3 & family %in% keepFamilies & latCat == "tropical"))
     geom_point(aes(x=family, y=geoDist, colour=family), position=position_jitter(width=.05))
 
 ### ---- test-allopatry ----
-source("R/load.R")
-source("R/test-allopatry-functions.R")
+
 treeH <- load_tree_clusterGrps(taxa="Holothuriidae")
 cukeDB <- load_cukeDB()
 
 spatialTreeH <- spatialFromSpecies(treeH, cukeDB)
 
-actTree <- subset(treeH, tips.include=grep("Actinopyga", tipLabels(treeH)))
-bohTree <- subset(treeH, tips.include=grep("Bohadschia", tipLabels(treeH)))
 
 geoSpe <- testRangeType(treeH, spatialTreeH[[2]], cukeAlg, 10)
 
@@ -168,6 +165,9 @@ ggplot(geoSpe) +
        geom_bar(data=(geoSpe[!is.na(geoSpe$rangeType),]),
                 aes(x=meanInterDist, fill=rangeType)) #+ geom_bar(position="fill")
 
+actTree <- subset(treeH, tips.include=grep("Actinopyga", tipLabels(treeH)))
+bohTree <- subset(treeH, tips.include=grep("Bohadschia", tipLabels(treeH)))
+ffff
 
 library(maps)
 library(ggplot2)
