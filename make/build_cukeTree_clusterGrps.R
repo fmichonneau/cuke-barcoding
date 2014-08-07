@@ -32,7 +32,7 @@ build_cukeTree_clusterGrps <- function(overwrite=FALSE) {
                 toKeep <- cukeDB[, "Labels_withAmb"]
             } else if (taxonomyDf[taxonomyDf$taxa == uniqTaxa[k], "rank"] == "Order") {
                 toKeep <- cukeDB[cukeDB$order == uniqTaxa[k], "Labels_withAmb"]
-            } else if (taxonomyDf[taxonomyDf$taxa == uniqTaxa[2], "rank"] == "Family") {
+            } else if (taxonomyDf[taxonomyDf$taxa == uniqTaxa[k], "rank"] == "Family") {
                 toKeep <- cukeDB[cukeDB$family == uniqTaxa[k], "Labels_withAmb"]
             } else {
                 stop("something is wrong with ", uniqTaxa[k])
