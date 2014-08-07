@@ -5,7 +5,7 @@ source("R/removeNodeLabels.R")
 
 phylobase.options(allow.duplicated.labels="ok")
 
-build_cukeTree_withGrps <- function(overwrite=FALSE) {
+build_cukeTree_clusterGrps <- function(overwrite=FALSE) {
     ## To find groups based on the partial dataset
     cukeDB <- load_cukeDB()
     taxonomyDf <- load_taxonomyDf()
