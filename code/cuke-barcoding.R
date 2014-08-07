@@ -1,82 +1,18 @@
 ### ---- load-packages ---
 source("R/packages.R")
 
-### ---- find-group-full-tree ----
-## library(ape)
-## library(phylobase)
-## library(doMC)
-## registerDoMC()
-## source("R/findGroups.R")
-## phylobase.options(allow.duplicated.labels="ok")
+### ---- source-scripts ----
+source("R/load.R")
 
-## ## based on tree calculated from raw distances
-## treeH <- readRDS(file="data/cukeTree-raw.rds")
-
-## treeH$edge.length[treeH$edge.length < 0] <- 1e-6
-## treeHr <- ape::root(treeH, 1, resolve.root=TRUE)
-## treeH4 <- as(treeHr, "phylo4")
-## bs <- nodeLabels(treeH4)
-## is.na(bs[as.character(rootNode(treeH4))]) <- TRUE
-## bs <- data.frame(bs, stringsAsFactors=FALSE)
-## bs$bs <- as.numeric(bs$bs)
-## treeH4 <- phylo4d(treeH4, node.data=bs)
-## treeH4 <- removeNodeLabels(treeH4)
-
-## treeHgr <- findGroups(treeH4, experimental=FALSE, parallel=TRUE)
-
-## saveRDS(treeHgr, file="data/cukeTree-raw-withGroups.rds")
-
-## ## based on tree calculated with K2P distances
-## treeHk2p <- readRDS(file="data/cukeTree-k2p.rds")
-
-## treeHk2p$edge.length[treeHk2p$edge.length < 0] <- 1e-6
-## treeHk2pr <- ape::root(treeHk2p, 1, resolve.root=TRUE)
-## treeHk2p4 <- as(treeHk2pr, "phylo4")
-## bs <- nodeLabels(treeHk2p4)
-## is.na(bs[as.character(rootNode(treeHk2p4))]) <- TRUE
-## bs <- data.frame(bs, stringsAsFactors=FALSE)
-## bs$bs <- as.numeric(bs$bs)
-## treeHk2p4 <- phylo4d(treeHk2p4, node.data=bs)
-## treeHk2p4 <- removeNodeLabels(treeHk2p4)
-
-## treHk2pgr <- findGroups(treeHk2p4, experimental=FALSE, parallel=TRUE)
-
-## saveRDS(treHgr, file="data/cukeTree-k2p-withGroups.rds")
-
-### 
-source("make/build_cukeTree-withGroups.R")
-source("make/build_cukeTree-byTaxa-withGroups.R")
-
-
-### ---- summary-bPTP-results ----
-resPTP <- readLines("data/bPTP/bPTP_fullTree.PTPPartitonSummary.txt")
-
-getSpp <- lapply(resPTP, function(x) {
-    pp <- strsplit(x, ": ")[[1]][2]
-    x <- gsub(":\\s?\\d\\.\\d+$", "", x)
-    x <- gsub("^\\s?", "", x)
-    list(species = unlist(strsplit(x, ", ")),
-         posterior = as.numeric(pp))
-})
-
-thres <- 9:0/10
-res <- vector("list", length(thres))
-for (i in 1:length(thres)) {
-    subPP <- sapply(getSpp, function(x) x$posterior > thres[i])
-    sppPP <- sapply(getSpp[subPP], function(x) x$species)
-    res[[i]]$nClusters <- length(sppPP)
-    res[[i]]$nSpecies <- length(unlist(sppPP))
-    res[[i]]$anyDup <- any(duplicated(unlist(sppPP)))
-    res[[i]]$species <- unlist(sppPP)
-}
+### ---- find-cluster-groups ----
+#source("make/build_cukeTree_clusterGrps.R")
+#build_cukeTree_clusterGrps()
     
-
-
 ### ---- init-groups-data ----
-taxonomyDf <- readRDS(file="data/taxonomyDf.rds")
-source("R/build_cukeTree-byTaxa-withGroups.R")
+taxonomyDf <- load_taxonomyDf()
 
 ### ---- cluster-groups-data ----
+## TODO - revisit when "all" suffix file available
 treeGrpsFiles <- list.files(pattern="cukeTree-.+-\\d+\\.rds$",
                             path="data", full.names=TRUE)
 
@@ -108,26 +44,15 @@ nGrpsClustersDf$method <- "Clusters"
 
 ### ---- pairwise-groups-data ----
 source("R/pairwise-groups-functions.R")
-thresVec <- c(seq(1, 5, by=.5), 6:8)/100
-cukeDB <- readRDS(file="data/cukeDB_withLabels.rds")
-
-cukeAlg <- ape::read.dna(file="data/cukeBarcodes-flagAmb.phy", format="seq")
-dimnames(cukeAlg)[[1]] <- gsub("\\\"", "", dimnames(cukeAlg)[[1]])
-
-pairwiseGrpMdl <- c("raw", "K80")
-pairwiseGrpTax <- c("all", uniqTaxa)
-
-## pairwiseGrpRes <- getPairwiseGrpRes()
-## saveRDS(pairwiseGrpRes, file="data/pairwiseGrpRes.rds")
-
-pairwiseGrpRes <- readRDS(file="data/pairwiseGrpRes.rds")
+pairwiseGrpRes <- load_pairwiseGrpRes()
+thresVec <- load_thresholdPairwise()
 
 pairwiseGrpFactors <- rep(names(pairwiseGrpRes), each=length(thresVec))
 pairwiseGrpFactors <- strsplit(pairwiseGrpFactors, "-")
 pairwiseGrpFactors <- do.call("rbind", pairwiseGrpFactors)
 pairwiseGrpFactors <- data.frame(distance=pairwiseGrpFactors[, 1],
                                  taxa=pairwiseGrpFactors[, 2],
-                                 threshold=rep(thresVec, length(getPairwiseGrpRes)))
+                                 threshold=rep(thresVec, length(pairwiseGrpRes)))
 
 nGrpsPairwise <- lapply(pairwiseGrpRes, function(x) sapply(x, length))
 pSnglPairwise <- lapply(pairwiseGrpRes, function(x) sapply(x, getPropSngl))
@@ -140,11 +65,12 @@ nGrpsPairwiseDf$method <- "Pairwise"
 nGrpsPairwiseDf <- merge(nGrpsPairwiseDf, taxonomyDf)
 
 
-### ---- nGrps-groups-comparison-plot ----
+### ---- groups-comparison-data ----
 nGrpsDf <- rbind(nGrpsClustersDf, nGrpsPairwiseDf)
 levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "K80"] <- "K2P"
 levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "k2p"] <- "K2P"
 
+### ---- nGrps-groups-comparison-plot ----
 tmpDt <- subset(nGrpsDf, taxa %in% c("all", "Aspidochirotida", "Holothuriidae"))
 ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
                   shape=interaction(distance, method))) + geom_line() + geom_point() +
@@ -156,7 +82,6 @@ ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
     facet_wrap( ~ taxa)
 
 ### ---- pSngl-groups-comparison-plot ----
-
 ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
               aes(x=threshold, y=pSngl, colour=interaction(distance, method),
                   shape=interaction(distance, method))) + geom_line() +
@@ -165,10 +90,11 @@ ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
 
 ### ----- compare-genetic-geo-distances ----
 source("R/CalcGeoDist.R")
-treeH <- readRDS("data/cukeTree-raw-withGroups.rds")
-cukeDB <- readRDS("data/cukeDB_withLabels.rds")
+source("R/load.R")
+treeH <- load_tree_clusterGrps(taxa="Holothuriidae")
+cukeDB <- load_cukeDB()
 grps <- tdata(treeH, "tip")[, "Groups", drop=FALSE]
-cukeAlg <- ape::read.dna(file="data/cukeBarcodes-flagAmb.phy", format="sequential")
+cukeAlg <- load_cukeAlg()
 
 uniqGrps <- unique(grps$Groups)
 
@@ -222,166 +148,16 @@ keepFamilies <- names(nGeoData)[nGeoData >= 9]
 ggplot(subset(dat, nInd >= 3 & family %in% keepFamilies & latCat == "tropical")) +
     geom_point(aes(x=family, y=geoDist, colour=family), position=position_jitter(width=.05))
 
-
-
-spatialFromSpecies <- function(tree, cukeDB) {
-
-    grps <- tdata(tree, "tip")[, "Groups", drop=FALSE]
-    uniqGrps <- unique(grps$Groups)
-
-    species <- vector("list", length(uniqGrps))
-    for (i in 1:length(uniqGrps)) {
-        tmpSpp <- rownames(subset(grps, Groups == uniqGrps[i]))
-        species[[i]] <- sapply(strsplit(tmpSpp, "_"), function(x) paste(x[2:3], collapse="_"))
-    }
-    
-    allHll <- allSpatial <- vector("list", length(uniqGrps))
-    
-    nmAllHll <- sapply(species, function(x) x[1])
-    names(allHll) <- paste(uniqGrps, nmAllHll, sep="-")
-    names(allSpatial) <- names(allHll)
-
-    
-    ## Convex Hull for each group
-    for (i in 1:length(uniqGrps)) {
-        tmpSpp <- rownames(subset(grps, Groups == uniqGrps[i]))
-        tmpCoords <- cukeDB[match(tmpSpp, cukeDB$Labels_withAmb),
-                            c("decimalLatitude", "decimalLongitude")]
-        
-        center <- 180
-        tmpCoords$long.recenter <- ifelse(tmpCoords$decimalLongitude < center - 180,
-                                        tmpCoords$decimalLongitude + 360,
-                                        tmpCoords$decimalLongitude)
-        hll <- try(chull(tmpCoords$long.recenter, tmpCoords$decimalLatitude),
-                   silent=TRUE)
-        if (inherits(hll, "try-error") ||
-            length(unique(paste(tmpCoords$decimalLatitude,
-                                tmpCoords$decimalLongitude))) < 3) {
-            allHll[[i]] <- tmpCoords
-            attr(allHll[[i]], "type-coords") <- "points"
-        }
-        else {
-            hll <- tmpCoords[hll, ]
-            allHll[[i]] <- hll
-            attr(allHll[[i]], "type-coords") <- "polygon"
-        }
-    }
-    ## Spatial format for each group
-    crs <- CRS("+proj=longlat +datum=WGS84 +units=m")
-    for (i in 1:length(uniqGrps)) {
-        if (attr(allHll[[i]], "type-coords") == "polygon") {
-            tmpHll <- allHll[[i]]
-            tmpPoly <- Polygon(cbind(tmpHll$long.recenter, tmpHll$decimalLatitude))
-            tmpPolys <- Polygons(list(tmpPoly), names(allSpatial)[i])
-            tmpSpPoly <- SpatialPolygons(list(tmpPolys), proj4string=crs)
-            allSpatial[[i]] <- tmpSpPoly
-        } else if (attr(allHll[[i]], "type-coords") == "points") {
-            tmpCoords <- allHll[[i]][complete.cases(allHll[[i]]), ]
-            if (nrow(tmpCoords) < 1) {
-                allSpatial[[i]] <- NA
-            }
-            else {
-                allSpatial[[i]] <- SpatialPoints(cbind(tmpCoords$long.recenter,
-                                                       tmpCoords$decimalLatitude),
-                                                 proj4string=crs)
-            }
-        }
-    }
-    list(allHll, allSpatial)
-}
-
-rangeTypePolygon <- function(i, j, poly, threshold=10) {
-    r1 <- poly[[i]]
-    r2 <- poly[[j]]
-    r1Area <- suppressWarnings(gArea(r1))
-    r2Area <- suppressWarnings(gArea(r2))
-    if (gIntersects(r1, r2)) {
-        rIArea <- suppressWarnings(gArea(gIntersection(r1, r2)))
-        if (rIArea < (min(r1Area, r2Area)/threshold)) {
-            "parapatric"
-        }
-        else {
-            "sympatric"
-        }
-    }
-    else {
-        "allopatric"
-    }
-}
-
-testRangeType <- function(tr, poly, alg, threshold) {
-    grps <- tdata(tr, "tip")[, "Groups", drop=FALSE]
-    rownames(grps) <- gsub("\"$", "", rownames(grps))
-    tipLabels(tr) <- gsub("\"$", "", tipLabels(tr))
-    
-    uniqGrps <- unique(grps$Groups)
-    res <- vector("list", length(uniqGrps))
-    for (i in 1:length(uniqGrps)) {
-        tmpMrca <- ancestor(tr, MRCA(tr, rownames(grps)[grps$Groups == uniqGrps[i]]))
-        tmpDesc <- descendants(tr, tmpMrca)
-        tmpGrps <- unique(grps[tmpDesc, ])
-        if (length(tmpGrps) > 2) {
-            next
-        }
-        else {
-            res[[i]] <- tmpGrps            
-        }
-    }
-    res <- res[!sapply(res, is.null)]
-    res <- res[!duplicated(res)]
-    rType <- lapply(res, function(x) {
-        #iPoly1 <- grep(paste0("^", x[1], "-"), names(poly))
-        #iPoly2 <- grep(paste0("^", x[2], "-"), names(poly))
-        if (inherits(allSpatial[[x[1]]], "SpatialPolygons") &&
-            inherits(allSpatial[[x[2]]], "SpatialPolygons")) {
-            list(rangeTypePolygon(x[1], x[2], poly, threshold=threshold),
-                 species=paste(names(poly)[x[1]],
-                     names(poly)[x[2]], sep="/"))
-        } else if ((inherits(allSpatial[[x[1]]], "SpatialPoints") &&
-                    inherits(allSpatial[[x[2]]], "SpatialPolygons"))) {
-            isSympatric <- ifelse(gContains(allSpatial[[x[2]]], allSpatial[[x[1]]]),
-                                  "sympatric", "allopatric")            
-            list(isSympatric, species=paste(names(poly)[x[1]],
-                                  names(poly)[x[2]], sep="/"))            
-        } else if ((inherits(allSpatial[[x[1]]], "SpatialPolygons") &&
-                    inherits(allSpatial[[x[2]]], "SpatialPoints"))) {
-            isSympatric <- ifelse(gContains(allSpatial[[x[1]]], allSpatial[[x[2]]]),
-                                  "sympatric", "allopatric")
-            list(isSympatric, species=paste(names(poly)[x[1]],
-                                  names(poly)[x[2]], sep="/"))       
-        } else {
-            list(NA, NA)
-        }
-    })
-    interDist <- lapply(res, function(x) {
-        ind1 <- rownames(grps)[grps$Groups == x[1]]
-        ind2 <- rownames(grps)[grps$Groups == x[2]]
-        if (length(ind1) && length(ind2)) {
-            if (any(is.na(match(c(ind1, ind2), dimnames(alg)[[1]]))))
-                browser()
-            tmpAlg <- alg[c(ind1, ind2), ]
-            tmpDist <- dist.dna(tmpAlg, model="raw", as.matrix=TRUE)
-            list(mean=mean(tmpDist[ind1, ind2]), max=max(tmpDist[ind1, ind2]),
-                 min=min(tmpDist[ind1, ind2]))
-        }
-        else {
-            NA
-        }
-    })
-    data.frame(species = unlist(do.call("rbind", lapply(rType, function(x) x[2]))),
-               rangeType = unlist(do.call("rbind", lapply(rType, function(x) x[1]))),
-               meanInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$mean))),
-               maxInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$max))),
-               minInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$min))))
-}
+### ---- test-allopatry ----
+source("R/load.R")
+source("R/test-allopatry-functions.R")
+treeH <- load_tree_clusterGrps(taxa="Holothuriidae")
+cukeDB <- load_cukeDB()
 
 spatialTreeH <- spatialFromSpecies(treeH, cukeDB)
 
 actTree <- subset(treeH, tips.include=grep("Actinopyga", tipLabels(treeH)))
 bohTree <- subset(treeH, tips.include=grep("Bohadschia", tipLabels(treeH)))
-
-testRangeType(actTree, spatialTreeH[[2]], cukeAlg, 10)
-testRangeType(bohTree, allSpatial, cukeAlg, 10)
 
 geoSpe <- testRangeType(treeH, spatialTreeH[[2]], cukeAlg, 10)
 
@@ -439,6 +215,28 @@ ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
     theme(panel.background = element_rect(fill="aliceblue")) +   
     ylim(c(-30,30)) + xlim(c(0, 300))
 
+
+### ---- summary-bPTP-results ----
+resPTP <- readLines("data/bPTP/bPTP_fullTree.PTPPartitonSummary.txt")
+
+getSpp <- lapply(resPTP, function(x) {
+    pp <- strsplit(x, ": ")[[1]][2]
+    x <- gsub(":\\s?\\d\\.\\d+$", "", x)
+    x <- gsub("^\\s?", "", x)
+    list(species = unlist(strsplit(x, ", ")),
+         posterior = as.numeric(pp))
+})
+
+thres <- 9:0/10
+res <- vector("list", length(thres))
+for (i in 1:length(thres)) {
+    subPP <- sapply(getSpp, function(x) x$posterior > thres[i])
+    sppPP <- sapply(getSpp[subPP], function(x) x$species)
+    res[[i]]$nClusters <- length(sppPP)
+    res[[i]]$nSpecies <- length(unlist(sppPP))
+    res[[i]]$anyDup <- any(duplicated(unlist(sppPP)))
+    res[[i]]$species <- unlist(sppPP)
+}
 
 ### ---------  Make trees for each family
 ## Get the families

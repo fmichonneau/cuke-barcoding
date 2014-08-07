@@ -1,3 +1,5 @@
+source("R/load.R")
+
 pairwiseGrps <- function(d, threshold) {
     iGrp <- lapply(1:ncol(d), function(j) dimnames(d)[[1]][d[, j] < threshold])
     sngl <- sapply(iGrp, function(x) length(x) == 1)
@@ -8,9 +10,8 @@ pairwiseGrps <- function(d, threshold) {
     c(split(V(g)$name, clusters(g)$membership), iGrp[sngl])
 }
 
-getPairwiseGrp <- function(alg=cukeAlg, model=c("raw", "K80"),
-                           db=cukeDB,
-                           taxonomySubset, threshold=thresVec,
+getPairwiseGrp <- function(alg=cukeAlg, model=c("raw", "K80"), db=cukeDB,
+                           taxonomySubset, threshold,
                            taxonomyData=taxonomyDf) {
     model <- match.arg(model)
     if (missing(taxonomySubset) || taxonomySubset == "all")
@@ -41,15 +42,26 @@ getPropSngl <- function(x) {
     sum(tt == 1)/length(tt)
 }
 
-getPairwiseGrpRes <- function() {
-    pairwiseGrpRes <- vector("list", length(pairwiseGrpMdl) * length(pairwiseGrpTax))
+build_pairwiseGrpRes <- function(pairwiseGrpMdl, pairwiseGrpTax) {
+    pairwiseGrpMdl <- c("raw", "K80")
+    taxonomyDf <- load_taxonomyDf()
+    pairwiseGrpTax <- taxonomyDf$taxa
+    pairwiseGrpRes <- vector("list", length(pairwiseGrpMdl) *
+                             length(pairwiseGrpTax))
     nmGrpRes <- character(length(pairwiseGrpMdl) * length(pairwiseGrpTax))
     i <- 1
+    cukeAlg <- load_cukeAlg()
+    cukeDB <- load_cukeDB()
+    thresVec <- load_thresholdPairwise()
+    
     for (eachMdl in 1:length(pairwiseGrpMdl)) {
         for (eachTax in 1:length(pairwiseGrpTax)) {
-            pairwiseGrpRes[[i]] <- getPairwiseGrp(model=pairwiseGrpMdl[eachMdl],
+            pairwiseGrpRes[[i]] <- getPairwiseGrp(alg=cukeAlg,
+                                                  model=pairwiseGrpMdl[eachMdl],
+                                                  db=cukeDB, threshold=thresVec,
                                                   taxonomySubset=pairwiseGrpTax[eachTax])
-            nmGrpRes[i] <- paste(pairwiseGrpMdl[eachMdl], pairwiseGrpTax[eachTax], sep="-")
+            nmGrpRes[i] <- paste(pairwiseGrpMdl[eachMdl],
+                                 pairwiseGrpTax[eachTax], sep="-")
             i <- i + 1
         }
     }
@@ -57,3 +69,13 @@ getPairwiseGrpRes <- function() {
     pairwiseGrpRes
 }
 
+load_pairwiseGrpRes <- function(overwrite=FALSE) {
+    fnm <- "data/pairwiseGrpRes.rds"
+    if (file.exists(fnm) && !overwrite) {
+        pairwiseGrpRes <- readRDS(file=fnm)
+    }
+    else {
+        pairwiseGrpRes <- build_pairwiseGrpRes()
+    }
+    pairwiseGrpRes
+}

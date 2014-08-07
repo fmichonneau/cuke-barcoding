@@ -87,7 +87,7 @@ load_cukeAlg <- function(overwrite=FALSE) {
         cukeAlg <- read.dna(file=algFile, format="fasta")
         dimnames(cukeAlg)[[1]][match(oldNm, dimnames(cukeAlg)[[1]])] <- newNm
         cukeAlg <- cleanSeqLabels(cukeAlg, software="RAxML")
-
+        dimnames(cukeAlg)[[1]] <- gsub("\\\"", "", dimnames(cukeAlg)[[1]])
         saveRDS(cukeAlg, file="data/cukeBarcodes-flagAmb.rds")
     }
     cukeAlg
@@ -122,7 +122,7 @@ load_cukeTree_k2p_phylo4 <- function(overwrite=FALSE) {
 load_taxonomyDf <- function(overwrite=FALSE) {
     fnm <- "data/taxonomyDf.rds"
     if (file.exists(fnm) && !overwrite) {
-        taxDf <- readRDS(fnm)
+        taxonomyDf <- readRDS(fnm)
     }
     else {
         cukeDB <- load_cukeDB()
@@ -136,5 +136,63 @@ load_taxonomyDf <- function(overwrite=FALSE) {
         taxonomyDf <- data.frame(rank = c(rep("Order", length(uniqOrder) + 1),
                                      rep("Family", length(uniqFamily))),
                                  taxa = c("all", uniqOrder, uniqFamily))
+        stopifnot(! any(duplicated(taxonomyDf$taxa)))
+        saveRDS(taxonomyDf, file=fnm)
     }
+    taxonomyDf
+}
+
+load_thresholdPairwise <- function() {
+    c(seq(1, 5, by=.5), 6:8)/100
+}
+
+load_thresholdClusters <- function() {
+    load_thresholdPairwise()/2
+}
+
+load_species_pairwiseGrps <- function(distance="raw", taxa="all",
+                                      threshold=0.03) {
+
+    taxonomyDf <- load_taxonomyDf()
+    thres <- load_thresholdPairwise()
+    
+    taxa <- match.arg(taxa, taxonomyDf$taxa)
+    distance <- match.arg(distance, c("raw", "K80"))
+    stopifnot(length(threshold) == 1 && threshold %in% thres)
+    
+    pairwseGrpRes <- load_pairwiseGrpRes()
+    nmRes <- paste(distance, taxa, sep="-")
+    res <- pairwiseGrpRes[[match(nmRes, names(pairwiseGrpRes))]][which(thres == threshold)]
+    stopifnot(! is.null(res[[1]]))
+    res
+}
+
+load_tree_clusterGrps <- function(distance="raw", taxa="all",
+                                     threshold=0.015) {
+
+    taxonomyDf <- load_taxonomyDf()
+    thres <- load_thresholdClusters()
+    
+    taxa <- match.arg(taxa, taxonomyDf$taxa)
+    distance <- match.arg(distance, c("raw", "K80"))
+    stopifnot(length(threshold) == 1 && threshold %in% thres)
+
+    distance <- ifelse(identical(distance, "raw"), "raw", "k2p")
+    
+    lstFiles <- list.files(path="data", pattern="cukeTree-.+-\\d+.rds$",
+                           full.names=TRUE)
+    
+    nmRes <- paste("cukeTree", distance, taxa, gsub("\\.", "", threshold), sep="-")
+    nmRes <- file.path("data", paste0(nmRes, ".rds"))
+
+    if (file.exists(nmRes))
+        readRDS(file=nmRes)    
+    else
+        stop("can't find ", nmRes)
+}
+
+load_species_clusterGrps <- function(distance="raw", taxa="all",
+                                     threshold=0.015) {
+    tr <- load_tree_clusterGrps(distance, taxa, threshold)
+    tipLabels(tr)
 }
