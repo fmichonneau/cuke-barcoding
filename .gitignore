@@ -11,6 +11,10 @@ cache/
 *.aux
 *.log
 
+## hpc files
+*.err
+*.out
+*.pbs
 
 ## local only to keep the repository clean
 .Rhistory
