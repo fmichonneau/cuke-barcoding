@@ -1,50 +1,62 @@
 
-
+source("R/load.R")
 source("R/findGroups.R")
 source("R/removeNodeLabels.R")
 
 phylobase.options(allow.duplicated.labels="ok")
 
-cuke_findGroups <- function(tree, threshold=0.015) {
-    if (! (require(ape) && require(phylobase) &&
-        require(doMC))) {
-        stop("problem")
-    }
+build_cukeTree_withGrps <- function(overwrite=FALSE) {
+    ## To find groups based on the partial dataset
+    cukeDB <- load_cukeDB()
+    taxonomyDf <- load_taxonomyDf()
 
-    tree$edge.length[tree$edge.length < 0] <- 1e-6
-    ## TODO -- double check that using 1 blinding doesn't cause
-    ## any issues
-    treeRooted <- ape::root(tree, 1, resolve.root=TRUE)
-    treeP4 <- as(treeRooted, "phylo4")
-    bs <- nodeLabels(treeP4)
-    is.na(bs[as.character(rootNode(treeP4))]) <- TRUE
-    bs <- data.frame(bs, stringsAsFactors=FALSE)
-    bs$bs <- as.numeric(bs$bs)
-    treeP4 <- phylo4d(treeP4, node.data=bs)
-    treeP4 <- removeNodeLabels(treeP4)
+    uniqTaxa <- taxonomyDf$taxa
+    stopifnot(! any(duplicated(uniqTaxa)))
+
+    inputFiles <- c("data/cukeTree-raw-phylo4.rds",
+                    "data/cukeTree-k2p-phylo4.rds")
+
+    ## computer number of species for threshold at
+    ##  1%, 1.5%, 2%, 2.5%, 3%, 3.5%, 4%, 4.5%, 5%, 6%, 7%, 8%
+    thresVec <- c(seq(1, 5, by=.5), 6:8)/200
+
+    for (j in 1:length(inputFiles)) {
+        
+        for (k in 1:length(uniqTaxa)) {
+
+            outputFiles <- paste(gsub("phylo4.rds$", "", inputFiles[j]),
+                                 uniqTaxa[k], "-",
+                                 gsub("\\.", "", thresVec), ".rds", sep="")
+
+            if (uniqTaxa[k] == "all") {
+                toKeep <- cukeDB[, "Labels_withAmb"]
+            } else if (taxonomyDf[taxonomyDf$taxa == uniqTaxa[k], "rank"] == "Order") {
+                toKeep <- cukeDB[cukeDB$order == uniqTaxa[k], "Labels_withAmb"]
+            } else if (taxonomyDf[taxonomyDf$taxa == uniqTaxa[2], "rank"] == "Family") {
+                toKeep <- cukeDB[cukeDB$family == uniqTaxa[k], "Labels_withAmb"]
+            } else {
+                stop("something is wrong with ", uniqTaxa[k])
+            }
+            
+            for (i in 1:length(thresVec)) {
+                if (!file.exists(outputFiles[i]) || overwrite) {
+                    treeTmp <- readRDS(file=inputFiles[j])
+                    stopifnot(all(toKeep %in% tipLabels(treeTmp)) ||
+                              all(!is.na(toKeep)))
+                    if (length(toKeep) == nTips(treeTmp)) {
+                        treeTmpSub <- treeTmp
+                    }
+                    else {
+                        treeTmpSub <- subset(treeTmp, tips.include=toKeep)
+                    }
+                    treeTmpGrp <- findGroups(treeTmpSub, threshold=thresVec[i],
+                                             experimental=FALSE, parallel=TRUE)
+                    saveRDS(treeTmpGrp, file=outputFiles[i])
+                }  else {
+                    message(outputFiles[i], " already exists.")
+                }
+            }
+        }
+    }
     
-    treegr <- findGroups(treeP4, threshold=threshold,
-                         experimental=FALSE, parallel=TRUE)
-    treegr
-}
-
-inputFiles <- c("data/cukeTree-raw.rds",
-                "data/cukeTree-k2p.rds")
-
-## computer number of species for threshold at
-##  1%, 1.5%, 2%, 2.5%, 3%, 3.5%, 4%, 4.5%, 5%, 6%, 7%, 8%
-thresVec <- c(seq(1, 5, by=.5), 6:8)/200
-
-for (j in 1:length(inputFiles)) {
-    treeTmp <- readRDS(file=inputFiles[j])
-
-    outputFiles <- paste(gsub(".rds$", "-", inputFiles[j]),
-                         gsub("\\.", "", thresVec), ".rds", sep="")
-    stopifnot(length(outputFiles) == length(thresVec))
-
-    for (i in 1:length(thresVec)) {
-        treeRawTmp <- cuke_findGroups(tree=treeTmp, threshold=thresVec[i])
-        saveRDS(treeRawTmp, file=outputFiles[i])
-        rm(treeRawTmp)
-    }
 }
