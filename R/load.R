@@ -48,6 +48,7 @@ load_cukeTree_raw <- function(overwrite=FALSE, ...) {
     fnm <- "data/cukeTree-raw.rds"
     if (file.exists(fnm) && !overwrite) {
         cukeTree <- readRDS(file=fnm)
+        cukeTree$tip.label <- gsub("\\\"", "", cukeTree$tip.label)
     }
     else {
         cukeAlg <- load_cukeAlg()
@@ -61,6 +62,7 @@ load_cukeTree_k2p <- function(overwrite=FALSE, ...) {
     fnm <- "data/cukeTree-k2p.rds"
     if (file.exists(fnm) && !overwrite) {
         cukeTree <- readRDS(file=fnm)
+        cukeTree$tip.label <- gsub("\\\"", "", cukeTree$tip.label)
     }
     else {
         cukeAlg <- load_cukeAlg()
