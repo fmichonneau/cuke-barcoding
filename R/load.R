@@ -200,16 +200,16 @@ load_species_pairwiseGrps <- function(distance="raw", taxa="all",
 
     pairwseGrpRes <- load_pairwiseGrpRes()
     nmRes <- paste(distance, taxa, sep="-")
-    res <- pairwiseGrpRes[[match(nmRes, names(pairwiseGrpRes))]][which(thres == threshold)]
-    stopifnot(! is.null(res[[1]]))
-    res[[1]]
+    res <- pairwiseGrpRes[[match(nmRes, names(pairwiseGrpRes))]][[which(thres == threshold)]]
+    stopifnot(! is.null(res))
+    res
 }
 
 load_tree_pairwiseGrps <- function(distance="raw", taxa="all",
                                    threshold=0.03) {
     spp <- load_species_pairwiseGrps(distance=distance, taxa=taxa,
                                      threshold=threshold)
-    lSpp <- sapply(spp[[1]], length)
+    lSpp <- sapply(spp, length)
     tmpGrps <- mapply(rep, 1:length(lSpp), lSpp)
     tmpGrps <- data.frame(Groups=unlist(tmpGrps))
     rownames(tmpGrps) <- unlist(spp)
