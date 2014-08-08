@@ -7,7 +7,7 @@ source("R/load.R")
 ### ---- find-cluster-groups ----
 #source("make/build_cukeTree_clusterGrps.R")
 #build_cukeTree_clusterGrps()
-    
+
 ### ---- init-groups-data ----
 taxonomyDf <- load_taxonomyDf()
 
@@ -149,19 +149,19 @@ ggplot(subset(dat, nInd >= 3 & family %in% keepFamilies & latCat == "tropical"))
     geom_point(aes(x=family, y=geoDist, colour=family), position=position_jitter(width=.05))
 
 ### ---- test-allopatry ----
-
-treeH <- load_tree_clusterGrps(taxa="Holothuriidae")
-cukeDB <- load_cukeDB()
-
-spatialTreeH <- spatialFromSpecies(treeH, cukeDB)
+source("R/test-allopatry-functions.R")
+speciesOver <- load_species_overlap()
 
 
-geoSpe <- testRangeType(treeH, spatialTreeH[[2]], cukeAlg, 10)
+
+
+
+
 
 ggplot(geoSpe) +
     geom_boxplot(data=(geoSpe[!is.na(geoSpe$rangeType),]),
                  aes(x=rangeType, y=minInterDist))
-    
+
        geom_bar(data=(geoSpe[!is.na(geoSpe$rangeType),]),
                 aes(x=meanInterDist, fill=rangeType)) #+ geom_bar(position="fill")
 
@@ -188,7 +188,7 @@ for (i in 1:length(uniqGrps)) {
     hll <- tmpData[hll, ]
     xx <- ggplot(tmpData) + annotation_map(globalMap, fill="gray40", colour="gray40") +
         geom_point(aes(x = long.recenter, y = decimalLatitude), data=tmpData) +
-        geom_polygon(data=hll, aes(x=long.recenter, y=decimalLatitude), alpha=.2) + 
+        geom_polygon(data=hll, aes(x=long.recenter, y=decimalLatitude), alpha=.2) +
         coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
         theme(panel.background = element_rect(fill="aliceblue")) +
          ggtitle(paste(i, species[[i]][1]))
@@ -212,7 +212,7 @@ ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
     geom_point(data=(allHllDf[grep("^21-|^9-", allHllDf$species), ]),
                 aes(x=long.recenter, y=decimalLatitude, colour=species)) +
     coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-    theme(panel.background = element_rect(fill="aliceblue")) +   
+    theme(panel.background = element_rect(fill="aliceblue")) +
     ylim(c(-30,30)) + xlim(c(0, 300))
 
 
@@ -510,7 +510,7 @@ nbEsu <- data.frame(Threshold=rep(1:6, 7),
                       rep("Dendrochirotida", 6),
                       rep("Apodida", 6),
                       rep("Aspidochirotida", 6),
-                      rep("Holothuriidae", 6)),                    
+                      rep("Holothuriidae", 6)),
                     NbESU=c(
                       max(tipData(grpA1)$Groups),
                       max(tipData(grpA2)$Groups),
@@ -588,7 +588,7 @@ allDist <- rbind(cbind(Order=rep("Asteroidea", nrow(distA1)), Threshold=rep(1, n
         cbind(Order=rep("Asteroidea", nrow(distA3)), Threshold=rep(3, nrow(distA3)), distA3),
         cbind(Order=rep("Asteroidea", nrow(distA4)), Threshold=rep(4, nrow(distA4)), distA4),
         cbind(Order=rep("Asteroidea", nrow(distA5)), Threshold=rep(5, nrow(distA5)), distA5),
-        cbind(Order=rep("Asteroidea", nrow(distA6)), Threshold=rep(6, nrow(distA6)), distA6),        
+        cbind(Order=rep("Asteroidea", nrow(distA6)), Threshold=rep(6, nrow(distA6)), distA6),
         cbind(Order=rep("Echinoidea", nrow(distE1)), Threshold=rep(1, nrow(distE1)), distE1),
         cbind(Order=rep("Echinoidea", nrow(distE2)), Threshold=rep(2, nrow(distE2)), distE2),
         cbind(Order=rep("Echinoidea", nrow(distE3)), Threshold=rep(3, nrow(distE3)), distE3),
