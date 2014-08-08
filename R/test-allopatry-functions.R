@@ -1,3 +1,5 @@
+source("R/load.R")
+
 spatialFromSpecies <- function(tree, cukeDB) {
 
     grps <- tdata(tree, "tip")[, "Groups", drop=FALSE]
