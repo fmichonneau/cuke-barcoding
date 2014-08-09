@@ -1,4 +1,3 @@
-source("R/packages.R")
 source("R/build.R")
 
 load_echinoDB <- function(overwrite=FALSE) {
