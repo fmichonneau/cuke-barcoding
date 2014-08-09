@@ -53,6 +53,8 @@ data/cukeTree-raw.rds: make/build_cukeTree_nj.R data/cukeBarcodes-flagAmb.rds
 data/cukeBarcodes-flagAmb.phy: data/cukeBarcodes-flagAmb.rds
 	${RSCRIPT} -e "library(ape); write.dna(readRDS('$<'), format='sequential', colw=1000, file='data/cukeBarcodes-flagAmb.phy')"
 
+## should I just keep the file in the raxml folder and create an rds file
+##   for it in the data/ folder instead?
 data/cukeBarcodes-raxml.tre: data/cukeBarcodes-flagAmb.phy ## not tested
 	${RSCRIPT} -e "source('R/build.R'); build_raxml_tree('$<');"
 	cp data/raxml/RAxML_bipartitions.cukeBarcodes $@

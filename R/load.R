@@ -168,6 +168,25 @@ load_thresholdClusters <- function() {
     load_thresholdPairwise()/2
 }
 
+load_tree_raxml <- function(overwrite=FALSE) {
+    fnm <- "data/cukeTree-raxml.rds"
+    origTreeNm <- "data/raxml/RAxML_bipartitions.cukeBarcodes"
+    if (file.exists(fnm) && !overwrite) {
+        tree <- readRDS(file=fnm)
+    }
+    else {
+        if (file.exists(origTreeNm) && !overwrite) {
+            tree <- ape::read.tree(file=origTreeNm)
+            saveRDS(tree, fnm)
+        }
+        else {
+            build_raxml_tree()
+            tree <- load_tree_raxml(FALSE)
+        }
+    }
+    tree
+}
+
 load_tree_phylo4 <- function(distance="raw", taxa="all") {
     distance <- match.arg(distance, c("raw", "K80"))
     if(identical(distance, "raw")) {
