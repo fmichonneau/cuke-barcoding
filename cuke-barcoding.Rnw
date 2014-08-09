@@ -56,7 +56,7 @@ read_chunk("code/cuke-barcoding.R")
 @
 
 \maketitle
- 
+
 % Main message (less than 25 words):
 
 % There is a large amount of unrecognized diversity among Echinoderms.
@@ -85,7 +85,7 @@ read_chunk("code/cuke-barcoding.R")
   understanding of diversification and biodiversity among echinoderms.
 \end{abstract}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Figures
 
@@ -109,7 +109,7 @@ read_chunk("code/cuke-barcoding.R")
 
 %% barplot that shows taxonomic coverage of the sampling
 %% use different colors for each taxonomic group and shade to represent
-%% percentage covered by samples 
+%% percentage covered by samples
 
 
 
@@ -122,6 +122,56 @@ study we focus on describing the patterns of unrecognized diversity, and testing
 the role of latitude and phylogeny in shaping these patterns.
 
 
+* presentation of the dataset
+- largest barcoding dataset ever assembled
+
+* How much diversity?
+  - context: How much diversity in a group that hasn't received lots of
+  taxonomic attention and with potential for high levels of cryptic diversity
+  because of characters used to delineate species? and yet, relatively easy to
+  sample
+  - implications for conservation, fisheries management
+  - methods that can be used:
+    - limitations: some methods out of the question because size of dataset
+    (e.g., GMYC)
+    - use of thresholds: problem such large datasets, differences in rates of
+    molecular evolution making single threshold approach potentially challenging
+    - introduce pairwise and cluster methods challenges with both
+      - show image that represent: differences in topologies
+      (paraphyly/polyphyly)
+      - long branches
+    - does it really matter that ESUs identified aren't really species? they are
+    proxy for genetic diversity --> much higher than current understanding of
+    species limits
+
+* Molecular clock
+  - can we use isthmus of panama to calibrate the sea cucumber molecular clocks?
+  - differences in pairwise divergence for geminate species caused by:
+    - differences in timing: some species might have diverged before closure of
+    isthmus
+    - differences in rates of molecular evolution
+
+* Geography, diversity and diversification
+  - Diversity:
+    - [future] map of number of unique haplotypes per geographic areas
+    - areas of high ``species'' richness
+    - do species with large ranges have higher levels of genetic
+    differentiation? (isolation by distance)
+  - Diversification:
+    - Are sister species allopatric or sympatric?
+      -- role of geologic/geographic barriers
+    - Where are the barriers to cladogenesis?
+    - Is there signal that the timing of differentiation is similar for areas
+    with high endemism? Hawaii? Red Sea?
+  - Rates of secondary sympatry
+    - amount of divergence among individuals found in sympatry
+      (plot: %divergence vs. %sympatry(smaller ranged species))
+
+
+
+
+
+
 \section{Materials and Methods}
 
 \subsection{Specimen identification}
@@ -130,7 +180,7 @@ Most specimens were individually identified by GP, FM, Mark O'Loughlin and other
 taxonomic specialists. For most group, survey of primary literature was used to
 assign the most accurate names. This effort led to the re-discovery of taxonomic
 names that have been forgotten/never used in the literature, and names were
-resurrected from synonymies. 
+resurrected from synonymies.
 
 \subsection{Sequencing}
 
@@ -143,7 +193,7 @@ We amplified the 5' end of COI using the echinoderm primers developed by
 Biotechnology Research at the University of Florida. Chromatograms were
 assembled and edited using Geneious 5.5.8 \cite{Geneious558}.
 
-We kept all sequences that were more than 600 bp, 
+We kept all sequences that were more than 600 bp,
 
 \subsection{ESU delineation}
 
@@ -164,19 +214,19 @@ thresholds.
 
 <<cluster-groups-data, cache=TRUE>>=
 
-@ 
+@
 
 <<pairwise-groups-data, cache=TRUE>>=
 
-@ 
+@
 
 <<nGrps-groups-comparison-plot, cache=TRUE>>=
 
-@ 
+@
 
 <<pSngl-groups-comparison-plot, cache=TRUE>>=
 
-@ 
+@
 
 % tradeoff between many species 1 gene / multiple genes
 
@@ -185,10 +235,10 @@ thresholds.
 
 %% Neutrality of the sequences?
 % Are all protein sequences identical?
-% 
+%
 
 %% Diversification rates
- 
+
 %% Role of geography/latitude
 % diversification rates
 % intra- and interspecific genetic variation
