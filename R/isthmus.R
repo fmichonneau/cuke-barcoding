@@ -13,4 +13,8 @@ build_isthmus_alg <- function() {
     isthmusAlg <- cukeAlg[mtchId, ]
     ape::write.dna(isthmusAlg, file="data/cukeBarcodes-isthmus.phy",
                    format="sequential", colsep="", colw=dim(cukeAlg)[2])
+    nexusPartitionCreate(alg="data/cukeBarcodes-isthmus.phy",
+                         file.out="tmp/cukeBarcodes-isthmus.part",
+                         overwrite=TRUE)
+    alg2nex(file="data/cukeBarcodes-isthmus.phy", partition.file="tmp/cukeBarcodes-isthmus.part")
 }
