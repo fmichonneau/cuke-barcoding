@@ -1,5 +1,5 @@
 #NEXUS
-[Data written by write.nexus.data.R, Sat Aug  9 16:52:21 2014]
+[Data written by write.nexus.data.R, Sat Aug  9 16:58:38 2014]
 BEGIN DATA;
   DIMENSIONS NTAX=129 NCHAR=859;
   FORMAT DATATYPE=DNA MISSING=? GAP=- INTERLEAVE=NO;
@@ -137,7 +137,7 @@ BEGIN DATA;
 END;
 
 begin assumptions;
-  charset p1=1-859\3
-  charset p2=2-859\3
-  charset p3=3-859\3
+  charset p1 = 1-859\3;
+  charset p2 = 2-859\3;
+  charset p3 = 3-859\3;
 end;
