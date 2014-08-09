@@ -53,11 +53,12 @@ data/cukeTree-raw.rds: make/build_cukeTree_nj.R data/cukeBarcodes-flagAmb.rds
 data/cukeBarcodes-flagAmb.phy: data/cukeBarcodes-flagAmb.rds
 	${RSCRIPT} -e "library(ape); write.dna(readRDS('$<'), format='sequential', colw=1000, file='data/cukeBarcodes-flagAmb.phy')"
 
-data/cukeBarcodes-raxml.tre: data/cukeBarcodes-flagAmb.phy
-	${RSCRIPT} -e "library(seqManagement); raxmlPartitionCreate('$<', file.out='data/cukeBarcodes-partition', overwrite=TRUE)"
-	raxmlHPC-PTHREADS-SSE3 -s $< -m GTRGAMMA -q data/cukeBarcodes-partition -T8 -f a -p 10101 -x 10101 -# 500 -n cukeBarcodes
-	cp tmp/RAxML_bipartitions.cukeBarcodes $@
+data/cukeBarcodes-raxml.tre: data/cukeBarcodes-flagAmb.phy ## not tested
+	${RSCRIPT} -e "source('R/build.R'); build_raxml_tree('$<');"
+	cp data/raxml/RAxML_bipartitions.cukeBarcodes $@
 
+data/raxml_ptp/bPTPres: #data/cukeBarcodes-raxml.tre
+	${RSCRIPT} -e "source('R/build.R'); build_PTP_tree(); build_PTP_results();"
 
 
 ### figures
@@ -75,4 +76,3 @@ figures/cukeTree-raw.pdf: data/cukeTree-raw.rds R/plot.pdf.tree.R
 
 clean-tmp:
 	-rm -f tmp/*.*
-

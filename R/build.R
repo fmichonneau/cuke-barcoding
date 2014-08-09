@@ -25,26 +25,33 @@ build_cukeTree_phylo4 <- function(tree) {
     treeP4
 }
 
-build_PTP_alg <- function() {
-    alg <- ape::read.dna(file="data/cukeBarcodes-flagAmb.phy.reduced",
-                         format="sequential")
-    nmAlg <- dimnames(alg)[[1]]
-    mtchNm <- data.frame(origNm=nmAlg, newNm=1:length(nmAlg),
-                         stringsAsFactors=FALSE)
-    saveRDS(mtchNm, file="data/match-cukeBarcodes-labels.rds")
-    dimnames(alg)[[1]] <- mtchNm$newNm
-    ape::write.dna(alg, file="data/cukeBarcodes-flagAmb-reduced-numbered.phy",
-                   format="sequential", colsep="", colw=dim(alg)[2])
+build_raxml_tree <- function(algFile="data/cukeBarcodes-flagAmb.phy") {
+    partFile <- "data/cukeBarcodes-partition"
+    raxmlDir <- "data/raxml"
+    if (!file.exists(raxmlDir)) dir.create(raxmlDir)
+    raxmlPartitionCreate(algFile, file.out=partFile, overwrite=TRUE)
+    raxmlCmd <- paste("raxmlHPC-PTHREADS-SSE3", "-s", algFile, "-m GTRGAMMA",
+                      "-q", partFile,
+                      "-f a -p 10101 -x 10101 -# 500 -n cukeBarcodes",
+                      "-T8 -w", file.path(getwd(), raxmlDir))
+    system(raxmlCmd)
 }
 
 build_PTP_tree <- function() {
     ptpDir <- "data/raxml_ptp"
-    if (! file.exists(ptpDir)) dir.create(ptpDir)
-    raxmlCmd <- paste("raxmlHPC-PTHREADS-SSE3",
-                      "-s data/cukeBarcodes-flagAmb-reduced-numbered.phy",
-                      "-m GTRGAMMA -q data/cukeBarcodes-partition",
-                      "-f a -p 10101 -x 10101 -# 500 -n cukeBarcodesPTP",
-                      "-T8 -w", file.path(getwd(), ptpDir))
+    if (!file.exists(ptpDir)) dir.create(ptpDir)
+    raxmlTree <- ape::read.tree(file="data/raxml/RAxML_bestTree.cukeBarcodes")
+    raxmlAlg <- ape::read.dna(file="data/cukeBarcodes-flagAmb.phy.reduced",
+                              format="sequential")
+    toDrop <- raxmlTree$tip.label[! raxmlTree$tip.label %in% dimnames(raxmlAlg)[[1]]]
+    tree <- drop.tip(raxmlTree, toDrop)
+    ape::write.tree(tree, file=file.path(ptpDir, "RAxML_bestTree_reduced.cukeBarcodes"))
+}
 
-    system(raxmlCmd)
+build_PTP_results <- function(pathPTP="~/sandbox/SpeciesCounting/") {
+    ptpCmd <- paste("python", paste0(pathPTP, "bPTP.py"),
+                    "-t data/raxml_ptp/RAxML_bestTree_reduced.cukeBarcodes",
+                    "-s 10101 -o data/raxml_ptp/bPTPres -r",
+                    "-i 50000 -n 500")
+    system(ptpCmd)
 }
