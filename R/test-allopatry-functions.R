@@ -136,8 +136,8 @@ testRangeType <- function(tr, polygons, alg, percentOverlap=10) {
         ind2 <- gsub("\\\"", "", ind2)
         if (length(ind1) && length(ind2)) {
             if (any(is.na(match(c(ind1, ind2), dimnames(alg)[[1]]))))
-                ##stop("problem")
-                browser()
+                stop("problem")
+                ##browser()
             tmpAlg <- alg[c(ind1, ind2), ]
             tmpDist <- dist.dna(tmpAlg, model="raw", as.matrix=TRUE)
             list(mean=mean(tmpDist[ind1, ind2]), max=max(tmpDist[ind1, ind2]),
@@ -171,7 +171,7 @@ build_species_overlap <- function() {
     k <- 1
 
     tmpNm <- expand.grid(tax, method)
-    names(res) <- apply(tmpNm, 1, function(x) paste(x[2], x[1], sep="-"))
+    names(res) <- apply(tmpNm, 1, function(x) paste(x[2], x[1], gsub("\\.", "", thres), sep="-"))
 
     for (i in 1:length(method)) {
         for (j in 1:length(tax)) {
@@ -201,4 +201,20 @@ load_species_overlap <- function(overwrite=FALSE) {
         saveRDS(spOver, file=fnm)
     }
     spOver
+}
+
+load_species_overlap_comparison <- function(taxa="all", threshold=0.03) {
+     taxonomyDf <- load_taxonomyDf()
+     taxa <- match.arg(as.character(taxa), taxonomyDf$taxa)
+     spOver <- load_species_overlap()
+     prwseStr <- paste("pairwise", taxa, gsub("\\.", "", threshold), sep="-")
+     clstrStr <- paste("cluster", taxa, gsub("\\.", "", threshold), sep="-")
+     mPrwseStr <- match(prwseStr, names(spOver))
+     mClstrStr <- match(prwseStr, names(spOver))
+     stopifnot(length(mPrwseStr) == 1 && length(mClstrStr) == 1)
+     pairwiseData <- spOver[[mPrwseStr]]
+     clusterData <- spOver[[mClstrStr]]
+     pairwiseData$method <- "pairwise"
+     clusterData$method <- "cluster"
+     rbind(pairwiseData, clusterData)
 }

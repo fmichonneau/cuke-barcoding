@@ -150,9 +150,12 @@ ggplot(subset(dat, nInd >= 3 & family %in% keepFamilies & latCat == "tropical"))
 
 ### ---- test-allopatry ----
 source("R/test-allopatry-functions.R")
-speciesOver <- load_species_overlap()
+spComp <- load_species_overlap_comparison()
 
-
+ggplot(spComp) + geom_point(data=spComp[!is.na(spComp$rangeType), ],
+                            aes(x=rangeType, y=maxInterDist),
+                            position=position_jitter(width=.1, height=0)) +
+    facet_wrap(~ method)
 
 
 

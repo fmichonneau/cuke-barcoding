@@ -146,7 +146,7 @@ load_taxonomyDf <- function(overwrite=FALSE) {
 
 load_labelsFromTaxa <- function(taxa="all") {
     taxonomyDf <- load_taxonomyDf()
-    taxa <- match.arg(taxa, taxonomyDf$taxa)
+    taxa <- match.arg(as.character(taxa), taxonomyDf$taxa)
     cukeDB <- load_cukeDB()
 
     if (taxa == "all") {
