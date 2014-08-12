@@ -91,7 +91,7 @@ ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
 ### ----- compare-genetic-geo-distances ----
 source("R/CalcGeoDist.R")
 source("R/load.R")
-treeH <- load_tree_clusterGrps(taxa="Holothuriidae")
+treeH <- load_tree_clusterGrps(taxa="all")
 cukeDB <- load_cukeDB()
 grps <- tdata(treeH, "tip")[, "Groups", drop=FALSE]
 cukeAlg <- load_cukeAlg()
@@ -158,9 +158,6 @@ ggplot(spComp) + geom_point(data=spComp[!is.na(spComp$rangeType), ],
     facet_wrap(~ method)
 
 
-
-
-
 ggplot(geoSpe) +
     geom_boxplot(data=(geoSpe[!is.na(geoSpe$rangeType),]),
                  aes(x=rangeType, y=minInterDist))
@@ -170,33 +167,51 @@ ggplot(geoSpe) +
 
 actTree <- subset(treeH, tips.include=grep("Actinopyga", tipLabels(treeH)))
 bohTree <- subset(treeH, tips.include=grep("Bohadschia", tipLabels(treeH)))
-ffff
 
+
+### ---- distribution-maps ----
 library(maps)
 library(ggplot2)
 
 globalMap <- map_data("world2")
 
-pdf(file="distributionMaps.pdf", paper="letter")
-for (i in 1:length(uniqGrps)) {
+pdf(file="tmp/distributionMaps.pdf", paper="letter")
+for (i in 1:length(listCoords)) {
+    message(i)
     tmpCoords <- listCoords[[i]]
-    if (nrow(tmpData) < 4) next
-    if (length(unique(paste(tmpData$decimalLatitude, tmpData$decimalLongitude))) < 4) next
     center <- 150
-    tmpData$long.recenter <- ifelse(tmpData$decimalLongitude < center - 180,
-                                    tmpData$decimalLongitude + 360,
-                                    tmpData$decimalLongitude)
-    hll <- try(chull(tmpData$long.recenter, tmpData$decimalLatitude), silent=FALSE)
-    if (inherits(hll, "try-error")) next
-    hll <- tmpData[hll, ]
-    xx <- ggplot(tmpData) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-        geom_point(aes(x = long.recenter, y = decimalLatitude), data=tmpData) +
-        geom_polygon(data=hll, aes(x=long.recenter, y=decimalLatitude), alpha=.2) +
-        coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-        theme(panel.background = element_rect(fill="aliceblue")) +
-         ggtitle(paste(i, species[[i]][1]))
-        ##ylim(c(-45,45))
-    print(xx)
+    tmpCoords$long.recenter <- ifelse(tmpCoords$decimalLongitude < center - 180,
+                                      tmpCoords$decimalLongitude + 360,
+                                      tmpCoords$decimalLongitude)
+    tmpCoords <- tmpCoords[complete.cases(tmpCoords), ]
+    if (nrow(tmpCoords) > 0) {
+        xx <- ggplot(tmpCoords) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+            geom_point(aes(x = long.recenter, y = decimalLatitude), data=tmpCoords) +
+                coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+                    theme(panel.background = element_rect(fill="aliceblue")) +
+                        ggtitle(paste(i, species[[i]][1]))
+        ## need to add this mumbo-jumbo otherwise it crashes R when points are
+        ##  too close to each others, forcing at least a 10x10° plot
+        if (abs(diff(range(tmpCoords$decimalLatitude))) < 10) {
+            yLim <- c(mean(range(tmpCoords$decimalLatitude)) - 5,
+                      mean(range(tmpCoords$decimalLatitude)) + 5)
+            xx <- xx + ylim(yLim)
+        }
+        if (abs(diff(range(tmpCoords$decimalLongitude))) < 10) {
+            xLim <- c(mean(range(tmpCoords$decimalLongitude)) - 5,
+                      mean(range(tmpCoords$decimalLongitude)) + 5)
+            xx <- xx + xlim(xLim)
+        }
+        if (length(unique(paste(tmpCoords$decimalLatitude, tmpCoords$decimalLongitude))) > 2) {
+            hll <- try(chull(tmpCoords$long.recenter, tmpCoords$decimalLatitude), silent=FALSE)
+            if (!inherits(hll, "try-error")) {
+                hll <- tmpCoords[hll, ]
+                xx <- xx + geom_polygon(data=hll, aes(x=long.recenter, y=decimalLatitude), alpha=.2)
+            }
+        }
+        print(xx)
+    }
+    else next
 }
 dev.off()
 
