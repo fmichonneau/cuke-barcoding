@@ -20,14 +20,59 @@ load_cukeDB <- function(overwrite=FALSE) {
     if (file.exists(fnm) && !overwrite)
         cukeDB_lbls <- readRDS(file=fnm)
     else {
-        treeH <- load_cukeTree_raw()
         echinoDB <- load_echinoDB()
         cukeDB <- subset(echinoDB, class_ == "Holothuroidea")
+
+        ## fix GPS coordinates
+        cukeDB[cukeDB$decimalLatitude==19.95 & cukeDB$Loc == "MexicoPac",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(20.3, -105.5)
+        cukeDB[cukeDB$Loc == "Tanzania", "decimalLatitude"] <- -cukeDB[cukeDB$Loc == "Tanzania", "decimalLatitude"]
+        cukeDB[cukeDB$Loc == "Eparses", "decimalLatitude"] <- -cukeDB[cukeDB$Loc == "Eparses", "decimalLatitude"]
+        cukeDB[cukeDB$Sample == "MOLAF_0139",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-9.536, 147.289)
+        cukeDB[cukeDB$Sample == "8928",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.14623, 39.13786)
+        cukeDB[cukeDB$Sample == "FRM069",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(NA, NA) ## prob cont.
+        cukeDB[cukeDB$Sample == "8919",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.125, 39.191)
+        cukeDB[cukeDB$Sample == "RUMF-ZE-00072",  ## not from okinawa but Xmas Island
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-10.501823, 105.685488)
+        cukeDB[cukeDB$Sample == "8858F",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(NA, NA) ## prob cont.
+         cukeDB[cukeDB$Sample == "9166",
+                c("decimalLatitude", "decimalLongitude")] <- data.frame(-22.33917, 40.3388) ## prob cont.
+        cukeDB[cukeDB$Sample == "MOLAF_0108",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-9.536, 147.289)
+        cukeDB[cukeDB$Sample == "8931",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.14623, 39.13786)
+        cukeDB[cukeDB$Sample == "8932",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.14623, 39.13786)
+         cukeDB[cukeDB$Sample == "9190",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-22.34657, 40.33203)
+         cukeDB[cukeDB$Sample == "8937",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.38733, 39.28727)
+        cukeDB[cukeDB$Sample == "Hickman_needed3",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-0.41, -91.48)
+         cukeDB[cukeDB$Sample == "8923",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.146230, 39.13786)
+         cukeDB[cukeDB$Sample == "8933",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.38733, 39.28727)
+         cukeDB[cukeDB$Sample == "8930",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.146230, 39.13786)
+         cukeDB[cukeDB$Sample == "8938",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.38733, 39.28727)
+        cukeDB[cukeDB$Sample == "6355",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-21.1008, 55.2437)
+
+
+        ## add labels
+        treeH <- load_cukeTree_raw_phylo4()
+
         dataLbls <- character(nrow(cukeDB))
         for (i in 1:nrow(cukeDB)) {
             dataLbls[i] <- genLabel(cukeDB[i, ])
         }
-
         ## using the same pattern as in seqManagement::cleanSeqLabels
         cukeDB$Labels <- gsub(":|,|\\(|\\)|;|\\[|\\]|\\'|\\s|\t", "", dataLbls)
 
@@ -36,11 +81,11 @@ load_cukeDB <- function(overwrite=FALSE) {
                                stringsAsFactors=FALSE)
 
         stopifnot(all(treeTips$treeLabels %in% cukeDB$Labels))
-
         cukeDB_lbls <- merge(cukeDB, treeTips, by="Labels")
+
         saveRDS(cukeDB_lbls, fnm)
     }
-    cukeDB_lbls
+    invisible(cukeDB_lbls)
 }
 
 load_cukeTree_raw <- function(overwrite=FALSE, ...) {
