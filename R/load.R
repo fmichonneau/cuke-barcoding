@@ -263,7 +263,7 @@ load_species_pairwiseGrps <- function(distance="raw", taxa="all",
     distance <- match.arg(distance, c("raw", "K80"))
     stopifnot(length(threshold) == 1 && threshold %in% thres)
 
-    pairwseGrpRes <- load_pairwiseGrpRes()
+    pairwiseGrpRes <- load_pairwiseGrpRes()
     nmRes <- paste(distance, taxa, sep="-")
     res <- pairwiseGrpRes[[match(nmRes, names(pairwiseGrpRes))]][[which(thres == threshold)]]
     stopifnot(! is.null(res))

@@ -1,4 +1,5 @@
 source("R/load.R")
+source("R/pairwise-groups-functions.R")
 
 spatialFromSpecies <- function(tree, cukeDB) {
 
