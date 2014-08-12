@@ -10,6 +10,7 @@ cache/
 ## latex files
 *.aux
 *.log
+*.blg
 
 ## hpc files
 *.err
