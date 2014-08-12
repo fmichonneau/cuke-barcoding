@@ -50,6 +50,7 @@ options(tikzDefaultEngine = "xetex")
 options(tikzDocumentDeclaration = paste(getOption("tikzDocumentDeclaration"),
             "\n\\renewcommand*{\\familydefault}{\\sfdefault}", sep=""))
 read_chunk("code/cuke-barcoding.R")
+source("R/load.R")
 @
 
 <<load-packages, echo=FALSE, cache=FALSE, include=FALSE>>=
@@ -121,55 +122,49 @@ barcode library be used to identify a species?) \cite{Collins2013}. In this
 study we focus on describing the patterns of unrecognized diversity, and testing
 the role of latitude and phylogeny in shaping these patterns.
 
+* barcoding has limitations, but when used with comprehensive taxonomic and
+geographic sampling, powerful to assess diversity, in particular in groups that
+haven't received lots of taxonomic attention
 
-* presentation of the dataset
-- largest barcoding dataset ever assembled
+* In such cases, barcoding has typically revealed more diversity than previously
+acknowledged. From the variety of studies, clearly many different patterns
+emerge. Using large datasets allow to evaluate the relative importance of these
+patterns. Examples: differentiation between IO and PO, unrecognized endemics in
+Red Sea, Hawaii
 
-* How much diversity?
-  - context: How much diversity in a group that hasn't received lots of
-  taxonomic attention and with potential for high levels of cryptic diversity
-  because of characters used to delineate species? and yet, relatively easy to
-  sample
-  - implications for conservation, fisheries management
-  - methods that can be used:
-    - limitations: some methods out of the question because size of dataset
-    (e.g., GMYC)
-    - use of thresholds: problem such large datasets, differences in rates of
-    molecular evolution making single threshold approach potentially challenging
-    - introduce pairwise and cluster methods challenges with both
-      - show image that represent: differences in topologies
-      (paraphyly/polyphyly)
-      - long branches
-    - does it really matter that ESUs identified aren't really species? they are
-    proxy for genetic diversity --> much higher than current understanding of
-    species limits
+* On the other hand, barcoding has also revealed instances of clear
+morphological differences with limited genetic differentiation. Three main
+hypotheses to explain this pattern (hybridization, incomplete lineage sorting,
+polymorphism). How common is this pattern? Are the same explanations always
+behind these patterns?
 
-* Molecular clock
-  - can we use isthmus of panama to calibrate the sea cucumber molecular clocks?
-  - differences in pairwise divergence for geminate species caused by:
-    - differences in timing: some species might have diverged before closure of
-    isthmus
-    - differences in rates of molecular evolution
+* few groups have been sampled extensively. Diversity in IWP thought to follow
+diversity patterns of more well-known species: mollusks, fish, corals. Most of
+the diversity is in the coral triangle. However, other groups don't always seem
+to follow this pattern (e.g., Calcinus). Comprehensive sampling allows to
+revisit this question.
 
-* Geography, diversity and diversification
-  - Diversity:
-    - [future] map of number of unique haplotypes per geographic areas
-    - areas of high ``species'' richness
-    - do species with large ranges have higher levels of genetic
-    differentiation? (isolation by distance)
-  - Diversification:
-    - Are sister species allopatric or sympatric?
-      -- role of geologic/geographic barriers
-    - Where are the barriers to cladogenesis?
-    - Is there signal that the timing of differentiation is similar for areas
-    with high endemism? Hawaii? Red Sea?
-  - Rates of secondary sympatry
-    - amount of divergence among individuals found in sympatry
-      (plot: %divergence vs. %sympatry(smaller ranged species))
+* Behind these patterns is rate of secondary sympatry, molecular data allows to
+test whether diversification occurs mostly in allopatry or in sympatry. And
+once, diversification has occurred how long it takes for species to co-exist in
+sympatry.
 
+* To assess time it takes, need a good molecular clock, however, in most marine
+invertebrates not really possible because fossils are too limited. However,
+there are several pairs of sister species across isthmus of Panama, so we can
+evaluate differences in rates, and
 
+* This study is on sea cucumbers because poor understanding of species limits
+use of conservative characters used in species-level taxonomy. Yet need for
+management and better understanding of biology given fisheries pressures.
 
+* Presentation of the dataset: most geographically and taxonomically
+comprehensive barcoding dataset.
 
+* Goals:
+  - assess amount of cryptic diversity
+  - evaluate geographic patterns of diversity and diversification
+  - re-evaluate molecular clock
 
 
 \section{Materials and Methods}
@@ -195,20 +190,97 @@ assembled and edited using Geneious 5.5.8 \cite{Geneious558}.
 
 We kept all sequences that were more than 600 bp,
 
-\subsection{ESU delineation}
+\subsection{Diversity}
 
-\paragraph{The local barcoding gap method} The local barcoding gap clustering
-method (LBGM) is introduced here. It identifies monophyletic clusters of
-individuals from a neighbor-joining tree (other tree reconstruction methods can
-be used). Individuals are clustered so that the maximum genetic distance between
-two individuals belonging to the same cluster is less than a set
-threshold. Since it is based on the maximum intraspecific distance, it shares
-similarity with the local barcoding graphs, where maximum intra-specific
+% context: How much diversity in a group that hasn't received lots of
+% taxonomic attention and with potential for high levels of cryptic diversity
+% because of characters used to delineate species? and yet, relatively easy to
+% sample
+
+-  [discussion] use of thresholds: problem such large datasets, differences in rates of
+molecular evolution making single threshold approach potentially challenging
+- [results] show image that represent: differences in topologies,
+(paraphyly/polyphyly), long branches
+- [results] comparison of results from the 2 methods
+- [discussion] does it really matter that ESUs identified aren't really species? they are
+proxy for genetic diversity --> much higher than current understanding of
+species limits
+
+- [results] comparison with number of species from taxonomy
+- [results] how much of the genera/families were sampled?
+- [results] adequate sampling across the range of the species
+
+The size of the dataset restricts the methods that can be used to assess
+diversity within the dataset, and computationally intensive methods such as the
+Generalized Mixed Yule Coalescent method \cite{Pons2006} cannot be used
+here. Other programs cannot accommodate such large dataset, and failed to
+complete the analysis. Therefore, we were here limited to use threshold-based
+methods to estimate the number of species and used two approaches: pairwise
+distances and the cluster identification method.
+
+Based on pairwise distances, we grouped individuals that diverged at most by a
+given threshold. This method is strictly based on the genetic distance and does
+not take into account phylogenetic information.
+
+We used here a new method that identifies monophyletic clusters of individuals
+from a neighbor-joining tree (other tree reconstruction methods can be used),
+reconstructed from the pairwise genetic distances. Individuals belonging to the
+same cluster are separated by genetic distance less than a threshold set
+\textit{a priori}. Since it is based on the maximum intraspecific distance, it
+shares similarity with the local barcoding graphs, where maximum intra-specific
 distance between individuals is plotted against the distance to the closest
 neighboring species (see \cite[Fig.~4 in]{Robinson2009} for an example). It
 differs as it only uses information from the tree (no need to associate species
 names with the sequences), but suffers from the caveats associated with using
-thresholds.
+arbitrary thresholds.
+
+For each of these two approaches, we used both uncorrected distances ($p$) and
+the Kimura two-parameter (K2P) distance \cite{Kimura1980} to estimate pairwise
+distances. The K2P distance is very widely used in barcoding studies, but a
+recent study indicated that the $p$ distance is probably more appropriate when
+comparing genetic distances between closely related species and may lead to
+higher rates of identification success \cite{Collins2012}. We estimated the
+number of species recovered from our sample while varying the pairwise threshold
+value: \Sexpr{paste0(load_thresholdPairwise(), collapse=", ")}. Additionally, we
+estimated the proportion of singletons (proportion of the number species
+represented by a single individual) for each of these threshold values. If a
+suitable threshold allows to detect the barcoding gap and therefore estimate
+diversity within a group, we expect the number of species estimated to
+stabilize. Similarly, we expect that the proportion of singletons decreases when
+the threshold identifies the barcoding gap by going from overspliting.
+
+We repeated these analyses on the entire dataset, and on each order and each
+family.
+
+\subsection{Geography, diversity and diversification}
+
+- Diversity:
+  - [future] map of number of unique haplotypes per geographic areas
+  - areas of high ``species'' richness
+  - do species with large ranges have higher levels of genetic
+  differentiation? (isolation by distance)
+
+- Diversification:
+  - Are sister species allopatric or sympatric?
+  - role of geologic/geographic barriers
+  - Where are the barriers to cladogenesis?
+  - Is there signal that the timing of differentiation is similar for areas
+  with high endemism? Hawaii? Red Sea?
+  - Rates of secondary sympatry
+  - amount of divergence among individuals found in sympatry
+      (plot: %divergence vs. %sympatry(smaller ranged species))
+
+
+\subsection{Molecular clock estimation}
+
+- can we use isthmus of panama to calibrate the sea cucumber molecular clocks?
+- differences in pairwise divergence for geminate species caused by:
+- differences in timing: some species might have diverged before closure of
+isthmus
+- differences in rates of molecular evolution
+
+
+
 
 \section{Results}
 
@@ -227,6 +299,10 @@ thresholds.
 <<pSngl-groups-comparison-plot, cache=TRUE>>=
 
 @
+
+
+\section{Discussion}
+
 
 % tradeoff between many species 1 gene / multiple genes
 
