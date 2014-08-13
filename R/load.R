@@ -65,6 +65,13 @@ load_cukeDB <- function(overwrite=FALSE) {
         cukeDB[cukeDB$Sample == "6355",
                c("decimalLatitude", "decimalLongitude")] <- data.frame(-21.1008, 55.2437)
 
+        ## check taxonomy
+        testGenera <-  as.matrix(xtabs(~ genusorhigher + family, data=cukeDB, subset=family != "Uncertain"))
+        resGenera <- apply(testGenera, 1, function(x) sum(x != 0))
+        stopifnot(all(resGenera == 1))
+        testFamily <- as.matrix(xtabs(~ family + order, data=cukeDB, subset=family != "Uncertain"))
+        resFamily <- apply(testFamily, 1, function(x) sum(x != 0))
+        stopifnot(all(resFamily == 1))
 
         ## add labels
         treeH <- load_cukeTree_raw_phylo4()
@@ -172,7 +179,6 @@ load_taxonomyDf <- function(overwrite=FALSE) {
     }
     else {
         cukeDB <- load_cukeDB()
-
         uniqOrder <- unique(cukeDB$order)
         uniqFamily <- unique(cukeDB$family)
         uniqFamily <- uniqFamily[! uniqFamily %in%
@@ -183,6 +189,12 @@ load_taxonomyDf <- function(overwrite=FALSE) {
                                      rep("Family", length(uniqFamily))),
                                  taxa = c("all", uniqOrder, uniqFamily))
         stopifnot(! any(duplicated(taxonomyDf$taxa)))
+        testFamily <- as.matrix(xtabs(~ family + order, data=cukeDB,
+                                      subset = !family %in% c("Dactylochirotida", "?", "Uncertain")))
+        whichOrder <- apply(testFamily, 1, function(x) which(x != 0))
+        tmpFamily <- data.frame(taxa = names(whichOrder),
+                                higher=dimnames(testFamily)[[2]][whichOrder])
+        taxonomyDf <- merge(taxonomyDf, tmpFamily, all.x=TRUE)
         saveRDS(taxonomyDf, file=fnm)
     }
     taxonomyDf
