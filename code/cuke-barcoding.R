@@ -88,7 +88,7 @@ ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
     geom_point() + facet_wrap( ~ taxa)
 
 
-### ----- compare-genetic-geo-distances ----
+### ----- isolation-by-distance-data ----
 source("R/CalcGeoDist.R")
 source("R/load.R")
 treeH <- load_tree_clusterGrps(taxa="all")
@@ -112,11 +112,11 @@ for (i in 1:length(uniqGrps)) {
     listCoords[[i]] <- tmpCoords
     matGeoDistTmp <- CalcGeoDists(cbind(deg2rad(tmpCoords$decimalLongitude),
                                         deg2rad(tmpCoords$decimalLatitude)))
-    latCat[i] <- ifelse(mean(abs(tmpCoords$decimalLatitude)) < 22, "tropical", "polar")
+    latCat[i] <- ifelse(mean(abs(tmpCoords$decimalLatitude)) < 23.4378, "tropical", "other")
     nInd[i] <- nrow(tmpCoords)
     matGeoDist[[i]] <- matGeoDistTmp
     tmpAlg <- cukeAlg[match(tmpSpp, dimnames(cukeAlg)[[1]]), ]
-    matGenDist[[i]] <- dist.dna(tmpAlg, model="raw")
+    matGenDist[[i]] <- dist.dna(tmpAlg, model="K80")
     tmpFamilies <- sapply(strsplit(tmpSpp, "_"), function(x) x[1])
     species[[i]] <- sapply(strsplit(tmpSpp, "_"), function(x) paste(x[2:3], collapse="_"))
     #stopifnot(length(unique(tmpFamilies)) < 2)
@@ -129,24 +129,67 @@ for (i in 1:length(uniqGrps)) {
 
 meanGeoDist <- lapply(matGeoDist, mean)
 maxGeoDist <- lapply(matGeoDist, max)
+minGeoDist <- lapply(matGeoDist, min)
 fullGeoDist <- unlist(lapply(matGeoDist, as.numeric))
+
 meanGenDist <- lapply(matGenDist, mean)
+maxGenDist <- lapply(matGenDist, max)
 fullGenDist <- unlist(lapply(matGenDist, as.numeric))
 
-dat <- data.frame(genDist = unlist(meanGenDist), geoDist = unlist(meanGeoDist),
-                  maxGeoDist = unlist(maxGeoDist), family = families,
-                 latCat = latCat, nInd = nInd)
+spp <- sapply(species, function(x) names(which.max(table(x))))
 
-plot(genDist ~ maxGeoDist, data=dat, subset = nInd >= 5 & geoDist > 100)
-summary(lm(genDist ~ geoDist, data=dat, subset=nInd >= 5 & geoDist > 100))
+distBySpecies <- data.frame(genDist = unlist(meanGenDist), geoDist = unlist(meanGeoDist),
+                            maxGenDist = unlist(maxGenDist),
+                            maxGeoDist = unlist(maxGeoDist), family = families,
+                            latCat = latCat, nInd = nInd, species = spp)
 
-ggplot(data=dat, aes(x=geoDist, y=genDist, colour=latCat, size=nInd)) + geom_point()
+taxonomyDf <- load_taxonomyDf()
+distBySpecies <- merge(distBySpecies, taxonomyDf, by.x="family", by.y="taxa", all.x=TRUE)
+distBySpecies <- subset(distBySpecies, nInd >= 3)
+distBySpecies <- distBySpecies[complete.cases(distBySpecies), ]
+names(distBySpecies)[match("higher", names(distBySpecies))] <- "Order"
 
-nGeoData <- tapply(dat$geoDist, dat$family, function(x) sum(!is.na(x)))
-keepFamilies <- names(nGeoData)[nGeoData >= 9]
+### ---- isolation-by-distance-plot ----
+ggplot(subset(distBySpecies, Order %in% c("Apodida", "Aspidochirotida", "Dendrochirotida", "Elasipodida")),
+       aes(x=maxGeoDist, y=maxGenDist, colour=Order)) +
+    geom_point() + stat_smooth(method="lm", se=FALSE) +
+    facet_wrap(~ Order) + ylab("Maximum genetic distance (K2P)") +
+    xlab("Maximum genetic distance (km)") +
+    theme(legend.position="top")
 
-ggplot(subset(dat, nInd >= 3 & family %in% keepFamilies & latCat == "tropical")) +
-    geom_point(aes(x=family, y=geoDist, colour=family), position=position_jitter(width=.05))
+### ---- isolation-by-distance-stats ----
+idbDendro <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Dendrochirotida")
+idbAspido <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Aspidochirotida")
+idbApod <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Apodida")
+idbElas <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Elasipodida")
+
+summary.aov(lm(maxGenDist ~ order, data=dat))
+
+### ---- alldata -----
+plot(maxGenDist ~ maxGeoDist, data=dat, subset = nInd >= 10)
+summary(lm(genDist ~ geoDist, data=dat, subset= nInd >= 10))
+abline(lm(genDist ~ geoDist, data=dat, subset= nInd >= 10))
+
+
+distByInd <- data.frame(family=rep(families, sapply(matGeoDist, function(x) length(as.numeric(x)))),
+                        genDist=fullGenDist,
+                        geoDist=fullGeoDist)
+distByInd <- merge(distByInd, taxonomyDf, by.x="family", by.y="taxa", all.x=TRUE)
+distByInd <- distByInd[complete.cases(distByInd), ]
+
+ggplot(distByInd, aes(x=geoDist, y=genDist, colour=higher)) + geom_point(position="jitter") +
+    stat_smooth(method="lm")
+
+### ---- mantel-test ----
+### Doesn't really work given too much data, could instead do by species
+###   but then issues with multiple comparisons...
+## cukeAlg <- load_cukeAlg()
+## cukeDB <- load_cukeDB()
+## tmpCoords <- cukeDB[match(dimnames(cukeAlg)[[1]], cukeDB$Labels_withAmb), ]
+## stopifnot(nrow(cukeAlg) == nrow(tmpCoords))
+## genDistMat <- ape::dist.dna(cukeAlg, model="K80", as.matrix=TRUE)
+## geoDist <- CalcGeoDists(cbind(deg2rad(tmpCoords$decimalLongitude),
+##                               deg2rad(tmpCoords$decimalLatitude)))
 
 ### ---- test-allopatry ----
 source("R/test-allopatry-functions.R")
@@ -215,23 +258,36 @@ for (i in 1:length(listCoords)) {
 }
 dev.off()
 
+### ---- global-distribution-map ----
+source("R/test-allopatry-functions.R")
+spatialSpecies <- spatialFromSpecies(load_tree_clusterGrps("raw", "all", 0.015),
+                                     load_cukeDB())
 
-
-tmpHll <- allHll[sapply(allHll, function(x) attr(x, "type-coords") == "polygon")]
-tmpSpp <- rep(names(tmpHll), sapply(tmpHll, function(x) nrow(x[complete.cases(x), ])))
-allHllDf <- do.call("rbind", tmpHll)
+isPolygon <- sapply(spatialSpecies[[1]], function(x) attr(x, "type-coords") == "polygon")
+spatialHull <- spatialSpecies[[1]][isPolygon]
+tmpSpp <- rep(names(spatialHull), sapply(spatialHull, function(x) nrow(x[complete.cases(x), ])))
+allHllDf <- do.call("rbind", spatialHull)
 allHllDf <- cbind(allHllDf, species=tmpSpp)
 
+ptsDf <- do.call("rbind", spatialSpecies[[1]])
+spPts <- rep(names(spatialSpecies[[1]]), sapply(spatialSpecies[[1]], nrow))
+ptsDf <- cbind(ptsDf, species=spPts)
+
 ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    ##geom_point(aes(x = long.recenter, y = decimalLatitude), data=tmpData) +
-   ## geom_polygon(data=(allHllDf[grep("^21-|^9-", allHllDf$species), ]),
-    ##             aes(x=long.recenter, y=decimalLatitude, colour=species), fill="blue",
-      ##           linetype=1, size=.01, alpha=.05) +
-    geom_point(data=(allHllDf[grep("^21-|^9-", allHllDf$species), ]),
-                aes(x=long.recenter, y=decimalLatitude, colour=species)) +
+    geom_polygon(data=allHllDf, aes(x=long.recenter, y=decimalLatitude, colour=species),
+                 fill="red", linetype=1, size=.01, alpha=.03) +
     coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-    theme(panel.background = element_rect(fill="aliceblue")) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position = "none") +
     ylim(c(-30,30)) + xlim(c(0, 300))
+
+ggplot(ptsDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species),
+               position = position_jitter(width=1, height=1), data=ptsDf) +
+    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position = "none") +
+    ylim(c(-30, 30)) + xlim(c(0, 300))
 
 
 ### ---- summary-bPTP-results ----

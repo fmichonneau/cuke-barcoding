@@ -249,10 +249,45 @@ diversity within a group, we expect the number of species estimated to
 stabilize. Similarly, we expect that the proportion of singletons decreases when
 the threshold identifies the barcoding gap by going from overspliting.
 
-We repeated these analyses on the entire dataset, and on each order and each
-family.
+We repeated these analyses on the entire dataset, on each order and each family.
 
 \subsection{Geography, diversity and diversification}
+
+We investigated the geographic patterns of diversity from the ESUs identified
+from the barcoding data. For each ESUs, when three or more locations were
+sampled, we computed the convex hull to obtain a polygon approximating their
+distribution. To obtain a diversity contour map, we superimposed the polygons
+obtained.
+
+If dispersal is spatially restricted, a pattern of isolation-by-distance (IBD),
+where genetic differentiation increases with geographical distance, may be
+detected. In sea cucumbers, as with other marine invertebrate, dispersal
+typically occurs during the larval stage. Larvae can be planktotrophic (they
+feed in the plankton), or oligotrophic (they feed on reserves included with the
+egg). A few species of sea cucumbers are also brooders and adults release
+juveniles. The type of development and larvae may influence the dispersal
+potential of the species, with brooders having little dispersal potential while
+species with planktotrophic larvae might disperse over longer distances. To test
+for evidence of IBD we investigated the relationship between the maximum
+intra-ESU genetic distances and the maximum geographical distances sampled for
+each ESUs represented by three or more individuals. While the reproductive
+biology of most sea cucumber species has not been investigated, it is recognized
+that most species of Aspidochirotida and Apodida have planktotrophic larvae,
+while species of Dendrochirotida have oligotrophic larvae. To assess if these
+differences in life history among the orders had an effect of the IBD pattern,
+we analyzed them separately.
+
+To test whether tropical and low-latitude species affected the IBD
+pattern, we performed an ANCOVA on the maximum intra-ESU genetic distances as
+the response variable, the maximum geographical distance for each ESU as the
+covariate and the zone of occurrence as the independent variable (species for
+which the absolute mean of their latitudinal range is < 23$^{\circ}$ were
+classified as ``tropical'', others were classified as ``other''). We only had
+enough data for the Dendrochirotida to do this analysis. For the other groups,
+we compared the results obtained on the full dataset and on the dataset
+restricted to the zone of occurrence with the most data (tropics for the
+Aspidochirotida and Apodida; other for the Elasipodida). We did not have enough
+data to analyze the Molpadida or the Dactylochirotida separately.
 
 - Diversity:
   - [future] map of number of unique haplotypes per geographic areas
@@ -284,7 +319,7 @@ isthmus
 
 \section{Results}
 
-<<cluster-groups-data, cache=TRUE>>=
+<<cluster-groups-data, cache=TRUE, >>=
 
 @
 
@@ -297,6 +332,19 @@ isthmus
 @
 
 <<pSngl-groups-comparison-plot, cache=TRUE>>=
+
+@
+
+
+\subsection{Geography, diversity and diversification}
+
+<<isolation-by-distance-data, cache=TRUE, results='hide'>>=
+@
+
+<<isolation-by-distance-plot, cache=TRUE, dependson='isolation-by-distance-data', results='hide', fig.scap='Genetic and geographic distances for each order', fig.cap='Maximum genetic distance according to the maximum geographic distance for species identified with the clustering approach with a threshold of 3\\%, represented by at least 3 individuals. Lines represent a simple linear regresion.'>>=
+@
+
+<<isolation-by-distance-stats, cache=TRUE, dependson='isolation-by-distance-data'>>=
 
 @
 
