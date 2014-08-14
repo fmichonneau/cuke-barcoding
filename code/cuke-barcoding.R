@@ -149,26 +149,68 @@ distBySpecies <- subset(distBySpecies, nInd >= 3)
 distBySpecies <- distBySpecies[complete.cases(distBySpecies), ]
 names(distBySpecies)[match("higher", names(distBySpecies))] <- "Order"
 
+orderToInclude <- c("Apodida", "Aspidochirotida", "Dendrochirotida")
+
+### ---- isolation-by-distance-stats ----
+library(xtable)
+library(car)
+
+leveneIbd <- car::leveneTest(lm(maxGenDist ~ Order, data=distBySpecies,
+                                subset=Order %in% orderToInclude))
+leveneIbdFstat <- paste("$F(", paste0(leveneIbd$Df, collapse=", "), ")=",
+                        formatC(leveneIbd$"F value"[1]), "$", sep="")
+leveneIbdP <- paste("$P >", formatC(leveneIbd$"Pr(>F)"[1], digits=2),
+                    "$", sep="")
+
+ibdAncova <- lm(maxGenDist ~ maxGeoDist*Order, data=distBySpecies,
+                subset=Order %in% orderToInclude)
+summLmIbd <- summary.lm(ibdAncova)
+summAovIbd <- summary.aov(ibdAncova)
+ancovaFstat <- paste("$F(", paste(summLmIbd$fstatistic[2], summLmIbd$fstatistic[3], sep=", "), ")=",
+                     formatC(summLmIbd$fstatistic[1], digits=3), "$", sep="")
+ancovaP <- paste("$P <", ifelse(pf(summLmIbd$fstatistic[1], summLmIbd$fstatistic[2], summLmIbd$fstatistic[3], lower=F) < 0.001,
+                                0.001, pf(summLmIbd$fstatistic[1], summLmIbd$fstatistic[2], summLmIbd$fstatistic[3], lower=F)),
+                 "$")
+interactionFstat <- paste("$F(", paste(summAovIbd[[1]]$Df[3], summAovIbd[[1]]$Df[4], sep=", "), ")=",
+                          formatC(summAovIbd[[1]]$"F value"[3], digits=3), "$", sep="")
+interactionP <- paste("$P =", formatC(summAovIbd[[1]]$"Pr(>F)"[3], digits=2), "$")
+interceptFstat <- paste("$F(", paste(summAovIbd[[1]]$Df[2], summAovIbd[[1]]$Df[4], sep=", "), ")=",
+                          formatC(summAovIbd[[1]]$"F value"[2], digits=3), "$", sep="")
+interceptP <- paste("$P =", formatC(summAovIbd[[1]]$"Pr(>F)"[2], digits=2), "$")
+
+finalIbdAncova <- update(ibdAncova, . ~ . - Order - maxGeoDist:Order)
+
+### ---- isolation-by-distance-table ----
+library(xtable)
+print(xtable(summary(finalIbdAncova), display=rep("g", 5), caption=c(paste("Coefficients of the regression",
+             "between maximum genetic distances and",
+              "maximum geographic distances for all ESUs identified with the clustering method",
+              "with a threshold of 3\\%, represented by 3 or more individuals.",
+              "See Fig.~\\ref{fig:isolation-by-distance-plot}."),
+              "Coefficients of the regression between maximum genetic and maximum geographic distances.")),
+             label="tab:ibd-stats", caption.placement="top")
+
 ### ---- isolation-by-distance-plot ----
-ggplot(subset(distBySpecies, Order %in% c("Apodida", "Aspidochirotida", "Dendrochirotida", "Elasipodida")),
+ggplot(subset(distBySpecies, Order %in% orderToInclude),
        aes(x=maxGeoDist, y=maxGenDist, colour=Order)) +
-    geom_point() + stat_smooth(method="lm", se=FALSE) +
+    geom_point() + geom_abline(intercept=finalIbdAncova$coefficients[1],
+                               slope=finalIbdAncova$coefficients[2], aes(colour=Order),
+                               linetype=2) +
     facet_wrap(~ Order) + ylab("Maximum genetic distance (K2P)") +
     xlab("Maximum genetic distance (km)") +
     theme(legend.position="top")
 
-### ---- isolation-by-distance-stats ----
-library(xtable)
-idbDendro <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Dendrochirotida")
-idbAspido <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Aspidochirotida")
-idbApod <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Apodida")
-idbElas <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Elasipodida")
 
-summDendro <- summary(idbDendro)
-summAspido <- summary(idbAspido)
-summApod <- summary(idbApod)
-summElas <- summary(idbElas)
+### ---- idb-by-order ---- ### not in use
+ibdDendro <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Dendrochirotida")
+ibdAspido <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Aspidochirotida")
+ibdApod <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Apodida")
+ibdElas <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Elasipodida")
 
+summDendro <- summary(ibdDendro)
+summAspido <- summary(ibdAspido)
+summApod <- summary(ibdApod)
+summElas <- summary(ibdElas)
 slopeRes <- c(summApod$coefficients[2,1],
               summAspido$coefficients[2,1],
               summDendro$coefficients[2,1],
@@ -182,16 +224,17 @@ pRes <- c(summApod$coefficients[2,4],
           summDendro$coefficients[2,4],
           summElas$coefficients[2,4])
 pRes <- sapply(pRes, function(x) ifelse(x < 0.001, "< 0.001", round(x, 2)))
-idbRes <- data.frame(slope=slopeRes, SE=seRes, P=pRes,
+ibdRes <- data.frame(slope=slopeRes, SE=seRes, P=pRes,
                      row.names=c("Apodida", "Aspidochirotida",
                          "Dendrochirotida", "Elasipodida"))
-print(xtable(idbRes, display=rep("g", 4), caption=c(paste("Slope, Standard-Error (SE)",
+
+print(xtable(ibdRes, display=rep("g", 4), caption=c(paste("Slope, Standard-Error (SE)",
              "and P-value (P) of the relationship between maximum genetic distances and",
               "maximum geographic distances for all ESUs identified with the clustering method",
               "with a threshold of 3\\%, represented by 3 or more individuals.",
               "See Fig.~\\ref{fig:isolation-by-distance-plot}."),
               "Statitics of the regression between maximum genetic and maximum geographic distances."),
-             label="tab:idb-stats", caption.placement="top"))
+             label="tab:ibd-stats", caption.placement="top"))
 
 ### ---- alldata -----
 plot(maxGenDist ~ maxGeoDist, data=dat, subset = nInd >= 10)
@@ -205,8 +248,9 @@ distByInd <- data.frame(family=rep(families, sapply(matGeoDist, function(x) leng
 distByInd <- merge(distByInd, taxonomyDf, by.x="family", by.y="taxa", all.x=TRUE)
 distByInd <- distByInd[complete.cases(distByInd), ]
 
-ggplot(distByInd, aes(x=geoDist, y=genDist, colour=higher)) + geom_point(position="jitter") +
-    stat_smooth(method="lm")
+ggplot(distByInd, aes(x=geoDist, y=genDist, colour=higher)) +
+    geom_point(size=.5, shape=3, position=position_jitter()) +
+    stat_smooth(method="lm", color="gray50", size=.6, se=FALSE) + facet_wrap(~ higher)
 
 ### ---- mantel-test ----
 ### Doesn't really work given too much data, could instead do by species

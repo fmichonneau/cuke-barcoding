@@ -253,6 +253,13 @@ We repeated these analyses on the entire dataset, on each order and each family.
 
 \subsection{Geography, diversity and diversification}
 
+<<isolation-by-distance-data, cache=TRUE, results='hide', echo=FALSE, warning=FALSE>>=
+@
+
+<<isolation-by-distance-stats, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE, results='asis'>>=
+@
+
+
 We investigated the geographic patterns of diversity from the ESUs identified
 from the barcoding data. For each ESUs, when three or more locations were
 sampled, we computed the convex hull to obtain a polygon approximating their
@@ -275,19 +282,24 @@ biology of most sea cucumber species has not been investigated, it is recognized
 that most species of Aspidochirotida and Apodida have planktotrophic larvae,
 while species of Dendrochirotida have oligotrophic larvae. To assess if these
 differences in life history among the orders had an effect of the IBD pattern,
-we analyzed them separately.
+we performed an analysis of covariance (ANCOVA) on the maximum genetic distance
+for each species as the response variable, the maximum geographic distance as
+the covariate, and the taxonomic order as the independent variable. We performed
+the analysis on \Sexpr{paste(orderToInclude, collapse=', ')}.
+The variances among the orders were homogeneous (Levene's test,
+\Sexpr{leveneIbdFstat}, \Sexpr{leveneIbdP}).
 
-To test whether tropical and low-latitude species affected the IBD
-pattern, we performed an ANCOVA on the maximum intra-ESU genetic distances as
-the response variable, the maximum geographical distance for each ESU as the
-covariate and the zone of occurrence as the independent variable (species for
-which the absolute mean of their latitudinal range is < 23$^{\circ}$ were
-classified as ``tropical'', others were classified as ``other''). We only had
-enough data for the Dendrochirotida to do this analysis. For the other groups,
-we compared the results obtained on the full dataset and on the dataset
-restricted to the zone of occurrence with the most data (tropics for the
-Aspidochirotida and Apodida; other for the Elasipodida). We did not have enough
-data to analyze the Molpadida or the Dactylochirotida separately.
+% To test whether tropical and low-latitude species affected the IBD
+% pattern, we performed an ANCOVA on the maximum intra-ESU genetic distances as
+% the response variable, the maximum geographical distance for each ESU as the
+% covariate and the zone of occurrence as the independent variable (species for
+% which the absolute mean of their latitudinal range is < 23$^{\circ}$ were
+% classified as ``tropical'', others were classified as ``other''). We only had
+% enough data for the Dendrochirotida to do this analysis. For the other groups,
+% we compared the results obtained on the full dataset and on the dataset
+% restricted to the zone of occurrence with the most data (tropics for the
+% Aspidochirotida and Apodida; other for the Elasipodida). We did not have enough
+% data to analyze the Molpadida or the Dactylochirotida separately.
 
 - Diversity:
   - [future] map of number of unique haplotypes per geographic areas
@@ -338,19 +350,80 @@ isthmus
 
 \subsection{Geography, diversity and diversification}
 
-<<isolation-by-distance-data, cache=TRUE, results='hide', echo=FALSE, warning=FALSE>>=
+
+
+<<isolation-by-distance-plot, cache=TRUE, results='hide', echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.scap='Genetic and geographic distances for each order', fig.cap='Maximum genetic distance and maximum geographic distance for ESUs identified with the clustering approach with a threshold of 3\\%, represented by at least 3 individuals. Dashed lines represent the model estimated by an ANCOVA using the order as the independent variable.'>>=
 @
 
-<<isolation-by-distance-plot, cache=TRUE, results='hide', echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.scap='Genetic and geographic distances for each order', fig.cap='Maximum genetic distance according to the maximum geographic distance for species identified with the clustering approach with a threshold of 3\\%, represented by at least 3 individuals. Lines represent a simple linear regresion.'>>=
+
+<<ibd-text-stats, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE>>=
+tmpDendro <- subset(distBySpecies, Order == "Dendrochirotida")
+maxDistDendro <- tmpDendro[which.max(tmpDendro$maxGeoDist), ]
+gMaxDistDendro <- round(maxDistDendro$maxGeoDist, 0)
+genMaxDistDendro <- maxDistDendro$maxGenDist
+meanRange <- with(subset(distBySpecies, latCat == "tropical"),
+                  tapply(maxGeoDist, Order, mean))
+sdRange <- with(subset(distBySpecies, latCat == "tropical"),
+                tapply(maxGeoDist, Order, sd))
 @
 
-<<isolation-by-distance-stats, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE, results='asis'>>=
+<<isolation-by-distance-table, cache=TRUE, results='asis', echo=FALSE, dependson='isolation-by-distance-stats'>>=
+
 @
 
+The ANCOVA testing for the effect of maximum geographic distance and ``order''
+on the maximum genetic distance was significant (\Sexpr{ancovaFstat},
+\Sexpr{ancovaP}). Neither the interaction between ``order'' and geographic
+distance (\Sexpr{interactionFstat}, \Sexpr{interactionP}), nor nor ``order''
+term (\Sexpr{interceptFstat}) were significant, indicating a common slope and a
+common intercept for the orders included in the analysis
+(Table~\ref{tab:ibd-stats}).
+
+We recovered a signal of isolation-by-distance (IBD) for Apodida,
+Aspidochirotida and Dendrochirotida, but not for Elasipodida
+(Fig.~\ref{fig:isolation-by-distance-plot},
+Table~\ref{tab:ibd-stats}). Typically, ESUs that spanned the
+entire range of the Indo-Pacific had higher genetic distances than species with
+restricted ranges. However, there was a considerable amount of variation and a
+number of species with large ranges were characterized by low genetic
+differences. For instance, among the Dendrochirotida, \textit{Afrocucumis
+  africana}, a small species with leicthotrophic development \cite{Chao1995},
+that occurs from the Western Indian Ocean to the Western Pacific Ocean (maximum
+distance: \Sexpr{formatC(gMaxDistDendro, format="d")}~km) was characterized by a
+maximum intra-ESU distance of \Sexpr{round(genMaxDistDendro, 3)}\%.
+
+For the tropical species, the means of the maximum range sizes for the Apodida
+(\Sexpr{round(meanRange["Apodida"],2)}, SD= \Sexpr{round(sdRange["Apodida"],
+  2)}) and the Aspidochirotida (\Sexpr{round(meanRange["Aspidochirotida"], 2)},
+SD=\Sexpr{round(sdRange["Aspidochirotida"], 2)}) were larger than for the
+Dendrochirotida (\Sexpr{round(meanRange["Dendrochirotida"], 2)},
+SD=\Sexpr{round(sdRange["Dendrochirotida"], 2)}).
 
 
 \section{Discussion}
 
+\subsection{Geography, diversity and diversification}
+
+<<ibd-text-stats-discuss, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE>>=
+maxRangeElasi <- max(subset(distBySpecies, Order == "Elasipodida")$maxGeoDist)
+maxRangeElasiF <- formatC(round(maxRangeElasi, 0), format="d")
+restrictAspido <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies,
+                     subset=(Order == "Aspidochirotida" & maxGeoDist < maxRangeElasi))
+restrictDendro <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies,
+                     subset=(Order == "Dendrochirotida" & maxGeoDist < maxRangeElasi))
+restrictApod <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies,
+                     subset=(Order == "Apodida" & maxGeoDist < maxRangeElasi))
+@
+
+The absence of evidence of isolation-by-distance for the Elasipodida, might be
+caused by the more limited geographical sampling for this species. Most of the
+Elasipodida included in our study were collected around Antarctica, and the
+maximum distance recorded was \Sexpr{maxRangeElasiF}~km. The analyses repeated
+to only include species with range sizes similar to the Elasipodida,
+recovered the evidence for isolation-by-distance for the Aspidochirotida and the
+Dendrochirotida, but not for the Apodida. Additional sampling is needed to
+determine whether the absence of relationship for the Elasipodida holds at
+larger spatial scales.
 
 % tradeoff between many species 1 gene / multiple genes
 
