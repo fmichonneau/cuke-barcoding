@@ -319,34 +319,34 @@ isthmus
 
 \section{Results}
 
-<<cluster-groups-data, cache=TRUE, >>=
+<<cluster-groups-data, cache=TRUE, echo=FALSE>>=
 
 @
 
-<<pairwise-groups-data, cache=TRUE>>=
+<<pairwise-groups-data, cache=TRUE, echo=FALSE>>=
 
 @
 
-<<nGrps-groups-comparison-plot, cache=TRUE>>=
+<<nGrps-groups-comparison-plot, cache=TRUE, echo=FALSE>>=
 
 @
 
-<<pSngl-groups-comparison-plot, cache=TRUE>>=
+<<pSngl-groups-comparison-plot, cache=TRUE, echo=FALSE>>=
 
 @
 
 
 \subsection{Geography, diversity and diversification}
 
-<<isolation-by-distance-data, cache=TRUE, results='hide'>>=
+<<isolation-by-distance-data, cache=TRUE, results='hide', echo=FALSE, warning=FALSE>>=
 @
 
-<<isolation-by-distance-plot, cache=TRUE, dependson='isolation-by-distance-data', results='hide', fig.scap='Genetic and geographic distances for each order', fig.cap='Maximum genetic distance according to the maximum geographic distance for species identified with the clustering approach with a threshold of 3\\%, represented by at least 3 individuals. Lines represent a simple linear regresion.'>>=
+<<isolation-by-distance-plot, cache=TRUE, results='hide', echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.scap='Genetic and geographic distances for each order', fig.cap='Maximum genetic distance according to the maximum geographic distance for species identified with the clustering approach with a threshold of 3\\%, represented by at least 3 individuals. Lines represent a simple linear regresion.'>>=
 @
 
-<<isolation-by-distance-stats, cache=TRUE, dependson='isolation-by-distance-data'>>=
-
+<<isolation-by-distance-stats, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE, results='asis'>>=
 @
+
 
 
 \section{Discussion}

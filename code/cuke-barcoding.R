@@ -158,12 +158,40 @@ ggplot(subset(distBySpecies, Order %in% c("Apodida", "Aspidochirotida", "Dendroc
     theme(legend.position="top")
 
 ### ---- isolation-by-distance-stats ----
+library(xtable)
 idbDendro <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Dendrochirotida")
 idbAspido <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Aspidochirotida")
 idbApod <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Apodida")
 idbElas <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Elasipodida")
 
-summary.aov(lm(maxGenDist ~ order, data=dat))
+summDendro <- summary(idbDendro)
+summAspido <- summary(idbAspido)
+summApod <- summary(idbApod)
+summElas <- summary(idbElas)
+
+slopeRes <- c(summApod$coefficients[2,1],
+              summAspido$coefficients[2,1],
+              summDendro$coefficients[2,1],
+              summElas$coefficients[2,1])
+seRes <- c(summApod$coefficients[2,2],
+           summAspido$coefficients[2,2],
+           summDendro$coefficients[2,2],
+           summElas$coefficients[2,2])
+pRes <- c(summApod$coefficients[2,4],
+          summAspido$coefficients[2,4],
+          summDendro$coefficients[2,4],
+          summElas$coefficients[2,4])
+pRes <- sapply(pRes, function(x) ifelse(x < 0.001, "< 0.001", round(x, 2)))
+idbRes <- data.frame(slope=slopeRes, SE=seRes, P=pRes,
+                     row.names=c("Apodida", "Aspidochirotida",
+                         "Dendrochirotida", "Elasipodida"))
+print(xtable(idbRes, display=rep("g", 4), caption=c(paste("Slope, Standard-Error (SE)",
+             "and P-value (P) of the relationship between maximum genetic distances and",
+              "maximum geographic distances for all ESUs identified with the clustering method",
+              "with a threshold of 3\\%, represented by 3 or more individuals.",
+              "See Fig.~\\ref{fig:isolation-by-distance-plot}."),
+              "Statitics of the regression between maximum genetic and maximum geographic distances."),
+             label="tab:idb-stats", caption.placement="top"))
 
 ### ---- alldata -----
 plot(maxGenDist ~ maxGeoDist, data=dat, subset = nInd >= 10)
