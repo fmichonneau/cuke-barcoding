@@ -29,4 +29,10 @@ Hoareau TB, Boissin E (2010) {Design of phylum-specific hybrid primers for DNA
 {Geneious 5.5.8}.
 \bibAnnoteFile{Geneious558}
 
+\bibitem{Chao1995}
+Chao S, Chen C, Alexander P (1995) {Reproductive cycles of tropical sea
+  cucumbers (Echinodermata: Holothuroidea) in southern Taiwan}.
+\newblock Marine Biology 122: 289--295.
+\bibAnnoteFile{Chao1995}
+
 \end{thebibliography}
