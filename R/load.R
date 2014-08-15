@@ -20,7 +20,7 @@ load_cukeDB <- function(overwrite=FALSE) {
     if (file.exists(fnm) && !overwrite)
         cukeDB_lbls <- readRDS(file=fnm)
     else {
-        echinoDB <- load_echinoDB()
+        echinoDB <- load_echinoDB(overwrite)
         cukeDB <- subset(echinoDB, class_ == "Holothuroidea")
 
         ## fix GPS coordinates
@@ -64,6 +64,8 @@ load_cukeDB <- function(overwrite=FALSE) {
                c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.38733, 39.28727)
         cukeDB[cukeDB$Sample == "6355",
                c("decimalLatitude", "decimalLongitude")] <- data.frame(-21.1008, 55.2437)
+        cukeDB[cukeDB$Sample == "6322",
+               c("decimalLatitude", "decimalLongitude")] <- data.frame(-21.0, 55.2437)
 
         ## check taxonomy
         testGenera <-  as.matrix(xtabs(~ genusorhigher + family, data=cukeDB, subset=family != "Uncertain"))

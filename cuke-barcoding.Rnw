@@ -316,27 +316,32 @@ The variances among the orders were homogeneous (Levene's test,
 
 \subsubsection{Geography of diversification}
 
-If speciation occurs in allopatry, recently diverged species may retain the
-geographic signal of this event in their distributions. To test this hypothesis,
-we compared the geographical ranges of sister ESUs. If both ESUs were sampled
-enough so that a polygon approximating their distribution could be inferred, we
-classified their distributions as: parapatric if less than 10\% of the range of
-the species with the smallest range was included in the range of the species
-with the larger range, sympatric is their ranges overlapped by more than 10\%,
-and allopatric otherwise. If only one species had enough data to estimate its
-distribution with a polygon, and points were available for the other species, we
-considered their distribution allopatric if the points were not included in the
-polygon, and sympatric if they were.
+If speciation occurs in allopatry, recently diverged species may retain
+allopatric distributions. To investigate the geographic distributions of
+recently diverged ESUs, we tested whether sister ESUs were sympatric or
+allopatric. We identified sister ESUs based on the neighbor-joining tree
+estimated from the K2P distances.  If the distributions of the ESUs could be
+inferred with a polygon, we classified their distributions as: parapatric if
+less than 10\% of the range of the ESU with the smallest range overlapped with
+the species with the larger range, sympatric is their ranges overlapped by more
+than 10\%, and allopatric otherwise. If only one species had enough data to
+estimate its distribution with a polygon, and points were available for the
+other species, we considered their distribution allopatric if none of the points
+were included in the polygon, and sympatric if they were.
 
-- Diversification:
-  - Are sister species allopatric or sympatric?
-  - role of geologic/geographic barriers
-  - Where are the barriers to cladogenesis?
-  - Is there signal that the timing of differentiation is similar for areas
-  with high endemism? Hawaii? Red Sea?
-  - Rates of secondary sympatry
-  - amount of divergence among individuals found in sympatry
-      (plot: %divergence vs. %sympatry(smaller ranged species))
+To investigate the relative contributions of geographic barriers to the
+formations of ESUs within the Indo-Pacific, we recorded the approximate
+boundaries separating allopatric sister ESUs.
+
+
+% - Diversification:
+%   - [X] Are sister species allopatric or sympatric?
+%   - [X] role of geologic/geographic barriers / Where are the barriers to cladogenesis?
+%   - [future] Is there signal that the timing of differentiation is similar for areas
+%   with high endemism? Hawaii? Red Sea?
+%   - [future] Rates of secondary sympatry
+%   - amount of divergence among individuals found in sympatry
+%       (plot: %divergence vs. %sympatry(smaller ranged species))
 
 
 \subsection{Molecular clock estimation}
@@ -458,13 +463,21 @@ SD=\Sexpr{round(sdRange["Dendrochirotida"], 2)}).
 @
 
 We compared the geographic ranges of \Sexpr{sum(complete.cases(spComp))} pairs
-of sister ESUs. Most had allopatric distributions
-(Fig.~\ref{fig:geography-diversification}). ESUs with sympatric distributions
-were
+of sister ESUs. Most had allopatric distributions (\Sexpr{formatC(percentAllo,
+  digits=2)}\%), the other sister ESUs were (\Sexpr{formatC(percentSymp,
+  digits=2)}\%) sympatric, and none were parapatric.
+Fig.~\ref{fig:geography-diversification}).
 
 
-
-
+\begin{figure}
+\begin{centering}
+\includegraphics{figures/map-barriers}
+\caption[Geographical barriers separating ESUs]{Approximate locations of the
+  geographical barriers separating sister ESUs. Numbers indicate number of
+  sister ESUs separated by the barrier. Pink lines indicate barriers separating
+  3 sister ESUs. Dashed orange lines indicate barriers separating 1 sister ESU.}
+\end{centering}
+\end{figure}
 
 \section{Discussion}
 

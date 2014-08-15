@@ -28,6 +28,7 @@ spatialFromSpecies <- function(tree, cukeDB) {
         tmpCoords$long.recenter <- ifelse(tmpCoords$decimalLongitude < center - 180,
                                         tmpCoords$decimalLongitude + 360,
                                         tmpCoords$decimalLongitude)
+        tmpCoords <- tmpCoords[complete.cases(tmpCoords), ]
         hll <- try(chull(tmpCoords$long.recenter, tmpCoords$decimalLatitude),
                    silent=TRUE)
         if (inherits(hll, "try-error") ||
@@ -105,20 +106,24 @@ testRangeType <- function(tr, polygons, alg, percentOverlap=10) {
     res <- res[!duplicated(res)]
 
     rgType <- lapply(res, function(x) {
-        if (inherits(polygons[[x[1]]], "SpatialPolygons") &&
-            inherits(polygons[[x[2]]], "SpatialPolygons")) {
+        rg1 <- polygons[[x[1]]]
+        rg2 <- polygons[[x[2]]]
+        if (inherits(rg1, "SpatialPolygons") &&
+            inherits(rg2, "SpatialPolygons")) {
             list(rangeTypePolygon(x[1], x[2], polygons, percentOverlap=percentOverlap),
                  species=paste(names(polygons)[x[1]],
                      names(polygons)[x[2]], sep="/"))
-        } else if ((inherits(polygons[[x[1]]], "SpatialPoints") &&
-                    inherits(polygons[[x[2]]], "SpatialPolygons"))) {
-            isSympatric <- ifelse(gContains(polygons[[x[2]]], polygons[[x[1]]]),
-                                  "sympatric", "allopatric")
-            list(isSympatric, species=paste(names(polygons)[x[1]],
-                                  names(polygons)[x[2]], sep="/"))
-        } else if ((inherits(polygons[[x[1]]], "SpatialPolygons") &&
-                    inherits(polygons[[x[2]]], "SpatialPoints"))) {
-            isSympatric <- ifelse(gContains(polygons[[x[1]]], polygons[[x[2]]]),
+        } else if ((inherits(rg1, "SpatialPoints") &&
+                    inherits(rg2, "SpatialPolygons")) ||
+                   (inherits(rg1, "SpatialPolygons") &&
+                    inherits(rg2, "SpatialPoints"))) {
+            if (inherits(rg1, "SpatialPoints")) {
+                if (nrow(rg1@coords) < 2) return(list(NA, NA))
+            }
+            if (inherits(rg2, "SpatialPoints")) {
+                if (nrow(rg2@coords) < 2) return(list(NA, NA))
+            }
+            isSympatric <- ifelse(gIntersects(rg1, rg2),
                                   "sympatric", "allopatric")
             list(isSympatric, species=paste(names(polygons)[x[1]],
                                   names(polygons)[x[2]], sep="/"))
@@ -156,9 +161,10 @@ build_species_overlap <- function() {
     ## constants for this analysis
     thres <- 0.03
     dst <- "K80"
+    tax <- "all"
 
     taxonomyDf <- load_taxonomyDf()
-    tax <- taxonomyDf$taxa
+    ##tax <- taxonomyDf$taxa ## need to double check but I don't think the code below works if used on other taxa
 
     cukeDB <- load_cukeDB()
     cukeAlg <- load_cukeAlg()
@@ -198,7 +204,7 @@ load_species_overlap <- function(overwrite=FALSE) {
         spOver <- build_species_overlap()
         saveRDS(spOver, file=fnm)
     }
-    spOver
+    invisible(spOver)
 }
 
 load_species_overlap_comparison <- function(taxa="all", threshold=0.03) {

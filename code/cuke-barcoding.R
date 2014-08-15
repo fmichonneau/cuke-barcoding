@@ -307,15 +307,75 @@ nSppGuam <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointGuam
 
 
 #### ---- test ---- ### not in use
- ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+ggplot(allHllDf[grep("^501-|^111-", allHllDf$species), ]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
     geom_polygon(aes(x=long.recenter, y=decimalLatitude, fill=species),
-                 alpha=.03) +
-    geom_point(aes(x=144.724, y=13.4)) +
-    coord_map(projection = "mercator", orientation=c(90, 160, 0), xlim=c(140, 150), ylim=c(10, 18)) +
-    scale_fill_manual(values=rep("red", nlevels(allHllDf$species))) +
+                 alpha=.3) +
+    coord_map(projection = "ortho", orientation=c(-90, 0, 0)) +
+    #scale_fill_manual(values=rep("red", nlevels(allHllDf$species))) +
     theme(panel.background = element_rect(fill="aliceblue"),
           legend.position = "none") +
-    ylim(c(-30,30)) + xlim(c(0, 300)) +
+    #ylim(c(-30,30)) + xlim(c(0, 300)) +
+    xlab("Longitude") + ylab("Latitude")
+
+
+spp <- as.character(spComp$species)
+spp <- strsplit(spp, "/")
+sppNb <- lapply(spp, function(x) as.numeric(gsub("-.+$", "", x)))
+#stringSpp <- sapply(sppNb, function(x) paste0("^", x, collapse="|"))
+
+pdf(file="/tmp/spPairs.pdf")
+for (i in 1:length(sppNb)) {
+    sp1 <- allHllDf[grep(paste0("^", sppNb[[i]][1], "-"),  allHllDf$species), ]
+    sp2 <- allHllDf[grep(paste0("^", sppNb[[i]][2], "-"),  allHllDf$species), ]
+    tmpDt <- rbind(sp1, sp2)
+
+    sp1Nm <- names(spatialSpecies[[2]])[sppNb[[i]][1]]
+    sp2Nm <- names(spatialSpecies[[2]])[sppNb[[i]][2]]
+
+    tmpDt2 <- rbind(cbind(spatialSpecies[[1]][[ sppNb[[i]] [1]]], species=sppNb[[i]][1]),
+                    cbind(spatialSpecies[[1]][[ sppNb[[i]] [2]]], species=sppNb[[i]][2]))
+    tmpDt2 <- tmpDt2[complete.cases(tmpDt2), ]
+
+    tmpMap <- ggplot(tmpDt2) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+        geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
+        theme(panel.background = element_rect(fill="aliceblue"),
+        legend.position = "none") +
+        xlab("Longitude") + ylab("Latitude") +
+        ggtitle(paste(sp1Nm, sp2Nm, spComp$rangeType[i], sep=" - "))
+
+    if (attr(spatialSpecies[[1]][[sppNb[[i]][1]]], "type-coords") == "polygon") {
+        tmpMap <- tmpMap + geom_polygon(data=subset(tmpDt2, species == sppNb[[i]][1]),
+                                        aes(x=long.recenter, y=decimalLatitude, fill="red"),
+                                        alpha=.3)
+    }
+
+    if (attr(spatialSpecies[[1]][[sppNb[[i]][2]]], "type-coords") == "polygon") {
+        tmpMap <- tmpMap + geom_polygon(data=subset(tmpDt2, species == sppNb[[i]][2]),
+                                        aes(x=long.recenter, y=decimalLatitude, fill="blue"),
+                                        alpha=.3)
+    }
+
+    if (abs(mean(range(tmpDt$decimalLatitude))) < 30) {
+        tmpMap <- tmpMap + coord_map(projection = "mercator", orientation=c(90, 160, 0))
+    } else if (mean(range(tmpDt$decimalLatitude)) > 30) {
+        tmpMap <- tmpMap + coord_map(projection = "ortho", orientation=c(90, 0, 0))
+    } else {
+        tmpMap <- tmpMap + coord_map(projection = "ortho", orientation=c(-90, 0, 0))
+    }
+    print(tmpMap)
+}
+dev.off()
+
+ggplot(allHllDf[grep("^501-|^111-", allHllDf$species), ]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
+    geom_polygon(aes(x=long.recenter, y=decimalLatitude, fill=species),
+                 alpha=.3) +
+    coord_map(projection = "ortho", orientation=c(-90, 0, 0)) +
+    #scale_fill_manual(values=rep("red", nlevels(allHllDf$species))) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position = "none") +
+    #ylim(c(-30,30)) + xlim(c(0, 300)) +
     xlab("Longitude") + ylab("Latitude")
 
 
@@ -325,7 +385,21 @@ spCompBoth <- load_species_overlap_comparison()
 
 spComp <- subset(spCompBoth, method == "cluster")
 spComp <- spComp[complete.cases(spComp), ]
+
+## TODO - fix parapatry detection, something is wrong with it.
+## TODO - remove false sympatry, in future change method to include bootstrap
+spComp[match("387-Isostichopus_badionotus/385-Isostichopus_fuscus", spComp$species), "rangeType"] <- "allopatric"
+spComp[match("155-Euapta_godeffroyi/157-Euapta_lappa", spComp$species), "rangeType"] <- "allopatric"
+spComp[match("501-Paracucumis_turricata/111-Crucella_scotiae", spComp$species), "rangeType"] <- "sympatric"
 spComp <- spComp[-match("534-Phyllophoridae_nsp/714-Thelenota_ananas", spComp$species), ]
+spComp <- spComp[-match("102-Cladolabes_schmeltzi/443-Mesothuria_parva", spComp$species), ]
+spComp <- spComp[-match("653-Stolus_canescens/713-Thelenota_rubralineata", spComp$species), ]
+spComp$rangeType <- factor(spComp$rangeType, levels=c("allopatric", "sympatric", "parapatric"))
+
+tabRangeType <- table(spComp$rangeType)
+
+percentAllo <- 100*tabRangeType["allopatric"]/sum(tabRangeType)
+percentSymp <- 100*tabRangeType["sympatric"]/sum(tabRangeType)
 
 ggplot(spComp) + geom_bar(aes(x=rangeType, fill=rangeType)) +
     xlab("") + ylab("Number of ESU pairs") +
@@ -334,7 +408,7 @@ ggplot(spComp) + geom_bar(aes(x=rangeType, fill=rangeType)) +
 
 ### ---- test2 ----
 ggplot(spComp) + geom_point(data=spComp[!is.na(spComp$rangeType), ],
-                            aes(x=rangeType, y=maxInterDist),
+                            aes(x=rangeType, y=meanInterDist),
                             position=position_jitter(width=.1, height=0)) +
     facet_wrap(~ method)
 
@@ -348,6 +422,16 @@ ggplot(geoSpe) +
 
 actTree <- subset(treeH, tips.include=grep("Actinopyga", tipLabels(treeH)))
 bohTree <- subset(treeH, tips.include=grep("Bohadschia", tipLabels(treeH)))
+
+svg(file="/tmp/map.svg", width=6.5, height=3)
+ggplot(spComp) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x=100, y=100)) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position = "none") +
+    coord_map(projection="mercator", orientation=c(90, 160, 0)) +
+    xlab("Longitude") + ylab("Latitude") +
+    xlim(c(0, 300)) + ylim(c(-30, 30))
+dev.off()
 
 ### ---- alldata ----- ### not in use
 plot(maxGenDist ~ maxGeoDist, data=dat, subset = nInd >= 10)
