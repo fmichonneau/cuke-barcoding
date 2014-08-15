@@ -236,7 +236,120 @@ print(xtable(ibdRes, display=rep("g", 4), caption=c(paste("Slope, Standard-Error
               "Statitics of the regression between maximum genetic and maximum geographic distances."),
              label="tab:ibd-stats", caption.placement="top"))
 
-### ---- alldata -----
+### ---- global-diversity-map ----
+library(maps)
+library(ggplot2)
+library(tikzDevice)
+globalMap <- map_data("world2")
+source("R/test-allopatry-functions.R")
+spatialSpecies <- spatialFromSpecies(load_tree_clusterGrps("K80", "all", 0.015),
+                                     load_cukeDB())
+
+isPolygon <- sapply(spatialSpecies[[1]], function(x) attr(x, "type-coords") == "polygon")
+spatialHull <- spatialSpecies[[1]][isPolygon]
+tmpSpp <- rep(names(spatialHull), sapply(spatialHull, function(x) nrow(x)))
+allHllDf <- do.call("rbind", spatialHull)
+allHllDf <- cbind(allHllDf, species=tmpSpp)
+
+divMap <- ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_polygon(aes(x=long.recenter, y=decimalLatitude, fill=species),
+                 alpha=.03) +
+    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+    scale_fill_manual(values=rep("red", nlevels(allHllDf$species))) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position = "none") +
+    ylim(c(-30,30)) + xlim(c(0, 300)) +
+    xlab("Longitude") + ylab("Latitude")
+
+if (file.exists("tmp/diversity-map.tex")) file.remove("tmp/diversity-map.tex")
+if (file.exists("figures/diversity-map.pdf")) file.remove("figures/diversity-map.pdf")
+
+op <- options()
+setTikzDefaults(TRUE)
+tikz('tmp/diversity-map.tex', standAlone=TRUE, width=6.5, height=2)
+print(divMap)
+dev.off()
+tools::texi2pdf("tmp/diversity-map.tex", quiet=TRUE)
+stopifnot(file.rename("diversity-map.pdf", "figures/diversity-map.pdf"))
+options(op)
+
+pointPNG <- SpatialPoints(cbind(140, 0), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
+nSppPNG <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointPNG, x))
+
+pointCaro <- SpatialPoints(cbind(145, 10), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
+nSppCaro  <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointCaro, x))
+
+pointPhil <- SpatialPoints(cbind(120, 15), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
+nSppPhil <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointPhil, x))
+
+pointPoly <- SpatialPoints(cbind(208, -17), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
+nSppPoly <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointPoly, x))
+
+pointMada <- SpatialPoints(cbind(50, -13), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
+nSppMada <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointMada, x))
+
+pointOki <- SpatialPoints(cbind(128.2, 26), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
+nSppOki <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointOki, x))
+
+pointGuam <- SpatialPoints(cbind(144.724, 13.4), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
+nSppGuam <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointGuam, x))
+
+
+## ptsDf <- do.call("rbind", spatialSpecies[[1]])
+## spPts <- rep(names(spatialSpecies[[1]]), sapply(spatialSpecies[[1]], nrow))
+## ptsDf <- cbind(ptsDf, species=spPts)
+
+## ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+##     geom_polygon(data=allHllDf, aes(x = long.recenter, y = decimalLatitude), fill="red", alpha=.03) +
+##     coord_map(projection = "ortho", orientation=c(-90, 0, 0)) +
+##     theme(panel.background = element_rect(fill="aliceblue")) +
+##     ylim(c(-90, -30))
+
+
+#### ---- test ---- ### not in use
+ ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_polygon(aes(x=long.recenter, y=decimalLatitude, fill=species),
+                 alpha=.03) +
+    geom_point(aes(x=144.724, y=13.4)) +
+    coord_map(projection = "mercator", orientation=c(90, 160, 0), xlim=c(140, 150), ylim=c(10, 18)) +
+    scale_fill_manual(values=rep("red", nlevels(allHllDf$species))) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position = "none") +
+    ylim(c(-30,30)) + xlim(c(0, 300)) +
+    xlab("Longitude") + ylab("Latitude")
+
+
+### ---- geography-diversification ----
+source("R/test-allopatry-functions.R")
+spCompBoth <- load_species_overlap_comparison()
+
+spComp <- subset(spCompBoth, method == "cluster")
+spComp <- spComp[complete.cases(spComp), ]
+spComp <- spComp[-match("534-Phyllophoridae_nsp/714-Thelenota_ananas", spComp$species), ]
+
+ggplot(spComp) + geom_bar(aes(x=rangeType, fill=rangeType)) +
+    xlab("") + ylab("Number of ESU pairs") +
+    scale_fill_discrete("Type of geographic range")
+
+
+### ---- test2 ----
+ggplot(spComp) + geom_point(data=spComp[!is.na(spComp$rangeType), ],
+                            aes(x=rangeType, y=maxInterDist),
+                            position=position_jitter(width=.1, height=0)) +
+    facet_wrap(~ method)
+
+
+ggplot(geoSpe) +
+    geom_boxplot(data=(geoSpe[!is.na(geoSpe$rangeType),]),
+                 aes(x=rangeType, y=minInterDist))
+
+       geom_bar(data=(geoSpe[!is.na(geoSpe$rangeType),]),
+                aes(x=meanInterDist, fill=rangeType)) #+ geom_bar(position="fill")
+
+actTree <- subset(treeH, tips.include=grep("Actinopyga", tipLabels(treeH)))
+bohTree <- subset(treeH, tips.include=grep("Bohadschia", tipLabels(treeH)))
+
+### ---- alldata ----- ### not in use
 plot(maxGenDist ~ maxGeoDist, data=dat, subset = nInd >= 10)
 summary(lm(genDist ~ geoDist, data=dat, subset= nInd >= 10))
 abline(lm(genDist ~ geoDist, data=dat, subset= nInd >= 10))
@@ -262,26 +375,6 @@ ggplot(distByInd, aes(x=geoDist, y=genDist, colour=higher)) +
 ## genDistMat <- ape::dist.dna(cukeAlg, model="K80", as.matrix=TRUE)
 ## geoDist <- CalcGeoDists(cbind(deg2rad(tmpCoords$decimalLongitude),
 ##                               deg2rad(tmpCoords$decimalLatitude)))
-
-### ---- test-allopatry ----
-source("R/test-allopatry-functions.R")
-spComp <- load_species_overlap_comparison()
-
-ggplot(spComp) + geom_point(data=spComp[!is.na(spComp$rangeType), ],
-                            aes(x=rangeType, y=maxInterDist),
-                            position=position_jitter(width=.1, height=0)) +
-    facet_wrap(~ method)
-
-
-ggplot(geoSpe) +
-    geom_boxplot(data=(geoSpe[!is.na(geoSpe$rangeType),]),
-                 aes(x=rangeType, y=minInterDist))
-
-       geom_bar(data=(geoSpe[!is.na(geoSpe$rangeType),]),
-                aes(x=meanInterDist, fill=rangeType)) #+ geom_bar(position="fill")
-
-actTree <- subset(treeH, tips.include=grep("Actinopyga", tipLabels(treeH)))
-bohTree <- subset(treeH, tips.include=grep("Bohadschia", tipLabels(treeH)))
 
 
 ### ---- distribution-maps ----
@@ -330,36 +423,15 @@ for (i in 1:length(listCoords)) {
 }
 dev.off()
 
-### ---- global-distribution-map ----
-source("R/test-allopatry-functions.R")
-spatialSpecies <- spatialFromSpecies(load_tree_clusterGrps("raw", "all", 0.015),
-                                     load_cukeDB())
 
-isPolygon <- sapply(spatialSpecies[[1]], function(x) attr(x, "type-coords") == "polygon")
-spatialHull <- spatialSpecies[[1]][isPolygon]
-tmpSpp <- rep(names(spatialHull), sapply(spatialHull, function(x) nrow(x[complete.cases(x), ])))
-allHllDf <- do.call("rbind", spatialHull)
-allHllDf <- cbind(allHllDf, species=tmpSpp)
 
-ptsDf <- do.call("rbind", spatialSpecies[[1]])
-spPts <- rep(names(spatialSpecies[[1]]), sapply(spatialSpecies[[1]], nrow))
-ptsDf <- cbind(ptsDf, species=spPts)
-
-ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_polygon(data=allHllDf, aes(x=long.recenter, y=decimalLatitude, colour=species),
-                 fill="red", linetype=1, size=.01, alpha=.03) +
-    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position = "none") +
-    ylim(c(-30,30)) + xlim(c(0, 300))
-
-ggplot(ptsDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species),
-               position = position_jitter(width=1, height=1), data=ptsDf) +
-    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position = "none") +
-    ylim(c(-30, 30)) + xlim(c(0, 300))
+## ggplot(ptsDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+##     geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species),
+##                position = position_jitter(width=1, height=1), data=ptsDf) +
+##     coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+##     theme(panel.background = element_rect(fill="aliceblue"),
+##           legend.position = "none") +
+##     ylim(c(-30, 30)) + xlim(c(0, 300))
 
 
 ### ---- summary-bPTP-results ----

@@ -35,4 +35,11 @@ Chao S, Chen C, Alexander P (1995) {Reproductive cycles of tropical sea
 \newblock Marine Biology 122: 289--295.
 \bibAnnoteFile{Chao1995}
 
+\bibitem{Michonneau2013}
+Michonneau F, Borrero-Perez GH, Honey M, Kamarudin KR, Kerr AM, et~al. (2013)
+  {The littoral sea cucumbers (Echinodermata : Holothuroidea) of Guam
+  re-assessed – a diversity curve that still does not asymptote}.
+\newblock Cahiers de Biologie Marine : 531--540.
+\bibAnnoteFile{Michonneau2013}
+
 \end{thebibliography}

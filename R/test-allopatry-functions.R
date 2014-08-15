@@ -14,7 +14,7 @@ spatialFromSpecies <- function(tree, cukeDB) {
 
     allHll <- allSpatial <- vector("list", length(uniqGrps))
 
-    nmAllHll <- sapply(species, function(x) x[1])
+    nmAllHll <- sapply(species, function(x) names(which.max(table(x))))
     names(allHll) <- paste(uniqGrps, nmAllHll, sep="-")
     names(allSpatial) <- names(allHll)
 
@@ -24,7 +24,6 @@ spatialFromSpecies <- function(tree, cukeDB) {
         tmpSpp <- rownames(subset(grps, Groups == uniqGrps[i]))
         tmpCoords <- cukeDB[match(tmpSpp, cukeDB$Labels_withAmb),
                             c("decimalLatitude", "decimalLongitude")]
-
         center <- 180
         tmpCoords$long.recenter <- ifelse(tmpCoords$decimalLongitude < center - 180,
                                         tmpCoords$decimalLongitude + 360,
@@ -88,8 +87,6 @@ rangeTypePolygon <- function(i, j, poly, percentOverlap=10) {
 
 testRangeType <- function(tr, polygons, alg, percentOverlap=10) {
     grps <- tdata(tr, "tip")[, "Groups", drop=FALSE]
-    rownames(grps) <- gsub("\"$", "", rownames(grps))
-    tipLabels(tr) <- gsub("\"$", "", tipLabels(tr))
 
     uniqGrps <- unique(grps$Groups)
     res <- vector("list", length(uniqGrps))
@@ -158,7 +155,7 @@ testRangeType <- function(tr, polygons, alg, percentOverlap=10) {
 build_species_overlap <- function() {
     ## constants for this analysis
     thres <- 0.03
-    dst <- "raw"
+    dst <- "K80"
 
     taxonomyDf <- load_taxonomyDf()
     tax <- taxonomyDf$taxa
@@ -211,7 +208,7 @@ load_species_overlap_comparison <- function(taxa="all", threshold=0.03) {
      prwseStr <- paste("pairwise", taxa, gsub("\\.", "", threshold), sep="-")
      clstrStr <- paste("cluster", taxa, gsub("\\.", "", threshold), sep="-")
      mPrwseStr <- match(prwseStr, names(spOver))
-     mClstrStr <- match(prwseStr, names(spOver))
+     mClstrStr <- match(clstrStr, names(spOver))
      stopifnot(length(mPrwseStr) == 1 && length(mClstrStr) == 1)
      pairwiseData <- spOver[[mPrwseStr]]
      clusterData <- spOver[[mClstrStr]]

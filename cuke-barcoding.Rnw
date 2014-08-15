@@ -253,18 +253,31 @@ We repeated these analyses on the entire dataset, on each order and each family.
 
 \subsection{Geography, diversity and diversification}
 
+%% - Diversity:
+%%  - [future] map of number of unique haplotypes per geographic areas
+
+% ideas:
+% - use different colors to code species mostly in the Pacific, mostly in IO or
+% both so we can dissect if the pattern of diversity is caused by the same
+% species or not
+% -
+
+
 <<isolation-by-distance-data, cache=TRUE, results='hide', echo=FALSE, warning=FALSE>>=
 @
 
 <<isolation-by-distance-stats, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE, results='asis'>>=
 @
 
+\subsubsection{Patterns of diversity}
 
 We investigated the geographic patterns of diversity from the ESUs identified
 from the barcoding data. For each ESUs, when three or more locations were
 sampled, we computed the convex hull to obtain a polygon approximating their
-distribution. To obtain a diversity contour map, we superimposed the polygons
+distributions. To obtain a diversity contour map, we superimposed the polygons
 obtained.
+
+\subsubsection{Isolation-by-distance}
 
 If dispersal is spatially restricted, a pattern of isolation-by-distance (IBD),
 where genetic differentiation increases with geographical distance, may be
@@ -301,11 +314,19 @@ The variances among the orders were homogeneous (Levene's test,
 % Aspidochirotida and Apodida; other for the Elasipodida). We did not have enough
 % data to analyze the Molpadida or the Dactylochirotida separately.
 
-- Diversity:
-  - [future] map of number of unique haplotypes per geographic areas
-  - areas of high ``species'' richness
-  - do species with large ranges have higher levels of genetic
-  differentiation? (isolation by distance)
+\subsubsection{Geography of diversification}
+
+If speciation occurs in allopatry, recently diverged species may retain the
+geographic signal of this event in their distributions. To test this hypothesis,
+we compared the geographical ranges of sister ESUs. If both ESUs were sampled
+enough so that a polygon approximating their distribution could be inferred, we
+classified their distributions as: parapatric if less than 10\% of the range of
+the species with the smallest range was included in the range of the species
+with the larger range, sympatric is their ranges overlapped by more than 10\%,
+and allopatric otherwise. If only one species had enough data to estimate its
+distribution with a polygon, and points were available for the other species, we
+considered their distribution allopatric if the points were not included in the
+polygon, and sympatric if they were.
 
 - Diversification:
   - Are sister species allopatric or sympatric?
@@ -331,6 +352,8 @@ isthmus
 
 \section{Results}
 
+\subsection{Diversity}
+
 <<cluster-groups-data, cache=TRUE, echo=FALSE>>=
 
 @
@@ -351,6 +374,36 @@ isthmus
 \subsection{Geography, diversity and diversification}
 
 
+\subsubsection{Patterns of diversity}
+
+<<global-diversity-map, cache=TRUE, results='hide', echo=FALSE>>=
+@
+
+\begin{figure}
+\begin{centering}
+\includegraphics{figures/diversity-map}
+\caption{Overlay of the polygons representing the distributions of all ESUs
+  delineated with the clustering method with a threshold of 3\%, occurring
+  between -30$^{\circ}$ and 30$^{\circ}$. The shade of red indicate the number
+  of species co-occuring. The maximum number of overlapping ranges occurs
+  North of Papua New Guinea with \Sexpr{sum(nSppPNG)} ESUs. }
+\label{fig:diversity-map}
+\end{centering}
+\end{figure}
+
+
+The highest diversity occurs in the Western Pacific with a maximum of
+\Sexpr{sum(nSppPNG)} ESUs North East of New Guinea. Overall, diversity is
+relatively consistent across the Indo-Pacific with about at least 20 species
+co-occurring from Madagascar to Hawaii, and from Taiwan to French
+Polynesia. Diversity in the Indo-Malay archipelago is comparable to, or lower than
+in other parts of the range with few ESUs restricted to this geographic area
+(Philippines: \Sexpr{sum(nSppPhil)} ESUs, French Polynesia:
+\Sexpr{sum(nSppPoly)} ESUs, Madagascar: \Sexpr{sum(nSppMada)} ESUs, Ryukyus:
+\Sexpr{sum(nSppOki)} ESUs).
+
+
+\subsubsection{Isolation-by-distance}
 
 <<isolation-by-distance-plot, cache=TRUE, results='hide', echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.scap='Genetic and geographic distances for each order', fig.cap='Maximum genetic distance and maximum geographic distance for ESUs identified with the clustering approach with a threshold of 3\\%, represented by at least 3 individuals. Dashed lines represent the model estimated by an ANCOVA using the order as the independent variable.'>>=
 @
@@ -368,7 +421,6 @@ sdRange <- with(subset(distBySpecies, latCat == "tropical"),
 @
 
 <<isolation-by-distance-table, cache=TRUE, results='asis', echo=FALSE, dependson='isolation-by-distance-stats'>>=
-
 @
 
 The ANCOVA testing for the effect of maximum geographic distance and ``order''
@@ -392,17 +444,39 @@ that occurs from the Western Indian Ocean to the Western Pacific Ocean (maximum
 distance: \Sexpr{formatC(gMaxDistDendro, format="d")}~km) was characterized by a
 maximum intra-ESU distance of \Sexpr{round(genMaxDistDendro, 3)}\%.
 
-For the tropical species, the means of the maximum range sizes for the Apodida
-(\Sexpr{round(meanRange["Apodida"],2)}, SD= \Sexpr{round(sdRange["Apodida"],
-  2)}) and the Aspidochirotida (\Sexpr{round(meanRange["Aspidochirotida"], 2)},
+For the tropical species, the means of the maximum distances for the Apodida
+(\Sexpr{round(meanRange["Apodida"],2)}~km, SD= \Sexpr{round(sdRange["Apodida"],
+  2)}) and the Aspidochirotida (\Sexpr{round(meanRange["Aspidochirotida"], 2)}~km,
 SD=\Sexpr{round(sdRange["Aspidochirotida"], 2)}) were larger than for the
-Dendrochirotida (\Sexpr{round(meanRange["Dendrochirotida"], 2)},
+Dendrochirotida (\Sexpr{round(meanRange["Dendrochirotida"], 2)}~km,
 SD=\Sexpr{round(sdRange["Dendrochirotida"], 2)}).
+
+\subsubsection{Geography of diversification}
+
+<<geography-diversification, cache=TRUE, echo=FALSE, fig.width=6, fig.scap='Geography of diversification', fig.cap='Number of geographic types for ESU pairs identified by the clustering method with a 3\\% threshold'>>=
+
+@
+
+We compared the geographic ranges of \Sexpr{sum(complete.cases(spComp))} pairs
+of sister ESUs. Most had allopatric distributions
+(Fig.~\ref{fig:geography-diversification}). ESUs with sympatric distributions
+were
+
+
+
 
 
 \section{Discussion}
 
 \subsection{Geography, diversity and diversification}
+
+The polygon approach used to identify areas of high diversity has
+limitations. In particular, it may overestimate diversity in areas where species
+do not occur but occur at the periphery. Some species included in our analysis
+have restricted ranges or are known from a single specimen, and no polygons were
+drawn for them. Therefore the diversity from the polygons is underestimated. For
+instance, 65 species have been recorded for Guam \cite{Michonneau2013}, but
+\Sexpr{sum(nSppGuam)} ESUs are estimated from the polygons.
 
 <<ibd-text-stats-discuss, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE>>=
 maxRangeElasi <- max(subset(distBySpecies, Order == "Elasipodida")$maxGeoDist)
