@@ -458,15 +458,15 @@ SD=\Sexpr{round(sdRange["Dendrochirotida"], 2)}).
 
 \subsubsection{Geography of diversification}
 
-<<geography-diversification, cache=TRUE, echo=FALSE, fig.width=6, fig.scap='Geography of diversification', fig.cap='Number of geographic types for ESU pairs identified by the clustering method with a 3\\% threshold'>>=
+<<geography-diversification, cache=TRUE, echo=FALSE, fig.height=3, fig.scap='Geography of diversification', fig.cap='Number of geographic types for ESU pairs identified by the clustering method with a 3\\% threshold'>>=
 
 @
 
 We compared the geographic ranges of \Sexpr{sum(complete.cases(spComp))} pairs
 of sister ESUs. Most had allopatric distributions (\Sexpr{formatC(percentAllo,
-  digits=2)}\%), the other sister ESUs were (\Sexpr{formatC(percentSymp,
-  digits=2)}\%) sympatric, and none were parapatric.
-Fig.~\ref{fig:geography-diversification}).
+  digits=2, width=2)}\%), the other sister ESUs were
+(\Sexpr{formatC(percentSymp, digits=2, width=2)}\%) sympatric, and none were
+parapatric (Fig.~\ref{fig:geography-diversification}).
 
 
 \begin{figure}
@@ -476,8 +476,18 @@ Fig.~\ref{fig:geography-diversification}).
   geographical barriers separating sister ESUs. Numbers indicate number of
   sister ESUs separated by the barrier. Pink lines indicate barriers separating
   3 sister ESUs. Dashed orange lines indicate barriers separating 1 sister ESU.}
+\label{fig:map-barriers}
 \end{centering}
 \end{figure}
+
+In the Indo-Pacific, most allopatric ESUs were separated by the Arabian Sea (7
+pairs of sister ESUs), the Western Indian Ocean (7 pairs), the Indo-Malay
+archipelago (5 pairs) or the Timor Sea (4 pairs). Other significant barriers
+were in the Central Pacific with endemic lineages to the Hawaiian archipelago,
+or sister species across the Easter Pacific barrier
+(Fig.~\ref{fig:map-barriers}).
+
+
 
 \section{Discussion}
 
