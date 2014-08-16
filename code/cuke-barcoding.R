@@ -8,6 +8,35 @@ source("R/load.R")
 #source("make/build_cukeTree_clusterGrps.R")
 #build_cukeTree_clusterGrps()
 
+### ---- n-species ----
+taxonomyDf <- load_taxonomyDf()
+cukeDB <- load_cukeDB()
+
+cukeDBTmp <- cukeDB[match(dimnames(cukeAlg)[[1]], cukeDB$Labels_withAmb), ]
+genera <- unique(cukeDBTmp$genusorhigher)
+genera <- genera[-grep("\\?", genera)]
+
+allSpp <- cukeDBTmp[cukeDBTmp$genusorhigher %in% genera, c("family", "genusorhigher", "species")]
+allSpp <- allSpp[-which(is.na(allSpp$family)), ]
+uniqSpp <- unique(paste(allSpp$family, allSpp$genusorhigher, allSpp$species, sep="_"))
+uniqSpp <- uniqSpp[-grep("\\d", uniqSpp)]
+uniqSpp <- uniqSpp[-grep("n_?sp|new\\s?species|unique\\s?species", uniqSpp)]
+uniqSpp <- uniqSpp[-grep("(cf|aff)\\.?\\s", uniqSpp)]
+uniqSpp <- uniqSpp[-grep("_.{1,3}$", uniqSpp)] # too generous, removes H. bo
+uniqSpp <- uniqSpp[-grep("pink|gray", uniqSpp)]
+uniqSpp <- uniqSpp[-grep("_$", uniqSpp)]
+
+fams <- sapply(strsplit(uniqSpp, "_"), function(x) x[1])
+uniqSpp <- data.frame(family=fams, species=uniqSpp)
+uniqSpp <- merge(uniqSpp, taxonomyDf, by.x="family", by.y="taxa", all.x=TRUE)
+
+nSppAll <- nrow(uniqSpp)
+nSppAsp <- nrow(subset(uniqSpp, higher=="Aspidochirotida"))
+nSppHol <- nrow(subset(uniqSpp, family=="Holothuriidae"))
+
+nSppApo <- nrow(subset(uniqSpp, higher=="Apodida"))
+nSppDen <- nrow(subset(uniqSpp, higher=="Dendrochirotida"))
+nSppEla <- nrow(subset(uniqSpp, higher=="Elasipodida"))
 
 ### ---- cluster-groups-data ----
 ## TODO - revisit when "all" suffix file available
@@ -69,38 +98,35 @@ levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "k2p"] <- "K2P"
 library(wesanderson)
 source("R/multiplot.R")
 zisPal <- wes.palette(5, "Zissou")[c(1,2,3,5)]
+
+nSpp <- data.frame(taxa=c("all", "Aspidochirotida", "Holothuriidae"),
+                   nspp=c(nSppAll, nSppAsp, nSppHol))
+
 tmpDt <- subset(nGrpsDf, taxa %in% c("all", "Aspidochirotida", "Holothuriidae"))
-grp1 <- ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
+nESU <- ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
                           shape=interaction(distance, method))) +
     geom_line() + geom_point() + facet_wrap( ~ taxa) +
+    geom_hline(data=nSpp, aes(yintercept=nspp), colour="gray40", linetype=2) +
     ylab("Number of ESUs") +
-    theme(legend.position="top",
-          axis.title.x=element_blank()) +
+    theme(legend.position="top", axis.title.x=element_blank()) +
     scale_colour_manual(name=element_blank(),
                         values=zisPal,
                         breaks=c("K2P.Clusters", "raw.Clusters",
                             "K2P.Pairwise", "raw.Pairwise"),
-                        labels=c("K2P - Clusters",
-                            "Uncorrected - Clusters",
+                        labels=c("K2P - Cluster",
+                            "Uncorrected - Cluster",
                             "K2P - Pairwise",
                             "Uncorrected - Pairwise")) +
     scale_shape_manual(name=element_blank(),
                         values=seq(from=15, length.out=4),
                         breaks=c("K2P.Clusters", "raw.Clusters",
                             "K2P.Pairwise", "raw.Pairwise"),
-                        labels=c("K2P - Clusters",
-                            "Uncorrected - Clusters",
+                        labels=c("K2P - Cluster",
+                            "Uncorrected - Cluster",
                             "K2P - Pairwise",
                             "Uncorrected - Pairwise"))
 
-tmpDt <- subset(nGrpsDf, taxa %in% c("Dendrochirotida", "Apodida", "Elasipodida"))
-grp2 <- ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
-                          shape=interaction(distance, method))) +
-    geom_line() + geom_point() + facet_wrap( ~ taxa) +
-    theme(legend.position="none",
-          axis.title.x=element_blank())
-
-grp3 <- ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
+pSngl <- ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
               aes(x=threshold, y=pSngl, colour=interaction(distance, method),
                   shape=interaction(distance, method))) +
     geom_line() +  geom_point() + facet_wrap( ~ taxa) +
@@ -108,9 +134,48 @@ grp3 <- ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirot
     scale_colour_manual(values=zisPal) + scale_shape_manual(values=seq(from=15, length.out=4)) +
     theme(legend.position="none")
 
-multiplot(grp1, grp3, cols=1)
+multiplot(nESU, pSngl, cols=1)
 
-### ----- isolation-by-distance-data ----
+### ---- sm-groups-comparison-plot ----
+tmpDtSm <- subset(nGrpsDf, taxa %in% c("Dendrochirotida", "Apodida", "Elasipodida"))
+
+nSppSm <- data.frame(taxa=c("Dendrochirotida", "Apodida", "Elasipodida"),
+                   nspp=c(nSppDen, nSppApo, nSppEla))
+
+nESUSm <- ggplot(tmpDtSm, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
+                          shape=interaction(distance, method))) +
+    geom_line() + geom_point() + facet_wrap( ~ taxa) +
+    geom_hline(data=nSppSm, aes(yintercept=nspp), colour="gray40", linetype=2) +
+    ylab("Number of ESUs") +
+    theme(legend.position="top", axis.title.x=element_blank()) +
+    scale_colour_manual(name=element_blank(),
+                        values=zisPal,
+                        breaks=c("K2P.Clusters", "raw.Clusters",
+                            "K2P.Pairwise", "raw.Pairwise"),
+                        labels=c("K2P - Cluster",
+                            "Uncorrected - Cluster",
+                            "K2P - Pairwise",
+                            "Uncorrected - Pairwise")) +
+    scale_shape_manual(name=element_blank(),
+                        values=seq(from=15, length.out=4),
+                        breaks=c("K2P.Clusters", "raw.Clusters",
+                            "K2P.Pairwise", "raw.Pairwise"),
+                        labels=c("K2P - Cluster",
+                            "Uncorrected - Cluster",
+                            "K2P - Pairwise",
+                            "Uncorrected - Pairwise"))
+
+pSnglSm <- ggplot(tmpDtSm,
+              aes(x=threshold, y=pSngl, colour=interaction(distance, method),
+                  shape=interaction(distance, method))) +
+    geom_line() +  geom_point() + facet_wrap( ~ taxa) +
+    ylab("Proportion of singletons") + xlab("Distance threshold") +
+    scale_colour_manual(values=zisPal) + scale_shape_manual(values=seq(from=15, length.out=4)) +
+    theme(legend.position="none")
+
+multiplot(nESUSm, pSnglSm, cols=1)
+
+### ----- isolation-by-distance-data -----
 source("R/CalcGeoDist.R")
 source("R/load.R")
 treeH <- load_tree_clusterGrps(taxa="all")

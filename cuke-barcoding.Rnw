@@ -359,6 +359,10 @@ isthmus
 
 \subsection{Diversity}
 
+<<n-species, cache=TRUE, echo=FALSE>>=
+
+@
+
 <<cluster-groups-data, cache=TRUE, echo=FALSE>>=
 
 @
@@ -368,7 +372,7 @@ isthmus
 @
 
 
-<<groups-comparison-plot, dependson=c('pairwise-groups-data', 'cluster-groups-data'), cache=TRUE, echo=FALSE, fig.height=6.5>>=
+<<groups-comparison-plot, dependson=c('pairwise-groups-data', 'cluster-groups-data', 'n-species'), cache=TRUE, echo=FALSE, fig.height=6.5, fig.cap='Comparison of the number of ESUs (top), and the proportion of ESUs represented by a single individual (singletons, bottom) estimated with the pairwise distance method (pairwise) and the clustering method (cluster), based on uncorrected distances (uncorrected) or the Kimura 2-parameter distances (K2P), for the entire dataset (all), the order Aspidochirotida and the family Holothuriidae. The gray horizontal dashed line represents the number of named species sequenced.', fig.scap='Estimated number of ESUs'>>=
 
 @
 
@@ -455,7 +459,7 @@ SD=\Sexpr{round(sdRange["Dendrochirotida"], 2)}).
 
 \subsubsection{Geography of diversification}
 
-<<geography-diversification, cache=TRUE, echo=FALSE, fig.height=3, fig.scap='Geography of diversification', fig.cap='Number of geographic types for ESU pairs identified by the clustering method with a 3\\% threshold'>>=
+<<geography-diversification, cache=TRUE, echo=FALSE, fig.width=5, fig.height=3, fig.scap='Geography of diversification', fig.cap='Number of geographic types for ESU pairs identified by the clustering method with a 3\\% threshold'>>=
 
 @
 
@@ -547,5 +551,14 @@ larger spatial scales.
 
 \bibliographystyle{plos2009}
 \bibliography{cuke-barcoding_nourl}
+
+\pagebreak
+
+\section{Supplementary material}
+
+<<sm-groups-comparison-plot, cache=TRUE, echo=FALSE, dependson='groups-comparison-plot', fig.height=6.5, fig.cap='Comparison of the number of ESUs (top), and the proportion of ESUs represented by a single individual (singletons, bottom) estimated with the pairwise distance method (pairwise) and the clustering method (cluster), based on uncorrected distances (uncorrected) or the Kimura 2-parameter distances (K2P), for the orders Apodida, Dendrochirotida and Elasipodida. The gray horizontal dashed line represents the number of named species sequenced.', fig.scap='Estimated number of ESUs'>>=
+
+@
+
 
 \end{document}
