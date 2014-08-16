@@ -399,6 +399,9 @@ boundaries separating allopatric sister ESUs.
 
 
 
+<<sampled-species, results='asis', echo=FALSE, cache=TRUE, dependson='n-species'>>=
+
+@
 
 
 \subsection{Geography, diversity and diversification}

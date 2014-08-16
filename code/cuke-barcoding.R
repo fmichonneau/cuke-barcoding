@@ -1,6 +1,8 @@
 ### ---- load-packages ---
 source("R/packages.R")
 source("R/multiplot.R")
+library(xtable)
+library(wesanderson)
 
 ### ---- sampling-maps ----
 cukeDB <- load_cukeDB()
@@ -23,6 +25,8 @@ pacificmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray40", colour=
     coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
     theme(panel.background = element_rect(fill="aliceblue"),
           legend.position="top",
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
           plot.margin=unit(rep(0, 4), "mm")) +
     scale_size_continuous(name="Number of individuals", range=c(1, 4)) +
     ylim(c(-45,45))
@@ -32,6 +36,8 @@ southmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray40", colour="g
     coord_map(projection = "ortho", orientation=c(-90, 0, 0)) +
     theme(panel.background = element_rect(fill="aliceblue"),
           legend.position = "none",
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
           plot.margin=unit(rep(0, 4), "mm")) +
     ylim(c(-90, -45))
 
@@ -40,14 +46,13 @@ northmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray40", colour="g
     coord_map(projection = "ortho", orientation=c(90, 0, 0)) +
     theme(panel.background = element_rect(fill="aliceblue"),
           legend.position="none",
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
           plot.margin=unit(rep(0, 4), "mm")) +
     ylim(c(45, 90))
 
 multiplot(pacificmap, northmap, southmap, layout=matrix(c(1,1,2,3), ncol=2, byrow=T))
 
-### ---- find-cluster-groups ----
-#source("make/build_cukeTree_clusterGrps.R")
-#build_cukeTree_clusterGrps()
 
 ### ---- n-species ----
 taxonomyDf <- load_taxonomyDf()
@@ -78,6 +83,34 @@ nSppHol <- nrow(subset(uniqSpp, family=="Holothuriidae"))
 nSppApo <- nrow(subset(uniqSpp, higher=="Apodida"))
 nSppDen <- nrow(subset(uniqSpp, higher=="Dendrochirotida"))
 nSppEla <- nrow(subset(uniqSpp, higher=="Elasipodida"))
+
+### ---- sampled-species ----
+sampTab <- data.frame(xtabs(~ higher + family, data=uniqSpp))
+sampTabOrder <- data.frame(xtabs(~ higher, data=uniqSpp), family = "")
+sampTab <- rbind(sampTab, sampTabOrder)
+sampTab <- sampTab[sampTab$Freq != 0, ]
+names(sampTab) <- c("Order", "Family", "Number of Species")
+
+sampTab$Family <- factor(sampTab$Family,
+                         levels=c(levels(sampTab$Family)[nlevels(sampTab$Family)],
+                         levels(sampTab$Family)[-nlevels(sampTab$Family)]))
+sampTab <- sampTab[order(sampTab$Family), ]
+sampTab <- sampTab[order(sampTab$Order), ]
+hlinePos <- cumsum(table(sampTab$Order))
+sampTab$Order <- as.character(sampTab$Order)
+sampTab$Order <- paste("\\textbf{", sampTab$Order, "}", sep="")
+sampTab$Order[duplicated(sampTab$Order)] <- ""
+sampTab$"Number of Species"[nzchar(sampTab$Order)] <- paste("\\textbf{", sampTab$"Number of Species"[nzchar(sampTab$Order)], "}", sep="")
+sampTab <- rbind(sampTab, cbind(Order = "\\textbf{Total}", Family = "",
+                                "Number of Species" = paste0("\\textbf{", nrow(uniqSpp), "}")))
+
+
+sampXtab <- xtable(sampTab,
+                   caption="Number of named species sampled for each family",
+                   label="tab:sampled-species", display=c("s", "s", "s", "d"))
+
+print(sampXtab, include.rownames=FALSE, hline.after=c(-1, 0, hlinePos, nrow(sampXtab)),
+      sanitize.text.function=function(x) {x} )
 
 ### ---- cluster-groups-data ----
 ## TODO - revisit when "all" suffix file available
@@ -136,8 +169,7 @@ nGrpsPairwiseDf <- merge(nGrpsPairwiseDf, taxonomyDf)
 nGrpsDf <- rbind(nGrpsClustersDf, nGrpsPairwiseDf)
 levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "K80"] <- "K2P"
 levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "k2p"] <- "K2P"
-library(wesanderson)
-source("R/multiplot.R")
+
 zisPal <- wes.palette(5, "Zissou")[c(1,2,3,5)]
 
 nSpp <- data.frame(taxa=c("all", "Aspidochirotida", "Holothuriidae"),
