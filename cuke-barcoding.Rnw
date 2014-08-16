@@ -169,10 +169,35 @@ comprehensive barcoding dataset.
 
 \section{Materials and Methods}
 
+\subsection{Sampling}
+
+Specimens were collected on snorkel, on SCUBA, or by dredging. Most were
+photographed while alive \textit{in situ} or in the lab anesthetized in a 1:1
+solution of sea water and 7.5\% solution of magnesium chloride hexahydrate, then
+preserved in 75\% ethanol. When possible tentacles were clipped, immediately put
+in 95-99\% ethanol, and later used for DNA extractions.  Specimens were
+deposited in the Invertebrate Zoology collections of the Florida Museum of
+Natural History, University of Florida (UF), Gainesville, FL, USA, while tissue
+samples are stored in the Genetic Resources Repository of this museum.
+
+Additional samples were obtained through collaborators either from newly
+collected material or from preserved specimens deposited in other institutions.
+
+\Sexpr{dim(load_cukeAlg())[1]} individuals were identified and sequenced. They
+represent the worldwide diversity of sea cucumbers, with a particular focus on
+the species of the Indo-Pacific and the Antarctic regions
+(Fig.\ref{fig:sampling}). The northern hemisphere and deep-water species outside
+of the Antarctic region are under-represented.
+
+<<sampling-maps, cache=TRUE, echo=FALSE, warning=FALSE, fig.height=6, fig.cap='Locations sampled in this study'>>=
+
+@
+
+
 \subsection{Specimen identification}
 
 Most specimens were individually identified by GP, FM, Mark O'Loughlin and other
-taxonomic specialists. For most group, survey of primary literature was used to
+taxonomic specialists. For most groups, survey of primary literature was used to
 assign the most accurate names. This effort led to the re-discovery of taxonomic
 names that have been forgotten/never used in the literature, and names were
 resurrected from synonymies.
@@ -253,23 +278,17 @@ We repeated these analyses on the entire dataset, on each order and each family.
 
 \subsection{Geography, diversity and diversification}
 
+
+\subsubsection{Patterns of diversity}
+
 %% - Diversity:
 %%  - [future] map of number of unique haplotypes per geographic areas
-
 % ideas:
+
 % - use different colors to code species mostly in the Pacific, mostly in IO or
 % both so we can dissect if the pattern of diversity is caused by the same
 % species or not
 % -
-
-
-<<isolation-by-distance-data, cache=TRUE, results='hide', echo=FALSE, warning=FALSE>>=
-@
-
-<<isolation-by-distance-stats, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE, results='asis'>>=
-@
-
-\subsubsection{Patterns of diversity}
 
 We investigated the geographic patterns of diversity from the ESUs identified
 from the barcoding data. For each ESUs, when three or more locations were
@@ -278,6 +297,12 @@ distributions. To obtain a diversity contour map, we superimposed the polygons
 obtained.
 
 \subsubsection{Isolation-by-distance}
+
+<<isolation-by-distance-data, cache=TRUE, results='hide', echo=FALSE, warning=FALSE>>=
+@
+
+<<isolation-by-distance-stats, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE, results='asis'>>=
+@
 
 If dispersal is spatially restricted, a pattern of isolation-by-distance (IBD),
 where genetic differentiation increases with geographical distance, may be
@@ -344,16 +369,13 @@ boundaries separating allopatric sister ESUs.
 %       (plot: %divergence vs. %sympatry(smaller ranged species))
 
 
-\subsection{Molecular clock estimation}
+% \subsection{Molecular clock estimation}
 
-- can we use isthmus of panama to calibrate the sea cucumber molecular clocks?
-- differences in pairwise divergence for geminate species caused by:
-- differences in timing: some species might have diverged before closure of
-isthmus
-- differences in rates of molecular evolution
-
-
-
+% - can we use isthmus of panama to calibrate the sea cucumber molecular clocks?
+% - differences in pairwise divergence for geminate species caused by:
+% - differences in timing: some species might have diverged before closure of
+% isthmus
+% - differences in rates of molecular evolution
 
 \section{Results}
 
@@ -371,10 +393,12 @@ isthmus
 
 @
 
-
 <<groups-comparison-plot, dependson=c('pairwise-groups-data', 'cluster-groups-data', 'n-species'), cache=TRUE, echo=FALSE, fig.height=6.5, fig.cap='Comparison of the number of ESUs (top), and the proportion of ESUs represented by a single individual (singletons, bottom) estimated with the pairwise distance method (pairwise) and the clustering method (cluster), based on uncorrected distances (uncorrected) or the Kimura 2-parameter distances (K2P), for the entire dataset (all), the order Aspidochirotida and the family Holothuriidae. The gray horizontal dashed line represents the number of named species sequenced.', fig.scap='Estimated number of ESUs'>>=
 
 @
+
+
+
 
 
 \subsection{Geography, diversity and diversification}
@@ -555,7 +579,7 @@ larger spatial scales.
 \pagebreak
 
 \section{Supplementary material}
-
+ a
 <<sm-groups-comparison-plot, cache=TRUE, echo=FALSE, dependson='groups-comparison-plot', fig.height=6.5, fig.cap='Comparison of the number of ESUs (top), and the proportion of ESUs represented by a single individual (singletons, bottom) estimated with the pairwise distance method (pairwise) and the clustering method (cluster), based on uncorrected distances (uncorrected) or the Kimura 2-parameter distances (K2P), for the orders Apodida, Dendrochirotida and Elasipodida. The gray horizontal dashed line represents the number of named species sequenced.', fig.scap='Estimated number of ESUs'>>=
 
 @

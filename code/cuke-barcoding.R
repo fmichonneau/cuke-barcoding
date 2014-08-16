@@ -1,8 +1,49 @@
 ### ---- load-packages ---
 source("R/packages.R")
+source("R/multiplot.R")
 
-### ---- source-scripts ----
-source("R/load.R")
+### ---- sampling-maps ----
+cukeDB <- load_cukeDB()
+
+summGPS <- data.frame(uniq=paste(cukeDB$decimalLatitude, cukeDB$decimalLongitude, sep="/"))
+tabuGPS <- table(summGPS)
+summGPS <- data.frame(latitude=sapply(names(tabuGPS), function(x) strsplit(x, "/")[[1]][1]),
+                      longitude=sapply(names(tabuGPS), function(x) strsplit(x, "/")[[1]][2]),
+                      nInd=as.numeric(tabuGPS), row.names=1:length(tabuGPS), stringsAsFactors=FALSE)
+summGPS <- summGPS[-c(1, nrow(summGPS)), ]
+summGPS$latitude <- as.numeric(summGPS$latitude)
+summGPS$longitude <- as.numeric(summGPS$longitude)
+
+center <- 0
+summGPS$long.recenter <- ifelse(summGPS$longitude < center - 180, summGPS$longitude + 360, summGPS$longitude)
+globalMap <- map_data("world")
+
+pacificmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x = long.recenter, y = latitude, size= nInd), colour="red", data=summGPS) +
+    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position="top",
+          plot.margin=unit(rep(0, 4), "mm")) +
+    scale_size_continuous(name="Number of individuals", range=c(1, 4)) +
+    ylim(c(-45,45))
+
+southmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x = long.recenter, y = latitude, size= nInd), colour="red", data=summGPS) +
+    coord_map(projection = "ortho", orientation=c(-90, 0, 0)) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position = "none",
+          plot.margin=unit(rep(0, 4), "mm")) +
+    ylim(c(-90, -45))
+
+northmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x = long.recenter, y = latitude, size= nInd), colour="red", data=summGPS) +
+    coord_map(projection = "ortho", orientation=c(90, 0, 0)) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position="none",
+          plot.margin=unit(rep(0, 4), "mm")) +
+    ylim(c(45, 90))
+
+multiplot(pacificmap, northmap, southmap, layout=matrix(c(1,1,2,3), ncol=2, byrow=T))
 
 ### ---- find-cluster-groups ----
 #source("make/build_cukeTree_clusterGrps.R")
@@ -693,47 +734,6 @@ microbenchmark(
 library(lineprof)
 lp <- lineprof(findGroups(synTr4, experimental=FALSE, parallel=FALSE))
 
-### Summary coords
-library(maps)
-library(ggplot2)
-
-summGPS <- data.frame(uniq=paste(holDB$decimalLatitude, holDB$decimalLongitude, sep="/"))
-tabuGPS <- table(summGPS)
-summGPS <- data.frame(latitude=sapply(names(tabuGPS), function(x) strsplit(x, "/")[[1]][1]),
-                      longitude=sapply(names(tabuGPS), function(x) strsplit(x, "/")[[1]][2]),
-                      nInd=as.numeric(tabuGPS), row.names=1:length(tabuGPS), stringsAsFactors=FALSE)
-summGPS <- summGPS[-c(1, nrow(summGPS)), ]
-summGPS$latitude <- as.numeric(summGPS$latitude)
-summGPS$longitude <- as.numeric(summGPS$longitude)
-
-center <- 0
-summGPS$long.recenter <- ifelse(summGPS$longitude < center - 180, summGPS$longitude + 360, summGPS$longitude)
-globalMap <- map_data("world")
-
-pacificmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray70", colour="gray70") +
-    geom_point(aes(x = long.recenter, y = latitude, size= nInd), colour="red", data=summGPS) +
-    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-    theme(panel.background = element_rect(fill="aliceblue")) +
-    ylim(c(-45,45))
-pacificmap
-
-southmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray70", colour="gray70") +
-    geom_point(aes(x = long.recenter, y = latitude, size= nInd), colour="red", data=summGPS) +
-    coord_map(projection = "ortho", orientation=c(-90, 0, 0)) +
-    theme(panel.background = element_rect(fill="aliceblue"))
-southmap
-
-northmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray70", colour="gray70") +
-    geom_point(aes(x = long.recenter, y = latitude, size= nInd), colour="red", data=summGPS) +
-    coord_map(projection = "ortho", orientation=c(90, 0, 0)) +
-    theme(panel.background = element_rect(fill="aliceblue"))
-northmap
-
-pdf(file="cukebarcodingmaps.pdf", paper="USr", width=0, height=0)
-print(pacificmap)
-print(southmap)
-print(northmap)
-dev.off()
 
 
 
