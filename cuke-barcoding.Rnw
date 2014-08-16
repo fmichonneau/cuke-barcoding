@@ -367,11 +367,8 @@ isthmus
 
 @
 
-<<nGrps-groups-comparison-plot, cache=TRUE, echo=FALSE>>=
 
-@
-
-<<pSngl-groups-comparison-plot, cache=TRUE, echo=FALSE>>=
+<<groups-comparison-plot, dependson=c('pairwise-groups-data', 'cluster-groups-data'), cache=TRUE, echo=FALSE, fig.height=6.5>>=
 
 @
 

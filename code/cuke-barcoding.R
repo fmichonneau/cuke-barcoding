@@ -8,14 +8,12 @@ source("R/load.R")
 #source("make/build_cukeTree_clusterGrps.R")
 #build_cukeTree_clusterGrps()
 
-### ---- init-groups-data ----
-taxonomyDf <- load_taxonomyDf()
 
 ### ---- cluster-groups-data ----
 ## TODO - revisit when "all" suffix file available
+taxonomyDf <- load_taxonomyDf()
 treeGrpsFiles <- list.files(pattern="cukeTree-.+-\\d+\\.rds$",
                             path="data", full.names=TRUE)
-
 treeGrps <- lapply(treeGrpsFiles, readRDS)
 nGrpsVec <- sapply(treeGrps, function(tr) max(tdata(tr, "tip")$Groups))
 pSnglVec <- sapply(treeGrps, function(tr) {
@@ -46,7 +44,6 @@ nGrpsClustersDf$method <- "Clusters"
 source("R/pairwise-groups-functions.R")
 pairwiseGrpRes <- load_pairwiseGrpRes()
 thresVec <- load_thresholdPairwise()
-
 pairwiseGrpFactors <- rep(names(pairwiseGrpRes), each=length(thresVec))
 pairwiseGrpFactors <- strsplit(pairwiseGrpFactors, "-")
 pairwiseGrpFactors <- do.call("rbind", pairwiseGrpFactors)
@@ -65,28 +62,53 @@ nGrpsPairwiseDf$method <- "Pairwise"
 nGrpsPairwiseDf <- merge(nGrpsPairwiseDf, taxonomyDf)
 
 
-### ---- groups-comparison-data ----
+### ---- groups-comparison-plot ----
 nGrpsDf <- rbind(nGrpsClustersDf, nGrpsPairwiseDf)
 levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "K80"] <- "K2P"
 levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "k2p"] <- "K2P"
-
-### ---- nGrps-groups-comparison-plot ----
+library(wesanderson)
+source("R/multiplot.R")
+zisPal <- wes.palette(5, "Zissou")[c(1,2,3,5)]
 tmpDt <- subset(nGrpsDf, taxa %in% c("all", "Aspidochirotida", "Holothuriidae"))
-ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
-                  shape=interaction(distance, method))) + geom_line() + geom_point() +
-    facet_wrap( ~ taxa)
+grp1 <- ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
+                          shape=interaction(distance, method))) +
+    geom_line() + geom_point() + facet_wrap( ~ taxa) +
+    ylab("Number of ESUs") +
+    theme(legend.position="top",
+          axis.title.x=element_blank()) +
+    scale_colour_manual(name=element_blank(),
+                        values=zisPal,
+                        breaks=c("K2P.Clusters", "raw.Clusters",
+                            "K2P.Pairwise", "raw.Pairwise"),
+                        labels=c("K2P - Clusters",
+                            "Uncorrected - Clusters",
+                            "K2P - Pairwise",
+                            "Uncorrected - Pairwise")) +
+    scale_shape_manual(name=element_blank(),
+                        values=seq(from=15, length.out=4),
+                        breaks=c("K2P.Clusters", "raw.Clusters",
+                            "K2P.Pairwise", "raw.Pairwise"),
+                        labels=c("K2P - Clusters",
+                            "Uncorrected - Clusters",
+                            "K2P - Pairwise",
+                            "Uncorrected - Pairwise"))
 
 tmpDt <- subset(nGrpsDf, taxa %in% c("Dendrochirotida", "Apodida", "Elasipodida"))
-ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
-                  shape=interaction(distance, method))) + geom_line() + geom_point() +
-    facet_wrap( ~ taxa)
+grp2 <- ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
+                          shape=interaction(distance, method))) +
+    geom_line() + geom_point() + facet_wrap( ~ taxa) +
+    theme(legend.position="none",
+          axis.title.x=element_blank())
 
-### ---- pSngl-groups-comparison-plot ----
-ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
+grp3 <- ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochirotida")),
               aes(x=threshold, y=pSngl, colour=interaction(distance, method),
-                  shape=interaction(distance, method))) + geom_line() +
-    geom_point() + facet_wrap( ~ taxa)
+                  shape=interaction(distance, method))) +
+    geom_line() +  geom_point() + facet_wrap( ~ taxa) +
+    ylab("Proportion of singletons") + xlab("Distance threshold") +
+    scale_colour_manual(values=zisPal) + scale_shape_manual(values=seq(from=15, length.out=4)) +
+    theme(legend.position="none")
 
+multiplot(grp1, grp3, cols=1)
 
 ### ----- isolation-by-distance-data ----
 source("R/CalcGeoDist.R")
