@@ -4,6 +4,7 @@ source("R/multiplot.R")
 library(xtable)
 library(car)
 library(wesanderson)
+library(tikzDevice)
 
 ### ---- sampling-maps ----
 cukeDB <- load_cukeDB()
@@ -508,12 +509,9 @@ print(xtable(ibdRes, display=rep("g", 4), caption=c(paste("Slope, Standard-Error
              label="tab:ibd-stats", caption.placement="top"))
 
 ### ---- global-diversity-map ----
-library(maps)
-library(ggplot2)
-library(tikzDevice)
 globalMap <- map_data("world2")
 source("R/test-allopatry-functions.R")
-spatialSpecies <- spatialFromSpecies(load_tree_clusterGrps("K80", "all", 0.015),
+spatialSpecies <- spatialFromSpecies(load_tree_clusterGrps("raw", "all", 0.02),
                                      load_cukeDB())
 
 isPolygon <- sapply(spatialSpecies[[1]], function(x) attr(x, "type-coords") == "polygon")
@@ -578,7 +576,7 @@ nSppGuam <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointGuam
 
 
 #### ---- test ---- ### not in use
-ggplot(allHllDf[grep("^501-|^111-", allHllDf$species), ]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+ggplot(allHllDf[grep("^183-|^181-", allHllDf$species), ]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
     geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
     geom_polygon(aes(x=long.recenter, y=decimalLatitude, fill=species),
                  alpha=.3) +
@@ -653,18 +651,15 @@ ggplot(allHllDf[grep("^501-|^111-", allHllDf$species), ]) + annotation_map(globa
 ### ---- geography-diversification ----
 source("R/test-allopatry-functions.R")
 spCompBoth <- load_species_overlap_comparison()
-
 spComp <- subset(spCompBoth, method == "cluster")
 spComp <- spComp[complete.cases(spComp), ]
 
+spComp <- spComp[-match("471-Phyllophoridae_nsp/634-Thelenota_ananas", spComp$species), ]
+spComp <- spComp[-match("192-Holothuria_pentard/191-Holothuria_roseomaculata", spComp$species), ]
+
 ## TODO - fix parapatry detection, something is wrong with it.
 ## TODO - remove false sympatry, in future change method to include bootstrap
-spComp[match("387-Isostichopus_badionotus/385-Isostichopus_fuscus", spComp$species), "rangeType"] <- "allopatric"
-spComp[match("155-Euapta_godeffroyi/157-Euapta_lappa", spComp$species), "rangeType"] <- "allopatric"
-spComp[match("501-Paracucumis_turricata/111-Crucella_scotiae", spComp$species), "rangeType"] <- "sympatric"
-spComp <- spComp[-match("534-Phyllophoridae_nsp/714-Thelenota_ananas", spComp$species), ]
-spComp <- spComp[-match("102-Cladolabes_schmeltzi/443-Mesothuria_parva", spComp$species), ]
-spComp <- spComp[-match("653-Stolus_canescens/713-Thelenota_rubralineata", spComp$species), ]
+
 spComp$rangeType <- factor(spComp$rangeType, levels=c("allopatric", "sympatric", "parapatric"))
 
 tabRangeType <- table(spComp$rangeType)
@@ -733,9 +728,6 @@ ggplot(distByInd, aes(x=geoDist, y=genDist, colour=higher)) +
 
 
 ### ---- distribution-maps ----
-library(maps)
-library(ggplot2)
-
 globalMap <- map_data("world2")
 
 pdf(file="tmp/distributionMaps.pdf", paper="letter")

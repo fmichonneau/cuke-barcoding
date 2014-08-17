@@ -207,7 +207,7 @@ load_species_overlap <- function(overwrite=FALSE) {
     invisible(spOver)
 }
 
-load_species_overlap_comparison <- function(taxa="all", threshold=0.03) {
+load_species_overlap_comparison <- function(taxa="all", threshold=0.04) {
      taxonomyDf <- load_taxonomyDf()
      taxa <- match.arg(as.character(taxa), taxonomyDf$taxa)
      spOver <- load_species_overlap()

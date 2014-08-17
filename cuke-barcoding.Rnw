@@ -122,6 +122,8 @@ barcode library be used to identify a species?) \cite{Collins2013}. In this
 study we focus on describing the patterns of unrecognized diversity, and testing
 the role of latitude and phylogeny in shaping these patterns.
 
+% introduce idea of barcoding gap
+
 * barcoding has limitations, but when used with comprehensive taxonomic and
 geographic sampling, powerful to assess diversity, in particular in groups that
 haven't received lots of taxonomic attention
@@ -206,14 +208,18 @@ resurrected from synonymies.
 
 DNA was extracted according to one of the following three protocols: (1) DNAzol
 followed by QIAGEN PCR clean up kit; (2) organic extractions at the Smithsonian
-Institution using robotic facilities; (3) EZNA Mollusc kit.
+Institution using robotic facilities; (3) EZNA Mollusc kit. In each case, the
+manufacturer's protocol were used.
 
-We amplified the 5' end of COI using the echinoderm primers developed by
-\cite{Hoareau2010}. The sequencing was performed at the Interdisciplinary Center
-Biotechnology Research at the University of Florida. Chromatograms were
-assembled and edited using Geneious 5.5.8 \cite{Geneious558}.
+We amplified the 5' end (655~base pairs) of the mitochondrial gene COI using the
+echinoderm primers developed by \cite{Hoareau2010}. The sequencing was performed
+at the Interdisciplinary Center Biotechnology Research at the University of
+Florida. Chromatograms were assembled and edited using Geneious 5.5.8
+\cite{Geneious558}.
 
-We kept all sequences that were more than 600 bp,
+We kept all sequences that were more than 600 bp and that did not include any
+stop or non-sense codons that may have resulted from incorrect base calling
+during the sequencing or the editing process.
 
 \subsection{Diversity}
 
@@ -222,43 +228,45 @@ We kept all sequences that were more than 600 bp,
 % because of characters used to delineate species? and yet, relatively easy to
 % sample
 
--  [discussion] use of thresholds: problem such large datasets, differences in rates of
-molecular evolution making single threshold approach potentially challenging
-- [results] show image that represent: differences in topologies,
-(paraphyly/polyphyly), long branches
-- [results] comparison of results from the 2 methods
-- [discussion] does it really matter that ESUs identified aren't really species? they are
-proxy for genetic diversity --> much higher than current understanding of
-species limits
-
-- [results] comparison with number of species from taxonomy
-- [results] how much of the genera/families were sampled?
-- [results] adequate sampling across the range of the species
+In this study we use the term Evolutionary Significant Unit (ESU) to designate
+individuals that differ by species-level genetic differentiation and could
+potentially represent reproductively isolated lineages. Typically, this
+definition implies that these individuals also differ in another independent
+distinguishing characteristic such as a morphological trait or divergence in an
+independent genetic locus (\textit{sensu} \cite{Moritz1994}). Here, many of the
+ESUs identified differ morphologically, but it was not always possible to assess
+these differences owing to the few individuals available. In other cases, no
+obvious differences were detected but they may be characterized by subtle
+differences in their ossicle assemblages that have not been investigated
+thoroughly.
 
 The size of the dataset restricts the methods that can be used to assess
-diversity within the dataset, and computationally intensive methods such as the
-Generalized Mixed Yule Coalescent method \cite{Pons2006} cannot be used
-here. Other programs cannot accommodate such large dataset, and failed to
-complete the analysis (e.g. PTP \cite{Zhang2013}, or AGBD
-\cite{Puillandre2012a}). Therefore, we were here limited to use threshold-based
-methods to estimate the number of species and used two approaches: pairwise
-distances and the cluster identification method.
+diversity, as computationally intensive methods such as the Generalized Mixed
+Yule Coalescent method \cite{Pons2006} cannot be used here. Other programs
+cannot accommodate such large dataset, and failed to complete the analysis
+(e.g. PTP \cite{Zhang2013}, AGBD \cite{Puillandre2012a}). Therefore, we were
+limited to use threshold-based methods to estimate the number of ESUs and used
+two approaches: pairwise distances and the cluster identification method.
 
 Based on pairwise distances, we grouped individuals that diverged at most by a
 given threshold. This method is strictly based on the genetic distance and does
 not take into account phylogenetic information.
 
-We used here a new method that identifies monophyletic clusters of individuals
-from a neighbor-joining tree (other tree reconstruction methods can be used),
-reconstructed from the pairwise genetic distances. Individuals belonging to the
-same cluster are separated by genetic distance less than a threshold set
-\textit{a priori}. Since it is based on the maximum intraspecific distance, it
-shares similarity with the local barcoding graphs, where maximum intra-specific
-distance between individuals is plotted against the distance to the closest
-neighboring species (see \cite[Fig.~4 in]{Robinson2009} for an example). It
-differs as it only uses information from the tree (no need to associate species
-names with the sequences), but suffers from the caveats associated with using
-arbitrary thresholds.
+We also used here a new method that identifies monophyletic clusters of
+individuals from a neighbor-joining tree (other tree reconstruction methods can
+be used), reconstructed from the pairwise genetic distances. Individuals
+belonging to the same cluster are separated by genetic distance less than a
+threshold set \textit{a priori}. Since it is based on the maximum intraspecific
+distance, it shares similarity with the local barcoding graphs, where maximum
+intra-specific distance between individuals is plotted against the distance to
+the closest neighboring species (see \cite[Fig.~4 in]{Robinson2009} for an
+example). It differs as it only uses information from the tree (no need to
+associate species names with the sequences), but suffers from the caveats
+associated with using arbitrary thresholds.
+
+% This method is less conservative
+% compared to the pairwise distance method since individuals with divergent
+% haplotypes will be considered to belong to different ESUs if theythat differ
 
 For each of these two approaches, we used both uncorrected distances ($p$) and
 the Kimura two-parameter (K2P) distance \cite{Kimura1980} to estimate pairwise
@@ -270,37 +278,35 @@ number of species recovered from our sample while varying the pairwise threshold
 value: \Sexpr{paste0(load_thresholdPairwise(), collapse=", ")}. Additionally, we
 estimated the proportion of singletons (proportion of the number species
 represented by a single individual) for each of these threshold values. If a
-suitable threshold allows to detect the barcoding gap and therefore estimate
-diversity within a group, we expect the number of species estimated to
-stabilize. Similarly, we expect that the proportion of singletons decreases when
-the threshold identifies the barcoding gap by going from overspliting. We
-repeated these analyses on the entire dataset, on each order and each family.
+suitable threshold allows the detection of the barcoding gap, we expect the
+number of estimated ESUs to not drop as abruptly once the threshold passes is
+high enough to capture the range of intra-ESU genetic variability and groups
+together diverging individuals. Similarly, we expect that the proportion of
+singletons stops decreasing when the threshold is high enough that it captures
+individuals with slightly divergent haplotypes. We repeated these analyses on
+the entire dataset, on each order, and each family to assess if different
+thresholds were needed for various taxonomic groups.
 
-It has been suggested to use a threshold equals to 10 times the intraspecific
-distance \cite{Hebert2004a}. However, this approach was not suitable in our
-study as the high levels of cryptic species were considerably inflating the
+It has been suggested previously that using a threshold equals to 10 times the
+intraspecific distance \cite{Hebert2004a} for pairwise distance was
+appropriate. However, this approach was not suitable in our study as the high
+levels of cryptic species were considerably inflating the apparent levels of
 intraspecific distances.
-
-
 
 \subsection{Geography, diversity and diversification}
 
 \subsubsection{Patterns of diversity}
 
-%% - Diversity:
-%%  - [future] map of number of unique haplotypes per geographic areas
-% ideas:
-
-% - use different colors to code species mostly in the Pacific, mostly in IO or
+% - [future] map of number of unique haplotypes per geographic areas
+% - [future] use different colors to code species mostly in the Pacific, mostly in IO or
 % both so we can dissect if the pattern of diversity is caused by the same
 % species or not
-% -
 
 We investigated the geographic patterns of diversity from the ESUs identified
-from the barcoding data. For each ESUs, when three or more locations were
+from the barcoding data. For each ESU, when three or more locations were
 sampled, we computed the convex hull to obtain a polygon approximating their
-distributions. To obtain a diversity contour map, we superimposed the polygons
-obtained.
+geographic distributions. We superimposed these polygons to obtain a diversity
+contour map.
 
 \subsubsection{Isolation-by-distance}
 
@@ -351,14 +357,14 @@ If speciation occurs in allopatry, recently diverged species may retain
 allopatric distributions. To investigate the geographic distributions of
 recently diverged ESUs, we tested whether sister ESUs were sympatric or
 allopatric. We identified sister ESUs based on the neighbor-joining tree
-estimated from the K2P distances.  If the distributions of the ESUs could be
-inferred with a polygon, we classified their distributions as: parapatric if
-less than 10\% of the range of the ESU with the smallest range overlapped with
-the species with the larger range, sympatric is their ranges overlapped by more
-than 10\%, and allopatric otherwise. If only one species had enough data to
-estimate its distribution with a polygon, and points were available for the
-other species, we considered their distribution allopatric if none of the points
-were included in the polygon, and sympatric if they were.
+estimated from the uncorrected distances. If the distributions of the ESUs
+could be inferred with a polygon, we classified their distributions as:
+parapatric if less than 10\% of the range of the ESU with the smallest range
+overlapped with the species with the larger range, sympatric is their ranges
+overlapped by more than 10\%, and allopatric otherwise. If only one species had
+enough data to estimate its distribution with a polygon, and points were
+available for the other species, we considered their distribution allopatric if
+none of the points were included in the polygon, and sympatric if they were.
 
 To investigate the relative contributions of geographic barriers to the
 formations of ESUs within the Indo-Pacific, we recorded the approximate
@@ -413,6 +419,11 @@ pCrypticAll <- c(nSppAll/length(spPair003), nSppAll/length(spCluster004))
 
 @
 
+
+% - [results] show image that represent: differences in topologies,
+% (paraphyly/polyphyly), long branches
+% - [results] adequate sampling across the range of the species
+
 Among the \Sexpr{dim(cukeAlg)[1]} individuals sequenced, we identified
 \Sexpr{nSppAll} species. All orders of sea cucumbers were represented. The order
 Aspidochirotida, and in particular the family Holothuriidae were the most
@@ -443,7 +454,10 @@ with a threshold of 4\% based on the raw distances. This threshold provided a
 compromise by delineating ESUs with different color patterns or ecology, without
 splitting ESUs that showed some level of geographic structure across their
 range. This distance threshold also corresponds at the level where all methods
-tested provided similar estimates of the proportion of singletons.
+tested provided similar estimates of the proportion of singletons. We also
+favored this approach as it led to reciprocally monophyletic groups that could
+then easily be used to investigate geographic patterns of diversity and
+diversification.
 
 With this threshold, the number of estimated ESUs is
 \Sexpr{length(load_species_clusterGrps("raw", "all", 0.02))}. The difference
@@ -470,10 +484,12 @@ For some groups that were sampled extensively, we recovered less ESUs than there
 are described species. Notably, in \textit{Opheodesoma}, that currently include
 11 species, we only recovered 4 ESUs as well as 2 probably undescribed species.
 
-Threshold insufficient as lumps ESUs that seem different.
-
-Examples of possible oversplitting.
-
+In a few cases, groups of individuals that appear morphologically differentiated
+were grouped together in an ESU. This was in particular the case of
+\textit{Holothuria edulis} which harbors two color morphs: gray  and fuschia;
+and several species in \textit{Stichopus}. One the other hand, there were some
+cases of species that were split into several ESUs but that did not seem to be
+differentiated morphologically and that had broadly overlapping ranges.
 
 
 % Typically, the recommended threshold in barcoding studies is 10 times the
@@ -492,8 +508,6 @@ Examples of possible oversplitting.
 % \Sexpr{formatC(mean(meanIntraSppMol, na.rm=TRUE)*100, digits=2)}\%
 % (N=\Sexpr{formatC(sum(!is.na(meanIntraSppMol)))}) for the Molpadida. The 3\%
 % thres
-
-
 
 
 <<sampled-species, results='asis', echo=FALSE, cache=TRUE, dependson='n-species'>>=
@@ -524,7 +538,7 @@ Examples of possible oversplitting.
 
 The highest diversity occurs in the Western Pacific with a maximum of
 \Sexpr{sum(nSppPNG)} ESUs North East of New Guinea. Overall, diversity is
-relatively consistent across the Indo-Pacific with about at least 20 species
+relatively consistent across the Indo-Pacific with about at least 25 ESUs
 co-occurring from Madagascar to Hawaii, and from Taiwan to French
 Polynesia. Diversity in the Indo-Malay archipelago is comparable to, or lower than
 in other parts of the range with few ESUs restricted to this geographic area
@@ -616,6 +630,13 @@ or sister species across the Easter Pacific barrier
 \section{Discussion}
 
 \subsection{Diversity}
+
+- [discussion] does it really matter that ESUs identified aren't really species? they are
+proxy for genetic diversity --> much higher than current understanding of
+species limits
+-  [discussion] use of thresholds: problem such large datasets, differences in rates of
+molecular evolution making single threshold approach potentially challenging
+
 
 As with all threshold-based method, in
 particular, over such taxonomic and latitudinal breadth, this threshold led to
