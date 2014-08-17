@@ -456,7 +456,7 @@ finalIbdAncova <- update(ibdAncova, . ~ . - Order - maxGeoDist:Order)
 print(xtable(summary(finalIbdAncova), display=rep("g", 5), caption=c(paste("Coefficients of the regression",
              "between maximum genetic distances and",
               "maximum geographic distances for all ESUs identified with the clustering method",
-              "with a threshold of 3\\%, represented by 3 or more individuals.",
+              "with a threshold of 4\\%, represented by 3 or more individuals.",
               "See Fig.~\\ref{fig:isolation-by-distance-plot}."),
               "Coefficients of the regression between maximum genetic and maximum geographic distances.")),
              label="tab:ibd-stats", caption.placement="top")

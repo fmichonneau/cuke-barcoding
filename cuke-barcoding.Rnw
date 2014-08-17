@@ -513,7 +513,7 @@ Examples of possible oversplitting.
 \begin{centering}
 \includegraphics{figures/diversity-map}
 \caption{Overlay of the polygons representing the distributions of all ESUs
-  delineated with the clustering method with a threshold of 3\%, occurring
+  delineated with the clustering method with a threshold of 4\%, occurring
   between -30$^{\circ}$ and 30$^{\circ}$. The shade of red indicate the number
   of species co-occuring. The maximum number of overlapping ranges occurs
   North of Papua New Guinea with \Sexpr{sum(nSppPNG)} ESUs. }
@@ -535,7 +535,7 @@ in other parts of the range with few ESUs restricted to this geographic area
 
 \subsubsection{Isolation-by-distance}
 
-<<isolation-by-distance-plot, cache=TRUE, results='hide', echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.scap='Genetic and geographic distances for each order', fig.cap='Maximum genetic distance and maximum geographic distance for ESUs identified with the clustering approach with a threshold of 3\\%, represented by at least 3 individuals. Dashed lines represent the model estimated by an ANCOVA using the order as the independent variable.'>>=
+<<isolation-by-distance-plot, cache=TRUE, results='hide', echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.scap='Genetic and geographic distances for each order', fig.cap='Maximum genetic distance and maximum geographic distance for ESUs identified with the clustering approach with a threshold of 4\\%, represented by at least 3 individuals. Dashed lines represent the model estimated by an ANCOVA using the order as the independent variable.'>>=
 @
 
 
@@ -583,7 +583,7 @@ SD=\Sexpr{round(sdRange["Dendrochirotida"], 2)}).
 
 \subsubsection{Geography of diversification}
 
-<<geography-diversification, cache=TRUE, echo=FALSE, fig.width=5, fig.height=3, fig.scap='Geography of diversification', fig.cap='Number of geographic types for ESU pairs identified by the clustering method with a 3\\% threshold'>>=
+<<geography-diversification, cache=TRUE, echo=FALSE, fig.width=5, fig.height=3, fig.scap='Geography of diversification', fig.cap='Number of geographic types for ESU pairs identified by the clustering method with a 4\\% threshold'>>=
 
 @
 
