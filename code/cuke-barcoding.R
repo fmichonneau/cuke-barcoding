@@ -169,8 +169,46 @@ print(sampXtab, include.rownames=FALSE, hline.after=c(-1, 0, hlinePos, nrow(samp
 ### ---- mean-intra-named-species ----
 cukeAlg <- load_cukeAlg()
 
+
+meanRaw0015 <- sapply(load_species_pairwiseGrps("raw", "all", 0.015), function(x) {
+    alg <- cukeAlg[match(x, dimnames(cukeAlg)[[1]]), ]
+    mean(dist.dna(alg))
+})
+
+meanRaw002 <- sapply(load_species_pairwiseGrps("raw", "all", 0.02), function(x) {
+    alg <- cukeAlg[match(x, dimnames(cukeAlg)[[1]]), ]
+    mean(dist.dna(alg))
+})
+
+meanRaw0025 <- sapply(load_species_pairwiseGrps("raw", "all", 0.025), function(x) {
+    alg <- cukeAlg[match(x, dimnames(cukeAlg)[[1]]), ]
+    mean(dist.dna(alg))
+})
+
+##
+
+meanK2p0015 <- sapply(load_species_pairwiseGrps("K80", "all", 0.01), function(x) {
+    alg <- cukeAlg[match(x, dimnames(cukeAlg)[[1]]), ]
+    mean(dist.dna(alg))
+})
+
+meanK2p002 <- sapply(load_species_pairwiseGrps("K80", "all", 0.04), function(x) {
+    alg <- cukeAlg[match(x, dimnames(cukeAlg)[[1]]), ]
+    mean(dist.dna(alg))
+})
+
+meanK2p0025 <- sapply(load_species_pairwiseGrps("K80", "all", 0.05), function(x) {
+    alg <- cukeAlg[match(x, dimnames(cukeAlg)[[1]]), ]
+    mean(dist.dna(alg))
+})
+
+
 whichSppAll <- sapply(uniqSpp$species, function(x) grep(x, dimnames(cukeAlg)[[1]]))
-meanIntraSppAll <- sapply(whichSppAll, function(x) { alg <- cukeAlg[x, ]; mean(dist.dna(alg,)) })
+meanIntraSppAll <- sapply(whichSppAll, function(x) {
+    if (length(x) > 3) {
+        alg <- cukeAlg[x, ]; mean(dist.dna(alg,))
+    }
+    else NA })
 
 whichSppAsp <- sapply(subset(uniqSpp, higher == "Aspidochirotida")$species, function(x) grep(x, dimnames(cukeAlg)[[1]]))
 meanIntraSppAsp <- sapply(whichSppAsp, function(x) { alg <- cukeAlg[x, ]; mean(dist.dna(alg,)) })
@@ -180,6 +218,12 @@ meanIntraSppApo <- sapply(whichSppApo, function(x) { alg <- cukeAlg[x, ]; mean(d
 
 whichSppDen <- sapply(subset(uniqSpp, higher == "Dendrochirotida")$species, function(x) grep(x, dimnames(cukeAlg)[[1]]))
 meanIntraSppDen <- sapply(whichSppDen, function(x) { alg <- cukeAlg[x, ]; mean(dist.dna(alg,)) })
+
+whichSppEla <- sapply(subset(uniqSpp, higher == "Elasipodida")$species, function(x) grep(x, dimnames(cukeAlg)[[1]]))
+meanIntraSppEla <- sapply(whichSppEla, function(x) { alg <- cukeAlg[x, ]; mean(dist.dna(alg,)) })
+
+whichSppMol <- sapply(subset(uniqSpp, higher == "Molpadida")$species, function(x) grep(x, dimnames(cukeAlg)[[1]]))
+meanIntraSppMol <- sapply(whichSppMol, function(x) { alg <- cukeAlg[x, ]; mean(dist.dna(alg,)) })
 
 
 ### ---- cluster-groups-data ----

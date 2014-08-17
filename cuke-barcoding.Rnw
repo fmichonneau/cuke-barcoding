@@ -424,12 +424,65 @@ for the Holothuriidae, the estimated number of ESUs plateaued for thresholds >
 4\% with the clustering method and for thresholds > 2\% with the pairwise
 distance method.
 
-When all sequences where analyzed, the proportion of singletons stabilized
-between 35\% and 40\% for distance thresholds > 2\% for the pairwise method and
-for thresholds > 4\% for the clustering method. Typically, these thresholds were
-more variable when analyzing each orders individually (3\% and 5\% for both the
+When all sequences where analyzed, the proportion of singletons varied between
+35\% and 40\% for distance thresholds > 2\% for the pairwise method and for
+thresholds > 4\% for the clustering method
+(Fig.~\ref{fig:groups-comparison-plot}). Typically, these thresholds were more
+variable when analyzing each orders individually (3\% and 5\% for both the
 Aspidochirotida and the Holothuriidae, 3\% and 2.5\% for the Apodida, 3\% and
 3\% for the Dendrochirotida, 2\% and 4\% for the Elasipodida.)
+
+For the rest of the study we chose to use the ESUs as delineated by the
+clustering method with a threshold of 3\% based on the K2P distances. This
+threshold provided a compromise by delineating ESUs with different color
+patterns or ecology, without splitting ESUs that showed some level of geographic
+structure across their ranges.
+
+With this threshold, the number of estimated ESUs is
+\Sexpr{length(load_species_clusterGrps("K80", "all", 0.015))}. The difference
+with the number of named species comes from species complexes. These complexes
+can be deeply divergent populations across the range of species previously
+thought to be circum-tropical. For instance, \textit{Holothuria arenicola} forms
+a complex with different ESUs in the Caribbean basin, the Eastern Pacific and
+the rest of the Indo-Pacific. For this species and others (e.g.,
+\textit{Holothuria hilla}), these divergent lineages have overlapping ranges,
+which made their recognition as distinct evolutionary units
+challenging. Additionally, many species thought to occur in both Indian and
+Pacific Oceans (e.g., \textit{Holothuria pervicax}, \textit{Holothuria
+  fuscocinerea}), or to reach peripheral areas of the Indo-Pacific (e.g.,
+\textit{Holothuria cinerascens} has ESUs both in Hawaii and the Red Sea), appear
+highly divergent genetically, sometimes accompanied with morphological
+differences.
+
+Our large scale sampling effort also led to the discovery of many species, many
+of which, do not appear to have been described.
+
+In some cases, less diversity than expected.
+
+Threshold insufficient as lumps ESUs that seem different.
+
+Examples of possible oversplitting.
+
+
+
+% Typically, the recommended threshold in barcoding studies is 10 times the
+% average intraspecific distance \cite{Hebert2004a} when using the pairwise
+% method. The intraspecific distance for the overall dataset was
+% \Sexpr{formatC(mean(meanIntraSppAll, na.rm=TRUE)*100, digits=2)}\%
+% (N=\Sexpr{formatC(sum(!is.na(meanIntraSppAll)))}),
+% \Sexpr{formatC(mean(meanIntraSppAsp, na.rm=TRUE)*100, digits=2)}\% for the
+% Aspidochirotida (N=\Sexpr{formatC(sum(!is.na(meanIntraSppAsp)))}),
+% \Sexpr{formatC(mean(meanIntraSppDen, na.rm=TRUE)*100, digits=2)}\% for the
+% Dendrochirotida (N=\Sexpr{formatC(sum(!is.na(meanIntraSppDen)))}),
+% \Sexpr{formatC(mean(meanIntraSppApo, na.rm=TRUE)*100, digits=2)}\%
+% (N=\Sexpr{formatC(sum(!is.na(meanIntraSppApo)))}) for the Apodida,
+% \Sexpr{formatC(mean(meanIntraSppEla, na.rm=TRUE)*100, digits=2)}\%
+% (N=\Sexpr{formatC(sum(!is.na(meanIntraSppEla)))}) for the Elasipodida,
+% \Sexpr{formatC(mean(meanIntraSppMol, na.rm=TRUE)*100, digits=2)}\%
+% (N=\Sexpr{formatC(sum(!is.na(meanIntraSppMol)))}) for the Molpadida. The 3\%
+% thres
+
+
 
 
 <<sampled-species, results='asis', echo=FALSE, cache=TRUE, dependson='n-species'>>=
@@ -549,8 +602,16 @@ or sister species across the Easter Pacific barrier
 (Fig.~\ref{fig:map-barriers}).
 
 
-
 \section{Discussion}
+
+\subsection{Diversity}
+
+As with all threshold-based method, in
+particular, over such taxonomic and latitudinal breadth, this threshold led to
+some level of type I and type II errors. Estimating them at this stage is
+made challenging by high levels of unrecognized diversity.
+
+Differences in rates of evolution
 
 \subsection{Geography, diversity and diversification}
 
