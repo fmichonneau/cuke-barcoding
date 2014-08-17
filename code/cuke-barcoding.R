@@ -2,6 +2,7 @@
 source("R/packages.R")
 source("R/multiplot.R")
 library(xtable)
+library(car)
 library(wesanderson)
 
 ### ---- sampling-maps ----
@@ -365,7 +366,7 @@ multiplot(nESUSm, pSnglSm, cols=1)
 ### ----- isolation-by-distance-data -----
 source("R/CalcGeoDist.R")
 source("R/load.R")
-treeH <- load_tree_clusterGrps(taxa="all")
+treeH <- load_tree_clusterGrps(distance="raw", taxa="all", threshold="0.02")
 cukeDB <- load_cukeDB()
 grps <- tdata(treeH, "tip")[, "Groups", drop=FALSE]
 cukeAlg <- load_cukeAlg()
@@ -426,9 +427,6 @@ names(distBySpecies)[match("higher", names(distBySpecies))] <- "Order"
 orderToInclude <- c("Apodida", "Aspidochirotida", "Dendrochirotida")
 
 ### ---- isolation-by-distance-stats ----
-library(xtable)
-library(car)
-
 leveneIbd <- car::leveneTest(lm(maxGenDist ~ Order, data=distBySpecies,
                                 subset=Order %in% orderToInclude))
 leveneIbdFstat <- paste("$F(", paste0(leveneIbd$Df, collapse=", "), ")=",
@@ -455,7 +453,6 @@ interceptP <- paste("$P =", formatC(summAovIbd[[1]]$"Pr(>F)"[2], digits=2), "$")
 finalIbdAncova <- update(ibdAncova, . ~ . - Order - maxGeoDist:Order)
 
 ### ---- isolation-by-distance-table ----
-library(xtable)
 print(xtable(summary(finalIbdAncova), display=rep("g", 5), caption=c(paste("Coefficients of the regression",
              "between maximum genetic distances and",
               "maximum geographic distances for all ESUs identified with the clustering method",

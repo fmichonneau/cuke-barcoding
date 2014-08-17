@@ -23,6 +23,43 @@ load_cukeDB <- function(overwrite=FALSE) {
         echinoDB <- load_echinoDB(overwrite)
         cukeDB <- subset(echinoDB, class_ == "Holothuroidea")
 
+        ## ## Select sequences TODO -- need to reincorporate this!
+        ## holDB <- subset(allDB, class_ == "Holothuroidea")  # nrow = 4385
+        ## holDB <- subset(holDB, pass.seq != "GenBank")      # nrow = 4360
+        ## holDB <- subset(holDB, pass.seq != "fix")          # nrow = 4358
+        ## holDB <- subset(holDB, pass.seq != "no_seq_yet")   # nrow = 3466
+        ## holDB <- subset(holDB, pass.seq != "no")           # nrow = 3402
+        ## holDB <- subset(holDB, Notes != "MH sequence")     # nrow = 3379
+        ## holDB <- subset(holDB, pass.seq != "duplicate")    #
+
+        ## lSeq <- sapply(holDB$Sequence, function(x) length(gregexpr("[actgACTG]", x)[[1]])) # only non-ambiguous bp
+
+        ## lAmb <- sapply(holDB$Sequence, function(x) length(gregexpr("[^-]", x)[[1]]))       # all bp
+
+        ## holDB <- holDB[lAmb > 500, ] # nrow = 2894 -- this also takes care of empty sequences (only -)
+        ## check for duplicated samples
+
+        ## dup <- holDB[duplicated(holDB$Sample), "Sample"]
+        ## stopifnot(length(dup) == 0)
+
+        ## Remove sequences with internal gaps and stop codons
+        ## toRm <- union(seqWithStop, seqWithIntGap)
+
+        ## dimnames(seqHol)[[1]][match(toRm, dimnames(seqHol)[[1]])] <- paste("stop-intgap", toRm, sep="_")
+        ## toRmInd <- match(toRm, dimnames(seqHol)[[1]])
+        ## seqHol <- seqHol[-toRmInd, ]
+
+        ## These 3 sequences are not represented by other representative
+
+        ##  it might be worth trying to figure out if we can clean up the
+        ##  sequences to deal with the issues
+        ##  - FRM-194
+        ##  - NMV F112128
+        ##  - NIWA 38032
+
+        ## Write working copy of fasta file
+        write.dna(seqHol, file="data/workingAlg.fas", format="fasta", colsep="")
+
         ## fix GPS coordinates
         cukeDB[cukeDB$decimalLatitude==19.95 & cukeDB$Loc == "MexicoPac",
                c("decimalLatitude", "decimalLongitude")] <- data.frame(20.3, -105.5)

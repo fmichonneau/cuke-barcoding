@@ -159,7 +159,7 @@ testRangeType <- function(tr, polygons, alg, percentOverlap=10) {
 
 build_species_overlap <- function() {
     ## constants for this analysis
-    thres <- 0.03
+    thres <- 0.04
     dst <- "K80"
     tax <- "all"
 
