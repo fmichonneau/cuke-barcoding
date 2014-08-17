@@ -84,12 +84,58 @@ nSppApo <- nrow(subset(uniqSpp, higher=="Apodida"))
 nSppDen <- nrow(subset(uniqSpp, higher=="Dendrochirotida"))
 nSppEla <- nrow(subset(uniqSpp, higher=="Elasipodida"))
 
+### ---- worms-taxonomy ----
+## library(taxize)
+## cukeOrder <- worms_children(123083)
+## cukeOrder <- cukeOrder[cukeOrder$status == "accepted", ]
+## cukeAspId <- worms_children(cukeOrder$valid_AphiaID[cukeOrder$scientificname == "Aspidochirotida"])$valid_AphiaID
+## cukeAsp <- worms_children(unique(cukeAspId))
+## aspDf <- subset(cukeAsp, status == "accepted")[, c("order", "family", "genus", "valid_AphiaID")]
+## aspSpp <- worms_children(unique(aspDf$valid_AphiaID))
+
+## aspSpp <- lapply(unique(aspDf$valid_AphiaID), function(x) {
+##     i <- 1; j <- 1
+##     lim <- 10
+##     res <- vector("list", 10)
+##     while (TRUE) {
+##         tmpRes <- worms_children(x, offset=i)
+##         res[[j]] <- tmpRes
+##         if (nrow(tmpRes) < 50) break
+##         i <- i + 50
+##         j <- j + 1
+##     }
+##     res
+## })
+
+## aspSpp <- lapply(aspSpp, function(x) x[!sapply(x, is.null)])
+## aspSpp <- do.call("rbind", aspSpp)
+## aspSppValid <- subset(aspSpp, status == "accepted")
+
 ### ---- sampled-species ----
+worms <- read.csv(file="data/raw/cuke-worms.csv", stringsAsFactors=FALSE)
+worms <- subset(worms, worms$"Status..WoRMS." == "accepted")
+wormsTab <- data.frame(xtabs(~ Order.current + Family.current + Genus.current, data=worms))
+wormsTab <- wormsTab[wormsTab$Freq != 0, ]
+names(wormsTab) <- c("Order", "Family", "Genus", "nSpp")
+
+wormsSumOrder <- with(wormsTab, tapply(nSpp, Order, sum))
+wormsSumFam <- with(wormsTab, tapply(nSpp, Family, sum))
+
+wormsSum <- data.frame(Family = names(wormsSumFam), acceptedSpp=wormsSumFam)
+wormsSum <- merge(wormsSum, wormsTab, by="Family", all.x=TRUE)
+wormsSum <- wormsSum[, -match(c("Genus", "nSpp"), names(wormsSum))]
+wormsSum <- wormsSum[!duplicated(wormsSum), ]
+wormsSum <- rbind(wormsSum, data.frame(Family="", Order=names(wormsSumOrder), acceptedSpp=wormsSumOrder))
+
 sampTab <- data.frame(xtabs(~ higher + family, data=uniqSpp))
 sampTabOrder <- data.frame(xtabs(~ higher, data=uniqSpp), family = "")
 sampTab <- rbind(sampTab, sampTabOrder)
 sampTab <- sampTab[sampTab$Freq != 0, ]
-names(sampTab) <- c("Order", "Family", "Number of Species")
+names(sampTab) <- c("Order", "Family", "# sampled")
+
+sampTab <- merge(sampTab, wormsSum)
+
+names(sampTab)[ncol(sampTab)] <- "# accepted"
 
 sampTab$Family <- factor(sampTab$Family,
                          levels=c(levels(sampTab$Family)[nlevels(sampTab$Family)],
@@ -100,17 +146,41 @@ hlinePos <- cumsum(table(sampTab$Order))
 sampTab$Order <- as.character(sampTab$Order)
 sampTab$Order <- paste("\\textbf{", sampTab$Order, "}", sep="")
 sampTab$Order[duplicated(sampTab$Order)] <- ""
-sampTab$"Number of Species"[nzchar(sampTab$Order)] <- paste("\\textbf{", sampTab$"Number of Species"[nzchar(sampTab$Order)], "}", sep="")
-sampTab <- rbind(sampTab, cbind(Order = "\\textbf{Total}", Family = "",
-                                "Number of Species" = paste0("\\textbf{", nrow(uniqSpp), "}")))
+sampTab$"# sampled"[nzchar(sampTab$Order)] <-
+    paste("\\textbf{", sampTab$"# sampled"[nzchar(sampTab$Order)], "}", sep="")
+sampTab$"# accepted"[nzchar(sampTab$Order)] <-
+    paste("\\textbf{", sampTab$"# accepted"[nzchar(sampTab$Order)], "}", sep="")
 
+sampTab <- rbind(sampTab, cbind(Order = "\\textbf{Total}", Family = "",
+                                "# sampled" = paste0("\\textbf{", nrow(uniqSpp), "}"),
+                                "# accepted" = paste0("\\textbf{", sum(wormsSum$acceptedSpp), "}")))
+
+colnames(sampTab)[3:4] <- paste0("\\", colnames(sampTab)[3:4])
 
 sampXtab <- xtable(sampTab,
-                   caption="Number of named species sampled for each family",
-                   label="tab:sampled-species", display=c("s", "s", "s", "d"))
+                   caption=paste("Number of named species sampled (\\# sampled)",
+                       "and number of accepted species (\\# accepted) for each",
+                       "family and each order of sea cucumber"),
+                   label="tab:sampled-species", display=c("s", "s", "s", "d", "d"))
 
 print(sampXtab, include.rownames=FALSE, hline.after=c(-1, 0, hlinePos, nrow(sampXtab)),
-      sanitize.text.function=function(x) {x} )
+      sanitize.text.function=function(x) {x})
+
+### ---- mean-intra-named-species ----
+cukeAlg <- load_cukeAlg()
+
+whichSppAll <- sapply(uniqSpp$species, function(x) grep(x, dimnames(cukeAlg)[[1]]))
+meanIntraSppAll <- sapply(whichSppAll, function(x) { alg <- cukeAlg[x, ]; mean(dist.dna(alg,)) })
+
+whichSppAsp <- sapply(subset(uniqSpp, higher == "Aspidochirotida")$species, function(x) grep(x, dimnames(cukeAlg)[[1]]))
+meanIntraSppAsp <- sapply(whichSppAsp, function(x) { alg <- cukeAlg[x, ]; mean(dist.dna(alg,)) })
+
+whichSppApo <- sapply(subset(uniqSpp, higher == "Apodida")$species, function(x) grep(x, dimnames(cukeAlg)[[1]]))
+meanIntraSppApo <- sapply(whichSppApo, function(x) { alg <- cukeAlg[x, ]; mean(dist.dna(alg,)) })
+
+whichSppDen <- sapply(subset(uniqSpp, higher == "Dendrochirotida")$species, function(x) grep(x, dimnames(cukeAlg)[[1]]))
+meanIntraSppDen <- sapply(whichSppDen, function(x) { alg <- cukeAlg[x, ]; mean(dist.dna(alg,)) })
+
 
 ### ---- cluster-groups-data ----
 ## TODO - revisit when "all" suffix file available

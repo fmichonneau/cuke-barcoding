@@ -397,6 +397,39 @@ boundaries separating allopatric sister ESUs.
 
 @
 
+<<stats-groups, dependson=c('n-species', 'groups-comparison-plot'), cache=TRUE, echo=FALSE>>=
+spPair003 <- load_species_pairwiseGrps("K80", "all", 0.03)
+spCluster004 <- load_species_clusterGrps("K80", "all", 0.02)
+pCrypticAll <- c(nSppAll/length(spPair003), nSppAll/length(spCluster004))
+@
+
+<<mean-intra-named-species, cache=TRUE, dependson='n-species', echo=FALSE>>=
+
+@
+
+Among the \Sexpr{dim(cukeAlg)[1]} individuals sequenced, we identified
+\Sexpr{nSppAll} species. All orders of sea cucumbers were represented. The order
+Aspidochirotida, and in particular the family Holothuriidae were the most
+exhaustively sampled (\Sexpr{formatC(100*nSppAsp/nSppAll, width=2, format="d")}
+and \Sexpr{formatC(100*nSppHol/nSppAll, width=2, format="d")} of the total number
+of individuals respectively), with all genera and subgenera of the Holothuriidae
+represented, and 65\% for the currently accepted species names.
+
+On the entire dataset, regardless of the method or the distance threshold used,
+the number of estimated ESUs was greater than the number of named species
+suggesting cryptic diversity . The pairwise distance method led to lower
+estimates than the clustering method and was less sensitive to the type of
+distance used (Fig.~\ref{fig:groups-comparison-plot}). At the order level, and
+for the Holothuriidae, the estimated number of ESUs plateaued for thresholds >
+4\% with the clustering method and for thresholds > 2\% with the pairwise
+distance method.
+
+When all sequences where analyzed, the proportion of singletons stabilized
+between 35\% and 40\% for distance thresholds > 2\% for the pairwise method and
+for thresholds > 4\% for the clustering method. Typically, these thresholds were
+more variable when analyzing each orders individually (3\% and 5\% for both the
+Aspidochirotida and the Holothuriidae, 3\% and 2.5\% for the Apodida, 3\% and
+3\% for the Dendrochirotida, 2\% and 4\% for the Elasipodida.)
 
 
 <<sampled-species, results='asis', echo=FALSE, cache=TRUE, dependson='n-species'>>=
