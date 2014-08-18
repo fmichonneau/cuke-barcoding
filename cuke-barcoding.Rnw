@@ -221,6 +221,8 @@ We kept all sequences that were more than 600 bp and that did not include any
 stop or non-sense codons that may have resulted from incorrect base calling
 during the sequencing or the editing process.
 
+Sequences were aligned with MAFFT
+
 \subsection{Diversity}
 
 % context: How much diversity in a group that hasn't received lots of
@@ -321,7 +323,7 @@ where genetic differentiation increases with geographical distance, may be
 detected. In sea cucumbers, as with other marine invertebrate, dispersal
 typically occurs during the larval stage. Larvae can be planktotrophic (they
 feed in the plankton), or oligotrophic (they feed on reserves included with the
-egg). A few species of sea cucumbers are also brooders and adults release
+egg). A few species of sea cucumbers are also brooders, and adults release
 juveniles. The type of development and larvae may influence the dispersal
 potential of the species, with brooders having little dispersal potential while
 species with planktotrophic larvae might disperse over longer distances. To test
@@ -451,12 +453,12 @@ Aspidochirotida and the Holothuriidae, 3\% and 2.5\% for the Apodida, 3\% and
 
 For the rest of the study we use the ESUs as delineated by the clustering method
 with a threshold of 4\% based on the raw distances. This threshold provided a
-compromise by delineating ESUs with different color patterns or ecology, without
+compromise by separating ESUs with different color patterns or ecology, without
 splitting ESUs that showed some level of geographic structure across their
-range. This distance threshold also corresponds at the level where all methods
+range. This distance threshold also corresponds to the level where all methods
 tested provided similar estimates of the proportion of singletons. We also
-favored this approach as it led to reciprocally monophyletic groups that could
-then easily be used to investigate geographic patterns of diversity and
+favored this approach as it led to reciprocally monophyletic groups that
+facilitated the investigation of geographic patterns of diversity and
 diversification.
 
 With this threshold, the number of estimated ESUs is
@@ -478,7 +480,8 @@ differences.
 Our large scale sampling effort also led to the discovery of ESUs that appear to
 be undescribed species. These include large, commercially important species. For
 the Holothuriidae that have been the most comprehensively sampled, 12 ESUs
-clearly differentiated morphologically, are potentially new species.
+clearly differentiated morphologically, are potentially new species not directly
+part of a species complex.
 
 For some groups that were sampled extensively, we recovered less ESUs than there
 are described species. Notably, in \textit{Opheodesoma}, that currently include
@@ -570,19 +573,18 @@ sdRange <- with(subset(distBySpecies, latCat == "tropical"),
 The ANCOVA testing for the effect of maximum geographic distance and ``order''
 on the maximum genetic distance was significant (\Sexpr{ancovaFstat},
 \Sexpr{ancovaP}). Neither the interaction between ``order'' and geographic
-distance (\Sexpr{interactionFstat}, \Sexpr{interactionP}), nor nor ``order''
-term (\Sexpr{interceptFstat}) were significant, indicating a common slope and a
+distance (\Sexpr{interactionFstat}, \Sexpr{interactionP}), nor the ``order''
+terms (\Sexpr{interceptFstat}) were significant, indicating a common slope and a
 common intercept for the orders included in the analysis
 (Table~\ref{tab:ibd-stats}).
 
 We recovered a signal of isolation-by-distance (IBD) for Apodida,
-Aspidochirotida and Dendrochirotida, but not for Elasipodida
-(Fig.~\ref{fig:isolation-by-distance-plot},
-Table~\ref{tab:ibd-stats}). Typically, ESUs that spanned the
-entire range of the Indo-Pacific had higher genetic distances than species with
-restricted ranges. However, there was a considerable amount of variation and a
-number of species with large ranges were characterized by low genetic
-differences. For instance, among the Dendrochirotida, \textit{Afrocucumis
+Aspidochirotida and Dendrochirotida (Fig.~\ref{fig:isolation-by-distance-plot},
+Table~\ref{tab:ibd-stats}). Typically, ESUs that spanned the entire range of the
+Indo-Pacific had higher genetic distances than species with restricted
+ranges. However, there was a considerable amount of variation and a number of
+species with large ranges were characterized by low genetic differences. For
+instance, one of the ESUs among the Dendrochirotida, \textit{Afrocucumis
   africana}, a small species with leicthotrophic development \cite{Chao1995},
 that occurs from the Western Indian Ocean to the Western Pacific Ocean (maximum
 distance: \Sexpr{formatC(gMaxDistDendro, format="d")}~km) was characterized by a
@@ -603,9 +605,10 @@ SD=\Sexpr{round(sdRange["Dendrochirotida"], 2)}).
 
 We compared the geographic ranges of \Sexpr{sum(complete.cases(spComp))} pairs
 of sister ESUs. Most had allopatric distributions (\Sexpr{formatC(percentAllo,
-  digits=2, width=2)}\%), the other sister ESUs were
-(\Sexpr{formatC(percentSymp, digits=2, width=2)}\%) sympatric, and none were
-parapatric (Fig.~\ref{fig:geography-diversification}).
+  digits=2, width=2)}\%), the other sister ESUs were sympatric
+(\Sexpr{formatC(percentSymp, digits=2, width=2)}\%), and or parapatric
+(\Sexpr{formatC(percentSymp, digits=2, width=2)},
+Fig.~\ref{fig:geography-diversification}).
 
 
 \begin{figure}
@@ -629,30 +632,107 @@ or sister species across the Easter Pacific barrier
 
 \section{Discussion}
 
+%% Neutrality of the sequences?
+% Are all protein sequences identical?
+
 \subsection{Diversity}
 
-- [discussion] does it really matter that ESUs identified aren't really species? they are
-proxy for genetic diversity --> much higher than current understanding of
-species limits
--  [discussion] use of thresholds: problem such large datasets, differences in rates of
-molecular evolution making single threshold approach potentially challenging
+This study reveals that the sea cucumber taxonomy does not reflect the diversity
+in this group. Regardless of the method used to estimate ESUs from the genetic
+data, we recovered more species than we could identify based on accepted
+taxonomic names.
 
+As with all threshold-based method, in particular, over such taxonomic and
+latitudinal breadths, a single measure does not fully capture the range of
+evolutionary mechanisms and historical processes that have generated the
+patterns of diversity observed. The species that deviate from the common pattern
+can however provide insights into the biology of these species.
 
-As with all threshold-based method, in
-particular, over such taxonomic and latitudinal breadth, this threshold led to
-some level of type I and type II errors. Estimating them at this stage is
-made challenging by high levels of unrecognized diversity.
+% TODO -- make figures to illustrate these cases
+The single threshold used led to some cases of discordance between groups of
+individuals that were differentiated morphologically and groups that were
+differentiated genetically. In some cases, ESUs grouped individuals
+morphologically distinct (e.g., \textit{Holothuria edulis}), sometimes described
+as different species (e.g., \textit{Bohadschia atra} and \textit{Bohadschia
+  argus}). This pattern could result from (1) recently diverged species that
+harbor genetic differentiation inferior to the threshold used, (2)
+introgression, (3) morphological polymorphism that is not indicative of species
+limits. The concordance of reciprocal monophyly and morphological
+differentiation in most cases suggest recent divergence. This is also the case
+for \textit{Holothuria edulis} where one ESU only includes individuals of the
+gray morph, while the other includes both the gray and the fuschia morphs,
+suggestive of incomplete lineage sorting. We detected a suspected instance of
+hybridization between two species of the genus \textit{Bohadschia}
+\cite{Kim2013}.
 
-Differences in rates of evolution
+The low interspecific genetic distance leading to the lumping of different
+species within a single ESU could also be the result of a slower molecular
+clock. In the absence of fossil evidence, the closure of the isthmus of Panama
+is the only reliable geological event that can be used to calibrate the
+molecular clock. A few sister species are found on each sides of the isthmus and
+their divergence might be associated with the closure of the isthmus. However,
+there are challenges associated with estimating the time of divergence of these
+sister species. The closure of the isthmus was a gradual process that was fully
+completed about 2.8 million years ago (My), but some species might have
+initiated their divergences earlier, and might have been fully reproductively
+isolated before the final closure \cite{Lessios2008}. Additionally,
+trans-isthmian species might not be sister, as the most closely related species
+might occur elsewhere, leading to an overestimation of the molecular clock
+rate. We limited the likelihood of comparing the wrong species pairs through
+extensive sampling. For instance, in the ``\textit{Holothuria impatiens}''
+complex we found that the species most closely related to the species from the
+Caribbean occurs in the Galapagos, and is not the one occurring in the Eastern
+Pacific coast. Finally, even with equal mutation rates, and simultaneous
+divergences, differences in levels of ancestral polymorphism will lead to
+variation in the time to the most common recent ancestor \cite{Hickerson2006,
+  Hurt2009}. Thorough analyses of the most likely hypotheses explaining the
+range of pairwise differences observed across the isthmus (from 1.9\% to 14.5\%)
+will be needed. However, it is interesting to note that the sister species with
+the lowest rates (\textit{Euapta lappa} and \textit{Euapta godeffroyi}) belong
+to the family where the threshold approach led to fewer species than what is
+currently recognized in the taxonomy: \textit{E. lappa} and
+\textit{E. godeffroyi} were grouped together as a single ESU despite being
+separated by the isthmus; \textit{Opheodesoma} counts 11 species but we
+recovered only 2 ESUs (and 2 ESUs that corresponded to undescribed species);
+\textit{Synaptula} counts 30 species but we recovered 8 ESUs. Members of these
+genera are variable morphologically, and many of these species were described on
+the basis of a single specimen, suggesting that at least some of these names
+will need to be synonymized. For \textit{Opheodesoma}, which we investigated in
+more detail, we did not find any clear association between the morphological
+types and the ESUs, and the broad geographical overlap of in their distributions
+suggest that they may not be reproductively isolated.
 
-In some cases, less diversity than expected.
+These exceptions were however rare, and most species formed reciprocally
+monophyletic groups that matched one or more of the ESUs delineated with the
+threshold method. Funk and Ormland \cite{Funk2003} estimated that 23\% of the
+2,319 animal species they surveyed were non-monophyletic in their mitochondrial
+genealogies. In the Holothuriidae, for which we investigated morphological
+differences more thoroughly, we recovered a much lower rate of 2\% (4 out of
+\Sexpr{length(load_species_clusterGrps("raw", "Holothuriidae",
+  0.02))}~ESUs). The rapid coalescence of the mitochondrial lineages could stem
+from low effective population sizes associated with the life history
+characteristics of marine invertebrates (e.g., fluctuations in population sizes,
+unequal contributions to the reproductive pool). The original dataset from Funk
+and Ormland did not include many invertebrates.
+
+Since most species are monophyletic, it makes sea cucumbers a great target for
+species level identification through barcoding as unknown sequences will cluster
+unambiguously with the correct species is the vast majority of the cases.
+
+%% explain low variation but not rapid coalesence, does it?
+%A recent study proposes the importance of selective sweeps
+
+% - [discussion] does it really matter that ESUs identified aren't really species?
+% they are proxy for genetic diversity --> much higher than current understanding
+% of species limits
+
 
 \subsection{Geography, diversity and diversification}
 
 The polygon approach used to identify areas of high diversity has
-limitations. In particular, it may overestimate diversity in areas where species
-do not occur but occur at the periphery. Some species included in our analysis
-have restricted ranges or are known from a single specimen, and no polygons were
+limitations. In particular, it may overestimate diversity where species do not
+occur but occur at the periphery. Some species included in our analysis have
+restricted ranges or are known from a single specimen, and no polygons were
 drawn for them. Therefore the diversity from the polygons is underestimated. For
 instance, 65 species have been recorded for Guam \cite{Michonneau2013}, but
 \Sexpr{sum(nSppGuam)} ESUs are estimated from the polygons.
@@ -668,39 +748,28 @@ restrictApod <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies,
                      subset=(Order == "Apodida" & maxGeoDist < maxRangeElasi))
 @
 
-The absence of evidence of isolation-by-distance for the Elasipodida, might be
-caused by the more limited geographical sampling for this species. Most of the
-Elasipodida included in our study were collected around Antarctica, and the
-maximum distance recorded was \Sexpr{maxRangeElasiF}~km. The analyses repeated
-to only include species with range sizes similar to the Elasipodida,
-recovered the evidence for isolation-by-distance for the Aspidochirotida and the
-Dendrochirotida, but not for the Apodida. Additional sampling is needed to
-determine whether the absence of relationship for the Elasipodida holds at
-larger spatial scales.
+
+
+
+species being sympatric:
+- second rapid sympatry; other hypotheses e.g. Stichopus
+- masking recent diversifications in it that are allopatric
+- differences in rates of evolution Euapta
+- double check pardalis
+-
+
+diversity of patterns in the Indian Ocean
+displacement of Red Sea by expansion of Pacific Ocean species
+
 
 % tradeoff between many species 1 gene / multiple genes
 
 %% Geographical scale
 % see Bergsten+2012
 
-%% Neutrality of the sequences?
-% Are all protein sequences identical?
-%
 
-%% Diversification rates
 
-%% Role of geography/latitude
-% diversification rates
-% intra- and interspecific genetic variation
 
-%% Cladogenetic breaks
-
-%% Error rates/Exceptions?
-% oversplitting
-% underspliting
-% hybridization
-% "Exceptions may give valuable insight into the mechanisms controlling
-% variiance withing & among species" \cite{Stoeckle2014}
 
 \pagebreak
 
@@ -717,3 +786,9 @@ larger spatial scales.
 
 
 \end{document}
+
+%% Diversification rates
+
+%% Role of geography/latitude
+% diversification rates
+% intra- and interspecific genetic variation

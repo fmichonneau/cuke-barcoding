@@ -666,6 +666,7 @@ tabRangeType <- table(spComp$rangeType)
 
 percentAllo <- 100*tabRangeType["allopatric"]/sum(tabRangeType)
 percentSymp <- 100*tabRangeType["sympatric"]/sum(tabRangeType)
+percentPara <- 100*tabRangeType["parapatric"]/sum(tabRangeType)
 
 ggplot(spComp) + geom_bar(aes(x=rangeType, fill=rangeType)) +
     xlab("") + ylab("Number of ESU pairs") +
