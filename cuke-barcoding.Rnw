@@ -729,6 +729,9 @@ unambiguously with the correct species is the vast majority of the cases.
 
 \subsection{Geography, diversity and diversification}
 
+The highest diversity in sea cucumbers is not the coral triangle but the Western
+Pacific.
+
 The polygon approach used to identify areas of high diversity has
 limitations. In particular, it may overestimate diversity where species do not
 occur but occur at the periphery. Some species included in our analysis have
@@ -748,8 +751,8 @@ restrictApod <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies,
                      subset=(Order == "Apodida" & maxGeoDist < maxRangeElasi))
 @
 
-
-
+By far, most sister ESUs were found in allopatry indicating the strong
+influecnce that
 
 species being sympatric:
 - second rapid sympatry; other hypotheses e.g. Stichopus
