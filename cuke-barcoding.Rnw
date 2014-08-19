@@ -719,6 +719,8 @@ Since most species are monophyletic, it makes sea cucumbers a great target for
 species level identification through barcoding as unknown sequences will cluster
 unambiguously with the correct species is the vast majority of the cases.
 
+Set the stage for taxonomic revision work.
+
 %% explain low variation but not rapid coalesence, does it?
 %A recent study proposes the importance of selective sweeps
 
@@ -729,16 +731,37 @@ unambiguously with the correct species is the vast majority of the cases.
 
 \subsection{Geography, diversity and diversification}
 
-The highest diversity in sea cucumbers is not the coral triangle but the Western
-Pacific.
+% still species with geo issues
+% - H. roseomaculata -- cont. in Seychelles extends dist.
+% - H. tubulosa -- range spans recenter long. polygon too big
+%
 
-The polygon approach used to identify areas of high diversity has
-limitations. In particular, it may overestimate diversity where species do not
-occur but occur at the periphery. Some species included in our analysis have
-restricted ranges or are known from a single specimen, and no polygons were
-drawn for them. Therefore the diversity from the polygons is underestimated. For
-instance, 65 species have been recorded for Guam \cite{Michonneau2013}, but
+<<percent-endemism, dependson='global-diversity-map', cache=TRUE, echo=FALSE>>=
+@
+
+The highest diversity in sea cucumbers is not the coral triangle but the Western
+Pacific. This area is where the distributions of species with ranges that span
+most of the Indo-Pacific, species that span the Indian Ocean and extends in the
+Western Pacific, and species that mostly occur in the Pacific overlap. The
+polygon approach used to identify areas of high diversity has limitations. In
+particular, it may overestimate diversity where species do not occur but occur
+at the periphery. Some species included in our analysis have restricted ranges
+or are known from a single specimen, and no polygons were drawn for
+them. Therefore the diversity from the polygons is underestimated. For instance,
+65 species have been recorded for Guam \cite{Michonneau2013}, but
 \Sexpr{sum(nSppGuam)} ESUs are estimated from the polygons.
+
+The levels of endemicity for Hawaii and the Red Sea are relatively high
+(\Sexpr{formatC(100*length(hawaiiEnd)/length(hawaiiSpp), digits=2, width=2)}\%,
+\Sexpr{length(hawaiiEnd)} of \Sexpr{length(hawaiiSpp)} ESUs recorded for Hawaii,
+and \Sexpr{formatC(100*length(redSeaEnd)/length(redSeaSpp), digits=2,
+  width=2)}\%, \Sexpr{length(redSeaEnd)} of \Sexpr{length(redSeaSpp)} ESUs
+recorded for the Red Sea). Endemism in Hawaii for fishes is 20\% and 4\% for the
+Red Sea \cite{Allen2007}, 20\% for marine snails in Hawaii \cite{Paulay2002a},
+44\% for the hermit crabs \textit{Calcinus} in Hawaii \cite{Malay2010}.
+
+% something about how diversity of patterns diversity of patterns in the Indian Ocean
+% displacement of Red Sea by expansion of Pacific Ocean species
 
 <<ibd-text-stats-discuss, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE>>=
 maxRangeElasi <- max(subset(distBySpecies, Order == "Elasipodida")$maxGeoDist)
@@ -751,8 +774,17 @@ restrictApod <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies,
                      subset=(Order == "Apodida" & maxGeoDist < maxRangeElasi))
 @
 
-By far, most sister ESUs were found in allopatry indicating the strong
-influecnce that
+Most sister ESUs were found in allopatry indicating the importance of
+geographical isolation in the diversification of sea cucumbers. Allopatric
+speciation appears to be the most common in animals \cite{Coyne2004} and is also
+the most prevalent mode in marine organisms (e.g., \cite{Meyer2005-evolution,
+  Malay2010}). Compared to other studies, we however recovered a higher
+proportion of sister ESUs occurring in sympatry. This difference could be the
+result of sympatric speciation, higher rates of secondary sympatry (speciation
+occurred in allopatry, but the resulting species extended their ranges, and are
+now sympatric), or an artifact of the method used (the threshold approach lumped
+species, masking their original modes of speciation.
+
 
 species being sympatric:
 - second rapid sympatry; other hypotheses e.g. Stichopus
@@ -761,8 +793,6 @@ species being sympatric:
 - double check pardalis
 -
 
-diversity of patterns in the Indian Ocean
-displacement of Red Sea by expansion of Pacific Ocean species
 
 
 % tradeoff between many species 1 gene / multiple genes

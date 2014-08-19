@@ -367,7 +367,7 @@ multiplot(nESUSm, pSnglSm, cols=1)
 ### ----- isolation-by-distance-data -----
 source("R/CalcGeoDist.R")
 source("R/load.R")
-treeH <- load_tree_clusterGrps(distance="raw", taxa="all", threshold="0.02")
+treeH <- load_tree_clusterGrps(distance="K80", taxa="all", threshold="0.02")
 cukeDB <- load_cukeDB()
 grps <- tdata(treeH, "tip")[, "Groups", drop=FALSE]
 cukeAlg <- load_cukeAlg()
@@ -511,7 +511,7 @@ print(xtable(ibdRes, display=rep("g", 4), caption=c(paste("Slope, Standard-Error
 ### ---- global-diversity-map ----
 globalMap <- map_data("world2")
 source("R/test-allopatry-functions.R")
-spatialSpecies <- spatialFromSpecies(load_tree_clusterGrps("raw", "all", 0.02),
+spatialSpecies <- spatialFromSpecies(load_tree_clusterGrps("K80", "all", 0.02),
                                      load_cukeDB())
 
 isPolygon <- sapply(spatialSpecies[[1]], function(x) attr(x, "type-coords") == "polygon")
@@ -574,17 +574,61 @@ nSppGuam <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointGuam
 ##     theme(panel.background = element_rect(fill="aliceblue")) +
 ##     ylim(c(-90, -30))
 
+### ---- percent-endemism ----
+allSppNm <- rep(names(spatialSpecies[[1]]), sapply(spatialSpecies[[1]], function(x) nrow(x)))
+allCoords <- do.call("rbind", spatialSpecies[[1]])
+allCoords <- cbind(allCoords, species=allSppNm)
 
-#### ---- test ---- ### not in use
-ggplot(allHllDf[grep("^183-|^181-", allHllDf$species), ]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+## Red Sea
+redSea <- subset(allCoords, decimalLatitude > 8 & decimalLatitude < 30 &
+                 decimalLongitude > 30 & decimalLongitude < 45)
+notRedSea <- subset(allCoords, !(decimalLatitude > 10 & decimalLatitude < 30 &
+                 decimalLongitude > 30 & decimalLongitude < 45))
+redSeaSpp <- unique(redSea$species)
+notRedSeaSpp <- unique(notRedSea$species)
+redSeaEnd <- setdiff(redSeaSpp, notRedSeaSpp)
+
+## Hawaii
+hawaii <- subset(allCoords, decimalLatitude > 17.5 & decimalLatitude < 25 &
+                 long.recenter > 194 & long.recenter < 206)
+notHawaii <- subset(allCoords, !(decimalLatitude > 17.5 & decimalLatitude < 25 &
+                 long.recenter > 190 & long.recenter < 210))
+hawaiiSpp <- unique(hawaii$species)
+notHawaiiSpp <- unique(notHawaii$species)
+hawaiiEnd <- setdiff(hawaiiSpp, notHawaiiSpp)
+
+#### ---- map-indian-ocean ----
+isPolygon <- sapply(spatialSpecies[[1]], function(x) attr(x, "type-coords") == "polygon")
+spatialHull <- spatialSpecies[[1]][isPolygon]
+tmpSpp <- rep(names(spatialHull), sapply(spatialHull, function(x) nrow(x)))
+allHllDf <- do.call("rbind", spatialHull)
+allHllDf <- cbind(allHllDf, species=tmpSpp)
+
+ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
     geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
     geom_polygon(aes(x=long.recenter, y=decimalLatitude, fill=species),
-                 alpha=.3) +
-    coord_map(projection = "ortho", orientation=c(-90, 0, 0)) +
+                 alpha=.05) +
+    coord_map(projection = "mercator", orientation=c(90, 160, 0), xlim=c(30, 65),
+              ylim=c(32, -25)) +
     #scale_fill_manual(values=rep("red", nlevels(allHllDf$species))) +
     theme(panel.background = element_rect(fill="aliceblue"),
           legend.position = "none") +
-    #ylim(c(-30,30)) + xlim(c(0, 300)) +
+    ylim(c(-30,30)) + xlim(c(30, 65)) +
+    xlab("Longitude") + ylab("Latitude")
+
+
+#### ---- test ---- ### not in use
+
+ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
+    geom_polygon(aes(x=long.recenter, y=decimalLatitude, fill=species),
+                 alpha=.05) +
+    coord_map(projection = "mercator", orientation=c(90, 160, 0), xlim=c(30, 65),
+              ylim=c(32, -25)) +
+    #scale_fill_manual(values=rep("red", nlevels(allHllDf$species))) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position = "none") +
+    ylim(c(-30,30)) + #xlim(c(190, 210)) +
     xlab("Longitude") + ylab("Latitude")
 
 
@@ -672,6 +716,34 @@ ggplot(spComp) + geom_bar(aes(x=rangeType, fill=rangeType)) +
     xlab("") + ylab("Number of ESU pairs") +
     scale_fill_discrete("Type of geographic range")
 
+### ---- maps-sympatric-species ----
+cukeCoords <- spatialFromSpecies(load_tree_clusterGrps("K80", threshold=.02),
+                                 load_cukeDB())
+cukeCoords <- cukeCoords[[1]]
+
+sympSpp <- subset(spComp, rangeType == "sympatric")$species
+sympSpp <- as.character(sympSpp)
+sympSpp <- strsplit(sympSpp, "/")
+
+sympCoords <- lapply(sympSpp, function(x) {
+    tmpDt1 <- cukeCoords[[x[1]]]
+    tmpDt2 <- cukeCoords[[x[2]]]
+    sp1 <- rep(x[1], ifelse(is.null(nrow(tmpDt1)), 1, nrow(tmpDt1)))
+    sp2 <- rep(x[2], ifelse(is.null(nrow(tmpDt2)), 1, nrow(tmpDt2)))
+    cbind(rbind(tmpDt1, tmpDt2), species=c(sp1, sp2))
+})
+
+pdf(file="tmp/sympSpecies.pdf")
+for (i in 1:length(sympCoords)) {
+    g1 <- ggplot(sympCoords[[i]]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position = "none") +
+              coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+    xlab("Longitude") + ylab("Latitude") + ggtitle(paste0(unique(sympCoords[[i]]$species, collapse=", ")))
+    print(g1)
+}
+dev.off()
 
 ### ---- test2 ----
 ggplot(spComp) + geom_point(data=spComp[!is.na(spComp$rangeType), ],
