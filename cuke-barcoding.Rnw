@@ -116,57 +116,57 @@ source("R/load.R")
 
 \section{Introduction}
 
-Barcoding studies have typically two main goals: species discovery (how does the
-barcoding data compare to the taxonomy?), and specimen identification (can the
-barcode library be used to identify a species?) \cite{Collins2013}. In this
-study we focus on describing the patterns of unrecognized diversity, and testing
-the role of latitude and phylogeny in shaping these patterns.
+% Barcoding studies have typically two main goals: species discovery (how does the
+% barcoding data compare to the taxonomy?), and specimen identification (can the
+% barcode library be used to identify a species?) \cite{Collins2013}. In this
+% study we focus on describing the patterns of unrecognized diversity, and testing
+% the role of latitude and phylogeny in shaping these patterns.
 
-% introduce idea of barcoding gap
+% % introduce idea of barcoding gap
 
-* barcoding has limitations, but when used with comprehensive taxonomic and
-geographic sampling, powerful to assess diversity, in particular in groups that
-haven't received lots of taxonomic attention
+% * barcoding has limitations, but when used with comprehensive taxonomic and
+% geographic sampling, powerful to assess diversity, in particular in groups that
+% haven't received lots of taxonomic attention
 
-* In such cases, barcoding has typically revealed more diversity than previously
-acknowledged. From the variety of studies, clearly many different patterns
-emerge. Using large datasets allow to evaluate the relative importance of these
-patterns. Examples: differentiation between IO and PO, unrecognized endemics in
-Red Sea, Hawaii
+% * In such cases, barcoding has typically revealed more diversity than previously
+% acknowledged. From the variety of studies, clearly many different patterns
+% emerge. Using large datasets allow to evaluate the relative importance of these
+% patterns. Examples: differentiation between IO and PO, unrecognized endemics in
+% Red Sea, Hawaii
 
-* On the other hand, barcoding has also revealed instances of clear
-morphological differences with limited genetic differentiation. Three main
-hypotheses to explain this pattern (hybridization, incomplete lineage sorting,
-polymorphism). How common is this pattern? Are the same explanations always
-behind these patterns?
+% * On the other hand, barcoding has also revealed instances of clear
+% morphological differences with limited genetic differentiation. Three main
+% hypotheses to explain this pattern (hybridization, incomplete lineage sorting,
+% polymorphism). How common is this pattern? Are the same explanations always
+% behind these patterns?
 
-* few groups have been sampled extensively. Diversity in IWP thought to follow
-diversity patterns of more well-known species: mollusks, fish, corals. Most of
-the diversity is in the coral triangle. However, other groups don't always seem
-to follow this pattern (e.g., Calcinus). Comprehensive sampling allows to
-revisit this question.
+% * few groups have been sampled extensively. Diversity in IWP thought to follow
+% diversity patterns of more well-known species: mollusks, fish, corals. Most of
+% the diversity is in the coral triangle. However, other groups don't always seem
+% to follow this pattern (e.g., Calcinus). Comprehensive sampling allows to
+% revisit this question.
 
-* Behind these patterns is rate of secondary sympatry, molecular data allows to
-test whether diversification occurs mostly in allopatry or in sympatry. And
-once, diversification has occurred how long it takes for species to co-exist in
-sympatry.
+% * Behind these patterns is rate of secondary sympatry, molecular data allows to
+% test whether diversification occurs mostly in allopatry or in sympatry. And
+% once, diversification has occurred how long it takes for species to co-exist in
+% sympatry.
 
-* To assess time it takes, need a good molecular clock, however, in most marine
-invertebrates not really possible because fossils are too limited. However,
-there are several pairs of sister species across isthmus of Panama, so we can
-evaluate differences in rates, and
+% * To assess time it takes, need a good molecular clock, however, in most marine
+% invertebrates not really possible because fossils are too limited. However,
+% there are several pairs of sister species across isthmus of Panama, so we can
+% evaluate differences in rates, and
 
-* This study is on sea cucumbers because poor understanding of species limits
-use of conservative characters used in species-level taxonomy. Yet need for
-management and better understanding of biology given fisheries pressures.
+% * This study is on sea cucumbers because poor understanding of species limits
+% use of conservative characters used in species-level taxonomy. Yet need for
+% management and better understanding of biology given fisheries pressures.
 
-* Presentation of the dataset: most geographically and taxonomically
-comprehensive barcoding dataset.
+% * Presentation of the dataset: most geographically and taxonomically
+% comprehensive barcoding dataset.
 
-* Goals:
-  - assess amount of cryptic diversity
-  - evaluate geographic patterns of diversity and diversification
-  - re-evaluate molecular clock
+% * Goals:
+%   - assess amount of cryptic diversity
+%   - evaluate geographic patterns of diversity and diversification
+%   - re-evaluate molecular clock
 
 
 \section{Materials and Methods}
@@ -459,7 +459,11 @@ range. This distance threshold also corresponds to the level where all methods
 tested provided similar estimates of the proportion of singletons. We also
 favored this approach as it led to reciprocally monophyletic groups that
 facilitated the investigation of geographic patterns of diversity and
-diversification.
+diversification. With this threshold, 16 of the 17 pairs of trans-isthmian
+species were recovered as distinct ESUs. Only \textit{Euapta godeffroyi} and
+\textit{E. lappa} were lumped in a single ESU, as they are characterized by the
+lowest levels of intergenetic distances across the isthmus (mean
+distance=1.95\%).
 
 With this threshold, the number of estimated ESUs is
 \Sexpr{length(load_species_clusterGrps("raw", "all", 0.02))}. The difference
@@ -719,7 +723,7 @@ Since most species are monophyletic, it makes sea cucumbers a great target for
 species level identification through barcoding as unknown sequences will cluster
 unambiguously with the correct species is the vast majority of the cases.
 
-Set the stage for taxonomic revision work.
+% Set the stage for taxonomic revision work.
 
 %% explain low variation but not rapid coalesence, does it?
 %A recent study proposes the importance of selective sweeps
@@ -764,7 +768,7 @@ Red Sea \cite{Allen2007}, 20\% for marine snails in Hawaii \cite{Paulay2002a},
 % displacement of Red Sea by expansion of Pacific Ocean species
 
 <<ibd-text-stats-discuss, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE>>=
-maxRangeElasi <- max(subset(distBySpecies, Order == "Elasipodida")$maxGeoDist)
+maxRangeElasi <- max(subset(distBySpecies, Order == "Elasipodida")$maxGeoDist) #$
 maxRangeElasiF <- formatC(round(maxRangeElasi, 0), format="d")
 restrictAspido <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies,
                      subset=(Order == "Aspidochirotida" & maxGeoDist < maxRangeElasi))
@@ -782,17 +786,82 @@ the most prevalent mode in marine organisms (e.g., \cite{Meyer2005-evolution,
 proportion of sister ESUs occurring in sympatry. This difference could be the
 result of sympatric speciation, higher rates of secondary sympatry (speciation
 occurred in allopatry, but the resulting species extended their ranges, and are
-now sympatric), or an artifact of the method used (the threshold approach lumped
-species, masking their original modes of speciation.
+now sympatric), an artifact of the method used (the threshold approach lumped
+species, masking their original modes of speciation, or the ESUs were split
+because of elevated levels of genetic variation but actually belong to the same
+species), or a sampling artifact (the real sister species has not been
+sampled).
+
+Of the \Sexpr{nSymp} cases of sympatric ESUs, 7 included more than two species:
+the most closely related species occur in allopatry but one of them occur in
+sympatry with a third one. It is for instance the case of \textit{Bohadschia
+  atra} and \textit{B. argus} that are lumped in a single ESU but are allopatric
+(\textit{B. atra} is restricted to the Western Indian Ocean, while
+\textit{B. argus} is restricted to the Western and Central Pacific), however
+\textit{B. atra} is sympatric with \textit{B. cousteaui} another Western Indian
+and Red Sea endemic. This is also the case of several species of
+\textit{Stichopus}. In this genus, very distinct color morphs (including named
+species) are characterized by low genetic divergences. One ESU that lumps together at
+least three putative species, is sister to an ESU that includes two
+putative species.
+
+The other 8 species appear to be cases of rapid secondary sympatry or sympatric
+speciation. In some cases, the polygons representing the geographic ranges of
+the ESUs overlap broadly but the species do not co-occur. It is the case of
+\textit{Holothuria turriscelsa} and its sister ESU, a morphologically distinct
+likely undescribed species. The former occurs in clear waters of the external
+reef slopes, and has only been collected on oceanic islands; the latter occurs
+in silty waters of lagoons and has only been collected in continental
+areas. These other species are instances where one species is restricted to
+either the Indian or the Pacific Ocean, while the other occurs in both.
+
+Five other cases, mostly deep sea species, lack information to assess their
+exact status. Some were collected at the same locality but might be occurring at
+different depths. Access to additional data will be needed to assess whether
+individuals co-occur. Two species, \textit{Holothuria pervicax} and
+\textit{H. pardalis}, were each split in two sympatric ESUs that do not seem to
+vary morphologically and could represent a single species being split because of
+high genetic differentiation.
+
+Allopatry is clearly the most common mode of speciation among sea cucumbers, and
+our initial estimate appear to be an underestimate. The process that could have
+led to overestimating allopatry is difficult to disprove in the absence of
+fossil evidence (speciation was in sympatry but species contracted their ranges
+to be allopatric presently), and is less parsimonious given our current
+understanding of speciation.
+
+A striking pattern that emerges from this data is the rapid onset of secondary
+sympatry as several recently diverged ESUs are sympatric. This contrasts with
+other marine organisms, for which secondary sympatry occurs slowly and takes at
+minimum 2 millions years but often more than 10 millions years \cite{Meyer2005,
+  Malay2010, Hodges2013}. All trans-isthmian species pairs (except for
+\textit{Euapta lappa} and \textit{E. godeffroyi}) were recovered as distinct
+ESUs. It has been suggested that the time since the closure of the isthmus
+corresponds to the time frame needed for reproductive isolation to occur in
+complete allopatry \cite{Knowlton2000}. However, reproductive isolation could be
+achieved faster with some gene flow between incipient species because of
+reinforcement. In our study, several sister ESUs or even species within ESUs,
+were sympatric indicating that sympatry occurred regularly in less than 3
+million years. The rapid acquisition of reproductive isolation could arise from
+premating isolation barriers such as differences in the timing of gamete release
+or gametic incompatibilities. Gamete recognition proteins are known to evolve
+rapidly and play a critical role in fecundation success of many free spawning
+marine invertebrates such as sea urchins \cite{Levitan2006, Lessios2011} and
+gastropods \cite{Hellberg2000}. For instance, strong positive selection has been
+detected in the GRPs between closely related species of sea urchins in sympatry
+but not in allopatry \cite{Geyer2003}, suggesting the role of these proteins in
+maintaining species limits.  GRPs have not yet been identified in sea cucumbers
+but bindin is known from sea urchins [88] and sea stars [91] which indicates
+that it is plesiomorphic in the clade that sea cucumbers emerged from.  They
+could explain how species in the “H. impatiens” complex acquired reproductive
+isolation quickly.
 
 
-species being sympatric:
-- second rapid sympatry; other hypotheses e.g. Stichopus
-- masking recent diversifications in it that are allopatric
-- differences in rates of evolution Euapta
-- double check pardalis
--
+Rapid secondary sympatry with GRPs.
 
+% location of breaks
+
+% isolation - by - distance
 
 
 % tradeoff between many species 1 gene / multiple genes

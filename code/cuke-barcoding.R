@@ -698,8 +698,11 @@ spCompBoth <- load_species_overlap_comparison()
 spComp <- subset(spCompBoth, method == "cluster")
 spComp <- spComp[complete.cases(spComp), ]
 
+spComp$species <- as.character(spComp$species)
+
 spComp <- spComp[-match("471-Phyllophoridae_nsp/634-Thelenota_ananas", spComp$species), ]
 spComp <- spComp[-match("192-Holothuria_pentard/191-Holothuria_roseomaculata", spComp$species), ]
+spComp <- spComp[-match("338-Isostichopus_badionotus/336-Isostichopus_fuscus", spComp$species), ]
 
 ## TODO - fix parapatry detection, something is wrong with it.
 ## TODO - remove false sympatry, in future change method to include bootstrap
@@ -711,6 +714,8 @@ tabRangeType <- table(spComp$rangeType)
 percentAllo <- 100*tabRangeType["allopatric"]/sum(tabRangeType)
 percentSymp <- 100*tabRangeType["sympatric"]/sum(tabRangeType)
 percentPara <- 100*tabRangeType["parapatric"]/sum(tabRangeType)
+
+nSymp <- tabRangeType["sympatric"]
 
 ggplot(spComp) + geom_bar(aes(x=rangeType, fill=rangeType)) +
     xlab("") + ylab("Number of ESU pairs") +
@@ -736,11 +741,11 @@ sympCoords <- lapply(sympSpp, function(x) {
 pdf(file="tmp/sympSpecies.pdf")
 for (i in 1:length(sympCoords)) {
     g1 <- ggplot(sympCoords[[i]]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
+    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species), position=position_jitter(height=1, width=1)) +
     theme(panel.background = element_rect(fill="aliceblue"),
           legend.position = "none") +
               coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-    xlab("Longitude") + ylab("Latitude") + ggtitle(paste0(unique(sympCoords[[i]]$species, collapse=", ")))
+    xlab("Longitude") + ylab("Latitude") + ggtitle(paste0(unique(sympCoords[[i]]$species), collapse=", "))
     print(g1)
 }
 dev.off()
