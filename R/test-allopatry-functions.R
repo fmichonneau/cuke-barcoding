@@ -90,17 +90,17 @@ rangeType <- function(i, j, poly, percentOverlap=10) {
     } else if ((inherits(r1, "SpatialPoints") && inherits(r2, "SpatialPolygons")) ||
                (inherits(r1, "SpatialPolygons") && inherits(r2, "SpatialPoints"))) {
         if (inherits(r1, "SpatialPoints") && nrow(r1@coords) < 2)
-            res <- list(NA, NA)
+            res <- NA
         else if (inherits(r2, "SpatialPoints") && nrow(r2@coords) < 2)
-            res <- list(NA, NA)
+            res <- NA
         else {
             res <- ifelse(gIntersects(r1, r2), "sympatric", "allopatric")
         }
     } else {
-        res <- list(NA, NA)
+        res <- NA
     }
 
-    list(rangeType=res, species=paste0(names(poly)[c(i,j)], collapse="/"))
+    list(rangeType=res, species=paste(names(poly)[i], names(poly)[j], sep="/"))
 }
 
 esuPairs <- function(tr) {
@@ -131,7 +131,7 @@ esuPairs <- function(tr) {
     mrca <- mrca[toKeep2]
     mrca <- unname(unlist(mrca))
 
-    attr(res, "boostrap") <- BS[as.character(mrca), ]
+    attr(res, "bootstrap") <- BS[as.character(mrca), ]
     res
 }
 
@@ -164,7 +164,12 @@ testRangeType <- function(tr, alg, cukeDB, percentOverlap=10) {
 
     esuPrs <- esuPairs(tr)
 
-    rgType <- lapply(esuPrs, function(x) rangeType(x[1], x[2], polygons))
+    rgType <- lapply(esuPrs, function(x) {
+        if (! all(is.na(x)) ) {
+            rangeType(x[1], x[2], polygons)
+        } else {
+            list(rangeType=NA, species=NA)
+        }})
 
     interDist <- lapply(esuPrs, function(x) {
         ind1 <- sppGrps[[x[1]]]
@@ -176,7 +181,9 @@ testRangeType <- function(tr, alg, cukeDB, percentOverlap=10) {
                rangeType = unlist(do.call("rbind", lapply(rgType, function(x) x$rangeType))),
                meanInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$mean))),
                maxInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$max))),
-               minInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$min))))
+               minInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$min))),
+               bootstrap = attr(esuPrs, "bootstrap")
+               )
 }
 
 build_species_overlap <- function() {

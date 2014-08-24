@@ -25,9 +25,6 @@ esuCryptic <- esus[hasCryptic]
 esuCryptic <- sapply(esuCryptic, function(x) paste0(x[1:2], collapse="_"))
 nCryptic <- length(unique(esuCryptic))
 
-holTree <- load_tree_manualGrps()
-
-esuRange <- testRangeType(holTree, cukeAlg, cukeDB)
 
 ### ---- sampling-maps ----
 cukeDB <- load_cukeDB()
@@ -719,24 +716,18 @@ ggplot(allHllDf[grep("^501-|^111-", allHllDf$species), ]) + annotation_map(globa
 
 ### ---- geography-diversification ----
 source("R/test-allopatry-functions.R")
-spCompBoth <- load_species_overlap_comparison()
-spComp <- subset(spCompBoth, method == "cluster")
-spComp <- spComp[complete.cases(spComp), ]
+holTree <- load_tree_manualGrps()
+esuRange <- testRangeType(holTree, cukeAlg, cukeDB)
 
-spComp$species <- as.character(spComp$species)
+esuRange <- esuRange[complete.cases(esuRange), ]
 
-spComp <- spComp[-match("471-Phyllophoridae_nsp/634-Thelenota_ananas", spComp$species), ]
-spComp <- spComp[-match("192-Holothuria_pentard/191-Holothuria_roseomaculata", spComp$species), ]
-spComp <- spComp[-match("338-Isostichopus_badionotus/336-Isostichopus_fuscus", spComp$species), ]
-spComp <- spComp[-match("441-Paracucumis_turricata/101-Crucella_scotiae", spComp$species), ]
-spComp[match("457-Peniagone_incerta/456-Peniagone_vignoni", spComp$species), "rangeType"] <- "sympatric"
+esuRange$species <- as.character(esuRange$species)
 
-## TODO - fix parapatry detection, something is wrong with it.
-## TODO - remove false sympatry, in future change method to include bootstrap
+esuRange$rangeType <- factor(esuRange$rangeType, levels=c("allopatric", "sympatric", "parapatric"))
 
-spComp$rangeType <- factor(spComp$rangeType, levels=c("allopatric", "sympatric", "parapatric"))
+esuRange <- esuRange[-match("178-Holothuria_unicolor/185-Holothuria_zihuatanensis", esuRange$species), ]
 
-tabRangeType <- table(spComp$rangeType)
+tabRangeType <- table(esuRange$rangeType)
 
 apercentAllo <- 100*tabRangeType["allopatric"]/sum(tabRangeType)
 percentSymp <- 100*tabRangeType["sympatric"]/sum(tabRangeType)
@@ -744,9 +735,12 @@ percentPara <- 100*tabRangeType["parapatric"]/sum(tabRangeType)
 
 nSymp <- tabRangeType["sympatric"]
 
-ggplot(spComp) + geom_bar(aes(x=rangeType, fill=rangeType)) +
+ggplot(esuRange) + geom_bar(aes(x=rangeType, fill=rangeType)) +
     xlab("") + ylab("Number of ESU pairs") +
     scale_fill_discrete("Type of geographic range")
+
+ggplot(esuRange, aes(x=rangeType, y=meanInterDist, colour=rangeType)) +
+    geom_point(position=position_jitter(width=.1)) + geom_boxplot(alpha=.1)
 
 ### ---- maps-sympatric-species ----
 cukeCoords <- spatialFromSpecies(load_tree_clusterGrps("K80", threshold=.02),
