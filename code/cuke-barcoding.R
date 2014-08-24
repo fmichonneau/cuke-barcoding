@@ -6,6 +6,29 @@ library(car)
 library(wesanderson)
 library(tikzDevice)
 
+### ---- holothuriidae-tree ----
+source("R/test-allopatry-functions.R")
+manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
+manESU$ESU_noGeo <- gsub("_[A-Z]{2}$", "", manESU$ESU_genetic)
+
+noGeoGrps <- split(manESU$Labels, manESU$ESU_noGeo)
+maxDistNoGeo <- sapply(noGeoGrps, function(x) {   max(dist.dna(cukeAlg[x, ], model="raw")) })
+meanDistNoGeo <- sapply(noGeoGrps, function(x) { mean(dist.dna(cukeAlg[x, ], model="raw")) })
+
+wiGeoGrps <- split(manESU$Labels, manESU$ESU_genetic)
+maxDistWiGeo <- sapply(wiGeoGrps, function(x) {   max(dist.dna(cukeAlg[x, ], model="raw")) })
+meanDistWiGeo <- sapply(wiGeoGrps, function(x) { mean(dist.dna(cukeAlg[x, ], model="raw")) })
+
+esus <- strsplit(unique(manESU$ESU_noGeo), "_")
+hasCryptic <- sapply(esus, function(x) length(x) > 2 & length(grep("nsp", x)) < 1)
+esuCryptic <- esus[hasCryptic]
+esuCryptic <- sapply(esuCryptic, function(x) paste0(x[1:2], collapse="_"))
+nCryptic <- length(unique(esuCryptic))
+
+holTree <- load_tree_manualGrps()
+
+esuRange <- testRangeType(holTree, cukeAlg, cukeDB)
+
 ### ---- sampling-maps ----
 cukeDB <- load_cukeDB()
 
@@ -453,6 +476,8 @@ interceptP <- paste("$P =", formatC(summAovIbd[[1]]$"Pr(>F)"[2], digits=2), "$")
 
 finalIbdAncova <- update(ibdAncova, . ~ . - Order - maxGeoDist:Order)
 
+meanRange
+
 ### ---- isolation-by-distance-table ----
 print(xtable(summary(finalIbdAncova), display=rep("g", 5), caption=c(paste("Coefficients of the regression",
              "between maximum genetic distances and",
@@ -613,7 +638,7 @@ ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
     #scale_fill_manual(values=rep("red", nlevels(allHllDf$species))) +
     theme(panel.background = element_rect(fill="aliceblue"),
           legend.position = "none") +
-    ylim(c(-30,30)) + xlim(c(30, 65)) +
+    ylim(c(-30,30)) +# xlim(c(30, 65)) +
     xlab("Longitude") + ylab("Latitude")
 
 
@@ -703,6 +728,8 @@ spComp$species <- as.character(spComp$species)
 spComp <- spComp[-match("471-Phyllophoridae_nsp/634-Thelenota_ananas", spComp$species), ]
 spComp <- spComp[-match("192-Holothuria_pentard/191-Holothuria_roseomaculata", spComp$species), ]
 spComp <- spComp[-match("338-Isostichopus_badionotus/336-Isostichopus_fuscus", spComp$species), ]
+spComp <- spComp[-match("441-Paracucumis_turricata/101-Crucella_scotiae", spComp$species), ]
+spComp[match("457-Peniagone_incerta/456-Peniagone_vignoni", spComp$species), "rangeType"] <- "sympatric"
 
 ## TODO - fix parapatry detection, something is wrong with it.
 ## TODO - remove false sympatry, in future change method to include bootstrap
@@ -711,7 +738,7 @@ spComp$rangeType <- factor(spComp$rangeType, levels=c("allopatric", "sympatric",
 
 tabRangeType <- table(spComp$rangeType)
 
-percentAllo <- 100*tabRangeType["allopatric"]/sum(tabRangeType)
+apercentAllo <- 100*tabRangeType["allopatric"]/sum(tabRangeType)
 percentSymp <- 100*tabRangeType["sympatric"]/sum(tabRangeType)
 percentPara <- 100*tabRangeType["parapatric"]/sum(tabRangeType)
 
@@ -746,6 +773,54 @@ for (i in 1:length(sympCoords)) {
           legend.position = "none") +
               coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
     xlab("Longitude") + ylab("Latitude") + ggtitle(paste0(unique(sympCoords[[i]]$species), collapse=", "))
+    print(g1)
+}
+dev.off()
+
+paraSpp <- subset(spComp, rangeType == "parapatric")$species
+paraSpp <- as.character(paraSpp)
+paraSpp <- strsplit(paraSpp, "/")
+
+paraCoords <- lapply(paraSpp, function(x) {
+    tmpDt1 <- cukeCoords[[x[1]]]
+    tmpDt2 <- cukeCoords[[x[2]]]
+    sp1 <- rep(x[1], ifelse(is.null(nrow(tmpDt1)), 1, nrow(tmpDt1)))
+    sp2 <- rep(x[2], ifelse(is.null(nrow(tmpDt2)), 1, nrow(tmpDt2)))
+    cbind(rbind(tmpDt1, tmpDt2), species=c(sp1, sp2))
+})
+
+pdf(file="tmp/paraSpecies.pdf")
+for (i in 1:length(paraCoords)) {
+    g1 <- ggplot(paraCoords[[i]]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species), position=position_jitter(height=1, width=1)) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position = "none") +
+              coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+    xlab("Longitude") + ylab("Latitude") + ggtitle(paste0(unique(paraCoords[[i]]$species), collapse=", "))
+    print(g1)
+}
+dev.off()
+
+alloSpp <- subset(spComp, rangeType == "allopatric")$species
+alloSpp <- as.character(alloSpp)
+alloSpp <- strsplit(alloSpp, "/")
+
+alloCoords <- lapply(alloSpp, function(x) {
+    tmpDt1 <- cukeCoords[[x[1]]]
+    tmpDt2 <- cukeCoords[[x[2]]]
+    sp1 <- rep(x[1], ifelse(is.null(nrow(tmpDt1)), 1, nrow(tmpDt1)))
+    sp2 <- rep(x[2], ifelse(is.null(nrow(tmpDt2)), 1, nrow(tmpDt2)))
+    cbind(rbind(tmpDt1, tmpDt2), species=c(sp1, sp2))
+})
+
+pdf(file="tmp/alloSpecies.pdf")
+for (i in 1:length(alloCoords)) {
+    g1 <- ggplot(alloCoords[[i]]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species), position=position_jitter(height=1, width=1)) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position = "none") +
+              coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+    xlab("Longitude") + ylab("Latitude") + ggtitle(paste0(unique(alloCoords[[i]]$species), collapse=", "))
     print(g1)
 }
 dev.off()

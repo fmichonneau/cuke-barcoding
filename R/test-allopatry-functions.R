@@ -1,27 +1,27 @@
 source("R/load.R")
 source("R/pairwise-groups-functions.R")
 
-spatialFromSpecies <- function(tree, cukeDB) {
+spatialFromSpecies <- function(listSpecies, cukeDB) {
 
-    grps <- tdata(tree, "tip")[, "Groups", drop=FALSE]
-    uniqGrps <- unique(grps$Groups)
+    allHll <- allSpatial <- vector("list", length(listSpecies))
 
-    species <- vector("list", length(uniqGrps))
-    for (i in 1:length(uniqGrps)) {
-        tmpSpp <- rownames(subset(grps, Groups == uniqGrps[i]))
-        species[[i]] <- sapply(strsplit(tmpSpp, "_"), function(x) paste(x[2:3], collapse="_"))
-    }
-
-    allHll <- allSpatial <- vector("list", length(uniqGrps))
-
+    species <- sapply(listSpecies, function(x) {
+        sapply(strsplit(x, "_"), function(y) paste(y[2:3], collapse="_"))
+    })
     nmAllHll <- sapply(species, function(x) names(which.max(table(x))))
-    names(allHll) <- paste(uniqGrps, nmAllHll, sep="-")
-    names(allSpatial) <- names(allHll)
 
+    names(allSpatial) <- names(allHll) <- paste(names(listSpecies), nmAllHll, sep="-")
+
+    listSpecies <- lapply(listSpecies, function(x) gsub("\\\"", "", x))
+
+    ## Check that all species match labels in the database
+    tipLbl <- cukeDB$Labels_withAmb
+    chkLbl <- all(sapply(listSpecies, function(x) all(x %in% tipLbl)))
+    stopifnot(chkLbl)
 
     ## Convex Hull for each group
-    for (i in 1:length(uniqGrps)) {
-        tmpSpp <- rownames(subset(grps, Groups == uniqGrps[i]))
+    for (i in 1:length(listSpecies)) {
+        tmpSpp <- listSpecies[[i]]
         tmpCoords <- cukeDB[match(tmpSpp, cukeDB$Labels_withAmb),
                             c("decimalLatitude", "decimalLongitude")]
         center <- 180
@@ -43,9 +43,10 @@ spatialFromSpecies <- function(tree, cukeDB) {
             attr(allHll[[i]], "type-coords") <- "polygon"
         }
     }
+
     ## Spatial format for each group
     crs <- CRS("+proj=longlat +datum=WGS84 +units=m")
-    for (i in 1:length(uniqGrps)) {
+    for (i in 1:length(listSpecies)) {
         if (attr(allHll[[i]], "type-coords") == "polygon") {
             tmpHll <- allHll[[i]]
             tmpPoly <- Polygon(cbind(tmpHll$long.recenter, tmpHll$decimalLatitude))
@@ -67,91 +68,112 @@ spatialFromSpecies <- function(tree, cukeDB) {
     list(allHll, allSpatial)
 }
 
-rangeTypePolygon <- function(i, j, poly, percentOverlap=10) {
+rangeType <- function(i, j, poly, percentOverlap=10) {
     r1 <- poly[[i]]
     r2 <- poly[[j]]
-    r1Area <- suppressWarnings(gArea(r1))
-    r2Area <- suppressWarnings(gArea(r2))
-    if (gIntersects(r1, r2)) {
-        rIArea <- suppressWarnings(gArea(gIntersection(r1, r2)))
-        if (rIArea < (min(r1Area, r2Area)/percentOverlap)) {
-            "parapatric"
+
+    if (inherits(r1, "SpatialPolygons") && inherits(r2, "SpatialPolygons")) {
+        r1Area <- suppressWarnings(gArea(r1))
+        r2Area <- suppressWarnings(gArea(r2))
+        if (gIntersects(r1, r2)) {
+            rIArea <- suppressWarnings(gArea(gIntersection(r1, r2)))
+            if (rIArea < (min(r1Area, r2Area)/percentOverlap)) {
+                res <- "parapatric"
+            }
+            else {
+                res <- "sympatric"
+            }
         }
         else {
-            "sympatric"
+            res <- "allopatric"
         }
+    } else if ((inherits(r1, "SpatialPoints") && inherits(r2, "SpatialPolygons")) ||
+               (inherits(r1, "SpatialPolygons") && inherits(r2, "SpatialPoints"))) {
+        if (inherits(r1, "SpatialPoints") && nrow(r1@coords) < 2)
+            res <- list(NA, NA)
+        else if (inherits(r2, "SpatialPoints") && nrow(r2@coords) < 2)
+            res <- list(NA, NA)
+        else {
+            res <- ifelse(gIntersects(r1, r2), "sympatric", "allopatric")
+        }
+    } else {
+        res <- list(NA, NA)
     }
-    else {
-        "allopatric"
-    }
+
+    list(rangeType=res, species=paste0(names(poly)[c(i,j)], collapse="/"))
 }
 
-testRangeType <- function(tr, polygons, alg, percentOverlap=10) {
+esuPairs <- function(tr) {
     grps <- tdata(tr, "tip")[, "Groups", drop=FALSE]
+    sppGrps <- split(rownames(grps), grps$Groups)
+    BS <- tdata(tr, "internal")[, "bs", drop=FALSE]
 
-    uniqGrps <- unique(grps$Groups)
-    res <- vector("list", length(uniqGrps))
-    for (i in 1:length(uniqGrps)) {
-        tmpMrca <- ancestor(tr, MRCA(tr, rownames(grps)[grps$Groups == uniqGrps[i]]))
+    mrca <- lapply(sppGrps, function(x) {
+        ancestor(tr, MRCA(tr, x))
+    })
+
+    res <- lapply(mrca, function(tmpMrca) {
         tmpDesc <- descendants(tr, tmpMrca)
         tmpGrps <- unique(grps[tmpDesc, ])
         if (length(tmpGrps) > 2) {
-            next
-        }
-        else {
-            res[[i]] <- tmpGrps
-        }
-    }
-    res <- res[!sapply(res, is.null)]
-    res <- res[!duplicated(res)]
-
-    rgType <- lapply(res, function(x) {
-        rg1 <- polygons[[x[1]]]
-        rg2 <- polygons[[x[2]]]
-        if (inherits(rg1, "SpatialPolygons") &&
-            inherits(rg2, "SpatialPolygons")) {
-            list(rangeTypePolygon(x[1], x[2], polygons, percentOverlap=percentOverlap),
-                 species=paste(names(polygons)[x[1]],
-                     names(polygons)[x[2]], sep="/"))
-        } else if ((inherits(rg1, "SpatialPoints") &&
-                    inherits(rg2, "SpatialPolygons")) ||
-                   (inherits(rg1, "SpatialPolygons") &&
-                    inherits(rg2, "SpatialPoints"))) {
-            if (inherits(rg1, "SpatialPoints")) {
-                if (nrow(rg1@coords) < 2) return(list(NA, NA))
-            }
-            if (inherits(rg2, "SpatialPoints")) {
-                if (nrow(rg2@coords) < 2) return(list(NA, NA))
-            }
-            isSympatric <- ifelse(gIntersects(rg1, rg2),
-                                  "sympatric", "allopatric")
-            list(isSympatric, species=paste(names(polygons)[x[1]],
-                                  names(polygons)[x[2]], sep="/"))
-        } else {
-            list(NA, NA)
-        }
-    })
-
-    interDist <- lapply(res, function(x) {
-        ind1 <- rownames(grps)[grps$Groups == x[1]]
-        ind2 <- rownames(grps)[grps$Groups == x[2]]
-        ind1 <- gsub("\\\"", "", ind1)
-        ind2 <- gsub("\\\"", "", ind2)
-        if (length(ind1) && length(ind2)) {
-            if (any(is.na(match(c(ind1, ind2), dimnames(alg)[[1]]))))
-                stop("problem")
-                ##browser()
-            tmpAlg <- alg[c(ind1, ind2), ]
-            tmpDist <- dist.dna(tmpAlg, model="raw", as.matrix=TRUE)
-            list(mean=mean(tmpDist[ind1, ind2]), max=max(tmpDist[ind1, ind2]),
-                 min=min(tmpDist[ind1, ind2]))
-        }
-        else {
             NA
         }
+        else {
+            tmpGrps
+        }
     })
-    data.frame(species = unlist(do.call("rbind", lapply(rgType, function(x) x[2]))),
-               rangeType = unlist(do.call("rbind", lapply(rgType, function(x) x[1]))),
+    toKeep1 <- !sapply(res, is.null)
+    res <- res[toKeep1]
+    toKeep2 <- !duplicated(res)
+    res <- res[toKeep2]
+
+    mrca <- mrca[toKeep1]
+    mrca <- mrca[toKeep2]
+    mrca <- unname(unlist(mrca))
+
+    attr(res, "boostrap") <- BS[as.character(mrca), ]
+    res
+}
+
+interESUDist <- function(ind1, ind2, alg, distance="raw") {
+    ind1 <- gsub("\\\"", "", ind1)
+    ind2 <- gsub("\\\"", "", ind2)
+
+    if (length(ind1) && length(ind2)) {
+        if (any(is.na(match(c(ind1, ind2), dimnames(alg)[[1]]))))
+            stop("problem")
+        ## browser()
+        tmpAlg <- alg[c(ind1, ind2), ]
+        tmpDist <- dist.dna(tmpAlg, model=distance, as.matrix=TRUE)
+
+        list(mean=mean(tmpDist[ind1, ind2]), max=max(tmpDist[ind1, ind2]),
+             min=min(tmpDist[ind1, ind2]))
+    }
+    else {
+        list(mean=NA, max=NA, min=NA)
+    }
+}
+
+
+testRangeType <- function(tr, alg, cukeDB, percentOverlap=10) {
+
+    grps <- tdata(tr, "tip")[, "Groups", drop=FALSE]
+    sppGrps <- split(rownames(grps), grps$Groups)
+
+    polygons <- spatialFromSpecies(sppGrps, cukeDB)[[2]]
+
+    esuPrs <- esuPairs(tr)
+
+    rgType <- lapply(esuPrs, function(x) rangeType(x[1], x[2], polygons))
+
+    interDist <- lapply(esuPrs, function(x) {
+        ind1 <- sppGrps[[x[1]]]
+        ind2 <- sppGrps[[x[2]]]
+        interESUDist(ind1, ind2, alg)
+    })
+
+    data.frame(species = unlist(do.call("rbind", lapply(rgType, function(x) x$species))),
+               rangeType = unlist(do.call("rbind", lapply(rgType, function(x) x$rangeType))),
                meanInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$mean))),
                maxInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$max))),
                minInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$min))))

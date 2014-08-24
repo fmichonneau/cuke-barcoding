@@ -58,11 +58,6 @@ source("R/load.R")
 
 \maketitle
 
-% Main message (less than 25 words):
-
-% There is a large amount of unrecognized diversity among Echinoderms.
-% This diversity is mostly generated in allopatry, but rapid secondary sympatry is
-% rampant. (23 words)
 
 \begin{abstract}
   Estimates for the number of species in the sea vary by orders of
@@ -87,32 +82,6 @@ source("R/load.R")
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% Figures
-
-%% graph that shows # of lineages vs. threshold used
-%%  - use different color lines for the methods
-%%  - bPTP, GMYC, distance threshold, LBGM
-%%  - include barplot in background that shows proportion of nodes supported by
-%%  high BS for each method
-%%  - do the graph for all species, and break down by Orders
-
-%% Maps of the geographical distribution of the samples
-
-%% barplot that shows number of
-%% - named species
-%% - ESUs
-%% - ESUs represented by 1 sequence
-
-%% scatterplot of:
-%% - % divergence between cluster vs. abs(latitude)
-%% - intraspp variation vs abs(latitude)
-
-%% barplot that shows taxonomic coverage of the sampling
-%% use different colors for each taxonomic group and shade to represent
-%% percentage covered by samples
-
-
 
 \section{Introduction}
 
@@ -619,9 +588,10 @@ Fig.~\ref{fig:geography-diversification}).
 \begin{centering}
 \includegraphics{figures/map-barriers}
 \caption[Geographical barriers separating ESUs]{Approximate locations of the
-  geographical barriers separating sister ESUs. Numbers indicate number of
-  sister ESUs separated by the barrier. Pink lines indicate barriers separating
-  3 sister ESUs. Dashed orange lines indicate barriers separating 1 sister ESU.}
+  geographical barriers separating sister ESUs within the Indo-Pacific. Numbers
+  indicate number of sister ESUs separated by the barrier. Pink lines indicate
+  barriers separating 3 sister ESUs. Dashed orange lines indicate barriers
+  separating 1 sister ESU.}
 \label{fig:map-barriers}
 \end{centering}
 \end{figure}
@@ -778,6 +748,21 @@ restrictApod <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies,
                      subset=(Order == "Apodida" & maxGeoDist < maxRangeElasi))
 @
 
+We detected a consistent pattern of isolation-by-distance for the three orders
+we sampled more thoroughly despite differences in dispersal potential. The slope
+of the relationship was weak, and variation was high. Our results suggest that
+on average, ESUs with large geographical ranges show higher levels of genetic
+differentiation, but some species remain panmictic across the Indo-Pacific. The
+type of larva does not seem to affect the amount of genetic differentiation
+expected across the range as evidence by the common slope for the
+orders. However, the Dendrochirotida with their lecithotrophic larvae, have
+smaller range sizes than the orders with planktotrophic larvae. Both Apodida and
+Aspidochirotida have ESUs that span the entire Indo-Pacific while only a few
+Dendrochirotida have ESUs that span either the Indian or the Pacific
+oceans. Additionally, many Dendrochirotida with restricted ranges that were
+known from a handful of individuals were not included in the analyses,
+overestimating their mean range sizes.
+
 Most sister ESUs were found in allopatry indicating the importance of
 geographical isolation in the diversification of sea cucumbers. Allopatric
 speciation appears to be the most common in animals \cite{Coyne2004} and is also
@@ -851,17 +836,34 @@ gastropods \cite{Hellberg2000}. For instance, strong positive selection has been
 detected in the GRPs between closely related species of sea urchins in sympatry
 but not in allopatry \cite{Geyer2003}, suggesting the role of these proteins in
 maintaining species limits.  GRPs have not yet been identified in sea cucumbers
-but bindin is known from sea urchins [88] and sea stars [91] which indicates
-that it is plesiomorphic in the clade that sea cucumbers emerged from.  They
-could explain how species in the “H. impatiens” complex acquired reproductive
-isolation quickly.
+but bindin is known from sea urchins \cite{Lessios2011} and sea stars
+\cite{Patino2009} which indicates that it is plesiomorphic in the clade that sea
+cucumbers emerged from.  They could explain how some species have acquired
+reproductive isolation rapidly.
+
+Most of the geographical breaks between sister ESUs of the Indo-Pacific
+separated ESUs from the Indian and the Pacific Oceans, or the Red Sea and the
+rest of the Indo-Pacific (Fig.~\ref{fig:map-barriers}). Other barriers included
+the East Pacific Barrier, and the Hawaiian archipelago. The Indian Ocean and the
+Pacific Ocean were isolated several times throughout the Pleistocene
+\cite{Voris2000} which could have contributed to the isolation and divergence of
+the species across the Indo-Pacific Barrier (IBP). The IBP is a recognized
+marine biogeographic barrier, and in a recent review, 15 out of 18 species of
+fish and invertebrates surveyed showed genetic differentiation across the IBP
+\cite{Gaithier2010}. The geographical isolation of Hawaii has contributed to
+arising of several species endemic to the area.
+
+% The Red Sea experienced several salinity crises, the latest as early as
+% \textit{ca.} 19,000 years ago \cite{Siddal2003}. Therefore, the Red Sea fauna
+% must have colonized the area from outside refugia following the salinity
+% crisis. Some species that extend their ranges from the Red Sea to the Indian
+% Ocean might It is noteworthy that for all but one (\textit{Actinopyga
+%   bannworthi}) species endemic to the Red Sea, the sister ESU occurs either
+% throughout the Indo-Pacific or only occurs in the Pacific Ocean. The other
+% species found in the Red Sea typically also occur in the Indian Ocean.
 
 
-Rapid secondary sympatry with GRPs.
 
-% location of breaks
-
-% isolation - by - distance
 
 
 % tradeoff between many species 1 gene / multiple genes
