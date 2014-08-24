@@ -304,6 +304,39 @@ load_tree_phylo4 <- function(distance="raw", taxa="all") {
     }
 }
 
+load_tree_raxml_phylo4 <- function(taxa="all", overwrite=FALSE) {
+    fnm <- "data/cukeTree-raxml-phylo4.rds"
+    if (file.exists(fnm) && !overwrite) {
+        tr <- readRDS(fnm)
+    }
+    else {
+        tr <- load_tree_raxml()
+        ## TODO -- double check that using 1 blindly doesn't cause
+        ## any issues
+        ## TODO -- use mid-point rooting, or rooting on longest branch
+        tr <- ape::root(tr, 1, resolve.root=TRUE)
+        tr <- as(tr, "phylo4")
+        bs <- nodeLabels(tr)
+        bs <- data.frame(bs, stringsAsFactors=FALSE)
+        bs$bs <- as.numeric(bs$bs)
+        tr <- phylo4d(tr, node.data=bs)
+        tr <- removeNodeLabels(tr)
+        saveRDS(tr, file=fnm)
+    }
+
+    if (taxa == "all") {
+        invisible(tr)
+    }
+    else {
+        toKeep <- load_labelsFromTaxa(taxa)
+        tr <- subset(tr, tips.include=toKeep)
+        stopifnot(all(toKeep %in% tipLabels(tr)) ||
+                  all(!is.na(toKeep)))
+        invisible(tr)
+    }
+}
+
+
 load_species_pairwiseGrps <- function(distance="raw", taxa="all",
                                       threshold=0.03) {
 
@@ -363,4 +396,36 @@ load_species_clusterGrps <- function(distance="raw", taxa="all",
     grps <- tdata(tr, "tip")[, "Groups", drop=FALSE]
     gg <- factor(grps$Groups)
     split(rownames(grps), gg)
+}
+
+load_tree_manualGrps <- function(taxa="Holothuriidae",
+                                 overwrite=FALSE) {
+    fnm <- "data/cukeTree-manualESUs.rds"
+    ##distance <- match.arg(distance, c("raw", "K80"))
+    taxa <- match.arg(taxa) ## only Holothuriidae for now
+    if (file.exists(fnm) && !overwrite) {
+        manESU <- readRDS(file=fnm)
+    }
+    else {
+        ## holTree <- load_tree_clusterGrps("raw", "Holothuriidae", threshold=0.02)
+        ## write.csv(tdata(holTree, "tip"), file="data/raw_manualESUs.csv")
+        ## ESU coding
+        ## - for ESU_genetic: name of the species, (genus_species), followed
+        ##   by alphanum to distinguish ESUs, (_1, _1a, _2, _ESU1), followed
+        ##   by geography as needed (_IO, _PO):
+        ##   - If same complex but different ESUs (e.g., the ind from a region
+        ##     form a rec. monophyletic clade): hol_ver_1a_IO and hol_ver_1b_PO
+        ##   - If same complex and same ESUs: hol_ver_1_IO and hol_ver_1_PO
+        ##     (IO or PO not rec. monophyletic, or sing. ind. w/ low div.)
+        ##   - If different ESUs but not sisters: hol_ver_1 and hol_ver_2
+        manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
+        manESU$ESU_noGeo <- gsub("_[A-Z]{2}$", "", manESU$ESU_genetic)
+        tree <- load_tree_raxml_phylo4(taxa)
+        tDat <- data.frame(as.numeric(factor(manESU$ESU_noGeo)))
+        names(tDat) <- "Groups"
+        rownames(tDat) <- manESU$Labels
+        manESU <- addData(tree, tip.data=tDat)
+        saveRDS(manESU, file=fnm)
+    }
+    invisible(manESU)
 }

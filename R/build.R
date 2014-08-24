@@ -1,4 +1,5 @@
 source("R/packages.R")
+source("R/removeNodeLabels.R")
 
 build_cukeTree <- function(alg, model, Nrep) {
     treH <- ape::nj(ape::dist.dna(alg, model=model))
