@@ -6,6 +6,7 @@ library(car)
 library(wesanderson)
 library(tikzDevice)
 
+
 ### ---- holothuriidae-tree ----
 source("R/test-allopatry-functions.R")
 manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
@@ -24,6 +25,74 @@ hasCryptic <- sapply(esus, function(x) length(x) > 2 & length(grep("nsp", x)) < 
 esuCryptic <- esus[hasCryptic]
 esuCryptic <- sapply(esuCryptic, function(x) paste0(x[1:2], collapse="_"))
 nCryptic <- length(unique(esuCryptic))
+
+newSpp <- sapply(esus, function(x) length(grep("nsp", x)) > 0)
+
+intraDist <- lapply(noGeoGrps, intraESUDist, cukeAlg)
+
+summaryInterDist <- function(listSpecies, cukeAlg) {
+    lapply(listSpecies, function(x) {
+        lapply(listSpecies, function(y) {
+            interESUDist(x, y, cukeAlg)
+        })
+    })
+}
+
+summInterDist <- summaryInterDist(noGeoGrps, cukeAlg)
+
+minInter <- mapply(function(summ, nm) {
+    minDist <- sapply(summ, function(x) x$min)
+    minDist <- minDist[-match(nm, names(minDist))]
+    minDist[which.min(minDist)]
+}, summInterDist, names(summInterDist))
+
+maxIntra <- sapply(intraDist, function(x) x$max)
+
+esuSpatial <- spatialFromSpecies(noGeoGrps, cukeDB)
+nmEsuSpatial <- names(esuSpatial[[1]])
+
+rgType <- lapply(names(minInter), function(x) {
+    spp <- unlist(strsplit(x, "\\."))
+    i <- grep(paste0("^", spp[1], "-"), nmEsuSpatial)
+    j <- grep(paste0("^", spp[2], "-"), nmEsuSpatial)
+    rangeType(i, j, esuSpatial[[2]])
+})
+
+barcodeGap <- data.frame(minInter, maxIntra, row.names=names(minInter))
+barcodeGap$species <- NA
+barcodeGap$species[maxIntra > minInter] <- rownames(barcodeGap)[maxIntra > minInter]
+barcodeGap$rangeType <- sapply(rgType, function(x) x$rangeType)
+barcodeGap$rangeType[is.na(barcodeGap$rangeType)] <- "unknown"
+barcodeGap <- barcodeGap[is.finite(barcodeGap$maxIntra), ]
+
+percentGap   <- 100*sum(is.na(barcodeGap$species))/nrow(barcodeGap)
+minInterText <- 100*min(barcodeGap$minInter)
+percentThres <- 100*sum(barcodeGap$minInter > 0.02)/nrow(barcodeGap)
+
+### ---- barcode-gap-plot ----
+barcodeGap$species <- gsub("\\..+$", "", barcodeGap$species)
+barcodeGap$species <- gsub("^act_", "Actinopyga ", barcodeGap$species)
+barcodeGap$species <- gsub("^boh_", "Bohadschia ", barcodeGap$species)
+barcodeGap$species <- gsub("^hol_", "Holothuria ", barcodeGap$species)
+barcodeGap$species <- gsub("^lab_", "Labidodemas ", barcodeGap$species)
+barcodeGap$species <- gsub("atr($|_)", "atra ", barcodeGap$species)
+barcodeGap$species <- gsub("pal($|_)", "palauensis ", barcodeGap$species)
+barcodeGap$species <- gsub("imp($|_)", "impatiens ", barcodeGap$species)
+barcodeGap$species <- gsub("arg($|_)", "argus ", barcodeGap$species)
+barcodeGap$species <- gsub("are($|_)", "arenicola ", barcodeGap$species)
+barcodeGap$species <- gsub("edu($|_)", "edulis ", barcodeGap$species)
+barcodeGap$species <- gsub("fus($|_)", "fuscogilva ", barcodeGap$species)
+barcodeGap$species <- gsub("flo($|_)", "floridana ", barcodeGap$species)
+barcodeGap$species <- gsub("leu($|_)", "leucospilota ", barcodeGap$species)
+barcodeGap$species <- gsub("mex($|_)", "mexicana ", barcodeGap$species)
+barcodeGap$species <- gsub("moe($|_)", "moebii ", barcodeGap$species)
+barcodeGap$species <- gsub("sem($|_)", "semperianum ", barcodeGap$species)
+
+ggplot(barcodeGap) + geom_point(aes(x=maxIntra, y=minInter, colour=species)) +
+    geom_abline(slope=1, linetype=3, colour="gray40") + coord_fixed() +
+    xlim(c(0, 0.18)) + ylim(c(0, 0.18)) +
+    xlab("Maximum intra-ESU distance")  + ylab("Minimum inter-ESU distance") +
+    scale_colour_discrete(name="ESUs")
 
 
 ### ---- sampling-maps ----
@@ -191,7 +260,6 @@ print(sampXtab, include.rownames=FALSE, hline.after=c(-1, 0, hlinePos, nrow(samp
 ### ---- mean-intra-named-species ----
 cukeAlg <- load_cukeAlg()
 
-
 meanRaw0015 <- sapply(load_species_pairwiseGrps("raw", "all", 0.015), function(x) {
     alg <- cukeAlg[match(x, dimnames(cukeAlg)[[1]]), ]
     mean(dist.dna(alg))
@@ -249,7 +317,6 @@ meanIntraSppMol <- sapply(whichSppMol, function(x) { alg <- cukeAlg[x, ]; mean(d
 
 
 ### ---- cluster-groups-data ----
-## TODO - revisit when "all" suffix file available
 taxonomyDf <- load_taxonomyDf()
 treeGrpsFiles <- list.files(pattern="cukeTree-.+-\\d+\\.rds$",
                             path="data", full.names=TRUE)
@@ -311,11 +378,15 @@ zisPal <- wes.palette(5, "Zissou")[c(1,2,3,5)]
 nSpp <- data.frame(taxa=c("all", "Aspidochirotida", "Holothuriidae"),
                    nspp=c(nSppAll, nSppAsp, nSppHol))
 
+nHol <- data.frame(taxa=c("all", "Aspidochirotida", "Holothuriidae"),
+                   nspp=c(NA, NA, length(noGeoGrps)))
+
 tmpDt <- subset(nGrpsDf, taxa %in% c("all", "Aspidochirotida", "Holothuriidae"))
 nESU <- ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
                           shape=interaction(distance, method))) +
     geom_line() + geom_point() + facet_wrap( ~ taxa) +
     geom_hline(data=nSpp, aes(yintercept=nspp), colour="gray40", linetype=2) +
+    geom_hline(data=nHol, aes(yintercept=nspp), colour="darkgreen", linetype=3) +
     ylab("Number of ESUs") +
     theme(legend.position="top", axis.title.x=element_blank()) +
     scale_colour_manual(name=element_blank(),
@@ -343,7 +414,7 @@ pSngl <- ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochiro
     scale_colour_manual(values=zisPal) + scale_shape_manual(values=seq(from=15, length.out=4)) +
     theme(legend.position="none")
 
-multiplot(nESU, pSngl, cols=1)
+multiplot(nESU, pSngl, layout=matrix(c(rep(1, 4), rep(2, 3)), ncol=1))
 
 ### ---- sm-groups-comparison-plot ----
 tmpDtSm <- subset(nGrpsDf, taxa %in% c("Dendrochirotida", "Apodida", "Elasipodida"))
@@ -385,9 +456,8 @@ pSnglSm <- ggplot(tmpDtSm,
 multiplot(nESUSm, pSnglSm, cols=1)
 
 ### ----- isolation-by-distance-data -----
-source("R/CalcGeoDist.R")
-source("R/load.R")
-treeH <- load_tree_clusterGrps(distance="K80", taxa="all", threshold="0.02")
+source("R/test-allopatry-functions.R")
+treeH <- load_tree_clusterGrps(distance="K80", taxa="all", threshold=0.02)
 cukeDB <- load_cukeDB()
 grps <- tdata(treeH, "tip")[, "Groups", drop=FALSE]
 cukeAlg <- load_cukeAlg()
@@ -447,6 +517,27 @@ names(distBySpecies)[match("higher", names(distBySpecies))] <- "Order"
 
 orderToInclude <- c("Apodida", "Aspidochirotida", "Dendrochirotida")
 
+medRgSize <- with(subset(distBySpecies, Order %in% orderToInclude),
+                  tapply(maxGeoDist, Order, median, na.rm=TRUE))
+medRgSizeAsp <- medRgSize["Aspidochirotida"]
+medRgSizeApo <- medRgSize["Apodida"]
+medRgSizeDen <- medRgSize["Dendrochirotida"]
+
+maxGeoDistHol <- sapply(noGeoGrps, function(x) maxGeoDistESU(x, cukeDB))
+genDistHol <- lapply(noGeoGrps, function(x) intraESUDist(x, cukeAlg))
+maxGenDistHol <- sapply(genDistHol, function(x) x$max)
+distBySpeciesHol <- data.frame(maxGenDist=maxGenDistHol, maxGeoDist=maxGeoDistHol)
+distBySpeciesHol <- distBySpeciesHol[is.finite(distBySpeciesHol$maxGenDist) &
+                                     is.finite(distBySpeciesHol$maxGeoDist), ]
+ibdHol <- summary(lm(maxGenDist ~ maxGeoDist, data=distBySpeciesHol))
+
+### ---- range-size-plot ----
+ggplot(subset(distBySpecies, Order %in% orderToInclude)) +
+    geom_violin(aes(x=Order, y=maxGeoDist, fill=Order, colour=Order)) +
+    xlab("") + ylab("Maximum distance (km)") +
+    theme(legend.position="none")
+
+
 ### ---- isolation-by-distance-stats ----
 leveneIbd <- car::leveneTest(lm(maxGenDist ~ Order, data=distBySpecies,
                                 subset=Order %in% orderToInclude))
@@ -473,7 +564,6 @@ interceptP <- paste("$P =", formatC(summAovIbd[[1]]$"Pr(>F)"[2], digits=2), "$")
 
 finalIbdAncova <- update(ibdAncova, . ~ . - Order - maxGeoDist:Order)
 
-meanRange
 
 ### ---- isolation-by-distance-table ----
 print(xtable(summary(finalIbdAncova), display=rep("g", 5), caption=c(paste("Coefficients of the regression",
@@ -492,48 +582,13 @@ ggplot(subset(distBySpecies, Order %in% orderToInclude),
                                linetype=2) +
     facet_wrap(~ Order) + ylab("Maximum genetic distance (K2P)") +
     xlab("Maximum genetic distance (km)") +
-    theme(legend.position="top")
-
-
-### ---- idb-by-order ---- ### not in use
-ibdDendro <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Dendrochirotida")
-ibdAspido <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Aspidochirotida")
-ibdApod <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Apodida")
-ibdElas <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order=="Elasipodida")
-
-summDendro <- summary(ibdDendro)
-summAspido <- summary(ibdAspido)
-summApod <- summary(ibdApod)
-summElas <- summary(ibdElas)
-slopeRes <- c(summApod$coefficients[2,1],
-              summAspido$coefficients[2,1],
-              summDendro$coefficients[2,1],
-              summElas$coefficients[2,1])
-seRes <- c(summApod$coefficients[2,2],
-           summAspido$coefficients[2,2],
-           summDendro$coefficients[2,2],
-           summElas$coefficients[2,2])
-pRes <- c(summApod$coefficients[2,4],
-          summAspido$coefficients[2,4],
-          summDendro$coefficients[2,4],
-          summElas$coefficients[2,4])
-pRes <- sapply(pRes, function(x) ifelse(x < 0.001, "< 0.001", round(x, 2)))
-ibdRes <- data.frame(slope=slopeRes, SE=seRes, P=pRes,
-                     row.names=c("Apodida", "Aspidochirotida",
-                         "Dendrochirotida", "Elasipodida"))
-
-print(xtable(ibdRes, display=rep("g", 4), caption=c(paste("Slope, Standard-Error (SE)",
-             "and P-value (P) of the relationship between maximum genetic distances and",
-              "maximum geographic distances for all ESUs identified with the clustering method",
-              "with a threshold of 3\\%, represented by 3 or more individuals.",
-              "See Fig.~\\ref{fig:isolation-by-distance-plot}."),
-              "Statitics of the regression between maximum genetic and maximum geographic distances."),
-             label="tab:ibd-stats", caption.placement="top"))
+    theme(legend.position="non")
 
 ### ---- global-diversity-map ----
 globalMap <- map_data("world2")
 source("R/test-allopatry-functions.R")
-spatialSpecies <- spatialFromSpecies(load_tree_clusterGrps("K80", "all", 0.02),
+
+spatialSpecies <- spatialFromSpecies(noGeoGrps,
                                      load_cukeDB())
 
 isPolygon <- sapply(spatialSpecies[[1]], function(x) attr(x, "type-coords") == "polygon")
@@ -541,29 +596,6 @@ spatialHull <- spatialSpecies[[1]][isPolygon]
 tmpSpp <- rep(names(spatialHull), sapply(spatialHull, function(x) nrow(x)))
 allHllDf <- do.call("rbind", spatialHull)
 allHllDf <- cbind(allHllDf, species=tmpSpp)
-
-divMap <- ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_polygon(aes(x=long.recenter, y=decimalLatitude, fill=species),
-                 alpha=.03) +
-    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-    scale_fill_manual(values=rep("red", nlevels(allHllDf$species))) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position = "none") +
-    ylim(c(-30,30)) + xlim(c(0, 300)) +
-    xlab("Longitude") + ylab("Latitude")
-
-if (file.exists("tmp/diversity-map.tex")) file.remove("tmp/diversity-map.tex")
-if (file.exists("figures/diversity-map.pdf")) file.remove("figures/diversity-map.pdf")
-
-op <- options()
-setTikzDefaults(TRUE)
-tikz('tmp/diversity-map.tex', standAlone=TRUE, width=6.5, height=2)
-print(divMap)
-dev.off()
-tools::texi2pdf("tmp/diversity-map.tex", quiet=TRUE)
-stopifnot(file.rename("diversity-map.pdf", "figures/diversity-map.pdf"))
-options(op)
-
 pointPNG <- SpatialPoints(cbind(140, 0), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
 nSppPNG <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointPNG, x))
 
@@ -585,18 +617,6 @@ nSppOki <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointOki, 
 pointGuam <- SpatialPoints(cbind(144.724, 13.4), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
 nSppGuam <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointGuam, x))
 
-
-## ptsDf <- do.call("rbind", spatialSpecies[[1]])
-## spPts <- rep(names(spatialSpecies[[1]]), sapply(spatialSpecies[[1]], nrow))
-## ptsDf <- cbind(ptsDf, species=spPts)
-
-## ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-##     geom_polygon(data=allHllDf, aes(x = long.recenter, y = decimalLatitude), fill="red", alpha=.03) +
-##     coord_map(projection = "ortho", orientation=c(-90, 0, 0)) +
-##     theme(panel.background = element_rect(fill="aliceblue")) +
-##     ylim(c(-90, -30))
-
-### ---- percent-endemism ----
 allSppNm <- rep(names(spatialSpecies[[1]]), sapply(spatialSpecies[[1]], function(x) nrow(x)))
 allCoords <- do.call("rbind", spatialSpecies[[1]])
 allCoords <- cbind(allCoords, species=allSppNm)
@@ -639,80 +659,6 @@ ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
     xlab("Longitude") + ylab("Latitude")
 
 
-#### ---- test ---- ### not in use
-
-ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
-    geom_polygon(aes(x=long.recenter, y=decimalLatitude, fill=species),
-                 alpha=.05) +
-    coord_map(projection = "mercator", orientation=c(90, 160, 0), xlim=c(30, 65),
-              ylim=c(32, -25)) +
-    #scale_fill_manual(values=rep("red", nlevels(allHllDf$species))) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position = "none") +
-    ylim(c(-30,30)) + #xlim(c(190, 210)) +
-    xlab("Longitude") + ylab("Latitude")
-
-
-spp <- as.character(spComp$species)
-spp <- strsplit(spp, "/")
-sppNb <- lapply(spp, function(x) as.numeric(gsub("-.+$", "", x)))
-#stringSpp <- sapply(sppNb, function(x) paste0("^", x, collapse="|"))
-
-pdf(file="/tmp/spPairs.pdf")
-for (i in 1:length(sppNb)) {
-    sp1 <- allHllDf[grep(paste0("^", sppNb[[i]][1], "-"),  allHllDf$species), ]
-    sp2 <- allHllDf[grep(paste0("^", sppNb[[i]][2], "-"),  allHllDf$species), ]
-    tmpDt <- rbind(sp1, sp2)
-
-    sp1Nm <- names(spatialSpecies[[2]])[sppNb[[i]][1]]
-    sp2Nm <- names(spatialSpecies[[2]])[sppNb[[i]][2]]
-
-    tmpDt2 <- rbind(cbind(spatialSpecies[[1]][[ sppNb[[i]] [1]]], species=sppNb[[i]][1]),
-                    cbind(spatialSpecies[[1]][[ sppNb[[i]] [2]]], species=sppNb[[i]][2]))
-    tmpDt2 <- tmpDt2[complete.cases(tmpDt2), ]
-
-    tmpMap <- ggplot(tmpDt2) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-        geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
-        theme(panel.background = element_rect(fill="aliceblue"),
-        legend.position = "none") +
-        xlab("Longitude") + ylab("Latitude") +
-        ggtitle(paste(sp1Nm, sp2Nm, spComp$rangeType[i], sep=" - "))
-
-    if (attr(spatialSpecies[[1]][[sppNb[[i]][1]]], "type-coords") == "polygon") {
-        tmpMap <- tmpMap + geom_polygon(data=subset(tmpDt2, species == sppNb[[i]][1]),
-                                        aes(x=long.recenter, y=decimalLatitude, fill="red"),
-                                        alpha=.3)
-    }
-
-    if (attr(spatialSpecies[[1]][[sppNb[[i]][2]]], "type-coords") == "polygon") {
-        tmpMap <- tmpMap + geom_polygon(data=subset(tmpDt2, species == sppNb[[i]][2]),
-                                        aes(x=long.recenter, y=decimalLatitude, fill="blue"),
-                                        alpha=.3)
-    }
-
-    if (abs(mean(range(tmpDt$decimalLatitude))) < 30) {
-        tmpMap <- tmpMap + coord_map(projection = "mercator", orientation=c(90, 160, 0))
-    } else if (mean(range(tmpDt$decimalLatitude)) > 30) {
-        tmpMap <- tmpMap + coord_map(projection = "ortho", orientation=c(90, 0, 0))
-    } else {
-        tmpMap <- tmpMap + coord_map(projection = "ortho", orientation=c(-90, 0, 0))
-    }
-    print(tmpMap)
-}
-dev.off()
-
-ggplot(allHllDf[grep("^501-|^111-", allHllDf$species), ]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
-    geom_polygon(aes(x=long.recenter, y=decimalLatitude, fill=species),
-                 alpha=.3) +
-    coord_map(projection = "ortho", orientation=c(-90, 0, 0)) +
-    #scale_fill_manual(values=rep("red", nlevels(allHllDf$species))) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position = "none") +
-    #ylim(c(-30,30)) + xlim(c(0, 300)) +
-    xlab("Longitude") + ylab("Latitude")
-
 
 ### ---- geography-diversification ----
 source("R/test-allopatry-functions.R")
@@ -729,7 +675,7 @@ esuRange <- esuRange[-match("178-Holothuria_unicolor/185-Holothuria_zihuatanensi
 
 tabRangeType <- table(esuRange$rangeType)
 
-apercentAllo <- 100*tabRangeType["allopatric"]/sum(tabRangeType)
+percentAllo <- 100*tabRangeType["allopatric"]/sum(tabRangeType)
 percentSymp <- 100*tabRangeType["sympatric"]/sum(tabRangeType)
 percentPara <- 100*tabRangeType["parapatric"]/sum(tabRangeType)
 
@@ -737,130 +683,12 @@ nSymp <- tabRangeType["sympatric"]
 
 ggplot(esuRange) + geom_bar(aes(x=rangeType, fill=rangeType)) +
     xlab("") + ylab("Number of ESU pairs") +
-    scale_fill_discrete("Type of geographic range")
+    scale_fill_discrete("Type of geographic range") +
+    theme(legend.position="none")
 
 ggplot(esuRange, aes(x=rangeType, y=meanInterDist, colour=rangeType)) +
     geom_point(position=position_jitter(width=.1)) + geom_boxplot(alpha=.1)
 
-### ---- maps-sympatric-species ----
-cukeCoords <- spatialFromSpecies(load_tree_clusterGrps("K80", threshold=.02),
-                                 load_cukeDB())
-cukeCoords <- cukeCoords[[1]]
-
-sympSpp <- subset(spComp, rangeType == "sympatric")$species
-sympSpp <- as.character(sympSpp)
-sympSpp <- strsplit(sympSpp, "/")
-
-sympCoords <- lapply(sympSpp, function(x) {
-    tmpDt1 <- cukeCoords[[x[1]]]
-    tmpDt2 <- cukeCoords[[x[2]]]
-    sp1 <- rep(x[1], ifelse(is.null(nrow(tmpDt1)), 1, nrow(tmpDt1)))
-    sp2 <- rep(x[2], ifelse(is.null(nrow(tmpDt2)), 1, nrow(tmpDt2)))
-    cbind(rbind(tmpDt1, tmpDt2), species=c(sp1, sp2))
-})
-
-pdf(file="tmp/sympSpecies.pdf")
-for (i in 1:length(sympCoords)) {
-    g1 <- ggplot(sympCoords[[i]]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species), position=position_jitter(height=1, width=1)) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position = "none") +
-              coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-    xlab("Longitude") + ylab("Latitude") + ggtitle(paste0(unique(sympCoords[[i]]$species), collapse=", "))
-    print(g1)
-}
-dev.off()
-
-paraSpp <- subset(spComp, rangeType == "parapatric")$species
-paraSpp <- as.character(paraSpp)
-paraSpp <- strsplit(paraSpp, "/")
-
-paraCoords <- lapply(paraSpp, function(x) {
-    tmpDt1 <- cukeCoords[[x[1]]]
-    tmpDt2 <- cukeCoords[[x[2]]]
-    sp1 <- rep(x[1], ifelse(is.null(nrow(tmpDt1)), 1, nrow(tmpDt1)))
-    sp2 <- rep(x[2], ifelse(is.null(nrow(tmpDt2)), 1, nrow(tmpDt2)))
-    cbind(rbind(tmpDt1, tmpDt2), species=c(sp1, sp2))
-})
-
-pdf(file="tmp/paraSpecies.pdf")
-for (i in 1:length(paraCoords)) {
-    g1 <- ggplot(paraCoords[[i]]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species), position=position_jitter(height=1, width=1)) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position = "none") +
-              coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-    xlab("Longitude") + ylab("Latitude") + ggtitle(paste0(unique(paraCoords[[i]]$species), collapse=", "))
-    print(g1)
-}
-dev.off()
-
-alloSpp <- subset(spComp, rangeType == "allopatric")$species
-alloSpp <- as.character(alloSpp)
-alloSpp <- strsplit(alloSpp, "/")
-
-alloCoords <- lapply(alloSpp, function(x) {
-    tmpDt1 <- cukeCoords[[x[1]]]
-    tmpDt2 <- cukeCoords[[x[2]]]
-    sp1 <- rep(x[1], ifelse(is.null(nrow(tmpDt1)), 1, nrow(tmpDt1)))
-    sp2 <- rep(x[2], ifelse(is.null(nrow(tmpDt2)), 1, nrow(tmpDt2)))
-    cbind(rbind(tmpDt1, tmpDt2), species=c(sp1, sp2))
-})
-
-pdf(file="tmp/alloSpecies.pdf")
-for (i in 1:length(alloCoords)) {
-    g1 <- ggplot(alloCoords[[i]]) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species), position=position_jitter(height=1, width=1)) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position = "none") +
-              coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-    xlab("Longitude") + ylab("Latitude") + ggtitle(paste0(unique(alloCoords[[i]]$species), collapse=", "))
-    print(g1)
-}
-dev.off()
-
-### ---- test2 ----
-ggplot(spComp) + geom_point(data=spComp[!is.na(spComp$rangeType), ],
-                            aes(x=rangeType, y=meanInterDist),
-                            position=position_jitter(width=.1, height=0)) +
-    facet_wrap(~ method)
-
-
-ggplot(geoSpe) +
-    geom_boxplot(data=(geoSpe[!is.na(geoSpe$rangeType),]),
-                 aes(x=rangeType, y=minInterDist))
-
-       geom_bar(data=(geoSpe[!is.na(geoSpe$rangeType),]),
-                aes(x=meanInterDist, fill=rangeType)) #+ geom_bar(position="fill")
-
-actTree <- subset(treeH, tips.include=grep("Actinopyga", tipLabels(treeH)))
-bohTree <- subset(treeH, tips.include=grep("Bohadschia", tipLabels(treeH)))
-
-svg(file="/tmp/map.svg", width=6.5, height=3)
-ggplot(spComp) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x=100, y=100)) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position = "none") +
-    coord_map(projection="mercator", orientation=c(90, 160, 0)) +
-    xlab("Longitude") + ylab("Latitude") +
-    xlim(c(0, 300)) + ylim(c(-30, 30))
-dev.off()
-
-### ---- alldata ----- ### not in use
-plot(maxGenDist ~ maxGeoDist, data=dat, subset = nInd >= 10)
-summary(lm(genDist ~ geoDist, data=dat, subset= nInd >= 10))
-abline(lm(genDist ~ geoDist, data=dat, subset= nInd >= 10))
-
-
-distByInd <- data.frame(family=rep(families, sapply(matGeoDist, function(x) length(as.numeric(x)))),
-                        genDist=fullGenDist,
-                        geoDist=fullGeoDist)
-distByInd <- merge(distByInd, taxonomyDf, by.x="family", by.y="taxa", all.x=TRUE)
-distByInd <- distByInd[complete.cases(distByInd), ]
-
-ggplot(distByInd, aes(x=geoDist, y=genDist, colour=higher)) +
-    geom_point(size=.5, shape=3, position=position_jitter()) +
-    stat_smooth(method="lm", color="gray50", size=.6, se=FALSE) + facet_wrap(~ higher)
 
 ### ---- mantel-test ----
 ### Doesn't really work given too much data, could instead do by species

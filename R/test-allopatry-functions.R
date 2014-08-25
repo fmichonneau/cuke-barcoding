@@ -1,4 +1,5 @@
 source("R/load.R")
+source("R/CalcGeoDist.R")
 source("R/pairwise-groups-functions.R")
 
 spatialFromSpecies <- function(listSpecies, cukeDB) {
@@ -154,6 +155,13 @@ interESUDist <- function(ind1, ind2, alg, distance="raw") {
     }
 }
 
+intraESUDist <- function(listSpecies, alg, distance="raw") {
+    sppLbl <- match(listSpecies, dimnames(alg)[[1]])
+    tmpAlg <- alg[sppLbl, ]
+    tmpDist <- ape::dist.dna(tmpAlg, model=distance)
+    list(mean=mean(tmpDist), max=max(tmpDist), min=min(tmpDist))
+
+}
 
 testRangeType <- function(tr, alg, cukeDB, percentOverlap=10) {
 
@@ -184,6 +192,14 @@ testRangeType <- function(tr, alg, cukeDB, percentOverlap=10) {
                minInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$min))),
                bootstrap = attr(esuPrs, "bootstrap")
                )
+}
+
+maxGeoDistESU <- function(spp, cukeDB) {
+    tmpCoords <- cukeDB[match(spp, cukeDB$Labels_withAmb),
+                        c("decimalLatitude", "decimalLongitude")]
+    matGeoDistTmp <- CalcGeoDists(cbind(deg2rad(tmpCoords$decimalLongitude),
+                                        deg2rad(tmpCoords$decimalLatitude)))
+    max(matGeoDistTmp, na.rm=T)
 }
 
 build_species_overlap <- function() {

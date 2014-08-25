@@ -1,4 +1,4 @@
-% Created by tikzDevice version 0.7.0 on 2014-08-19 11:39:01
+% Created by tikzDevice version 0.7.0 on 2014-08-25 23:31:03
 % !TEX encoding = UTF-8 Unicode
 
 \documentclass[12pt]{article}
@@ -75,764 +75,764 @@
 \path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (  0.00, -0.00) rectangle (469.76,289.08);
 \end{scope}
 \begin{scope}
-\path[clip] ( 49.36, 37.04) rectangle (182.27,214.17);
+\path[clip] ( 49.36, 37.04) rectangle (182.27,260.19);
 \definecolor[named]{fillColor}{rgb}{0.90,0.90,0.90}
 
-\path[fill=fillColor] ( 49.36, 37.04) rectangle (182.27,214.17);
+\path[fill=fillColor] ( 49.36, 37.04) rectangle (182.27,260.19);
 \definecolor[named]{drawColor}{rgb}{0.95,0.95,0.95}
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] ( 49.36, 68.72) --
-	(182.27, 68.72);
+\path[draw=drawColor,line width= 0.3pt,line join=round] ( 49.36, 76.95) --
+	(182.27, 76.95);
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] ( 49.36,115.98) --
-	(182.27,115.98);
+\path[draw=drawColor,line width= 0.3pt,line join=round] ( 49.36,136.50) --
+	(182.27,136.50);
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] ( 49.36,163.25) --
-	(182.27,163.25);
+\path[draw=drawColor,line width= 0.3pt,line join=round] ( 49.36,196.04) --
+	(182.27,196.04);
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] ( 49.36,210.51) --
-	(182.27,210.51);
+\path[draw=drawColor,line width= 0.3pt,line join=round] ( 49.36,255.59) --
+	(182.27,255.59);
 
 \path[draw=drawColor,line width= 0.3pt,line join=round] ( 70.79, 37.04) --
-	( 70.79,214.17);
+	( 70.79,260.19);
 
 \path[draw=drawColor,line width= 0.3pt,line join=round] (101.57, 37.04) --
-	(101.57,214.17);
+	(101.57,260.19);
 
 \path[draw=drawColor,line width= 0.3pt,line join=round] (132.34, 37.04) --
-	(132.34,214.17);
+	(132.34,260.19);
 
 \path[draw=drawColor,line width= 0.3pt,line join=round] (163.12, 37.04) --
-	(163.12,214.17);
+	(163.12,260.19);
 \definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 49.36, 45.09) --
-	(182.27, 45.09);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 49.36, 47.18) --
+	(182.27, 47.18);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 49.36, 92.35) --
-	(182.27, 92.35);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 49.36,106.73) --
+	(182.27,106.73);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 49.36,139.62) --
-	(182.27,139.62);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 49.36,166.27) --
+	(182.27,166.27);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 49.36,186.88) --
-	(182.27,186.88);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 49.36,225.81) --
+	(182.27,225.81);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] ( 55.41, 37.04) --
-	( 55.41,214.17);
+	( 55.41,260.19);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] ( 86.18, 37.04) --
-	( 86.18,214.17);
+	( 86.18,260.19);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (116.95, 37.04) --
-	(116.95,214.17);
+	(116.95,260.19);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (147.73, 37.04) --
-	(147.73,214.17);
+	(147.73,260.19);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (178.50, 37.04) --
-	(178.50,214.17);
+	(178.50,260.19);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
-\path[fill=fillColor] (172.92,129.63) circle (  2.13);
+\path[fill=fillColor] (172.92,153.70) circle (  2.13);
 
-\path[fill=fillColor] ( 55.50, 78.02) circle (  2.13);
+\path[fill=fillColor] ( 55.50, 88.66) circle (  2.13);
 
-\path[fill=fillColor] (156.32,111.75) circle (  2.13);
+\path[fill=fillColor] (156.32,131.16) circle (  2.13);
 
-\path[fill=fillColor] ( 57.64, 81.79) circle (  2.13);
+\path[fill=fillColor] ( 57.64, 93.42) circle (  2.13);
 
-\path[fill=fillColor] ( 55.53, 61.22) circle (  2.13);
+\path[fill=fillColor] ( 55.53, 67.50) circle (  2.13);
 
-\path[fill=fillColor] ( 55.41, 77.88) circle (  2.13);
+\path[fill=fillColor] ( 55.41, 88.49) circle (  2.13);
 
-\path[fill=fillColor] ( 55.41, 48.70) circle (  2.13);
+\path[fill=fillColor] ( 55.41, 51.73) circle (  2.13);
 
-\path[fill=fillColor] ( 55.47,116.84) circle (  2.13);
+\path[fill=fillColor] ( 55.47,137.58) circle (  2.13);
 
-\path[fill=fillColor] ( 64.06, 81.86) circle (  2.13);
+\path[fill=fillColor] ( 64.06, 93.51) circle (  2.13);
 
-\path[fill=fillColor] ( 63.11, 74.31) circle (  2.13);
+\path[fill=fillColor] ( 63.11, 84.00) circle (  2.13);
 
-\path[fill=fillColor] (117.78,127.39) circle (  2.13);
+\path[fill=fillColor] (117.78,150.87) circle (  2.13);
 
-\path[fill=fillColor] ( 69.42, 66.94) circle (  2.13);
+\path[fill=fillColor] ( 69.42, 74.71) circle (  2.13);
 
-\path[fill=fillColor] ( 94.03, 63.94) circle (  2.13);
+\path[fill=fillColor] ( 94.03, 70.92) circle (  2.13);
 
-\path[fill=fillColor] (158.46,105.22) circle (  2.13);
+\path[fill=fillColor] (158.46,122.93) circle (  2.13);
 
-\path[fill=fillColor] (100.20, 85.31) circle (  2.13);
+\path[fill=fillColor] (100.20, 97.85) circle (  2.13);
 
-\path[fill=fillColor] ( 67.69, 68.51) circle (  2.13);
+\path[fill=fillColor] ( 67.69, 76.68) circle (  2.13);
 
-\path[fill=fillColor] ( 92.16, 52.94) circle (  2.13);
+\path[fill=fillColor] ( 92.16, 57.07) circle (  2.13);
 
-\path[fill=fillColor] ( 69.10, 52.34) circle (  2.13);
+\path[fill=fillColor] ( 69.10, 56.31) circle (  2.13);
 
-\path[fill=fillColor] (121.13, 74.27) circle (  2.13);
+\path[fill=fillColor] (121.13, 83.94) circle (  2.13);
 
-\path[fill=fillColor] (117.75,105.70) circle (  2.13);
+\path[fill=fillColor] (117.75,123.54) circle (  2.13);
 
-\path[fill=fillColor] (165.34,165.61) circle (  2.13);
+\path[fill=fillColor] (165.34,199.02) circle (  2.13);
 
-\path[fill=fillColor] ( 74.61, 79.07) circle (  2.13);
+\path[fill=fillColor] ( 74.61, 89.99) circle (  2.13);
 
-\path[fill=fillColor] (161.32, 85.35) circle (  2.13);
+\path[fill=fillColor] (161.32, 97.90) circle (  2.13);
 
-\path[fill=fillColor] (140.09, 79.47) circle (  2.13);
+\path[fill=fillColor] (140.09, 90.49) circle (  2.13);
 
-\path[fill=fillColor] ( 86.37, 98.31) circle (  2.13);
+\path[fill=fillColor] ( 86.37,114.23) circle (  2.13);
 \definecolor[named]{drawColor}{rgb}{0.97,0.46,0.43}
 
-\path[draw=drawColor,line width= 0.6pt,dash pattern=on 4pt off 4pt ,line join=round,fill=fillColor] ( 49.36, 72.26) -- (182.27,127.06);
+\path[draw=drawColor,line width= 0.6pt,dash pattern=on 4pt off 4pt ,line join=round,fill=fillColor] ( 49.36, 81.41) -- (182.27,150.45);
 \end{scope}
 \begin{scope}
-\path[clip] (185.88, 37.04) rectangle (318.78,214.17);
+\path[clip] (185.88, 37.04) rectangle (318.78,260.19);
 \definecolor[named]{fillColor}{rgb}{0.90,0.90,0.90}
 
-\path[fill=fillColor] (185.88, 37.04) rectangle (318.78,214.17);
+\path[fill=fillColor] (185.88, 37.04) rectangle (318.78,260.19);
 \definecolor[named]{drawColor}{rgb}{0.95,0.95,0.95}
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] (185.88, 68.72) --
-	(318.78, 68.72);
+\path[draw=drawColor,line width= 0.3pt,line join=round] (185.88, 76.95) --
+	(318.78, 76.95);
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] (185.88,115.98) --
-	(318.78,115.98);
+\path[draw=drawColor,line width= 0.3pt,line join=round] (185.88,136.50) --
+	(318.78,136.50);
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] (185.88,163.25) --
-	(318.78,163.25);
+\path[draw=drawColor,line width= 0.3pt,line join=round] (185.88,196.04) --
+	(318.78,196.04);
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] (185.88,210.51) --
-	(318.78,210.51);
+\path[draw=drawColor,line width= 0.3pt,line join=round] (185.88,255.59) --
+	(318.78,255.59);
 
 \path[draw=drawColor,line width= 0.3pt,line join=round] (207.31, 37.04) --
-	(207.31,214.17);
+	(207.31,260.19);
 
 \path[draw=drawColor,line width= 0.3pt,line join=round] (238.08, 37.04) --
-	(238.08,214.17);
+	(238.08,260.19);
 
 \path[draw=drawColor,line width= 0.3pt,line join=round] (268.86, 37.04) --
-	(268.86,214.17);
+	(268.86,260.19);
 
 \path[draw=drawColor,line width= 0.3pt,line join=round] (299.63, 37.04) --
-	(299.63,214.17);
+	(299.63,260.19);
 \definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (185.88, 45.09) --
-	(318.78, 45.09);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (185.88, 47.18) --
+	(318.78, 47.18);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (185.88, 92.35) --
-	(318.78, 92.35);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (185.88,106.73) --
+	(318.78,106.73);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (185.88,139.62) --
-	(318.78,139.62);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (185.88,166.27) --
+	(318.78,166.27);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (185.88,186.88) --
-	(318.78,186.88);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (185.88,225.81) --
+	(318.78,225.81);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (191.92, 37.04) --
-	(191.92,214.17);
+	(191.92,260.19);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (222.70, 37.04) --
-	(222.70,214.17);
+	(222.70,260.19);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (253.47, 37.04) --
-	(253.47,214.17);
+	(253.47,260.19);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (284.25, 37.04) --
-	(284.25,214.17);
+	(284.25,260.19);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (315.02, 37.04) --
-	(315.02,214.17);
+	(315.02,260.19);
 \definecolor[named]{fillColor}{rgb}{0.00,0.73,0.22}
 
-\path[fill=fillColor] (199.35, 60.17) circle (  2.13);
+\path[fill=fillColor] (199.35, 66.18) circle (  2.13);
 
-\path[fill=fillColor] (225.34,102.28) circle (  2.13);
+\path[fill=fillColor] (225.34,119.23) circle (  2.13);
 
-\path[fill=fillColor] (201.35, 87.71) circle (  2.13);
+\path[fill=fillColor] (201.35,100.88) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 59.68) circle (  2.13);
+\path[fill=fillColor] (191.92, 65.56) circle (  2.13);
 
-\path[fill=fillColor] (282.32,147.43) circle (  2.13);
+\path[fill=fillColor] (282.32,176.11) circle (  2.13);
 
-\path[fill=fillColor] (198.40, 81.73) circle (  2.13);
+\path[fill=fillColor] (198.40, 93.34) circle (  2.13);
 
-\path[fill=fillColor] (211.37, 70.78) circle (  2.13);
+\path[fill=fillColor] (211.37, 79.54) circle (  2.13);
 
-\path[fill=fillColor] (215.48, 70.66) circle (  2.13);
+\path[fill=fillColor] (215.48, 79.39) circle (  2.13);
 
-\path[fill=fillColor] (239.25, 80.17) circle (  2.13);
+\path[fill=fillColor] (239.25, 91.38) circle (  2.13);
 
-\path[fill=fillColor] (298.78,106.19) circle (  2.13);
+\path[fill=fillColor] (298.78,124.16) circle (  2.13);
 
-\path[fill=fillColor] (194.80, 70.62) circle (  2.13);
+\path[fill=fillColor] (194.80, 79.34) circle (  2.13);
 
-\path[fill=fillColor] (191.92,116.04) circle (  2.13);
+\path[fill=fillColor] (191.92,136.57) circle (  2.13);
 
-\path[fill=fillColor] (193.28, 74.64) circle (  2.13);
+\path[fill=fillColor] (193.28, 84.41) circle (  2.13);
 
-\path[fill=fillColor] (253.91, 52.84) circle (  2.13);
+\path[fill=fillColor] (253.91, 56.95) circle (  2.13);
 
-\path[fill=fillColor] (217.64,110.33) circle (  2.13);
+\path[fill=fillColor] (217.64,129.37) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 86.25) circle (  2.13);
+\path[fill=fillColor] (191.92, 99.04) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 79.12) circle (  2.13);
+\path[fill=fillColor] (191.92, 90.06) circle (  2.13);
 
-\path[fill=fillColor] (198.84, 54.01) circle (  2.13);
+\path[fill=fillColor] (198.84, 58.42) circle (  2.13);
 
-\path[fill=fillColor] (233.81, 67.70) circle (  2.13);
+\path[fill=fillColor] (233.81, 75.67) circle (  2.13);
 
-\path[fill=fillColor] (192.09, 66.87) circle (  2.13);
+\path[fill=fillColor] (192.09, 74.63) circle (  2.13);
 
-\path[fill=fillColor] (249.11,122.09) circle (  2.13);
+\path[fill=fillColor] (249.11,144.19) circle (  2.13);
 
-\path[fill=fillColor] (200.48, 70.83) circle (  2.13);
+\path[fill=fillColor] (200.48, 79.61) circle (  2.13);
 
-\path[fill=fillColor] (191.95, 56.06) circle (  2.13);
+\path[fill=fillColor] (191.95, 61.01) circle (  2.13);
 
-\path[fill=fillColor] (214.25,144.80) circle (  2.13);
+\path[fill=fillColor] (214.25,172.80) circle (  2.13);
 
-\path[fill=fillColor] (255.39,106.29) circle (  2.13);
+\path[fill=fillColor] (255.39,124.28) circle (  2.13);
 
-\path[fill=fillColor] (204.06, 63.88) circle (  2.13);
+\path[fill=fillColor] (204.06, 70.85) circle (  2.13);
 
-\path[fill=fillColor] (253.41, 63.88) circle (  2.13);
+\path[fill=fillColor] (253.41, 70.85) circle (  2.13);
 
-\path[fill=fillColor] (251.32, 75.29) circle (  2.13);
+\path[fill=fillColor] (251.32, 85.23) circle (  2.13);
 
-\path[fill=fillColor] (207.79, 86.82) circle (  2.13);
+\path[fill=fillColor] (207.79, 99.75) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 79.07) circle (  2.13);
+\path[fill=fillColor] (191.92, 89.99) circle (  2.13);
 
-\path[fill=fillColor] (220.78,114.06) circle (  2.13);
+\path[fill=fillColor] (220.78,134.07) circle (  2.13);
 
-\path[fill=fillColor] (194.81, 89.20) circle (  2.13);
+\path[fill=fillColor] (194.81,102.76) circle (  2.13);
 
-\path[fill=fillColor] (305.29,153.62) circle (  2.13);
+\path[fill=fillColor] (305.29,183.91) circle (  2.13);
 
-\path[fill=fillColor] (292.51, 96.38) circle (  2.13);
+\path[fill=fillColor] (292.51,111.79) circle (  2.13);
 
-\path[fill=fillColor] (198.62, 65.19) circle (  2.13);
+\path[fill=fillColor] (198.62, 72.51) circle (  2.13);
 
-\path[fill=fillColor] (219.21, 95.88) circle (  2.13);
+\path[fill=fillColor] (219.21,111.17) circle (  2.13);
 
-\path[fill=fillColor] (194.47, 55.96) circle (  2.13);
+\path[fill=fillColor] (194.47, 60.88) circle (  2.13);
 
-\path[fill=fillColor] (276.91, 87.99) circle (  2.13);
+\path[fill=fillColor] (276.91,101.23) circle (  2.13);
 
-\path[fill=fillColor] (258.33,104.48) circle (  2.13);
+\path[fill=fillColor] (258.33,122.01) circle (  2.13);
 
-\path[fill=fillColor] (210.92,112.46) circle (  2.13);
+\path[fill=fillColor] (210.92,132.05) circle (  2.13);
 
-\path[fill=fillColor] (303.39,182.07) circle (  2.13);
+\path[fill=fillColor] (303.39,219.76) circle (  2.13);
 
-\path[fill=fillColor] (302.37, 85.35) circle (  2.13);
+\path[fill=fillColor] (302.37, 97.90) circle (  2.13);
 
-\path[fill=fillColor] (258.97, 71.60) circle (  2.13);
+\path[fill=fillColor] (258.97, 80.58) circle (  2.13);
 
-\path[fill=fillColor] (205.77, 63.85) circle (  2.13);
+\path[fill=fillColor] (205.77, 70.82) circle (  2.13);
 
-\path[fill=fillColor] (230.37, 80.24) circle (  2.13);
+\path[fill=fillColor] (230.37, 91.46) circle (  2.13);
 
-\path[fill=fillColor] (272.41, 69.13) circle (  2.13);
+\path[fill=fillColor] (272.41, 77.47) circle (  2.13);
 
-\path[fill=fillColor] (198.31,113.38) circle (  2.13);
+\path[fill=fillColor] (198.31,133.22) circle (  2.13);
 
-\path[fill=fillColor] (211.73, 70.56) circle (  2.13);
+\path[fill=fillColor] (211.73, 79.27) circle (  2.13);
 
-\path[fill=fillColor] (214.65, 64.92) circle (  2.13);
+\path[fill=fillColor] (214.65, 72.17) circle (  2.13);
 
-\path[fill=fillColor] (215.09, 67.67) circle (  2.13);
+\path[fill=fillColor] (215.09, 75.63) circle (  2.13);
 
-\path[fill=fillColor] (298.20, 79.23) circle (  2.13);
+\path[fill=fillColor] (298.20, 90.19) circle (  2.13);
 
-\path[fill=fillColor] (255.16, 67.75) circle (  2.13);
+\path[fill=fillColor] (255.16, 75.72) circle (  2.13);
 
-\path[fill=fillColor] (245.80, 82.02) circle (  2.13);
+\path[fill=fillColor] (245.80, 93.71) circle (  2.13);
 
-\path[fill=fillColor] (221.14, 90.78) circle (  2.13);
+\path[fill=fillColor] (221.14,104.74) circle (  2.13);
 
-\path[fill=fillColor] (257.89, 90.62) circle (  2.13);
+\path[fill=fillColor] (257.89,104.54) circle (  2.13);
 
-\path[fill=fillColor] (210.40, 82.91) circle (  2.13);
+\path[fill=fillColor] (210.40, 94.83) circle (  2.13);
 
-\path[fill=fillColor] (286.88,128.82) circle (  2.13);
+\path[fill=fillColor] (286.88,152.67) circle (  2.13);
 
-\path[fill=fillColor] (210.92, 82.91) circle (  2.13);
+\path[fill=fillColor] (210.92, 94.83) circle (  2.13);
 
-\path[fill=fillColor] (254.62,127.02) circle (  2.13);
+\path[fill=fillColor] (254.62,150.40) circle (  2.13);
 
-\path[fill=fillColor] (234.01, 56.34) circle (  2.13);
+\path[fill=fillColor] (234.01, 61.36) circle (  2.13);
 
-\path[fill=fillColor] (228.05, 56.38) circle (  2.13);
+\path[fill=fillColor] (228.05, 61.40) circle (  2.13);
 
-\path[fill=fillColor] (258.08,104.27) circle (  2.13);
+\path[fill=fillColor] (258.08,121.74) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 56.01) circle (  2.13);
+\path[fill=fillColor] (191.92, 60.94) circle (  2.13);
 
-\path[fill=fillColor] (289.26,108.12) circle (  2.13);
+\path[fill=fillColor] (289.26,126.59) circle (  2.13);
 
-\path[fill=fillColor] (191.92,104.38) circle (  2.13);
+\path[fill=fillColor] (191.92,121.88) circle (  2.13);
 
-\path[fill=fillColor] (197.41, 67.64) circle (  2.13);
+\path[fill=fillColor] (197.41, 75.59) circle (  2.13);
 
-\path[fill=fillColor] (191.97, 81.68) circle (  2.13);
+\path[fill=fillColor] (191.97, 93.28) circle (  2.13);
 
-\path[fill=fillColor] (206.70, 71.51) circle (  2.13);
+\path[fill=fillColor] (206.70, 80.47) circle (  2.13);
 
-\path[fill=fillColor] (312.74, 94.56) circle (  2.13);
+\path[fill=fillColor] (312.74,109.51) circle (  2.13);
 
-\path[fill=fillColor] (264.31,130.76) circle (  2.13);
+\path[fill=fillColor] (264.31,155.11) circle (  2.13);
 
-\path[fill=fillColor] (216.94, 57.75) circle (  2.13);
+\path[fill=fillColor] (216.94, 63.13) circle (  2.13);
 
-\path[fill=fillColor] (199.38, 76.34) circle (  2.13);
+\path[fill=fillColor] (199.38, 86.56) circle (  2.13);
 
-\path[fill=fillColor] (196.72, 81.57) circle (  2.13);
+\path[fill=fillColor] (196.72, 93.15) circle (  2.13);
 
-\path[fill=fillColor] (198.83, 90.91) circle (  2.13);
+\path[fill=fillColor] (198.83,104.91) circle (  2.13);
 
-\path[fill=fillColor] (218.95,107.89) circle (  2.13);
+\path[fill=fillColor] (218.95,126.30) circle (  2.13);
 
-\path[fill=fillColor] (259.92, 98.74) circle (  2.13);
+\path[fill=fillColor] (259.92,114.77) circle (  2.13);
 
-\path[fill=fillColor] (194.66, 60.21) circle (  2.13);
+\path[fill=fillColor] (194.66, 66.24) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 78.28) circle (  2.13);
+\path[fill=fillColor] (191.92, 89.00) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 63.27) circle (  2.13);
+\path[fill=fillColor] (191.92, 70.08) circle (  2.13);
 
-\path[fill=fillColor] (221.43, 68.55) circle (  2.13);
+\path[fill=fillColor] (221.43, 76.73) circle (  2.13);
 
-\path[fill=fillColor] (198.44, 98.12) circle (  2.13);
+\path[fill=fillColor] (198.44,113.99) circle (  2.13);
 
-\path[fill=fillColor] (204.23, 79.12) circle (  2.13);
+\path[fill=fillColor] (204.23, 90.06) circle (  2.13);
 
-\path[fill=fillColor] (218.45,164.51) circle (  2.13);
+\path[fill=fillColor] (218.45,197.63) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 55.96) circle (  2.13);
+\path[fill=fillColor] (191.92, 60.88) circle (  2.13);
 
-\path[fill=fillColor] (296.02, 67.70) circle (  2.13);
+\path[fill=fillColor] (296.02, 75.67) circle (  2.13);
 
-\path[fill=fillColor] (208.38, 75.25) circle (  2.13);
+\path[fill=fillColor] (208.38, 85.18) circle (  2.13);
 
-\path[fill=fillColor] (251.77, 94.43) circle (  2.13);
+\path[fill=fillColor] (251.77,109.34) circle (  2.13);
 
-\path[fill=fillColor] (297.66, 91.70) circle (  2.13);
+\path[fill=fillColor] (297.66,105.91) circle (  2.13);
 
-\path[fill=fillColor] (266.95, 98.38) circle (  2.13);
+\path[fill=fillColor] (266.95,114.32) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 66.89) circle (  2.13);
+\path[fill=fillColor] (191.92, 74.64) circle (  2.13);
 
-\path[fill=fillColor] (224.05, 68.32) circle (  2.13);
+\path[fill=fillColor] (224.05, 76.44) circle (  2.13);
 
-\path[fill=fillColor] (225.52, 75.29) circle (  2.13);
+\path[fill=fillColor] (225.52, 85.23) circle (  2.13);
 
-\path[fill=fillColor] (249.55, 96.71) circle (  2.13);
+\path[fill=fillColor] (249.55,112.22) circle (  2.13);
 
-\path[fill=fillColor] (204.72, 74.31) circle (  2.13);
+\path[fill=fillColor] (204.72, 84.00) circle (  2.13);
 
-\path[fill=fillColor] (193.41, 81.68) circle (  2.13);
+\path[fill=fillColor] (193.41, 93.28) circle (  2.13);
 
-\path[fill=fillColor] (257.40,103.04) circle (  2.13);
+\path[fill=fillColor] (257.40,120.19) circle (  2.13);
 
-\path[fill=fillColor] (212.42, 82.96) circle (  2.13);
+\path[fill=fillColor] (212.42, 94.90) circle (  2.13);
 
-\path[fill=fillColor] (204.11, 72.17) circle (  2.13);
+\path[fill=fillColor] (204.11, 81.30) circle (  2.13);
 
-\path[fill=fillColor] (301.98,206.12) circle (  2.13);
+\path[fill=fillColor] (301.98,250.05) circle (  2.13);
 
-\path[fill=fillColor] (199.54, 63.85) circle (  2.13);
+\path[fill=fillColor] (199.54, 70.82) circle (  2.13);
 
-\path[fill=fillColor] (303.76, 83.03) circle (  2.13);
+\path[fill=fillColor] (303.76, 94.97) circle (  2.13);
 
-\path[fill=fillColor] (202.45,170.02) circle (  2.13);
+\path[fill=fillColor] (202.45,204.57) circle (  2.13);
 
-\path[fill=fillColor] (194.15,113.83) circle (  2.13);
+\path[fill=fillColor] (194.15,133.78) circle (  2.13);
 
-\path[fill=fillColor] (248.73,102.35) circle (  2.13);
+\path[fill=fillColor] (248.73,119.32) circle (  2.13);
 
-\path[fill=fillColor] (257.74, 61.08) circle (  2.13);
+\path[fill=fillColor] (257.74, 67.33) circle (  2.13);
 
-\path[fill=fillColor] (285.96, 92.13) circle (  2.13);
+\path[fill=fillColor] (285.96,106.44) circle (  2.13);
 
-\path[fill=fillColor] (204.06, 60.09) circle (  2.13);
+\path[fill=fillColor] (204.06, 66.09) circle (  2.13);
 
-\path[fill=fillColor] (309.07, 75.34) circle (  2.13);
+\path[fill=fillColor] (309.07, 85.29) circle (  2.13);
 
-\path[fill=fillColor] (192.95, 70.87) circle (  2.13);
+\path[fill=fillColor] (192.95, 79.66) circle (  2.13);
 
-\path[fill=fillColor] (252.25,107.67) circle (  2.13);
+\path[fill=fillColor] (252.25,126.02) circle (  2.13);
 
-\path[fill=fillColor] (298.59,164.33) circle (  2.13);
+\path[fill=fillColor] (298.59,197.41) circle (  2.13);
 
-\path[fill=fillColor] (298.06,132.33) circle (  2.13);
+\path[fill=fillColor] (298.06,157.09) circle (  2.13);
 
-\path[fill=fillColor] (217.90, 73.32) circle (  2.13);
+\path[fill=fillColor] (217.90, 82.75) circle (  2.13);
 
-\path[fill=fillColor] (299.80,178.91) circle (  2.13);
+\path[fill=fillColor] (299.80,215.77) circle (  2.13);
 
-\path[fill=fillColor] (308.30,199.03) circle (  2.13);
+\path[fill=fillColor] (308.30,241.13) circle (  2.13);
 
-\path[fill=fillColor] (237.58, 94.43) circle (  2.13);
+\path[fill=fillColor] (237.58,109.34) circle (  2.13);
 
-\path[fill=fillColor] (191.99, 63.27) circle (  2.13);
+\path[fill=fillColor] (191.99, 70.08) circle (  2.13);
 
-\path[fill=fillColor] (200.92, 78.02) circle (  2.13);
+\path[fill=fillColor] (200.92, 88.66) circle (  2.13);
 
-\path[fill=fillColor] (210.92, 67.06) circle (  2.13);
+\path[fill=fillColor] (210.92, 74.86) circle (  2.13);
 
-\path[fill=fillColor] (207.77, 78.02) circle (  2.13);
+\path[fill=fillColor] (207.77, 88.66) circle (  2.13);
 
-\path[fill=fillColor] (194.53, 70.58) circle (  2.13);
+\path[fill=fillColor] (194.53, 79.30) circle (  2.13);
 
-\path[fill=fillColor] (230.37,102.37) circle (  2.13);
+\path[fill=fillColor] (230.37,119.35) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 78.12) circle (  2.13);
+\path[fill=fillColor] (191.92, 88.80) circle (  2.13);
 
-\path[fill=fillColor] (242.40,180.95) circle (  2.13);
+\path[fill=fillColor] (242.40,218.35) circle (  2.13);
 
-\path[fill=fillColor] (193.24, 88.94) circle (  2.13);
+\path[fill=fillColor] (193.24,102.43) circle (  2.13);
 
-\path[fill=fillColor] (291.06, 99.29) circle (  2.13);
+\path[fill=fillColor] (291.06,115.46) circle (  2.13);
 
-\path[fill=fillColor] (226.01,149.05) circle (  2.13);
+\path[fill=fillColor] (226.01,178.16) circle (  2.13);
 
-\path[fill=fillColor] (222.59, 64.09) circle (  2.13);
+\path[fill=fillColor] (222.59, 71.12) circle (  2.13);
 
-\path[fill=fillColor] (286.46,195.55) circle (  2.13);
+\path[fill=fillColor] (286.46,236.74) circle (  2.13);
 
-\path[fill=fillColor] (256.60, 68.49) circle (  2.13);
+\path[fill=fillColor] (256.60, 76.66) circle (  2.13);
 
-\path[fill=fillColor] (202.50, 67.67) circle (  2.13);
+\path[fill=fillColor] (202.50, 75.63) circle (  2.13);
 
-\path[fill=fillColor] (297.43,153.69) circle (  2.13);
+\path[fill=fillColor] (297.43,183.99) circle (  2.13);
 
-\path[fill=fillColor] (308.51, 71.44) circle (  2.13);
+\path[fill=fillColor] (308.51, 80.37) circle (  2.13);
 
-\path[fill=fillColor] (204.79, 48.70) circle (  2.13);
+\path[fill=fillColor] (204.79, 51.73) circle (  2.13);
 
-\path[fill=fillColor] (204.54, 52.36) circle (  2.13);
+\path[fill=fillColor] (204.54, 56.34) circle (  2.13);
 
-\path[fill=fillColor] (210.37, 67.64) circle (  2.13);
+\path[fill=fillColor] (210.37, 75.59) circle (  2.13);
 
-\path[fill=fillColor] (199.35,102.30) circle (  2.13);
+\path[fill=fillColor] (199.35,119.25) circle (  2.13);
 
-\path[fill=fillColor] (208.64, 86.76) circle (  2.13);
+\path[fill=fillColor] (208.64, 99.68) circle (  2.13);
 
-\path[fill=fillColor] (216.63,121.86) circle (  2.13);
+\path[fill=fillColor] (216.63,143.90) circle (  2.13);
 
-\path[fill=fillColor] (196.22, 98.38) circle (  2.13);
+\path[fill=fillColor] (196.22,114.32) circle (  2.13);
 
-\path[fill=fillColor] (215.70, 61.62) circle (  2.13);
+\path[fill=fillColor] (215.70, 68.00) circle (  2.13);
 
-\path[fill=fillColor] (251.61,104.82) circle (  2.13);
+\path[fill=fillColor] (251.61,122.43) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 45.09) circle (  2.13);
+\path[fill=fillColor] (191.92, 47.18) circle (  2.13);
 
-\path[fill=fillColor] (206.63, 59.75) circle (  2.13);
+\path[fill=fillColor] (206.63, 65.65) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 52.36) circle (  2.13);
+\path[fill=fillColor] (191.92, 56.34) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 68.42) circle (  2.13);
+\path[fill=fillColor] (191.92, 76.57) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 45.09) circle (  2.13);
+\path[fill=fillColor] (191.92, 47.18) circle (  2.13);
 
-\path[fill=fillColor] (211.96, 56.01) circle (  2.13);
+\path[fill=fillColor] (211.96, 60.94) circle (  2.13);
 
-\path[fill=fillColor] (192.56, 88.00) circle (  2.13);
+\path[fill=fillColor] (192.56,101.24) circle (  2.13);
 
-\path[fill=fillColor] (226.56, 64.43) circle (  2.13);
+\path[fill=fillColor] (226.56, 71.55) circle (  2.13);
 
-\path[fill=fillColor] (226.39,156.21) circle (  2.13);
+\path[fill=fillColor] (226.39,187.18) circle (  2.13);
 
-\path[fill=fillColor] (243.55, 82.82) circle (  2.13);
+\path[fill=fillColor] (243.55, 94.72) circle (  2.13);
 
-\path[fill=fillColor] (191.92,100.55) circle (  2.13);
+\path[fill=fillColor] (191.92,117.06) circle (  2.13);
 
-\path[fill=fillColor] (191.92, 74.41) circle (  2.13);
+\path[fill=fillColor] (191.92, 84.12) circle (  2.13);
 
-\path[fill=fillColor] (291.09, 71.47) circle (  2.13);
+\path[fill=fillColor] (291.09, 80.42) circle (  2.13);
 
-\path[fill=fillColor] (231.50,152.95) circle (  2.13);
+\path[fill=fillColor] (231.50,183.06) circle (  2.13);
 
-\path[fill=fillColor] (208.64, 54.48) circle (  2.13);
+\path[fill=fillColor] (208.64, 59.01) circle (  2.13);
 \definecolor[named]{drawColor}{rgb}{0.00,0.73,0.22}
 
-\path[draw=drawColor,line width= 0.6pt,dash pattern=on 4pt off 4pt ,line join=round,fill=fillColor] (185.88, 72.26) -- (318.78,127.06);
+\path[draw=drawColor,line width= 0.6pt,dash pattern=on 4pt off 4pt ,line join=round,fill=fillColor] (185.88, 81.41) -- (318.78,150.45);
 \end{scope}
 \begin{scope}
-\path[clip] (322.40, 37.04) rectangle (455.30,214.17);
+\path[clip] (322.40, 37.04) rectangle (455.30,260.19);
 \definecolor[named]{fillColor}{rgb}{0.90,0.90,0.90}
 
-\path[fill=fillColor] (322.40, 37.04) rectangle (455.30,214.17);
+\path[fill=fillColor] (322.40, 37.04) rectangle (455.30,260.19);
 \definecolor[named]{drawColor}{rgb}{0.95,0.95,0.95}
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] (322.40, 68.72) --
-	(455.30, 68.72);
+\path[draw=drawColor,line width= 0.3pt,line join=round] (322.40, 76.95) --
+	(455.30, 76.95);
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] (322.40,115.98) --
-	(455.30,115.98);
+\path[draw=drawColor,line width= 0.3pt,line join=round] (322.40,136.50) --
+	(455.30,136.50);
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] (322.40,163.25) --
-	(455.30,163.25);
+\path[draw=drawColor,line width= 0.3pt,line join=round] (322.40,196.04) --
+	(455.30,196.04);
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] (322.40,210.51) --
-	(455.30,210.51);
+\path[draw=drawColor,line width= 0.3pt,line join=round] (322.40,255.59) --
+	(455.30,255.59);
 
 \path[draw=drawColor,line width= 0.3pt,line join=round] (343.83, 37.04) --
-	(343.83,214.17);
+	(343.83,260.19);
 
 \path[draw=drawColor,line width= 0.3pt,line join=round] (374.60, 37.04) --
-	(374.60,214.17);
+	(374.60,260.19);
 
 \path[draw=drawColor,line width= 0.3pt,line join=round] (405.37, 37.04) --
-	(405.37,214.17);
+	(405.37,260.19);
 
 \path[draw=drawColor,line width= 0.3pt,line join=round] (436.15, 37.04) --
-	(436.15,214.17);
+	(436.15,260.19);
 \definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (322.40, 45.09) --
-	(455.30, 45.09);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (322.40, 47.18) --
+	(455.30, 47.18);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (322.40, 92.35) --
-	(455.30, 92.35);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (322.40,106.73) --
+	(455.30,106.73);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (322.40,139.62) --
-	(455.30,139.62);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (322.40,166.27) --
+	(455.30,166.27);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (322.40,186.88) --
-	(455.30,186.88);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (322.40,225.81) --
+	(455.30,225.81);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (328.44, 37.04) --
-	(328.44,214.17);
+	(328.44,260.19);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (359.21, 37.04) --
-	(359.21,214.17);
+	(359.21,260.19);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (389.99, 37.04) --
-	(389.99,214.17);
+	(389.99,260.19);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (420.76, 37.04) --
-	(420.76,214.17);
+	(420.76,260.19);
 
 \path[draw=drawColor,line width= 0.6pt,line join=round] (451.54, 37.04) --
-	(451.54,214.17);
+	(451.54,260.19);
 \definecolor[named]{fillColor}{rgb}{0.38,0.61,1.00}
 
-\path[fill=fillColor] (330.22, 76.76) circle (  2.13);
+\path[fill=fillColor] (330.22, 87.09) circle (  2.13);
 
-\path[fill=fillColor] (352.16,103.81) circle (  2.13);
+\path[fill=fillColor] (352.16,121.16) circle (  2.13);
 
-\path[fill=fillColor] (328.44,115.75) circle (  2.13);
+\path[fill=fillColor] (328.44,136.20) circle (  2.13);
 
-\path[fill=fillColor] (328.49, 52.57) circle (  2.13);
+\path[fill=fillColor] (328.49, 56.60) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 60.31) circle (  2.13);
+\path[fill=fillColor] (328.44, 66.35) circle (  2.13);
 
-\path[fill=fillColor] (343.37, 63.88) circle (  2.13);
+\path[fill=fillColor] (343.37, 70.85) circle (  2.13);
 
-\path[fill=fillColor] (342.23, 48.70) circle (  2.13);
+\path[fill=fillColor] (342.23, 51.73) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 85.30) circle (  2.13);
+\path[fill=fillColor] (328.44, 97.83) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 73.04) circle (  2.13);
+\path[fill=fillColor] (328.44, 82.39) circle (  2.13);
 
-\path[fill=fillColor] (363.08, 66.00) circle (  2.13);
+\path[fill=fillColor] (363.08, 73.53) circle (  2.13);
 
-\path[fill=fillColor] (359.17, 89.08) circle (  2.13);
+\path[fill=fillColor] (359.17,102.60) circle (  2.13);
 
-\path[fill=fillColor] (328.65, 60.69) circle (  2.13);
+\path[fill=fillColor] (328.65, 66.83) circle (  2.13);
 
-\path[fill=fillColor] (363.08,152.60) circle (  2.13);
+\path[fill=fillColor] (363.08,182.63) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 66.92) circle (  2.13);
+\path[fill=fillColor] (328.44, 74.69) circle (  2.13);
 
-\path[fill=fillColor] (329.90, 63.85) circle (  2.13);
+\path[fill=fillColor] (329.90, 70.82) circle (  2.13);
 
-\path[fill=fillColor] (329.02, 75.29) circle (  2.13);
+\path[fill=fillColor] (329.02, 85.23) circle (  2.13);
 
-\path[fill=fillColor] (332.17, 67.71) circle (  2.13);
+\path[fill=fillColor] (332.17, 75.68) circle (  2.13);
 
-\path[fill=fillColor] (334.14, 79.00) circle (  2.13);
+\path[fill=fillColor] (334.14, 89.91) circle (  2.13);
 
-\path[fill=fillColor] (348.54, 60.37) circle (  2.13);
+\path[fill=fillColor] (348.54, 66.43) circle (  2.13);
 
-\path[fill=fillColor] (342.18, 89.13) circle (  2.13);
+\path[fill=fillColor] (342.18,102.67) circle (  2.13);
 
-\path[fill=fillColor] (346.35, 66.08) circle (  2.13);
+\path[fill=fillColor] (346.35, 73.63) circle (  2.13);
 
-\path[fill=fillColor] (328.49, 48.93) circle (  2.13);
+\path[fill=fillColor] (328.49, 52.02) circle (  2.13);
 
-\path[fill=fillColor] (362.04,145.02) circle (  2.13);
+\path[fill=fillColor] (362.04,173.07) circle (  2.13);
 
-\path[fill=fillColor] (370.00, 98.83) circle (  2.13);
+\path[fill=fillColor] (370.00,114.88) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 64.61) circle (  2.13);
+\path[fill=fillColor] (328.44, 71.77) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 87.27) circle (  2.13);
+\path[fill=fillColor] (328.44,100.32) circle (  2.13);
 
-\path[fill=fillColor] (329.77, 70.68) circle (  2.13);
+\path[fill=fillColor] (329.77, 79.42) circle (  2.13);
 
-\path[fill=fillColor] (328.55, 65.81) circle (  2.13);
+\path[fill=fillColor] (328.55, 73.29) circle (  2.13);
 
-\path[fill=fillColor] (359.17, 80.21) circle (  2.13);
+\path[fill=fillColor] (359.17, 91.42) circle (  2.13);
 
-\path[fill=fillColor] (328.79, 63.85) circle (  2.13);
+\path[fill=fillColor] (328.79, 70.82) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 56.62) circle (  2.13);
+\path[fill=fillColor] (328.44, 61.71) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 52.33) circle (  2.13);
+\path[fill=fillColor] (328.44, 56.30) circle (  2.13);
 
-\path[fill=fillColor] (363.08,168.38) circle (  2.13);
+\path[fill=fillColor] (363.08,202.51) circle (  2.13);
 
-\path[fill=fillColor] (329.25, 57.19) circle (  2.13);
+\path[fill=fillColor] (329.25, 62.42) circle (  2.13);
 
-\path[fill=fillColor] (331.02, 59.58) circle (  2.13);
+\path[fill=fillColor] (331.02, 65.44) circle (  2.13);
 
-\path[fill=fillColor] (328.76, 71.42) circle (  2.13);
+\path[fill=fillColor] (328.76, 80.35) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 66.89) circle (  2.13);
+\path[fill=fillColor] (328.44, 74.64) circle (  2.13);
 
-\path[fill=fillColor] (328.88, 50.57) circle (  2.13);
+\path[fill=fillColor] (328.88, 54.09) circle (  2.13);
 
-\path[fill=fillColor] (330.13, 60.29) circle (  2.13);
+\path[fill=fillColor] (330.13, 66.33) circle (  2.13);
 
-\path[fill=fillColor] (346.23, 53.13) circle (  2.13);
+\path[fill=fillColor] (346.23, 57.32) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 60.09) circle (  2.13);
+\path[fill=fillColor] (328.44, 66.09) circle (  2.13);
 
-\path[fill=fillColor] (352.87, 90.62) circle (  2.13);
+\path[fill=fillColor] (352.87,104.54) circle (  2.13);
 
-\path[fill=fillColor] (354.75,199.72) circle (  2.13);
+\path[fill=fillColor] (354.75,241.99) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 81.80) circle (  2.13);
+\path[fill=fillColor] (328.44, 93.44) circle (  2.13);
 
-\path[fill=fillColor] (361.73, 83.06) circle (  2.13);
+\path[fill=fillColor] (361.73, 95.02) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 66.94) circle (  2.13);
+\path[fill=fillColor] (328.44, 74.71) circle (  2.13);
 
-\path[fill=fillColor] (346.46, 57.75) circle (  2.13);
+\path[fill=fillColor] (346.46, 63.13) circle (  2.13);
 
-\path[fill=fillColor] (341.63, 89.27) circle (  2.13);
+\path[fill=fillColor] (341.63,102.84) circle (  2.13);
 
-\path[fill=fillColor] (328.80, 79.24) circle (  2.13);
+\path[fill=fillColor] (328.80, 90.20) circle (  2.13);
 
-\path[fill=fillColor] (387.99,111.53) circle (  2.13);
+\path[fill=fillColor] (387.99,130.89) circle (  2.13);
 
-\path[fill=fillColor] (346.49,113.66) circle (  2.13);
+\path[fill=fillColor] (346.49,133.56) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 59.58) circle (  2.13);
+\path[fill=fillColor] (328.44, 65.44) circle (  2.13);
 
-\path[fill=fillColor] (328.44,124.41) circle (  2.13);
+\path[fill=fillColor] (328.44,147.11) circle (  2.13);
 
-\path[fill=fillColor] (353.73, 68.68) circle (  2.13);
+\path[fill=fillColor] (353.73, 76.91) circle (  2.13);
 
-\path[fill=fillColor] (363.10,121.81) circle (  2.13);
+\path[fill=fillColor] (363.10,143.84) circle (  2.13);
 
-\path[fill=fillColor] (354.44,129.26) circle (  2.13);
+\path[fill=fillColor] (354.44,153.23) circle (  2.13);
 
-\path[fill=fillColor] (329.96, 67.61) circle (  2.13);
+\path[fill=fillColor] (329.96, 75.56) circle (  2.13);
 
-\path[fill=fillColor] (360.13,100.17) circle (  2.13);
+\path[fill=fillColor] (360.13,116.57) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 61.50) circle (  2.13);
+\path[fill=fillColor] (328.44, 67.86) circle (  2.13);
 
-\path[fill=fillColor] (333.81,100.33) circle (  2.13);
+\path[fill=fillColor] (333.81,116.78) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 54.35) circle (  2.13);
+\path[fill=fillColor] (328.44, 58.84) circle (  2.13);
 
-\path[fill=fillColor] (329.44,111.41) circle (  2.13);
+\path[fill=fillColor] (329.44,130.73) circle (  2.13);
 
-\path[fill=fillColor] (328.78, 59.59) circle (  2.13);
+\path[fill=fillColor] (328.78, 65.45) circle (  2.13);
 
-\path[fill=fillColor] (337.31,117.72) circle (  2.13);
+\path[fill=fillColor] (337.31,138.68) circle (  2.13);
 
-\path[fill=fillColor] (333.45,111.69) circle (  2.13);
+\path[fill=fillColor] (333.45,131.09) circle (  2.13);
 
-\path[fill=fillColor] (395.24, 96.73) circle (  2.13);
+\path[fill=fillColor] (395.24,112.24) circle (  2.13);
 
-\path[fill=fillColor] (341.31, 67.67) circle (  2.13);
+\path[fill=fillColor] (341.31, 75.63) circle (  2.13);
 
-\path[fill=fillColor] (363.08,100.11) circle (  2.13);
+\path[fill=fillColor] (363.08,116.49) circle (  2.13);
 
-\path[fill=fillColor] (328.44, 85.46) circle (  2.13);
+\path[fill=fillColor] (328.44, 98.05) circle (  2.13);
 
-\path[fill=fillColor] (336.73, 67.78) circle (  2.13);
+\path[fill=fillColor] (336.73, 75.76) circle (  2.13);
 
-\path[fill=fillColor] (371.82,133.69) circle (  2.13);
+\path[fill=fillColor] (371.82,158.81) circle (  2.13);
 
-\path[fill=fillColor] (398.24, 71.47) circle (  2.13);
+\path[fill=fillColor] (398.24, 80.42) circle (  2.13);
 
-\path[fill=fillColor] (353.22, 66.94) circle (  2.13);
+\path[fill=fillColor] (353.22, 74.71) circle (  2.13);
 
-\path[fill=fillColor] (408.39, 56.42) circle (  2.13);
+\path[fill=fillColor] (408.39, 61.46) circle (  2.13);
 
-\path[fill=fillColor] (328.93,100.02) circle (  2.13);
+\path[fill=fillColor] (328.93,116.38) circle (  2.13);
 
-\path[fill=fillColor] (330.45, 95.19) circle (  2.13);
+\path[fill=fillColor] (330.45,110.30) circle (  2.13);
 \definecolor[named]{drawColor}{rgb}{0.38,0.61,1.00}
 
-\path[draw=drawColor,line width= 0.6pt,dash pattern=on 4pt off 4pt ,line join=round,fill=fillColor] (322.40, 72.26) -- (455.30,127.06);
+\path[draw=drawColor,line width= 0.6pt,dash pattern=on 4pt off 4pt ,line join=round,fill=fillColor] (322.40, 81.41) -- (455.30,150.45);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
 \definecolor[named]{fillColor}{rgb}{0.80,0.80,0.80}
 
-\path[fill=fillColor] ( 49.36,214.17) rectangle (182.27,228.60);
+\path[fill=fillColor] ( 49.36,260.19) rectangle (182.27,274.63);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (115.82,218.08) {Apodida};
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (115.82,264.10) {Apodida};
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
 \definecolor[named]{fillColor}{rgb}{0.80,0.80,0.80}
 
-\path[fill=fillColor] (185.88,214.17) rectangle (318.78,228.60);
+\path[fill=fillColor] (185.88,260.19) rectangle (318.78,274.63);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (252.33,218.08) {Aspidochirotida};
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (252.33,264.10) {Aspidochirotida};
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
 \definecolor[named]{fillColor}{rgb}{0.80,0.80,0.80}
 
-\path[fill=fillColor] (322.40,214.17) rectangle (455.30,228.60);
+\path[fill=fillColor] (322.40,260.19) rectangle (455.30,274.63);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (388.85,218.08) {Dendrochirotida};
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (388.85,264.10) {Dendrochirotida};
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
 \definecolor[named]{drawColor}{rgb}{0.50,0.50,0.50}
 
-\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 42.25, 41.78) {0.00};
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 42.25, 43.88) {0.00};
 
-\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 42.25, 89.05) {0.02};
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 42.25,103.42) {0.02};
 
-\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 42.25,136.31) {0.04};
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 42.25,162.96) {0.04};
 
-\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 42.25,183.57) {0.06};
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 42.25,222.51) {0.06};
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
 \definecolor[named]{drawColor}{rgb}{0.50,0.50,0.50}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 45.10, 45.09) --
-	( 49.36, 45.09);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 45.10, 47.18) --
+	( 49.36, 47.18);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 45.10, 92.35) --
-	( 49.36, 92.35);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 45.10,106.73) --
+	( 49.36,106.73);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 45.10,139.62) --
-	( 49.36,139.62);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 45.10,166.27) --
+	( 49.36,166.27);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 45.10,186.88) --
-	( 49.36,186.88);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 45.10,225.81) --
+	( 49.36,225.81);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
@@ -943,76 +943,7 @@
 \path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 19.11,125.60) {Maximum genetic distance (K2P)};
-\end{scope}
-\begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
-\definecolor[named]{fillColor}{rgb}{1.00,1.00,1.00}
-
-\path[fill=fillColor] (112.75,238.67) rectangle (391.92,264.55);
-\end{scope}
-\begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
-\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
-
-\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (117.02,248.31) {\bfseries Order};
-\end{scope}
-\begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
-\definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
-\definecolor[named]{fillColor}{rgb}{0.95,0.95,0.95}
-
-\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (148.48,242.94) rectangle (165.83,260.29);
-\end{scope}
-\begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
-\definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
-
-\path[fill=fillColor] (157.16,251.61) circle (  2.13);
-\end{scope}
-\begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
-\definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
-\definecolor[named]{fillColor}{rgb}{0.95,0.95,0.95}
-
-\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (206.99,242.94) rectangle (224.34,260.29);
-\end{scope}
-\begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
-\definecolor[named]{fillColor}{rgb}{0.00,0.73,0.22}
-
-\path[fill=fillColor] (215.67,251.61) circle (  2.13);
-\end{scope}
-\begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
-\definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
-\definecolor[named]{fillColor}{rgb}{0.95,0.95,0.95}
-
-\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (297.29,242.94) rectangle (314.64,260.29);
-\end{scope}
-\begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
-\definecolor[named]{fillColor}{rgb}{0.38,0.61,1.00}
-
-\path[fill=fillColor] (305.96,251.61) circle (  2.13);
-\end{scope}
-\begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
-\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
-
-\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (168.00,248.31) {Apodida};
-\end{scope}
-\begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
-\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
-
-\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (226.51,248.31) {Aspidochirotida};
-\end{scope}
-\begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (469.75,289.08);
-\definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
-
-\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (316.80,248.31) {Dendrochirotida};
+\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 19.11,148.62) {Maximum genetic distance (K2P)};
 \end{scope}
 \end{tikzpicture}
 
