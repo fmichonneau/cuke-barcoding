@@ -91,57 +91,69 @@ Estimates for the number of species in the sea are poorly constrained because
 sampling is challenging, and our understanding of species limits for most groups
 limited. Initially developed for species identification, DNA barcoding has
 become a popular technique to discover new species and evaluate species
-limits. Barcoding unraveled cryptic lineages, most often associated with
-differences in morphology, coloration or behavior, indicative of reproductive
-isolation. However, because barcoding in animals is based on a single
-mitochondrial locus, genetic differentiation does not always track species
-limits. Introgression, ancestral polymorphisms, and incomplete lineage sorting
-may lead to non-reciprocally monophyletic groups with the mitochondrial
-genealogies compromising the accuracy of species identification with
-barcoding. The success of species identification with barcoding is dependent on
-the barcoding gap: the absence of overlap between intra-specific and
-inter-specific distances.
+limits. Barcoding, the analysis of a portion of the mitochondrial genome, has
+unraveled cryptic lineages, most often associated with differences in
+morphology, coloration or behavior \cite{Knowlton2000}. However, because
+barcoding is based on a single locus, genetic differentiation does not always
+track species limits \cite{Funk2003}. Introgression, ancestral polymorphisms,
+and incomplete lineage sorting may lead to non-reciprocally monophyletic groups
+with the mitochondrial genealogies compromising the accuracy of species
+identification with barcoding.
 
-A way to ensure that barcoding will be successful for species identification is
-through comprehensive sampling. If species are sampled throughout their ranges,
-we can assess levels of intra-specific variation, and if most species of the
-targeted group are included, it becomes possible not only to determine how often
-an unidentified sequence can be assigned to a known species but also restrict
-the likely identity of this unknown sequence to species that are not
-characterized by the barcoding gap. Additionally, comprehensive sampling allows
-to gain insights into the amount of cryptic diversity, and the patterns of
-diversification.
+The success of species identification with barcoding is dependent on the
+barcoding gap: the absence of overlap between intra-specific and inter-specific
+distances \cite{Meyer2005}. The characterization of this gap, or its absence,
+requires a comprehensive sampling both within and across species.  If species
+are sampled throughout their ranges, we can assess levels of intra-specific
+variation, and with near-complete taxonomic sampling, it becomes possible to
+determine how often an unidentified sequence can be assigned to a known species
+accurately, but also to narrow down the identity of this unknown sequence to the
+species with intraspecific distances incompatible with the barcoding
+gap. Additionally, comprehensive sampling allows to gain insights into the
+amount of cryptic diversity, and the patterns of diversification characterizing
+the groups. It becomes possible to assess the generality of patterns unraveled
+in species-specific studies.
 
 Sea cucumbers occur in most marine ecosystems, at all latitudes, from the
 intertidal to hadal depths. Sea cucumbers constitute the largest invertebrate
 fishery in the tropical Pacific, and stocks are fully exploited to depleted
 throughout the tropics. Yet, species level taxonomy is poorly understood, with
-large, commercially important species regularly described (e.g.,
-\cite{Massin2009}). In sea cucumbers, species-level taxonomy has almost entirely
-relied on the shape of ossicles. Ossicles show substantial diversity and
-variability, whilst variation in the simple anatomy of these animals is limited
-at lower taxonomic levels. Ossicles cannot always be used to tease apart
-species, and intra-specific variation is poorly characterized since most
-descriptions illustrate ossicles from a single individual. Live coloration,
-which has not been traditionally used in species descriptions, is variable and
-might be indicative of species limits in some cases.
+large, commercially important species still regularly described (e.g.,
+\cite{Massin2009}), and other undescribed species illustrated in field
+guides. In sea cucumbers, species-level taxonomy has almost entirely relied on
+the shape of ossicles, microscopic calcareous secretion permeating their
+tissues. Ossicles show substantial diversity and variability, whilst variation
+in the simple anatomy of these animals is limited at lower taxonomic
+levels. Ossicles cannot always be used to tease apart species, and
+intra-specific variation is poorly characterized since most descriptions
+illustrate ossicles from a single individual. Live coloration, which has not
+been traditionally used in species descriptions, is variable and can be
+indicative of species limits (see Chapter~2). The combination of poor taxonomic
+understanding, and a pressing need to understand species limits, make sea
+cucumbers a suitable group for a large-scale barcoding study.
 
-Here, we assembled one of the largest, and the most comprehensive
-(geographically and taxonomically) barcoding data set. This dataset allows us to
-investigate levels of cryptic diversity and the geographic patterns of species
-diversity in sea cucumbers. Specifically, we ask (1) How does the current sea
-cucumber taxonomy compare with the number of species estimated with barcoding?
-(2) How often do species are characterized by a pattern of genetic
-differentiation allowing identification with barcoding? (3) How does the type of
-larva influence the geographical distribution and the levels of genetic
-differentiation? (4) What is the most common mode of geographical distribution
-between species?
+When the lineages identified with genetic data are associated with clear
+differences in morphology or other independent traits (behavior, ecology), the
+concept of evolutionary significant unit (ESU) \cite{Moritz1994} applies, and
+the lineages can be treated as species-level units. The discordance between
+genetic data and morphological traits results from (1) recently diverged species
+for which the mitochondrial lineages have not fully sorted according to the
+species tree; (2) introgression of a mitochondrial lineage from another species;
+(3) a polymorphic species \cite{Funk2003, Ballard2004}. These three processes
+will lead to similar patterns in mitochondrial genealogies with species
+appearing para- or polyphyletic. If these cases might have undesirable effects
+on the accuracy of species identification, they might provide insights into the
+biology of the species. For instance, sympatric paraphyletic species might be
+indicative of the rapid acquisition of reproductive isolation, while
+polyphyletic species might provide indication of hybridization. Through
+comprehensive sampling, we can identify species that show this pattern and
+deserve further investigation, and assess how common they are.
 
-If dispersal is spatially restricted, a pattern of isolation-by-distance (IBD),
-where genetic differentiation increases with geographical distance, may be
-detected. In sea cucumbers, as with other marine invertebrate, dispersal
-typically occurs during the larval stage. Larvae can be planktotrophic (they
-feed in the plankton), or oligotrophic (they feed on reserves included with the
+In sea cucumbers, as with other marine invertebrate, dispersal typically occurs
+during the larval stage. If dispersal is spatially restricted, a pattern of
+isolation-by-distance (IBD), where genetic differentiation increases with
+geographical distance, may be detected. Larvae can be planktotrophic (they feed
+in the plankton), or oligotrophic (they feed on reserves included with the
 egg). A few species of sea cucumbers are also brooders, and adults release
 juveniles. The type of development and larvae may influence the dispersal
 potential of the species, with brooders having little dispersal potential while
@@ -154,6 +166,7 @@ larvae. Therefore, we hypothesize that species with oligotrophic development
 geographical ranges than species with planktotrophic development (Apodida and
 Aspidochirotida).
 
+
 The Indo-Pacific is the richest marine biogeographic region, and the origin of
 this diversity remains contentious. Sea cucumbers, as most marine invertebrates,
 are mostly sessile as adults, and may potentially disperse over long distances
@@ -162,9 +175,22 @@ combination with high levels of cryptic diversity, challenge the traditional
 view that physical barriers are the primary driver of diversification in marine
 organisms. In most cases, cryptic lineages identified occurred in allopatry
 (e.g., \cite{Meyer2005-evolution, Volger2008, Malay2010}) but in sea cucumbers
-(see Chapter~2) recently diverged species do occur in sympatry. Our
-comprehensive dataset allows us to determine how often closely related species
-occur in sympatry.
+(see Chapter~2) recently diverged species do occur in sympatry. How common is
+this pattern?
+
+Here, we assembled one of the largest, and the most comprehensive
+(geographically and taxonomically) barcoding data set. This dataset allows us to
+investigate levels of cryptic diversity and the geographic patterns of species
+diversity in sea cucumbers. Specifically, we ask: (1) how does the current sea
+cucumber taxonomy compare with the number of species estimated with barcoding?
+(2) how often do species are characterized by a pattern of genetic
+differentiation allowing identification with barcoding? (3) How does the type of
+larva influence the geographical distribution and the levels of genetic
+differentiation? (4) What is the most common mode of geographical distribution
+between species?
+
+
+
 
 % * In such cases, barcoding has typically revealed more diversity than previously
 % acknowledged. From the variety of studies, clearly many different patterns
@@ -186,7 +212,7 @@ cukeAlg <- load_cukeAlg()
 propHol <- length(grep("^Holothuriidae_", dimnames(cukeAlg)[[1]]))/dim(cukeAlg)[1]
 @
 
-\subsection{Sampling}
+\subsection{Sampling} % M&M
 
 Specimens were collected on snorkel, on SCUBA, or by dredging. Most were
 photographed while alive \textit{in situ} or in the lab anesthetized in a 1:1
@@ -211,7 +237,7 @@ of the Antarctic region are under-represented.
 @
 
 
-\subsection{Specimen identification}
+\subsection{Specimen identification} % M&M
 
 Most specimens were individually identified by GP, FM, Mark O'Loughlin and other
 taxonomic specialists. For most groups, survey of primary literature was used to
@@ -221,7 +247,7 @@ assign the most accurate names.
 % forgotten/never used in the literature, and names were resurrected from
 % synonymies.
 
-\subsection{Sequencing}
+\subsection{Sequencing} % M&M
 
 DNA was extracted according to one of the following three protocols: (1) DNAzol
 followed by QIAGEN PCR clean up kit; (2) organic extractions at the Smithsonian
@@ -247,11 +273,6 @@ position as a different partition, a GTR model of molecular evolution with a
 Gamma distributed rates of heterogeneity, and 500 bootstrap replicates.
 
 \subsection{Diversity}
-
-% context: How much diversity in a group that hasn't received lots of
-% taxonomic attention and with potential for high levels of cryptic diversity
-% because of characters used to delineate species? and yet, relatively easy to
-% sample
 
 In this study we use the term Evolutionary Significant Unit (ESU) to designate
 individuals that differ by species-level genetic differentiation and could
@@ -282,10 +303,6 @@ individuals from a neighbor-joining tree (other tree reconstruction methods can
 be used), reconstructed from the pairwise genetic distances. Individuals
 belonging to the same cluster are separated by genetic distance less than a
 threshold set \textit{a priori}.
-
-% This method is less conservative
-% compared to the pairwise distance method since individuals with divergent
-% haplotypes will be considered to belong to different ESUs if theythat differ
 
 For each of these two approaches, we used both uncorrected distances ($p$) and
 the Kimura two-parameter (K2P) distance \cite{Kimura1980} to estimate pairwise
@@ -326,13 +343,6 @@ barcoding gap and therefore, cannot be recognized as distinct ESUs with the
 threshold approach.
 
 \subsection{Geography, diversity and diversification}
-
-%\subsubsection{Patterns of diversity}
-
-% - [future] map of number of unique haplotypes per geographic areas
-% - [future] use different colors to code species mostly in the Pacific, mostly in IO or
-% both so we can dissect if the pattern of diversity is caused by the same
-% species or not
 
 \subsubsection{Range size and isolation-by-distance}
 
@@ -400,14 +410,6 @@ formations of ESUs within the Indo-Pacific, we recorded the approximate
 boundaries separating allopatric sister ESUs.
 
 
-% - Diversification:
-%   - [X] Are sister species allopatric or sympatric?
-%   - [X] role of geologic/geographic barriers / Where are the barriers to cladogenesis?
-%   - [future] Is there signal that the timing of differentiation is similar for areas
-%   with high endemism? Hawaii? Red Sea?
-%   - [future] Rates of secondary sympatry
-%   - amount of divergence among individuals found in sympatry
-%       (plot: %divergence vs. %sympatry(smaller ranged species))
 
 
 % \subsection{Molecular clock estimation}
@@ -875,6 +877,20 @@ arising of several species endemic to the area.
 
 
 \end{document}
+
+% - Diversification:
+%   - [future] Is there signal that the timing of differentiation is similar for areas
+%   with high endemism? Hawaii? Red Sea?
+%   - [future] Rates of secondary sympatry
+%   - amount of divergence among individuals found in sympatry
+%       (plot: %divergence vs. %sympatry(smaller ranged species))
+
+%\subsubsection{Patterns of diversity}
+
+% - [future] map of number of unique haplotypes per geographic areas
+% - [future] use different colors to code species mostly in the Pacific, mostly in IO or
+% both so we can dissect if the pattern of diversity is caused by the same
+% species or not
 
 %% Diversification rates
 
