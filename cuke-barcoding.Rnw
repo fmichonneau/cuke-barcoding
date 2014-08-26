@@ -91,40 +91,51 @@ Estimates for the number of species in the sea are poorly constrained because
 sampling is challenging, and our understanding of species limits for most groups
 limited. Initially developed for species identification, DNA barcoding has
 become a popular technique to discover new species and evaluate species
-limits. In particular in groups where taxonomy is challenging, barcoding
-unraveled cryptic lineages, most often associated with differences in
-morphology, coloration or behavior, indicative of reproductive
+limits. Barcoding unraveled cryptic lineages, most often associated with
+differences in morphology, coloration or behavior, indicative of reproductive
 isolation. However, because barcoding in animals is based on a single
 mitochondrial locus, genetic differentiation does not always track species
 limits. Introgression, ancestral polymorphisms, and incomplete lineage sorting
 may lead to non-reciprocally monophyletic groups with the mitochondrial
 genealogies compromising the accuracy of species identification with
 barcoding. The success of species identification with barcoding is dependent on
-the barcoding gap: intra-specific genetic distances cannot overlap with the
+the barcoding gap: the absence of overlap between intra-specific and
 inter-specific distances.
 
 A way to ensure that barcoding will be successful for species identification is
 through comprehensive sampling. If species are sampled throughout their ranges,
-we might assess levels of intra-specific variation, and if most species of the
+we can assess levels of intra-specific variation, and if most species of the
 targeted group are included, it becomes possible not only to determine how often
 an unidentified sequence can be assigned to a known species but also restrict
 the likely identity of this unknown sequence to species that are not
 characterized by the barcoding gap. Additionally, comprehensive sampling allows
-to gain insights into the amount of cryptic diversity in the group, and the
-patterns of diversification of the group.
+to gain insights into the amount of cryptic diversity, and the patterns of
+diversification.
+
+Sea cucumbers occur in most marine ecosystems, at all latitudes, from the
+intertidal to hadal depths. Sea cucumbers constitute the largest invertebrate
+fishery in the tropical Pacific, and stocks are fully exploited to depleted
+throughout the tropics. Yet, species level taxonomy is poorly understood, with
+large, commercially important species regularly described (e.g.,
+\cite{Massin2009}). In sea cucumbers, species-level taxonomy has almost entirely
+relied on the shape of ossicles. Ossicles show substantial diversity and
+variability, whilst variation in the simple anatomy of these animals is limited
+at lower taxonomic levels. Ossicles cannot always be used to tease apart
+species, and intra-specific variation is poorly characterized since most
+descriptions illustrate ossicles from a single individual. Live coloration,
+which has not been traditionally used in species descriptions, is variable and
+might be indicative of species limits in some cases.
 
 Here, we assembled one of the largest, and the most comprehensive
-(geographically and taxonomically) barcoding data set targeting sea
-cucumbers. This dataset allows us to investigate levels of cryptic diversity and
-the geographic patterns of species diversity. Specifically, we ask (1) How does
-the current sea cucumber taxonomy compare with the number of species estimated
-with barcoding? (2) How often do species are characterized by a pattern of
-genetic differentiation allowing identification with barcoding? (3) How does the
-type of larva influence the geographical distribution and the levels of genetic
+(geographically and taxonomically) barcoding data set. This dataset allows us to
+investigate levels of cryptic diversity and the geographic patterns of species
+diversity in sea cucumbers. Specifically, we ask (1) How does the current sea
+cucumber taxonomy compare with the number of species estimated with barcoding?
+(2) How often do species are characterized by a pattern of genetic
+differentiation allowing identification with barcoding? (3) How does the type of
+larva influence the geographical distribution and the levels of genetic
 differentiation? (4) What is the most common mode of geographical distribution
 between species?
-
-Sea cucumbers
 
 If dispersal is spatially restricted, a pattern of isolation-by-distance (IBD),
 where genetic differentiation increases with geographical distance, may be
@@ -166,35 +177,6 @@ occur in sympatry.
 % hypotheses to explain this pattern (hybridization, incomplete lineage sorting,
 % polymorphism). How common is this pattern? Are the same explanations always
 % behind these patterns?
-
-% * few groups have been sampled extensively. Diversity in IWP thought to follow
-% diversity patterns of more well-known species: mollusks, fish, corals. Most of
-% the diversity is in the coral triangle. However, other groups don't always seem
-% to follow this pattern (e.g., Calcinus). Comprehensive sampling allows to
-% revisit this question.
-
-% * Behind these patterns is rate of secondary sympatry, molecular data allows to
-% test whether diversification occurs mostly in allopatry or in sympatry. And
-% once, diversification has occurred how long it takes for species to co-exist in
-% sympatry.
-
-% * To assess time it takes, need a good molecular clock, however, in most marine
-% invertebrates not really possible because fossils are too limited. However,
-% there are several pairs of sister species across isthmus of Panama, so we can
-% evaluate differences in rates, and
-
-% * This study is on sea cucumbers because poor understanding of species limits
-% use of conservative characters used in species-level taxonomy. Yet need for
-% management and better understanding of biology given fisheries pressures.
-
-% * Presentation of the dataset: most geographically and taxonomically
-% comprehensive barcoding dataset.
-
-% * Goals:
-%   - assess amount of cryptic diversity
-%   - evaluate geographic patterns of diversity and diversification
-%   - re-evaluate molecular clock
-
 
 
 \section{Materials and Methods}
@@ -899,3 +881,19 @@ arising of several species endemic to the area.
 %% Role of geography/latitude
 % diversification rates
 % intra- and interspecific genetic variation
+
+% * few groups have been sampled extensively. Diversity in IWP thought to follow
+% diversity patterns of more well-known species: mollusks, fish, corals. Most of
+% the diversity is in the coral triangle. However, other groups don't always seem
+% to follow this pattern (e.g., Calcinus). Comprehensive sampling allows to
+% revisit this question.
+
+% * Behind these patterns is rate of secondary sympatry, molecular data allows to
+% test whether diversification occurs mostly in allopatry or in sympatry. And
+% once, diversification has occurred how long it takes for species to co-exist in
+% sympatry.
+
+% * To assess time it takes, need a good molecular clock, however, in most marine
+% invertebrates not really possible because fossils are too limited. However,
+% there are several pairs of sister species across isthmus of Panama, so we can
+% evaluate differences in rates, and
