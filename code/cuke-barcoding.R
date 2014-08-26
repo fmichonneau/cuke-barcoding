@@ -28,6 +28,8 @@ nCryptic <- length(unique(esuCryptic))
 
 newSpp <- sapply(esus, function(x) length(grep("nsp", x)) > 0)
 
+percentSinglHol <- 100*sum(sapply(noGeoGrps, function(x) length(x) == 1))/length(noGeoGrps)
+
 intraDist <- lapply(noGeoGrps, intraESUDist, cukeAlg)
 
 summaryInterDist <- function(listSpecies, cukeAlg) {
@@ -68,6 +70,13 @@ barcodeGap <- barcodeGap[is.finite(barcodeGap$maxIntra), ]
 percentGap   <- 100*sum(is.na(barcodeGap$species))/nrow(barcodeGap)
 minInterText <- 100*min(barcodeGap$minInter)
 percentThres <- 100*sum(barcodeGap$minInter > 0.02)/nrow(barcodeGap)
+
+### ---- geo-diff ----
+tmpGeoDiff <- grep("[A-Z]{2}$", names(wiGeoGrps), value=TRUE)
+esuGeoDiff <- data.frame(wiGeo=tmpGeoDiff,
+                         noGeo=gsub("_[A-Z]{2}$", "", tmpGeoDiff),
+                         stringsAsFactors=FALSE)
+nEsuGeoDiff <- length(unique(esuGeoDiff$noGeo))
 
 ### ---- barcode-gap-plot ----
 barcodeGap$species <- gsub("\\..+$", "", barcodeGap$species)
@@ -671,7 +680,8 @@ esuRange$species <- as.character(esuRange$species)
 
 esuRange$rangeType <- factor(esuRange$rangeType, levels=c("allopatric", "sympatric", "parapatric"))
 
-esuRange <- esuRange[-match("178-Holothuria_unicolor/185-Holothuria_zihuatanensis", esuRange$species), ]
+esuRange <- esuRange[-match("54-Holothuria_excellens/192-Pearsonothuria_graeffei", esuRange$species), ]
+esuRange[match("177-Holothuria_unicolor/184-Holothuria_zihuatanensis", esuRange$species), "rangeType"] <- "allopatric"
 
 tabRangeType <- table(esuRange$rangeType)
 
@@ -685,9 +695,6 @@ ggplot(esuRange) + geom_bar(aes(x=rangeType, fill=rangeType)) +
     xlab("") + ylab("Number of ESU pairs") +
     scale_fill_discrete("Type of geographic range") +
     theme(legend.position="none")
-
-ggplot(esuRange, aes(x=rangeType, y=meanInterDist, colour=rangeType)) +
-    geom_point(position=position_jitter(width=.1)) + geom_boxplot(alpha=.1)
 
 
 ### ---- mantel-test ----

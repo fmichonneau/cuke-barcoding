@@ -62,22 +62,24 @@ source("R/load.R")
 \begin{abstract}
   Estimates for the number of species in the sea vary by orders of
   magnitude. Molecular taxonomy can greatly speed up screening for diversity and
-  evaluating species boundaries.  DNA barcoding with a region of cytochrome
-  oxidase 1 (COI) is now widely used as a first pass for molecular evaluation of
-  diversity, as it has good potential for identifying cryptic species and
-  improve our understanding of marine biodiversity. We present the results of a
-  large scale barcoding effort for echinoderms, focusing here on asteroids,
-  echinoids and holothuroids. We sequenced over 3,900 individuals from numerous
-  localities across the Indo-Pacific and the Caribbean. Many species show
+  evaluating species boundaries, while gaining insights into the biology of the
+  species. DNA barcoding with a region of cytochrome oxidase 1 (COI) is now
+  widely used as a first pass for molecular evaluation of diversity, as it has
+  good potential for identifying cryptic species and improve our understanding
+  of marine biodiversity. We present the results of a large scale barcoding
+  effort for holothuroids (sea cucumbers). We sequenced
+  \Sexpr{dim(load_cukeAlg())[1]} individuals from numerous localities spanning the
+  diversity of habitats in which the species occur, with a particular focus in
+  the shallow tropics (Indo-Pacific and Caribbean) and the Antarctic region. The
+  number of cryptic species is much higher than currently recognized. The vast
+  majority of sister species have allopatric distributions, with species showing
   genetic differentiation between ocean basins, and some are even differentiated
-  among archipelagos. The number of cryptic species is much higher than
-  currently recognized. The vast majority of sister species have allopatric
-  distributions. However, many closely related and sympatric forms which exhibit
-  distinct color patterns and/or ecology show little differentiation in and
-  cannot be separated by COI sequence. This pattern is much more common among
-  echinoderms than among molluscs or arthropods. This suggests that echinoderms
-  acquire reproductive isolation at a much faster pace than other marine
-  phyla. Understanding the causes behind such pattern will refine our
+  among archipelagos. However, many closely related and sympatric forms, that
+  exhibit distinct color patterns and/or ecology, show little differentiation in,
+  and cannot be separated by, COI sequence. This pattern is much more common
+  among echinoderms than among molluscs or arthropods. This suggests that
+  echinoderms acquire reproductive isolation at a much faster pace than other
+  marine phyla. Understanding the causes behind such pattern will refine our
   understanding of diversification and biodiversity among echinoderms.
 \end{abstract}
 
@@ -85,17 +87,73 @@ source("R/load.R")
 
 \section{Introduction}
 
-% Barcoding studies have typically two main goals: species discovery (how does the
-% barcoding data compare to the taxonomy?), and specimen identification (can the
-% barcode library be used to identify a species?) \cite{Collins2013}. In this
-% study we focus on describing the patterns of unrecognized diversity, and testing
-% the role of latitude and phylogeny in shaping these patterns.
+Estimates for the number of species in the sea are poorly constrained because
+sampling is challenging, and our understanding of species limits for most groups
+limited. Initially developed for species identification, DNA barcoding has
+become a popular technique to discover new species and evaluate species
+limits. In particular in groups where taxonomy is challenging, barcoding
+unraveled cryptic lineages, most often associated with differences in
+morphology, coloration or behavior, indicative of reproductive
+isolation. However, because barcoding in animals is based on a single
+mitochondrial locus, genetic differentiation does not always track species
+limits. Introgression, ancestral polymorphisms, and incomplete lineage sorting
+may lead to non-reciprocally monophyletic groups with the mitochondrial
+genealogies compromising the accuracy of species identification with
+barcoding. The success of species identification with barcoding is dependent on
+the barcoding gap: intra-specific genetic distances cannot overlap with the
+inter-specific distances.
 
-% % introduce idea of barcoding gap
+A way to ensure that barcoding will be successful for species identification is
+through comprehensive sampling. If species are sampled throughout their ranges,
+we might assess levels of intra-specific variation, and if most species of the
+targeted group are included, it becomes possible not only to determine how often
+an unidentified sequence can be assigned to a known species but also restrict
+the likely identity of this unknown sequence to species that are not
+characterized by the barcoding gap. Additionally, comprehensive sampling allows
+to gain insights into the amount of cryptic diversity in the group, and the
+patterns of diversification of the group.
 
-% * barcoding has limitations, but when used with comprehensive taxonomic and
-% geographic sampling, powerful to assess diversity, in particular in groups that
-% haven't received lots of taxonomic attention
+Here, we assembled one of the largest, and the most comprehensive
+(geographically and taxonomically) barcoding data set targeting sea
+cucumbers. This dataset allows us to investigate levels of cryptic diversity and
+the geographic patterns of species diversity. Specifically, we ask (1) How does
+the current sea cucumber taxonomy compare with the number of species estimated
+with barcoding? (2) How often do species are characterized by a pattern of
+genetic differentiation allowing identification with barcoding? (3) How does the
+type of larva influence the geographical distribution and the levels of genetic
+differentiation? (4) What is the most common mode of geographical distribution
+between species?
+
+Sea cucumbers
+
+If dispersal is spatially restricted, a pattern of isolation-by-distance (IBD),
+where genetic differentiation increases with geographical distance, may be
+detected. In sea cucumbers, as with other marine invertebrate, dispersal
+typically occurs during the larval stage. Larvae can be planktotrophic (they
+feed in the plankton), or oligotrophic (they feed on reserves included with the
+egg). A few species of sea cucumbers are also brooders, and adults release
+juveniles. The type of development and larvae may influence the dispersal
+potential of the species, with brooders having little dispersal potential while
+species with planktotrophic larvae might disperse over longer distances. While
+the reproductive biology of most sea cucumber species has not been investigated,
+it is recognized that most species of Aspidochirotida and Apodida have
+planktotrophic larvae, while species of Dendrochirotida have oligotrophic
+larvae. Therefore, we hypothesize that species with oligotrophic development
+(Dendrichoritda) will show a stronger IBD pattern and will have smaller
+geographical ranges than species with planktotrophic development (Apodida and
+Aspidochirotida).
+
+The Indo-Pacific is the richest marine biogeographic region, and the origin of
+this diversity remains contentious. Sea cucumbers, as most marine invertebrates,
+are mostly sessile as adults, and may potentially disperse over long distances
+as larvae.  The paucity of obvious barriers to gene flow in the Indo-Pacific in
+combination with high levels of cryptic diversity, challenge the traditional
+view that physical barriers are the primary driver of diversification in marine
+organisms. In most cases, cryptic lineages identified occurred in allopatry
+(e.g., \cite{Meyer2005-evolution, Volger2008, Malay2010}) but in sea cucumbers
+(see Chapter~2) recently diverged species do occur in sympatry. Our
+comprehensive dataset allows us to determine how often closely related species
+occur in sympatry.
 
 % * In such cases, barcoding has typically revealed more diversity than previously
 % acknowledged. From the variety of studies, clearly many different patterns
@@ -137,19 +195,7 @@ source("R/load.R")
 %   - evaluate geographic patterns of diversity and diversification
 %   - re-evaluate molecular clock
 
-If dispersal is spatially restricted, a pattern of isolation-by-distance (IBD),
-where genetic differentiation increases with geographical distance, may be
-detected. In sea cucumbers, as with other marine invertebrate, dispersal
-typically occurs during the larval stage. Larvae can be planktotrophic (they
-feed in the plankton), or oligotrophic (they feed on reserves included with the
-egg). A few species of sea cucumbers are also brooders, and adults release
-juveniles. The type of development and larvae may influence the dispersal
-potential of the species, with brooders having little dispersal potential while
-species with planktotrophic larvae might disperse over longer distances. While
-the reproductive biology of most sea cucumber species has not been investigated,
-it is recognized that most species of Aspidochirotida and Apodida have
-planktotrophic larvae, while species of Dendrochirotida have oligotrophic
-larvae.
+
 
 \section{Materials and Methods}
 
@@ -464,7 +510,8 @@ more ESUs (N=\Sexpr{length(noGeoGrps)} ESUs) than named species
 (N=\Sexpr{nSppHol}). \Sexpr{nCryptic} named species are cryptic complexes (ESUs
 are related to a named species) that include between 2 and 13
 ESUs. Additionally, \Sexpr{sum(newSpp)} ESUs appear to be undescribed species
-(not directly to a named species).
+(not directly to a named species). \Sexpr{formatC(percentSinglHol, digits=2,
+  width=2)}\% of the ESUs were singletons.
 
 The minimum inter-ESU genetic distance is greater than the maximum intra-ESU
 distance, indicating the presence of a barcoding gap for \Sexpr{percentGap}\%
@@ -480,7 +527,7 @@ ESUs.
 
 \subsubsection{Range size and isolation-by-distance}
 
-<<range-size-plot, cache=TRUE, echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.cap='Violin plot (width represent kernel density) of the maximum range sizes for the Apodida, Aspidochirotida, Dendrochirotida. Note that most Dendrichirotida have smaller distributions.', fig.height=3>>=
+<<range-size-plot, cache=TRUE, echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.cap='Violin plot (width represent the kernel density estimate) of the maximum range sizes for the Apodida, Aspidochirotida, Dendrochirotida. Note that most Dendrichirotida have smaller distributions.', fig.height=3>>=
 
 @
 
@@ -544,9 +591,10 @@ of isolation-by-distance (IBD) for the three orders included in the analysis
 We compared the geographic ranges of \Sexpr{sum(complete.cases(esuRange))} pairs
 of sister ESUs. Most had allopatric distributions (\Sexpr{formatC(percentAllo,
   digits=2, width=2)}\%), the other sister ESUs were sympatric
-(\Sexpr{formatC(percentSymp, digits=2, width=2)}\%), and or parapatric
-(\Sexpr{formatC(percentSymp, digits=2, width=2)},
+(\Sexpr{formatC(percentSymp, digits=2, width=2)}\%), or parapatric
+(\Sexpr{formatC(percentPara, digits=2, width=2)}\%,
 Fig.~\ref{fig:geography-diversification}).
+
 
 
 \begin{figure}
