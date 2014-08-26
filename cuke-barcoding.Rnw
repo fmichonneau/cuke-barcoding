@@ -139,18 +139,21 @@ the lineages can be treated as species-level units. The discordance between
 genetic data and morphological traits results from (1) recently diverged species
 for which the mitochondrial lineages have not fully sorted according to the
 species tree; (2) introgression of a mitochondrial lineage from another species;
-(3) a polymorphic species \cite{Funk2003, Ballard2004}. These three processes
-will lead to similar patterns in mitochondrial genealogies with species
-appearing para- or polyphyletic. If these cases might have undesirable effects
-on the accuracy of species identification, they might provide insights into the
-biology of the species. For instance, sympatric paraphyletic species might be
-indicative of the rapid acquisition of reproductive isolation, while
-polyphyletic species might provide indication of hybridization. Through
-comprehensive sampling, we can identify species that show this pattern and
-deserve further investigation, and assess how common they are.
+(3) morphological polymorphism that does not reflect species limits
+\cite{Funk2003, Ballard2004}. These three processes will lead to similar
+patterns in mitochondrial genealogies with species appearing para- or
+polyphyletic. If these cases might have undesirable effects on the accuracy of
+species identification, they might provide insights into the biology of the
+species. For instance, sympatric paraphyletic species might be indicative of the
+rapid acquisition of reproductive isolation, while polyphyletic species might
+provide indication of hybridization. Through comprehensive sampling, we can
+identify species that show this pattern and deserve further investigation, and
+assess how common they are.
 
-In sea cucumbers, as with other marine invertebrate, dispersal typically occurs
-during the larval stage. If dispersal is spatially restricted, a pattern of
+In sea cucumbers, as with other marine invertebrates, dispersal typically occurs
+during the larval stage. However, even if larvae can potentially travel long
+distances, their ability to maintain gene flow over long distances has been
+debated. If dispersal is spatially restricted, a pattern of
 isolation-by-distance (IBD), where genetic differentiation increases with
 geographical distance, may be detected. Larvae can be planktotrophic (they feed
 in the plankton), or oligotrophic (they feed on reserves included with the
@@ -161,22 +164,19 @@ species with planktotrophic larvae might disperse over longer distances. While
 the reproductive biology of most sea cucumber species has not been investigated,
 it is recognized that most species of Aspidochirotida and Apodida have
 planktotrophic larvae, while species of Dendrochirotida have oligotrophic
-larvae. Therefore, we hypothesize that species with oligotrophic development
-(Dendrichoritda) will show a stronger IBD pattern and will have smaller
+larvae. Therefore, we hypothesize that (1) species with oligotrophic development
+(Dendrichoritda) will show a stronger IBD pattern, and (2) will have smaller
 geographical ranges than species with planktotrophic development (Apodida and
 Aspidochirotida).
 
-
 The Indo-Pacific is the richest marine biogeographic region, and the origin of
-this diversity remains contentious. Sea cucumbers, as most marine invertebrates,
-are mostly sessile as adults, and may potentially disperse over long distances
-as larvae.  The paucity of obvious barriers to gene flow in the Indo-Pacific in
-combination with high levels of cryptic diversity, challenge the traditional
-view that physical barriers are the primary driver of diversification in marine
-organisms. In most cases, cryptic lineages identified occurred in allopatry
-(e.g., \cite{Meyer2005-evolution, Volger2008, Malay2010}) but in sea cucumbers
-(see Chapter~2) recently diverged species do occur in sympatry. How common is
-this pattern?
+this diversity remains contentious. The paucity of obvious barriers to gene flow
+in the Indo-Pacific in combination with high levels of cryptic diversity,
+challenge the traditional view that physical barriers are the primary driver of
+diversification in marine organisms. In most cases, cryptic lineages identified
+occurred in allopatry (e.g., \cite{Meyer2005-evolution, Volger2008, Malay2010})
+but in sea cucumbers (see Chapter~2) recently diverged species do occur in
+sympatry. How common is this pattern?
 
 Here, we assembled one of the largest, and the most comprehensive
 (geographically and taxonomically) barcoding data set. This dataset allows us to
@@ -184,26 +184,16 @@ investigate levels of cryptic diversity and the geographic patterns of species
 diversity in sea cucumbers. Specifically, we ask: (1) how does the current sea
 cucumber taxonomy compare with the number of species estimated with barcoding?
 (2) how often do species are characterized by a pattern of genetic
-differentiation allowing identification with barcoding? (3) How does the type of
+differentiation allowing identification with barcoding? (3) how does the type of
 larva influence the geographical distribution and the levels of genetic
-differentiation? (4) What is the most common mode of geographical distribution
+differentiation? (4) what is the most common mode of geographical distribution
 between species?
-
-
-
 
 % * In such cases, barcoding has typically revealed more diversity than previously
 % acknowledged. From the variety of studies, clearly many different patterns
 % emerge. Using large datasets allow to evaluate the relative importance of these
 % patterns. Examples: differentiation between IO and PO, unrecognized endemics in
 % Red Sea, Hawaii
-
-% * On the other hand, barcoding has also revealed instances of clear
-% morphological differences with limited genetic differentiation. Three main
-% hypotheses to explain this pattern (hybridization, incomplete lineage sorting,
-% polymorphism). How common is this pattern? Are the same explanations always
-% behind these patterns?
-
 
 \section{Materials and Methods}
 
@@ -247,7 +237,7 @@ assign the most accurate names.
 % forgotten/never used in the literature, and names were resurrected from
 % synonymies.
 
-\subsection{Sequencing} % M&M
+\subsection{Sequencing and analysis} % M&M
 
 DNA was extracted according to one of the following three protocols: (1) DNAzol
 followed by QIAGEN PCR clean up kit; (2) organic extractions at the Smithsonian
@@ -286,6 +276,17 @@ obvious differences were detected but they may be characterized by subtle
 differences in their ossicle assemblages that have not been investigated
 thoroughly.
 
+For the Holothuriidae, which was the most densely sampled and represent a large
+portion of our dataset (\Sexpr{formatC(100*propHol, width=2, digits=2)}\%), we
+conducted a manual assessment of the ESUs. We assigned all individuals to ESUs
+based on genetic distinctiveness (individuals formed reciprocally monophyletic
+clades in COI), and unique morphological features (most often color patterns) or
+were restricted to a geographical area. We used these manually defined ESUs to
+compare with the number of ESUs estimated with the threshold approach (see
+below). Additionally, to determine ESUs that were not distinguished by a barcode
+gap, we compared the maximum intra-ESU distance to the minimum inter-ESU
+distance. ESUs that fell below the 1:1 line did not have a barcoding gap.
+
 The size of the dataset restricts the methods that can be used to assess
 diversity, as computationally intensive methods such as the Generalized Mixed
 Yule Coalescent method \cite{Pons2006} cannot be used here. Other programs
@@ -315,32 +316,19 @@ value: \Sexpr{paste0(load_thresholdPairwise(), collapse=", ")}. Additionally, we
 estimated the proportion of singletons (proportion of the number species
 represented by a single individual) for each of these threshold values. If a
 suitable threshold allows the detection of the barcoding gap, we expect the
-number of estimated ESUs to not drop as abruptly once the threshold passes is
-high enough to capture the range of intra-ESU genetic variability and groups
-together diverging individuals. Similarly, we expect that the proportion of
-singletons stops decreasing when the threshold is high enough that it captures
-individuals with slightly divergent haplotypes. We repeated these analyses on
-the entire dataset, on each order, and each family to assess if different
-thresholds were needed for various taxonomic groups.
+number of estimated ESUs to not drop as abruptly once the threshold is high
+enough to capture the range of intra-ESU genetic distances. Similarly, we expect
+that the proportion of singletons stops decreasing when the threshold is high
+enough that it captures individuals with slightly divergent haplotypes. We
+repeated these analyses on the entire dataset, on each order, and each family to
+assess if different thresholds were needed for various taxonomic groups.
 
-It has been suggested previously that using a threshold equals to 10 times the
+It has been previously suggested that using a threshold equals to 10 times the
 intraspecific distance \cite{Hebert2004a} for pairwise distance was
 appropriate. However, this approach was not suitable in our study as the high
 levels of cryptic species were considerably inflating the apparent levels of
 intraspecific distances.
 
-For the Holothuriidae, which was the most densely sampled and represent a large
-portion of our dataset (\Sexpr{formatC(100*propHol, width=2, digits=2)}\%), we
-conducted a manual assessment of the ESUs. We assigned all individuals to ESUs
-based on genetic distinctiveness (individuals formed reciprocally monophyletic
-clades in COI), and unique morphological features (most often color patterns) or
-were restricted to a geographical area. We used these manually defined ESUs to
-compare with the number of ESUs estimated with the threshold
-approach. Additionally, to determine ESUs that can not be identified based on a
-threshold approach, when possible, we compared the maximum intra-ESU distance to
-the minimum inter-ESU distance. ESUs that fall below the 1:1 line do not have
-barcoding gap and therefore, cannot be recognized as distinct ESUs with the
-threshold approach.
 
 \subsection{Geography, diversity and diversification}
 
@@ -403,7 +391,7 @@ with the smallest range overlapped with the ESU with the larger range,
 otherwise. If only one ESU had enough data to estimate its distribution with a
 polygon, and points were available for its sister ESU, we considered their
 distribution allopatric if none of the points were included in the polygon, and
-sympatric if they were. We used the manually delineated ESUs for this analysis.
+sympatric otherwise. We used the manually delineated ESUs for this analysis.
 
 To investigate the relative contributions of geographic barriers to the
 formations of ESUs within the Indo-Pacific, we recorded the approximate
@@ -444,12 +432,6 @@ boundaries separating allopatric sister ESUs.
 
 @
 
-<<stats-groups, dependson=c('n-species', 'groups-comparison-plot'), cache=TRUE, echo=FALSE>>=
-spPair003 <- load_species_pairwiseGrps("K80", "all", 0.03)
-spCluster004 <- load_species_clusterGrps("K80", "all", 0.02)
-pCrypticAll <- c(nSppAll/length(spPair003), nSppAll/length(spCluster004))
-@
-
 <<mean-intra-named-species, cache=TRUE, dependson='n-species', echo=FALSE>>=
 
 @
@@ -461,7 +443,7 @@ pCrypticAll <- c(nSppAll/length(spPair003), nSppAll/length(spCluster004))
 Among the \Sexpr{dim(cukeAlg)[1]} individuals sequenced, we identified
 \Sexpr{nSppAll} species. All orders of sea cucumbers were represented. The order
 Aspidochirotida, and in particular the family Holothuriidae were the most
-exhaustively sampled (\Sexpr{formatC(100*nSppAsp/nSppAll, width=2,
+comprehensively sampled (\Sexpr{formatC(100*nSppAsp/nSppAll, width=2,
   format="d")}\% and \Sexpr{formatC(100*nSppHol/nSppAll, width=2, format="d")}\%
 of the total number of individuals respectively), with all genera and subgenera
 of the Holothuriidae represented, and 65\% for the currently accepted species
@@ -536,20 +518,21 @@ Dendrochirotida have smaller range sizes than the other two orders
   format="d")}~km, \Sexpr{formatC(medRgSizeDen, format="d")}~km for the
 Aspidochirotida, Apodida and Dendrochirotida respectively).
 
-The ANCOVA testing for the effects of maximum geographic distance and ``order''
-on the maximum genetic distance was significant (\Sexpr{ancovaFstat},
-\Sexpr{ancovaP}). Neither the interaction between ``order'' and geographic
-distance (\Sexpr{interactionFstat}, \Sexpr{interactionP}), nor the ``order''
-terms (\Sexpr{interceptFstat}) were significant, indicating a common slope and a
-common intercept for the orders included in the analysis
-(Table~\ref{tab:isolation-by-distance-table}).  The coefficients obtained based
-on the manually delineated ESUs for the Holothuriidae were almost identical
-(intercept: \Sexpr{formatC(coefficients(ibdHol)[1,1], digits=2)},
+We recovered a signal of isolation-by-distance (IBD) for the three orders
+included in the analysis (Fig.~\ref{fig:isolation-by-distance-plot},
+Table~\ref{tab:ibd-stats}).The ANCOVA testing for the effects of maximum
+geographic distance and ``order'' on the maximum genetic distance was
+significant (\Sexpr{ancovaFstat}, \Sexpr{ancovaP}). Neither the interaction
+between ``order'' and geographic distance (\Sexpr{interactionFstat},
+\Sexpr{interactionP}), nor the ``order'' terms (\Sexpr{interceptFstat}) were
+significant, indicating a common slope and a common intercept for the orders
+included in the analysis (Table~\ref{tab:isolation-by-distance-table}).  The
+coefficients obtained based on the manually delineated ESUs for the
+Holothuriidae were almost identical (intercept:
+\Sexpr{formatC(coefficients(ibdHol)[1,1], digits=2)},
 SE=\Sexpr{formatC(coefficients(ibdHol)[1,2])}, slope:
 \Sexpr{formatC(coefficients(ibdHol)[2,1], digits=2)},
-SE=\Sexpr{formatC(coefficients(ibdHol)[2,2])}). Therefore, we recovered a signal
-of isolation-by-distance (IBD) for the three orders included in the analysis
-(Fig.~\ref{fig:isolation-by-distance-plot}, Table~\ref{tab:ibd-stats}).
+SE=\Sexpr{formatC(coefficients(ibdHol)[2,2])}).
 
 
 <<isolation-by-distance-table, cache=TRUE, results='asis', echo=FALSE, dependson='isolation-by-distance-stats'>>=
@@ -580,7 +563,6 @@ of sister ESUs. Most had allopatric distributions (\Sexpr{formatC(percentAllo,
 Fig.~\ref{fig:geography-diversification}).
 
 
-
 \begin{figure}
 \begin{centering}
 \includegraphics{figures/map-barriers}
@@ -608,87 +590,88 @@ or sister species across the Easter Pacific barrier
 
 \subsection{Diversity}
 
-This study reveals that the sea cucumber taxonomy does not reflect the diversity
-in this group. Regardless of the method used to estimate ESUs from the genetic
-data, we recovered more species than we could identify based on accepted
-taxonomic names.
+The sea cucumber diversity is underestimated. Regardless of the method used to
+estimate ESUs from the genetic data, we recovered more species than we could
+identify based on accepted taxonomic names. The manual assessment of the ESUs
+for the Holothuriidae indicates that the diversity is underestimated by
+approximately 50\%. This family is however the most easily accessible as it
+inhabits shallow waters, and most species have widespread geographical
+distributions. Other families have probably at least comparable if not higher
+levels of unrecognized diversity.
 
-As with all threshold-based method, in particular, over such taxonomic and
-latitudinal breadths, a single measure does not fully capture the range of
-evolutionary mechanisms and historical processes that have generated the
-patterns of diversity observed. The species that deviate from the common pattern
-can however provide insights into the biology of these species.
+The manual delineation of the ESUs indicates that 10\% of the species do not
+form reciprocally monophyletic clades separated by a barcoding gap that allow
+their delineation based on genetic data alone. These taxa represent either very
+recently diverged species forming monophyletic groups but with intra-genetic
+distances higher than the distance to their most closely related species (10 out
+of 15 ESUs), or ESUs that are not monophyletic. Interestingly the 5 ESUs
+concerned all belong to the subgenus \textit{Halodeima}: 3 ESUs of
+\textit{Holothuria edulis}, \textit{H. mexicana} and \textit{H. floridana}. The
+species involved are all unambiguously morphologically different and could be
+assigned to the correct species if a voucher specimen is
+available. Additionally, we only detected a single case of putative
+introgressive hybridization between two species of \textit{Bohadschia} (see
+\cite{Kim2013} for more details), in which the putative F1 hybrid has the
+intermediate phenotype of its parent species.
 
-% TODO -- make figures to illustrate these cases
-The single threshold used led to some cases of discordance between groups of
-individuals that were differentiated morphologically and groups that were
-differentiated genetically. In some cases, ESUs grouped individuals
-morphologically distinct (e.g., \textit{Holothuria edulis}), sometimes described
-as different species (e.g., \textit{Bohadschia atra} and \textit{Bohadschia
-  argus}). This pattern could result from (1) recently diverged species that
-harbor genetic differentiation inferior to the threshold used, (2)
-introgression, (3) morphological polymorphism that is not indicative of species
-limits. The concordance of reciprocal monophyly and morphological
-differentiation in most cases suggest recent divergence. This is also the case
-for \textit{Holothuria edulis} where one ESU only includes individuals of the
-gray morph, while the other includes both the gray and the fuschia morphs,
-suggestive of incomplete lineage sorting. We detected a suspected instance of
-hybridization between two species of the genus \textit{Bohadschia}
-\cite{Kim2013}.
+Funk and Ormland \cite{Funk2003} estimated that 23\% of the 2,319 animal species
+they surveyed were non-monophyletic in their mitochondrial genealogies. In the
+Holothuriidae, we recovered a much lower rate of (2.5\%, 5 out of
+\Sexpr{length(noGeoGrps)}~ESUs). Funk and Ormland indicated that the proportion
+of polyphyletic species was negatively correlated with the intensity of study,
+indicating that inadequate taxonomy might have inflated their results. Other
+studies of marine invertebrates have also found low rates of introgression
+(e.g., \cite{Meyer2005-evolution}). Features of the life history of marine
+invertebrates could lead to low effective population sizes (e.g., fluctuations
+in population sizes, unequal contributions to the reproductive pool), in turn
+causing the rapid sorting of mitochondrial lineages into reciprocally
+monophyletic clades. However, a recent study \cite{Stoeckle2014}, showed that
+the intra-specific levels of genetic variation in mitochondrial markers are much
+lower than is expected from the neutral theory, suggesting that strong purifying
+selection plays a significant role in shaping variation in mitochondrial
+genes. Therefore, other factors, possibly specific to sea cucumbers, or marine
+invertebrates, might influence the range of variation observed in COI.
 
-The low interspecific genetic distance leading to the lumping of different
-species within a single ESU could also be the result of a slower molecular
-clock. In the absence of fossil evidence, the closure of the isthmus of Panama
-is the only reliable geological event that can be used to calibrate the
-molecular clock. A few sister species are found on each sides of the isthmus and
-their divergence might be associated with the closure of the isthmus. However,
-there are challenges associated with estimating the time of divergence of these
-sister species. The closure of the isthmus was a gradual process that was fully
-completed about 2.8 million years ago (My), but some species might have
-initiated their divergences earlier, and might have been fully reproductively
-isolated before the final closure \cite{Lessios2008}. Additionally,
-trans-isthmian species might not be sister, as the most closely related species
-might occur elsewhere, leading to an overestimation of the molecular clock
-rate. We limited the likelihood of comparing the wrong species pairs through
-extensive sampling. For instance, in the ``\textit{Holothuria impatiens}''
-complex we found that the species most closely related to the species from the
-Caribbean occurs in the Galapagos, and is not the one occurring in the Eastern
-Pacific coast. Finally, even with equal mutation rates, and simultaneous
-divergences, differences in levels of ancestral polymorphism will lead to
-variation in the time to the most common recent ancestor \cite{Hickerson2006,
-  Hurt2009}. Thorough analyses of the most likely hypotheses explaining the
-range of pairwise differences observed across the isthmus (from 1.9\% to 14.5\%)
-will be needed. However, it is interesting to note that the sister species with
-the lowest rates (\textit{Euapta lappa} and \textit{Euapta godeffroyi}) belong
-to the family where the threshold approach led to fewer species than what is
-currently recognized in the taxonomy: \textit{E. lappa} and
-\textit{E. godeffroyi} were grouped together as a single ESU despite being
-separated by the isthmus; \textit{Opheodesoma} counts 11 species but we
-recovered only 2 ESUs (and 2 ESUs that corresponded to undescribed species);
-\textit{Synaptula} counts 30 species but we recovered 8 ESUs. Members of these
-genera are variable morphologically, and many of these species were described on
-the basis of a single specimen, suggesting that at least some of these names
-will need to be synonymized. For \textit{Opheodesoma}, which we investigated in
-more detail, we did not find any clear association between the morphological
-types and the ESUs, and the broad geographical overlap of in their distributions
-suggest that they may not be reproductively isolated.
+Overall, even if 10\% of sea cucumber species do not form reciprocally
+monophyletic clades, only 2.5\% are actually paraphyletic. Therefore, for
+identification purposes, barcoding in sea cucumbers will be very accurate.
 
-These exceptions were however rare, and most species formed reciprocally
-monophyletic groups that matched one or more of the ESUs delineated with the
-threshold method. Funk and Ormland \cite{Funk2003} estimated that 23\% of the
-2,319 animal species they surveyed were non-monophyletic in their mitochondrial
-genealogies. In the Holothuriidae, for which we investigated morphological
-differences more thoroughly, we recovered a much lower rate of 2\% (4 out of
-\Sexpr{length(load_species_clusterGrps("raw", "Holothuriidae",
-  0.02))}~ESUs). The rapid coalescence of the mitochondrial lineages could stem
-from low effective population sizes associated with the life history
-characteristics of marine invertebrates (e.g., fluctuations in population sizes,
-unequal contributions to the reproductive pool). The original dataset from Funk
-and Ormland did not include many invertebrates.
-
-Since most species are monophyletic, it makes sea cucumbers a great target for
-species level identification through barcoding as unknown sequences will cluster
-unambiguously with the correct species is the vast majority of the cases.
+% The low interspecific genetic distance leading to the lumping of different
+% species within a single ESU could also be the result of a slower molecular
+% clock. In the absence of fossil evidence, the closure of the isthmus of Panama
+% is the only reliable geological event that can be used to calibrate the
+% molecular clock. A few sister species are found on each sides of the isthmus and
+% their divergence might be associated with the closure of the isthmus. However,
+% there are challenges associated with estimating the time of divergence of these
+% sister species. The closure of the isthmus was a gradual process that was fully
+% completed about 2.8 million years ago (My), but some species might have
+% initiated their divergences earlier, and might have been fully reproductively
+% isolated before the final closure \cite{Lessios2008}. Additionally,
+% trans-isthmian species might not be sister, as the most closely related species
+% might occur elsewhere, leading to an overestimation of the molecular clock
+% rate. We limited the likelihood of comparing the wrong species pairs through
+% extensive sampling. For instance, in the ``\textit{Holothuria impatiens}''
+% complex we found that the species most closely related to the species from the
+% Caribbean occurs in the Galapagos, and is not the one occurring in the Eastern
+% Pacific coast. Finally, even with equal mutation rates, and simultaneous
+% divergences, differences in levels of ancestral polymorphism will lead to
+% variation in the time to the most common recent ancestor \cite{Hickerson2006,
+%   Hurt2009}. Thorough analyses of the most likely hypotheses explaining the
+% range of pairwise differences observed across the isthmus (from 1.9\% to 14.5\%)
+% will be needed. However, it is interesting to note that the sister species with
+% the lowest rates (\textit{Euapta lappa} and \textit{Euapta godeffroyi}) belong
+% to the family where the threshold approach led to fewer species than what is
+% currently recognized in the taxonomy: \textit{E. lappa} and
+% \textit{E. godeffroyi} were grouped together as a single ESU despite being
+% separated by the isthmus; \textit{Opheodesoma} counts 11 species but we
+% recovered only 2 ESUs (and 2 ESUs that corresponded to undescribed species);
+% \textit{Synaptula} counts 30 species but we recovered 8 ESUs. Members of these
+% genera are variable morphologically, and many of these species were described on
+% the basis of a single specimen, suggesting that at least some of these names
+% will need to be synonymized. For \textit{Opheodesoma}, which we investigated in
+% more detail, we did not find any clear association between the morphological
+% types and the ESUs, and the broad geographical overlap of in their distributions
+% suggest that they may not be reproductively isolated.
 
 % Set the stage for taxonomic revision work.
 
@@ -705,50 +688,22 @@ unambiguously with the correct species is the vast majority of the cases.
 % still species with geo issues
 % - H. roseomaculata -- cont. in Seychelles extends dist.
 % - H. tubulosa -- range spans recenter long. polygon too big
-%
 
-<<global-diversity-map, cache=FALSE, echo=FALSE>>=
-
-@
-
-
-The levels of endemicity for Hawaii and the Red Sea are relatively high
-(\Sexpr{formatC(100*length(hawaiiEnd)/length(hawaiiSpp), digits=2, width=2)}\%,
-\Sexpr{length(hawaiiEnd)} of \Sexpr{length(hawaiiSpp)} ESUs recorded for Hawaii,
-and \Sexpr{formatC(100*length(redSeaEnd)/length(redSeaSpp), digits=2,
-  width=2)}\%, \Sexpr{length(redSeaEnd)} of \Sexpr{length(redSeaSpp)} ESUs
-recorded for the Red Sea). Endemism in Hawaii for fishes is 20\% and 4\% for the
-Red Sea \cite{Allen2007}, 20\% for marine snails in Hawaii \cite{Paulay2002a},
-44\% for the hermit crabs \textit{Calcinus} in Hawaii \cite{Malay2010}.
 
 % something about how diversity of patterns diversity of patterns in the Indian Ocean
 % displacement of Red Sea by expansion of Pacific Ocean species
 
-<<ibd-text-stats-discuss, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE>>=
-maxRangeElasi <- max(subset(distBySpecies, Order == "Elasipodida")$maxGeoDist) #$
-maxRangeElasiF <- formatC(round(maxRangeElasi, 0), format="d")
-restrictAspido <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies,
-                     subset=(Order == "Aspidochirotida" & maxGeoDist < maxRangeElasi))
-restrictDendro <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies,
-                     subset=(Order == "Dendrochirotida" & maxGeoDist < maxRangeElasi))
-restrictApod <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies,
-                     subset=(Order == "Apodida" & maxGeoDist < maxRangeElasi))
-@
-
 We detected a consistent pattern of isolation-by-distance for the three orders
-we sampled more thoroughly despite differences in dispersal potential. The slope
-of the relationship was weak, and variation was high. Our results suggest that
-on average, ESUs with large geographical ranges show higher levels of genetic
-differentiation, but some species remain panmictic across the Indo-Pacific. The
-type of larva does not seem to affect the amount of genetic differentiation
-expected across the range as evidence by the common slope for the
-orders. However, the Dendrochirotida with their lecithotrophic larvae, have
+we sampled more thoroughly despite differences in dispersal potential. Our
+results suggest that on average, ESUs with large geographical ranges show higher
+levels of genetic differentiation, but some species remain panmictic across the
+Indo-Pacific. The type of larva does not seem to affect the amount of genetic
+differentiation expected across the range as evidence by the common slope for
+the orders. However, the Dendrochirotida with their lecithotrophic larvae, have
 smaller range sizes than the orders with planktotrophic larvae. Both Apodida and
 Aspidochirotida have ESUs that span the entire Indo-Pacific while only a few
 Dendrochirotida have ESUs that span either the Indian or the Pacific
-oceans. Additionally, many Dendrochirotida with restricted ranges that were
-known from a handful of individuals were not included in the analyses,
-overestimating their mean range sizes.
+oceans.
 
 Most sister ESUs were found in allopatry indicating the importance of
 geographical isolation in the diversification of sea cucumbers. Allopatric
@@ -758,42 +713,8 @@ the most prevalent mode in marine organisms (e.g., \cite{Meyer2005-evolution,
 proportion of sister ESUs occurring in sympatry. This difference could be the
 result of sympatric speciation, higher rates of secondary sympatry (speciation
 occurred in allopatry, but the resulting species extended their ranges, and are
-now sympatric), an artifact of the method used (the threshold approach lumped
-species, masking their original modes of speciation, or the ESUs were split
-because of elevated levels of genetic variation but actually belong to the same
-species), or a sampling artifact (the real sister species has not been
+now sympatric), or a sampling artifact (the real sister species has not been
 sampled).
-
-Of the \Sexpr{nSymp} cases of sympatric ESUs, 7 included more than two species:
-the most closely related species occur in allopatry but one of them occur in
-sympatry with a third one. It is for instance the case of \textit{Bohadschia
-  atra} and \textit{B. argus} that are lumped in a single ESU but are allopatric
-(\textit{B. atra} is restricted to the Western Indian Ocean, while
-\textit{B. argus} is restricted to the Western and Central Pacific), however
-\textit{B. atra} is sympatric with \textit{B. cousteaui} another Western Indian
-and Red Sea endemic. This is also the case of several species of
-\textit{Stichopus}. In this genus, very distinct color morphs (including named
-species) are characterized by low genetic divergences. One ESU that lumps together at
-least three putative species, is sister to an ESU that includes two
-putative species.
-
-The other 8 species appear to be cases of rapid secondary sympatry or sympatric
-speciation. In some cases, the polygons representing the geographic ranges of
-the ESUs overlap broadly but the species do not co-occur. It is the case of
-\textit{Holothuria turriscelsa} and its sister ESU, a morphologically distinct
-likely undescribed species. The former occurs in clear waters of the external
-reef slopes, and has only been collected on oceanic islands; the latter occurs
-in silty waters of lagoons and has only been collected in continental
-areas. These other species are instances where one species is restricted to
-either the Indian or the Pacific Ocean, while the other occurs in both.
-
-Five other cases, mostly deep sea species, lack information to assess their
-exact status. Some were collected at the same locality but might be occurring at
-different depths. Access to additional data will be needed to assess whether
-individuals co-occur. Two species, \textit{Holothuria pervicax} and
-\textit{H. pardalis}, were each split in two sympatric ESUs that do not seem to
-vary morphologically and could represent a single species being split because of
-high genetic differentiation.
 
 Allopatry is clearly the most common mode of speciation among sea cucumbers, and
 our initial estimate appear to be an underestimate. The process that could have
@@ -870,7 +791,7 @@ arising of several species endemic to the area.
 \pagebreak
 
 \section{Supplementary material}
- a
+
 <<sm-groups-comparison-plot, cache=TRUE, echo=FALSE, dependson='groups-comparison-plot', fig.height=6.5, fig.cap='Comparison of the number of ESUs (top), and the proportion of ESUs represented by a single individual (singletons, bottom) estimated with the pairwise distance method (pairwise) and the clustering method (cluster), based on uncorrected distances (uncorrected) or the Kimura 2-parameter distances (K2P), for the orders Apodida, Dendrochirotida and Elasipodida. The gray horizontal dashed line represents the number of named species sequenced.', fig.scap='Estimated number of ESUs'>>=
 
 @
