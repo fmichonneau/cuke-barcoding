@@ -690,38 +690,37 @@ identification purposes, barcoding in sea cucumbers will be very accurate.
 % - H. tubulosa -- range spans recenter long. polygon too big
 
 
-% something about how diversity of patterns diversity of patterns in the Indian Ocean
-% displacement of Red Sea by expansion of Pacific Ocean species
+% something about how diversity of patterns diversity of patterns in the Indian
+% Ocean displacement of Red Sea by expansion of Pacific Ocean species
 
 We detected a consistent pattern of isolation-by-distance for the three orders
 we sampled more thoroughly despite differences in dispersal potential. Our
 results suggest that on average, ESUs with large geographical ranges show higher
 levels of genetic differentiation, but some species remain panmictic across the
 Indo-Pacific. The type of larva does not seem to affect the amount of genetic
-differentiation expected across the range as evidence by the common slope for
+differentiation expected across the range as evidenced by the common slope for
 the orders. However, the Dendrochirotida with their lecithotrophic larvae, have
 smaller range sizes than the orders with planktotrophic larvae. Both Apodida and
 Aspidochirotida have ESUs that span the entire Indo-Pacific while only a few
 Dendrochirotida have ESUs that span either the Indian or the Pacific
-oceans.
+oceans. These results suggest that the modes of diversification differ depending
+on the type of larvae. In particular, it appears that the Dendrochirotida are
+more likely to diversify through founder effect as most species cannot disperse
+over long distances to maintain gene flow between distant populations. On the
+other hand, planktotrophic larvae can potentially connect distant populations,
+and barriers to dispersal must be required more often to lead to genetic
+isolation, and reproductive isolation.
 
 Most sister ESUs were found in allopatry indicating the importance of
 geographical isolation in the diversification of sea cucumbers. Allopatric
 speciation appears to be the most common in animals \cite{Coyne2004} and is also
 the most prevalent mode in marine organisms (e.g., \cite{Meyer2005-evolution,
-  Malay2010}). Compared to other studies, we however recovered a higher
+  Malay2010}). Compared to other marine organisms, we however recovered a higher
 proportion of sister ESUs occurring in sympatry. This difference could be the
 result of sympatric speciation, higher rates of secondary sympatry (speciation
 occurred in allopatry, but the resulting species extended their ranges, and are
-now sympatric), or a sampling artifact (the real sister species has not been
+now sympatric), or a sampling artifact (the actual sister species has not been
 sampled).
-
-Allopatry is clearly the most common mode of speciation among sea cucumbers, and
-our initial estimate appear to be an underestimate. The process that could have
-led to overestimating allopatry is difficult to disprove in the absence of
-fossil evidence (speciation was in sympatry but species contracted their ranges
-to be allopatric presently), and is less parsimonious given our current
-understanding of speciation.
 
 A striking pattern that emerges from this data is the rapid onset of secondary
 sympatry as several recently diverged ESUs are sympatric. This contrasts with
@@ -760,6 +759,17 @@ marine biogeographic barrier, and in a recent review, 15 out of 18 species of
 fish and invertebrates surveyed showed genetic differentiation across the IBP
 \cite{Gaithier2010}. The geographical isolation of Hawaii has contributed to
 arising of several species endemic to the area.
+
+
+While the biological species concept recognizes reproductive isolation as the
+key factor to delineate species, this criteria is not directly available to
+taxonomists, and morphological and genetic information are used as proxies to
+assess species limits. However, if reproductive isolation leads to genetic and
+morphological differentiation, these three processes operate on different time
+scales and are constrained by different evolutionary forces. These criteria may
+not be in agreement and may not be indicative of species limits. Barcoding
+allows to identify species groups that are characterized by these patterns, and
+that deserve to be investigate further.
 
 % The Red Sea experienced several salinity crises, the latest as early as
 % \textit{ca.} 19,000 years ago \cite{Siddal2003}. Therefore, the Red Sea fauna
