@@ -636,6 +636,16 @@ Overall, even if 10\% of sea cucumber species do not form reciprocally
 monophyletic clades, only 2.5\% are actually paraphyletic. Therefore, for
 identification purposes, barcoding in sea cucumbers will be very accurate.
 
+While the biological species concept recognizes reproductive isolation as the
+key factor to delineate species, this criteria is not directly available to
+taxonomists, and morphological and genetic information are used as proxies to
+assess species limits. However, if reproductive isolation leads to genetic and
+morphological differentiation, these three processes operate on different time
+scales and are constrained by different evolutionary forces. These criteria may
+not be in agreement and may not be indicative of species limits. Barcoding
+allows to identify species groups that are characterized by these patterns, and
+that deserve to be investigate further.
+
 % The low interspecific genetic distance leading to the lumping of different
 % species within a single ESU could also be the result of a slower molecular
 % clock. In the absence of fossil evidence, the closure of the isthmus of Panama
@@ -693,24 +703,6 @@ identification purposes, barcoding in sea cucumbers will be very accurate.
 % something about how diversity of patterns diversity of patterns in the Indian
 % Ocean displacement of Red Sea by expansion of Pacific Ocean species
 
-We detected a consistent pattern of isolation-by-distance for the three orders
-we sampled more thoroughly despite differences in dispersal potential. Our
-results suggest that on average, ESUs with large geographical ranges show higher
-levels of genetic differentiation, but some species remain panmictic across the
-Indo-Pacific. The type of larva does not seem to affect the amount of genetic
-differentiation expected across the range as evidenced by the common slope for
-the orders. However, the Dendrochirotida with their lecithotrophic larvae, have
-smaller range sizes than the orders with planktotrophic larvae. Both Apodida and
-Aspidochirotida have ESUs that span the entire Indo-Pacific while only a few
-Dendrochirotida have ESUs that span either the Indian or the Pacific
-oceans. These results suggest that the modes of diversification differ depending
-on the type of larvae. In particular, it appears that the Dendrochirotida are
-more likely to diversify through founder effect as most species cannot disperse
-over long distances to maintain gene flow between distant populations. On the
-other hand, planktotrophic larvae can potentially connect distant populations,
-and barriers to dispersal must be required more often to lead to genetic
-isolation, and reproductive isolation.
-
 Most sister ESUs were found in allopatry indicating the importance of
 geographical isolation in the diversification of sea cucumbers. Allopatric
 speciation appears to be the most common in animals \cite{Coyne2004} and is also
@@ -721,6 +713,37 @@ result of sympatric speciation, higher rates of secondary sympatry (speciation
 occurred in allopatry, but the resulting species extended their ranges, and are
 now sympatric), or a sampling artifact (the actual sister species has not been
 sampled).
+
+We detected a consistent pattern of isolation-by-distance for the three orders
+we sampled more thoroughly despite differences in dispersal potential. Our
+results suggest that on average, ESUs with large geographical ranges show higher
+levels of genetic differentiation, but some species remain panmictic across the
+Indo-Pacific. The type of larva does not seem to affect the amount of genetic
+differentiation expected across the range as evidenced by the common slope and
+intercept estimated across orders. However, the Dendrochirotida with their
+lecithotrophic larvae, have smaller range sizes than the orders with
+planktotrophic larvae. Both Apodida and Aspidochirotida have ESUs that span the
+entire Indo-Pacific while only a few Dendrochirotida have ESUs that span either
+the Indian or the Pacific oceans. These results suggest that the modes of
+diversification differ depending on the type of larvae. In particular, it
+appears that the Dendrochirotida are more likely to diversify through founder
+effect as most species cannot disperse over long distances to maintain gene flow
+between distant populations. On the other hand, planktotrophic larvae can
+potentially connect distant populations, and barriers to dispersal must be
+required more often to lead to genetic isolation, and reproductive isolation. If
+currently, few barriers to gene flow occur across the Indo-Pacific,
+
+Most of the geographical breaks between sister ESUs of the Indo-Pacific
+separated ESUs from the Indian and the Pacific Oceans, or the Red Sea and the
+rest of the Indo-Pacific (Fig.~\ref{fig:map-barriers}). Other barriers included
+the East Pacific Barrier, and the Hawaiian archipelago. The Indian Ocean and the
+Pacific Ocean were isolated several times throughout the Pleistocene
+\cite{Voris2000} which could have contributed to the isolation and divergence of
+the species across the Indo-Pacific Barrier (IBP). The IBP is a recognized
+marine biogeographic barrier, and in a recent review, 15 out of 18 species of
+fish and invertebrates surveyed showed genetic differentiation across the IBP
+\cite{Gaithier2010}. The geographical isolation of Hawaii has contributed to
+arising of several species endemic to the area.
 
 A striking pattern that emerges from this data is the rapid onset of secondary
 sympatry as several recently diverged ESUs are sympatric. This contrasts with
@@ -748,28 +771,7 @@ but bindin is known from sea urchins \cite{Lessios2011} and sea stars
 cucumbers emerged from.  They could explain how some species have acquired
 reproductive isolation rapidly.
 
-Most of the geographical breaks between sister ESUs of the Indo-Pacific
-separated ESUs from the Indian and the Pacific Oceans, or the Red Sea and the
-rest of the Indo-Pacific (Fig.~\ref{fig:map-barriers}). Other barriers included
-the East Pacific Barrier, and the Hawaiian archipelago. The Indian Ocean and the
-Pacific Ocean were isolated several times throughout the Pleistocene
-\cite{Voris2000} which could have contributed to the isolation and divergence of
-the species across the Indo-Pacific Barrier (IBP). The IBP is a recognized
-marine biogeographic barrier, and in a recent review, 15 out of 18 species of
-fish and invertebrates surveyed showed genetic differentiation across the IBP
-\cite{Gaithier2010}. The geographical isolation of Hawaii has contributed to
-arising of several species endemic to the area.
 
-
-While the biological species concept recognizes reproductive isolation as the
-key factor to delineate species, this criteria is not directly available to
-taxonomists, and morphological and genetic information are used as proxies to
-assess species limits. However, if reproductive isolation leads to genetic and
-morphological differentiation, these three processes operate on different time
-scales and are constrained by different evolutionary forces. These criteria may
-not be in agreement and may not be indicative of species limits. Barcoding
-allows to identify species groups that are characterized by these patterns, and
-that deserve to be investigate further.
 
 % The Red Sea experienced several salinity crises, the latest as early as
 % \textit{ca.} 19,000 years ago \cite{Siddal2003}. Therefore, the Red Sea fauna
