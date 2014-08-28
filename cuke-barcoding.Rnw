@@ -705,59 +705,76 @@ that deserve to be investigate further.
 
 Most sister ESUs were found in allopatry indicating the importance of
 geographical isolation in the diversification of sea cucumbers. Allopatric
-speciation appears to be the most common in animals \cite{Coyne2004} and is also
-the most prevalent mode in marine organisms (e.g., \cite{Meyer2005-evolution,
-  Malay2010}). Compared to other marine organisms, we however recovered a higher
-proportion of sister ESUs occurring in sympatry. This difference could be the
-result of sympatric speciation, higher rates of secondary sympatry (speciation
-occurred in allopatry, but the resulting species extended their ranges, and are
-now sympatric), or a sampling artifact (the actual sister species has not been
-sampled).
+speciation appears to be the most common mode in animals \cite{Coyne2004} and is
+also the most prevalent mode in marine organisms (e.g.,
+\cite{Meyer2005-evolution, Malay2010}).
 
 We detected a consistent pattern of isolation-by-distance for the three orders
 we sampled more thoroughly despite differences in dispersal potential. Our
 results suggest that on average, ESUs with large geographical ranges show higher
-levels of genetic differentiation, but some species remain panmictic across the
-Indo-Pacific. The type of larva does not seem to affect the amount of genetic
-differentiation expected across the range as evidenced by the common slope and
-intercept estimated across orders. However, the Dendrochirotida with their
-lecithotrophic larvae, have smaller range sizes than the orders with
+levels of genetic differentiation, but some species share a common haplotype
+across the Indo-Pacific. The type of larva does not seem to affect the amount of
+genetic differentiation expected across the range as evidenced by the common
+slope and intercept estimated across orders. However, the Dendrochirotida with
+their lecithotrophic larvae, have smaller range sizes than the orders with
 planktotrophic larvae. Both Apodida and Aspidochirotida have ESUs that span the
 entire Indo-Pacific while only a few Dendrochirotida have ESUs that span either
-the Indian or the Pacific oceans. These results suggest that the modes of
-diversification differ depending on the type of larvae. In particular, it
-appears that the Dendrochirotida are more likely to diversify through founder
-effect as most species cannot disperse over long distances to maintain gene flow
-between distant populations. On the other hand, planktotrophic larvae can
-potentially connect distant populations, and barriers to dispersal must be
-required more often to lead to genetic isolation, and reproductive isolation. If
-currently, few barriers to gene flow occur across the Indo-Pacific,
+the Indian or the Pacific oceans. These results suggest that the type of larvae
+influence patterns of diversity and modes of diversification.
 
-Most of the geographical breaks between sister ESUs of the Indo-Pacific
-separated ESUs from the Indian and the Pacific Oceans, or the Red Sea and the
-rest of the Indo-Pacific (Fig.~\ref{fig:map-barriers}). Other barriers included
-the East Pacific Barrier, and the Hawaiian archipelago. The Indian Ocean and the
-Pacific Ocean were isolated several times throughout the Pleistocene
-\cite{Voris2000} which could have contributed to the isolation and divergence of
-the species across the Indo-Pacific Barrier (IBP). The IBP is a recognized
-marine biogeographic barrier, and in a recent review, 15 out of 18 species of
-fish and invertebrates surveyed showed genetic differentiation across the IBP
-\cite{Gaithier2010}. The geographical isolation of Hawaii has contributed to
-arising of several species endemic to the area.
+As species of Apodida and Aspidochirotida can maintain connectivity across very
+large distances, opportunities for gene flow interruptions are limited in the
+present geographical context of the Indo-Pacific. The geographical location of
+the barriers between allopatric sister ESUs for the Holothuriidae indicate that
+separation between the Indian and Pacific Oceans, the Red Sea and the Hawaiian
+archipelago are the three main barriers to cladogenesis (Fig.~
+\ref{fig:map-barriers}). The Indian Ocean and the Pacific Ocean were isolated
+several times throughout the Pleistocene \cite{Voris2000} which could have
+contributed to the isolation and divergence of the species across the
+Indo-Pacific Barrier (IBP). The IBP is a recognized marine biogeographic
+barrier, and in a recent review, 15 out of 18 species of fish and invertebrates
+surveyed showed genetic differentiation across this barrier
+\cite{Gaithier2010}. Here we found, xx\% of the species to show differences...
 
-A striking pattern that emerges from this data is the rapid onset of secondary
-sympatry as several recently diverged ESUs are sympatric. This contrasts with
-other marine organisms, for which secondary sympatry occurs slowly and takes at
-minimum 2 millions years but often more than 10 millions years \cite{Meyer2005,
-  Malay2010, Hodges2013}. All trans-isthmian species pairs (except for
-\textit{Euapta lappa} and \textit{E. godeffroyi}) were recovered as distinct
-ESUs. It has been suggested that the time since the closure of the isthmus
-corresponds to the time frame needed for reproductive isolation to occur in
-complete allopatry \cite{Knowlton2000}. However, reproductive isolation could be
-achieved faster with some gene flow between incipient species because of
-reinforcement. In our study, several sister ESUs or even species within ESUs,
-were sympatric indicating that sympatry occurred regularly in less than 3
-million years. The rapid acquisition of reproductive isolation could arise from
+Typically, Dendrochirotida species have restricted ranges, with many species
+known from a single locality, and species within a genus often strictly
+allopatric. In the Indo-Pacific, most species of Dendrochirotida are restricted
+to continental areas, with \textit{Afrocucumis africana} being the only species
+that reach the Central Pacific. This pattern could be explained by the
+combination of limited dispersal abilities that make the insular Pacific
+difficult to reach, and the suspension feeding mode of this group that cannot
+inhabit the oligotrophic environments that constitute oceanic islands
+\cite{Michonneau2013}. The limited dispersal abilities of the Dendrochirotida
+also lead to a different mode of diversification where speciation can occur at
+small spatial scales, including along continental margins, a pattern that is not
+observed in Aspidochirotida or the Apodida.
+
+Compared to other studies on marine organisms, we recovered a higher proportion
+of sister ESUs occurring in sympatry for the Holothuriidae. For instance, all
+ESUs are strictly allopatric in \cite{Meyer2005-evolution}, and one out of 40
+ESUs are sympatric in \cite{Malay2010}. This difference could be the result of
+sympatric speciation, higher rates of secondary sympatry (speciation occurred in
+allopatry, but the resulting species extended their ranges, and are now
+sympatric), or a sampling artifact (the actual sister species has not been
+sampled). Two lines of evidence lend support for the hypothesis of range
+expansion. First, the high dispersal abilities of the Aspidochirotida make the
+colonization of distant habitats possible once the barrier to dispersal has been
+removed. For instance, the Red Sea experienced several salinity crises, the
+latest as early as \textit{ca.} 19,000 years ago \cite{Siddal2003}. Therefore,
+the Red Sea fauna must have colonized the area from outside refugia following
+the salinity crisis. Of the 30 ESUs occurring in the Red Sea, five occur
+throughout the Indo-Pacific suggesting that they can expend their ranges
+rapidly.
+
+Second, many closely related ESUs occur in sympatry, indicating that
+reproductive isolation can be completed rapidly. For instance, in Chapter~2, we
+showed how 3 ESUs in the \textit{Holothuria impatiens} complex, occur in
+sympatry even though they diverged less than 2 millions years ago. Four out of
+the eight complexes with three or more ESUs, have ESUs with overlapping
+ranges. This contrasts with other marine organisms, for which secondary sympatry
+in oceanic settings occurs slowly and takes at minimum 2 millions years but
+often more than 10 millions years \cite{Meyer2005, Quenouille2011, Malay2010,
+  Hodges2013}. The rapid acquisition of reproductive isolation could arise from
 premating isolation barriers such as differences in the timing of gamete release
 or gametic incompatibilities. Gamete recognition proteins are known to evolve
 rapidly and play a critical role in fecundation success of many free spawning
@@ -768,28 +785,10 @@ but not in allopatry \cite{Geyer2003}, suggesting the role of these proteins in
 maintaining species limits.  GRPs have not yet been identified in sea cucumbers
 but bindin is known from sea urchins \cite{Lessios2011} and sea stars
 \cite{Patino2009} which indicates that it is plesiomorphic in the clade that sea
-cucumbers emerged from.  They could explain how some species have acquired
-reproductive isolation rapidly.
+cucumbers emerged from.
 
-
-
-% The Red Sea experienced several salinity crises, the latest as early as
-% \textit{ca.} 19,000 years ago \cite{Siddal2003}. Therefore, the Red Sea fauna
-% must have colonized the area from outside refugia following the salinity
-% crisis. Some species that extend their ranges from the Red Sea to the Indian
-% Ocean might It is noteworthy that for all but one (\textit{Actinopyga
-%   bannworthi}) species endemic to the Red Sea, the sister ESU occurs either
-% throughout the Indo-Pacific or only occurs in the Pacific Ocean. The other
-% species found in the Red Sea typically also occur in the Indian Ocean.
-
-
-
-
-
-% tradeoff between many species 1 gene / multiple genes
-
-%% Geographical scale
-% see Bergsten+2012
+% use sister species of Red Sea to talk about ecological consequences of range
+% expansion.
 
 
 
@@ -810,6 +809,11 @@ reproductive isolation rapidly.
 
 
 \end{document}
+
+
+%% Geographical scale of barcoding studies
+% see Bergsten+2012
+
 
 % - Diversification:
 %   - [future] Is there signal that the timing of differentiation is similar for areas

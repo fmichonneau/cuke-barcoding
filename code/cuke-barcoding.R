@@ -696,6 +696,47 @@ ggplot(esuRange) + geom_bar(aes(x=rangeType, fill=rangeType)) +
     scale_fill_discrete("Type of geographic range") +
     theme(legend.position="none")
 
+### ---- geography-diversification-all ----
+source("R/test-allopatry-functions.R")
+cukeAlg <- load_cukeAlg()
+cukeDB <- load_cukeDB()
+allTree <- load_tree_clusterGrps("raw", "all", 0.02)
+tipLabels(allTree) <- gsub("\\\"", "", tipLabels(allTree))
+allTree <- subset(allTree, tips.exclude="Stichopodidae_Stichopus_horrens_Galapagos_Hickmanneed_Hickmanimmature")
+mlTree <- load_tree_raxml_phylo4()
+tipLabels(mlTree) <- gsub("\\\"", "", tipLabels(mlTree))
+mlTree <- subset(mlTree, tips.exclude="Stichopodidae_Stichopus_horrens_Galapagos_Hickmanneed_Hickmanimmature")
+allGrps <- tdata(allTree, "tip")[, "Groups", drop=FALSE]
+allTreeMl <- addData(mlTree, tip.data=allGrps)
+esuRangeAll <- testRangeType(allTreeMl, cukeAlg, cukeDB)
+
+esuRangeAll <- esuRangeAll[complete.cases(esuRangeAll), ]
+
+esuRangeAll$species <- as.character(esuRangeAll$species)
+
+esuRangeAll$rangeType <- factor(esuRangeAll$rangeType, levels=c("allopatric", "sympatric", "parapatric"))
+
+tabRangeTypeAll <- table(esuRangeAll$rangeType)
+
+percentAlloAll <- 100*tabRangeTypeAll["allopatric"]/sum(tabRangeTypeAll)
+percentSympAll <- 100*tabRangeTypeAll["sympatric"]/sum(tabRangeTypeAll)
+percentParaAll <- 100*tabRangeTypeAll["parapatric"]/sum(tabRangeTypeAll)
+
+### ---- map-dendrochirotida ----
+dendroMap <- subset(load_cukeDB(), genusorhigher == "Phyrella")[, c("order", "genusorhigher", "species", "decimalLatitude", "decimalLongitude")]
+center <- 150
+dendroMap$long.recenter <- ifelse(dendroMap$decimalLongitude < center - 180,
+                                  dendroMap$decimalLongitude + 360,
+                                  dendroMap$decimalLongitude)
+dendroMap <- dendroMap[complete.cases(dendroMap), ]
+
+ggplot(dendroMap) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x = long.recenter, y = decimalLatitude, colour=species), size=4, data=dendroMap) +
+    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position="none") +
+    xlim(c(0, 300)) + ylim(c(-45, 30))
+
 
 ### ---- mantel-test ----
 ### Doesn't really work given too much data, could instead do by species
