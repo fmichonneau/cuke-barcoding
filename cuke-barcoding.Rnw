@@ -579,15 +579,18 @@ Fig.~\ref{fig:geography-diversification}).
 @
 
 Among allopatric ESUs within the Holothuriidae, most
-(\Sexpr{formatC(percentIOPO, width=2, digits=2)}) separated between the Indian
+(\Sexpr{formatC(percentIOPO, width=2, digits=2)}\%) separated between the Indian
 and Pacific Oceans. The other significant barriers included the Red Sea
-\Sexpr{formatC(percentRSPO, width=2, digits=2)} and the Hawaii Archipelago
-\Sexpr{formatC(percentHIPO, width=2, digits=2)}. The levels of genetic
-divergence for the ESU pairs separated across these basins varied greatly
-(Fig.~\ref{fig:barriers}). For the Red Sea/Pacific Ocean (RS/PO), and for the
-Indian Ocean/Pacific Ocean (IO/PO) pairs, distances clustered in two groups
-(RS/PO: ESU pairs with genetic distances ~ 5\% and > 10\%; IO/PO: ESU pairs with
-genetic distances < 5\% and > 7.5\%).
+(\Sexpr{formatC(percentRSPO, width=2, digits=2)}\%) and the Hawaii Archipelago
+(\Sexpr{formatC(percentHIPO, width=2, digits=2)}\%). Other barriers included
+endemics restricted to remote archipelagos (Galapagos, French Polynesia), or
+continental areas with distinct ecological conditions (Eastern Pacific,
+Oman). The levels of genetic divergence for the ESU pairs separated across these
+basins varied greatly (Fig.~\ref{fig:barriers}). For the Red Sea/Pacific Ocean
+(RS/PO), and for the Indian Ocean/Pacific Ocean (IO/PO) pairs, distances
+clustered in two groups (RS/PO: ESU pairs with genetic distances \textasciitilde 5\% and >
+10\%; IO/PO: ESU pairs with genetic distances < 5\% and > 7.5\%)
+(Fig.~\ref{fig:barriers}).
 
 \section{Discussion}
 
@@ -817,7 +820,7 @@ indicates that it is plesiomorphic in the clade that sea cucumbers emerged from.
 
 @
 
-<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', fig.height=6.5, echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap='Number of ESUs incorrectly assigned compared to the manual ESU delineation on the Holothuriidae for the thresholds using the pairwise distance method (pairwise) and theclustering method (cluster), based on uncorrected genetic distances or the Kimura 2-parameter distances (K2P).ESUs can be incorrectly assigned because of oversplitting (1 manually defined ESU results in several threshold-based ESU) or lumping (1 threshold-based ESU is comprised of several manually defined ESU). The lowest error rate is with the clustering method based on uncorrected distances.'>>=
+<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', fig.height=6.5, echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap=paste0('Number of ESUs incorrectly assigned compared to the manual ESU delineation on the Holothuriidae for the thresholds using the pairwise distance method (pairwise) and theclustering method (cluster), based on uncorrected genetic distances or the Kimura 2-parameter distances (K2P).ESUs can be incorrectly assigned because of oversplitting (1 manually defined ESU results in several threshold-based ESU) or lumping (1 threshold-based ESU is comprised of several manually defined ESU). The lowest error rate is with the clustering method based on uncorrected distances and a threshold of ', minError['threshold'], '.')>>=
 
 @
 
