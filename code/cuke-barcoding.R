@@ -84,7 +84,7 @@ accuracyGrps <- function(tree) {
     for (i in 1:length(uniqGrps)) {
         tmpDt <- subset(compGrps, manGrps == uniqGrps[i])
         if (length(unique(tmpDt$manGrps)) > 1)
-            splits <- unique(tmpDt$Groups)
+            splits <- unique(tmpDt$manGrps)
         else splits <- NA
         tmpDt2 <- subset(compGrps, Groups %in% unique(tmpDt$Groups))
         if( length(unique(tmpDt2$manGrps)) > 1)
