@@ -83,13 +83,13 @@ accuracyGrps <- function(tree) {
     compRes <- vector("list", length(uniqGrps))
     for (i in 1:length(uniqGrps)) {
         tmpDt <- subset(compGrps, manGrps == uniqGrps[i])
-        if (length(unique(tmpDt$manGrps)) > 1)
-            splits <- unique(tmpDt$manGrps)
-        else splits <- NA
+        if (length(unique(tmpDt$Groups)) > 1)
+            lumps <- unique(tmpDt$Groups)
+        else lumps <- NA
         tmpDt2 <- subset(compGrps, Groups %in% unique(tmpDt$Groups))
         if( length(unique(tmpDt2$manGrps)) > 1)
-            lumps <- unique(tmpDt2$manGrps)
-        else lumps <- NA
+            splits <- unique(tmpDt2$manGrps)
+        else splits <- NA
         compRes[[i]] <- list(splits=splits, lumps=lumps)
     }
     nLumps <- sapply(compRes, function(x) x$lumps)
@@ -658,7 +658,89 @@ ggplot(subset(distBySpecies, Order %in% orderToInclude),
                                linetype=2) +
     facet_wrap(~ Order) + ylab("Maximum genetic distance (K2P)") +
     xlab("Maximum genetic distance (km)") +
-    theme(legend.position="non")
+    theme(legend.position="none")
+
+### ---- barriers ----
+iopoDist <- manESU[grep("_(IO|PO)$", manESU$ESU_genetic), ]
+iopoESU <- gsub("_[A-Z]{2}$", "", iopoDist$ESU_genetic)
+iopoESU <- gsub("(\\d{1})[a-z]{1}", "\\1", iopoESU)
+iopoDist$iopoESU <- iopoESU
+
+iopoGrps <- split(iopoDist$ESU_genetic, iopoDist$iopoESU)
+iopoGrps <- lapply(iopoGrps, function(x) unique(x))
+iopoGrps <- iopoGrps[sapply(iopoGrps, function(x) length(x) == 2)]
+
+iopoGenDist <- sapply(iopoGrps, function(x) {
+    ind1 <- subset(iopoDist, iopoDist$ESU_genetic== x[1])$Labels
+    ind2 <- subset(iopoDist, iopoDist$ESU_genetic== x[2])$Labels
+    interESUDist(ind1, ind2, cukeAlg)$mean
+})
+
+iopoESUcat <- sapply(iopoGrps, function(x) {
+    if (length(grep("\\d{1}[a-z]{1}", x)) == 2) "inter"
+    else "intra"
+})
+
+iopoDat <- data.frame(barrier="IO/PO", genDist=iopoGenDist, esuCat=iopoESUcat)
+
+##
+
+rspoDist <- manESU[grep("_(RS|PO)$", manESU$ESU_genetic), ]
+rspoESU <- gsub("_[A-Z]{2}$", "", rspoDist$ESU_genetic)
+rspoESU <- gsub("(\\d{1})[a-z]{1}", "\\1", rspoESU)
+rspoDist$rspoESU <- rspoESU
+
+rspoGrps <- split(rspoDist$ESU_genetic, rspoDist$rspoESU)
+rspoGrps <- lapply(rspoGrps, function(x) unique(x))
+rspoGrps <- rspoGrps[sapply(rspoGrps, function(x) length(x) == 2)]
+
+rspoGenDist <- sapply(rspoGrps, function(x) {
+    ind1 <- subset(rspoDist, rspoDist$ESU_genetic== x[1])$Labels
+    ind2 <- subset(rspoDist, rspoDist$ESU_genetic== x[2])$Labels
+    interESUDist(ind1, ind2, cukeAlg)$mean
+})
+
+rspoESUcat <- sapply(rspoGrps, function(x) {
+    if (length(grep("\\d{1}[a-z]{1}", x)) == 2) "inter"
+    else "intra"
+})
+
+rspoDat <- data.frame(barrier="RS/PO", genDist=rspoGenDist, esuCat=rspoESUcat)
+
+##
+
+hipoDist <- manESU[grep("_(HI|PO|IW)$", manESU$ESU_genetic), ]
+hipoESU <- gsub("_[A-Z]{2}$", "", hipoDist$ESU_genetic)
+hipoESU <- gsub("(\\d{1})[a-z]{1}", "\\1", hipoESU)
+hipoDist$hipoESU <- hipoESU
+
+hipoGrps <- split(hipoDist$ESU_genetic, hipoDist$hipoESU)
+hipoGrps <- lapply(hipoGrps, function(x) unique(x))
+hipoGrps <- hipoGrps[sapply(hipoGrps, function(x) length(x) == 2)]
+
+hipoGenDist <- sapply(hipoGrps, function(x) {
+    ind1 <- subset(hipoDist, hipoDist$ESU_genetic== x[1])$Labels
+    ind2 <- subset(hipoDist, hipoDist$ESU_genetic== x[2])$Labels
+    interESUDist(ind1, ind2, cukeAlg)$mean
+})
+
+hipoESUcat <- sapply(hipoGrps, function(x) {
+    if (length(grep("\\d{1}[a-z]{1}", x)) == 2) "inter"
+    else "intra"
+})
+
+hipoDat <- data.frame(barrier="HI/PO", genDist=hipoGenDist, esuCat=hipoESUcat)
+
+geoDat <- rbind(iopoDat, rspoDat, hipoDat)
+geoDat <- subset(geoDat, esuCat == "inter")
+
+percentIOPO <- 100*sum(geoDat$barrier == "IO/PO")/tabRangeType["allopatric"]
+percentRSPO <- 100*sum(geoDat$barrier == "RS/PO")/tabRangeType["allopatric"]
+percentHIPO <- 100*sum(geoDat$barrier == "HI/PO")/tabRangeType["allopatric"]
+
+ggplot(geoDat) + geom_point(aes(y=barrier, x=genDist, colour=barrier)) +
+    ylab("") + xlab("Genetic distances (uncorrected)") +
+    theme(legend.position="none")
 
 ### ---- global-diversity-map ----
 globalMap <- map_data("world2")

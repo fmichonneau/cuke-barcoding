@@ -91,9 +91,9 @@ Estimates for the number of species in the sea are poorly constrained because
 sampling is challenging, and our understanding of species limits for most groups
 limited. Initially developed for species identification, DNA barcoding has
 become a popular technique to discover new species and evaluate species
-limits. Barcoding, the analysis of a portion of the mitochondrial genome, has
+limits. By analyzing of a portion of the mitochondrial genome, barcoding has
 unraveled cryptic lineages, most often associated with differences in
-morphology, coloration or behavior \cite{Knowlton2000}. However, because
+morphology, coloration or behavior \cite{Knowlton1993, Knowlton2000}. However, because
 barcoding is based on a single locus, genetic differentiation does not always
 track species limits \cite{Funk2003}. Introgression, ancestral polymorphisms,
 and incomplete lineage sorting may lead to non-reciprocally monophyletic groups
@@ -115,15 +115,14 @@ the groups. It becomes possible to assess the generality of patterns unraveled
 in species-specific studies.
 
 Sea cucumbers occur in most marine ecosystems, at all latitudes, from the
-intertidal to hadal depths. Sea cucumbers constitute the largest invertebrate
-fishery in the tropical Pacific, and stocks are fully exploited to depleted
-throughout the tropics. Yet, species level taxonomy is poorly understood, with
-large, commercially important species still regularly described (e.g.,
-\cite{Massin2009}), and other undescribed species illustrated in field
-guides. In sea cucumbers, species-level taxonomy has almost entirely relied on
-the shape of ossicles, microscopic calcareous secretion permeating their
-tissues. Ossicles show substantial diversity and variability, whilst variation
-in the simple anatomy of these animals is limited at lower taxonomic
+intertidal to hadal depths. They constitute the largest invertebrate fishery in
+the tropical Pacific, and stocks are fully exploited to depleted throughout the
+tropics. Yet, species level taxonomy is poorly understood, with large,
+commercially important species still regularly described (e.g.,
+\cite{Massin2009}). In sea cucumbers, species-level taxonomy has almost entirely
+relied on the shape of ossicles, microscopic calcareous secretion permeating
+their tissues. Ossicles show substantial diversity and variability, whilst
+variation in the simple anatomy of these animals is limited at lower taxonomic
 levels. Ossicles cannot always be used to tease apart species, and
 intra-specific variation is poorly characterized since most descriptions
 illustrate ossicles from a single individual. Live coloration, which has not
@@ -568,32 +567,27 @@ SE=\Sexpr{formatC(coefficients(ibdHol)[2,2])}).
 @
 
 We compared the geographic ranges of \Sexpr{sum(complete.cases(esuRange))} pairs
-of sister ESUs. Most had allopatric distributions (\Sexpr{formatC(percentAllo,
-  digits=2, width=2)}\%), the other sister ESUs were sympatric
-(\Sexpr{formatC(percentSymp, digits=2, width=2)}\%), or parapatric
+of sister ESUs within the Holothuriidae. Most had allopatric distributions
+(\Sexpr{formatC(percentAllo, digits=2, width=2)}\%), the other sister ESUs were
+sympatric (\Sexpr{formatC(percentSymp, digits=2, width=2)}\%), or parapatric
 (\Sexpr{formatC(percentPara, digits=2, width=2)}\%,
 Fig.~\ref{fig:geography-diversification}).
 
 
-\begin{figure}
-\begin{centering}
-\includegraphics{figures/map-barriers}
-\caption[Geographical barriers separating ESUs]{Approximate locations of the
-  geographical barriers separating sister ESUs within the Indo-Pacific. Numbers
-  indicate number of sister ESUs separated by the barrier. Pink lines indicate
-  barriers separating 3 sister ESUs. Dashed orange lines indicate barriers
-  separating 1 sister ESU.}
-\label{fig:map-barriers}
-\end{centering}
-\end{figure}
+<<barriers, cache=TRUE, dependson='geography-diversification', echo=FALSE, fig.height=3, fig.cap='Mean genetic distances between sister ESUs separated by the Indian Ocean (IO) and the Pacific Ocean (PO), the Red Sea (RS) and the Pacific Ocean, and Hawaii (HI) and the Pacific Ocean'>>=
 
-In the Indo-Pacific, most allopatric ESUs were separated by the Arabian Sea (7
-pairs of sister ESUs), the Western Indian Ocean (7 pairs), the Indo-Malay
-archipelago (5 pairs) or the Timor Sea (4 pairs). Other significant barriers
-were in the Central Pacific with endemic lineages to the Hawaiian archipelago,
-or sister species across the Easter Pacific barrier
-(Fig.~\ref{fig:map-barriers}).
+@
 
+Among allopatric ESUs within the Holothuriidae, most
+(\Sexpr{formatC(percentIOPO, width=2, digits=2)}) separated between the Indian
+and Pacific Oceans. The other significant barriers included the Red Sea
+\Sexpr{formatC(percentRSPO, width=2, digits=2)} and the Hawaii Archipelago
+\Sexpr{formatC(percentHIPO, width=2, digits=2)}. The levels of genetic
+divergence for the ESU pairs separated across these basins varied greatly
+(Fig.~\ref{fig:barriers}). For the Red Sea/Pacific Ocean (RS/PO), and for the
+Indian Ocean/Pacific Ocean (IO/PO) pairs, distances clustered in two groups
+(RS/PO: ESU pairs with genetic distances ~ 5\% and > 10\%; IO/PO: ESU pairs with
+genetic distances < 5\% and > 7.5\%).
 
 \section{Discussion}
 
@@ -823,7 +817,7 @@ indicates that it is plesiomorphic in the clade that sea cucumbers emerged from.
 
 @
 
-<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap='Number of ESUs incorrectly assigned compared to the manual ESU delineation on the Holothuriidae for the thresholds using the pairwise distance method (pairwise) and theclustering method (cluster), based on uncorrected genetic distances or the Kimura 2-parameter distances (K2P).ESUs can be incorrectly assigned because of oversplitting (1 manually defined ESU results in several threshold-based ESU) or lumping (1 threshold-based ESU is comprised of several manually defined ESU). The lowest error rate is with the clustering method based on uncorrected distances.'>>=
+<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', fig.height=6.5, echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap='Number of ESUs incorrectly assigned compared to the manual ESU delineation on the Holothuriidae for the thresholds using the pairwise distance method (pairwise) and theclustering method (cluster), based on uncorrected genetic distances or the Kimura 2-parameter distances (K2P).ESUs can be incorrectly assigned because of oversplitting (1 manually defined ESU results in several threshold-based ESU) or lumping (1 threshold-based ESU is comprised of several manually defined ESU). The lowest error rate is with the clustering method based on uncorrected distances.'>>=
 
 @
 
