@@ -647,8 +647,9 @@ print(xtable(summary(finalIbdAncova), display=rep("g", 5), caption=c(paste("Coef
               "maximum geographic distances for all ESUs identified with the clustering method",
               "with a threshold of 4\\%, represented by 3 or more individuals.",
               "See Fig.~\\ref{fig:isolation-by-distance-plot}."),
-              "Coefficients of the regression between maximum genetic and maximum geographic distances.")),
-             label="tab:ibd-stats", caption.placement="top")
+              "Coefficients of the regression between maximum genetic and maximum geographic distances."),
+             label="tab:ibd-stats"),
+             caption.placement="top")
 
 ### ---- isolation-by-distance-plot ----
 ggplot(subset(distBySpecies, Order %in% orderToInclude),

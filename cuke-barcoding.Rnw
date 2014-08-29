@@ -102,17 +102,17 @@ identification with barcoding.
 
 The success of species identification with barcoding is dependent on the
 barcoding gap: the absence of overlap between intra-specific and inter-specific
-distances \cite{Meyer2005}. The characterization of this gap, or its absence,
-requires a comprehensive sampling both within and across species.  If species
-are sampled throughout their ranges, we can assess levels of intra-specific
-variation, and with near-complete taxonomic sampling, it becomes possible to
-determine how often an unidentified sequence can be assigned to a known species
-accurately, but also to narrow down the identity of this unknown sequence to the
-species with intraspecific distances incompatible with the barcoding
-gap. Additionally, comprehensive sampling allows to gain insights into the
-amount of cryptic diversity, and the patterns of diversification characterizing
-the groups. It becomes possible to assess the generality of patterns unraveled
-in species-specific studies.
+distances \cite{Meyer2005-plos}. The characterization of this gap, or its
+absence, requires a comprehensive sampling both within and across species.  If
+species are sampled throughout their ranges, we can assess levels of
+intra-specific variation, and with near-complete taxonomic sampling, it becomes
+possible to determine how often an unidentified sequence can be assigned to a
+known species accurately, but also to narrow down the identity of this unknown
+sequence to the species with intraspecific distances incompatible with the
+barcoding gap. Additionally, comprehensive sampling allows to gain insights into
+the amount of cryptic diversity, and the patterns of diversification
+characterizing the groups. It becomes possible to assess the generality of
+patterns unraveled in species-specific studies.
 
 Sea cucumbers occur in most marine ecosystems, at all latitudes, from the
 intertidal to hadal depths. They constitute the largest invertebrate fishery in
@@ -173,7 +173,7 @@ this diversity remains contentious. The paucity of obvious barriers to gene flow
 in the Indo-Pacific in combination with high levels of cryptic diversity,
 challenge the traditional view that physical barriers are the primary driver of
 diversification in marine organisms. In most cases, cryptic lineages identified
-occurred in allopatry (e.g., \cite{Meyer2005-evolution, Volger2008, Malay2010})
+occurred in allopatry (e.g., \cite{Meyer2005-evolution, Vogler2008, Malay2010})
 but in sea cucumbers (see Chapter~2) recently diverged species do occur in
 sympatry. How common is this pattern?
 
@@ -257,7 +257,7 @@ during the sequencing or the editing process. Sequences were aligned using MAFFT
 We generated Neighbor-Joining trees from pairwise uncorrected distances as well
 as using the Kimura 2-parameter correction \cite{Kimura1980}. We assessed branch
 support using 200 bootstrap replicates. Additionally, we constructed a
-maximum-likelihood tree using RAxML 8.0.1 \cite{Stamatkis2014} with each codon
+maximum-likelihood tree using RAxML 8.0.1 \cite{Stamatakis2014} with each codon
 position as a different partition, a GTR model of molecular evolution with a
 Gamma distributed rates of heterogeneity, and 500 bootstrap replicates.
 
@@ -574,7 +574,7 @@ sympatric (\Sexpr{formatC(percentSymp, digits=2, width=2)}\%), or parapatric
 Fig.~\ref{fig:geography-diversification}).
 
 
-<<barriers, cache=TRUE, dependson='geography-diversification', echo=FALSE, fig.height=3, fig.cap='Mean genetic distances between sister ESUs separated by the Indian Ocean (IO) and the Pacific Ocean (PO), the Red Sea (RS) and the Pacific Ocean, and Hawaii (HI) and the Pacific Ocean'>>=
+<<barriers, cache=TRUE, dependson='geography-diversification', echo=FALSE, fig.height=2, fig.cap='Mean genetic distances between sister ESUs separated by the Indian Ocean (IO) and the Pacific Ocean (PO), the Red Sea (RS) and the Pacific Ocean, and Hawaii (HI) and the Pacific Ocean'>>=
 
 @
 
@@ -747,7 +747,7 @@ contributed to the isolation and divergence of the species across the
 Indo-Pacific Barrier (IBP). The IBP is a recognized marine biogeographic
 barrier, and in a recent review, 15 out of 18 species of fish and invertebrates
 surveyed showed genetic differentiation across this barrier
-\cite{Gaithier2010}. Here we found, xx\% of the species to show differences...
+\cite{Gaither2010}. Here we found, xx\% of the species to show differences...
 
 Typically, Dendrochirotida species have restricted ranges, with many species
 known from a single locality, and species within a genus often strictly
