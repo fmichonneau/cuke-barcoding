@@ -219,7 +219,7 @@ collected material or from preserved specimens deposited in other institutions.
 \Sexpr{dim(load_cukeAlg())[1]} individuals were identified and sequenced. They
 represent the worldwide diversity of sea cucumbers, with a particular focus on
 the species of the Indo-Pacific and the Antarctic regions
-(Fig.\ref{fig:sampling}). The northern hemisphere and deep-water species outside
+(Fig.\ref{fig:sampling-maps}). The northern hemisphere and deep-water species outside
 of the Antarctic region are under-represented.
 
 <<sampling-maps, cache=TRUE, echo=FALSE, warning=FALSE, fig.height=6, fig.cap='Locations sampled'>>=
@@ -470,23 +470,33 @@ Aspidochirotida and the Holothuriidae, 3\% and 2.5\% for the Apodida, 3\% and
 
 @
 
-In the Holothuriidae, with the manual delineation, we recovered
+With the manual delineation of the ESUs for the Holothuriidae, we recovered
 \Sexpr{formatC(100*(length(noGeoGrps)-nSppHol)/nSppHol, digits=2, width=2)}\%
 more ESUs (N=\Sexpr{length(noGeoGrps)} ESUs) than named species
 (N=\Sexpr{nSppHol}). \Sexpr{nCryptic} named species are cryptic complexes (ESUs
 are related to a named species) that include between 2 and 13
 ESUs. Additionally, \Sexpr{sum(newSpp)} ESUs appear to be undescribed species
 (not directly to a named species). \Sexpr{formatC(percentSinglHol, digits=2,
-  width=2)}\% of the ESUs were singletons.
+  width=2)}\% of the ESUs were singletons. Most named species were reciprocally
+monophyletic and conformed to the ESU
+definition. \Sexpr{formatC(8/length(noGeoGrps), digits=2, width=2)}\% of the
+ESUs were non-monophyletic.
 
 The minimum inter-ESU genetic distance is greater than the maximum intra-ESU
 distance, indicating the presence of a barcoding gap for \Sexpr{percentGap}\%
 (N=\Sexpr{nrow(barcodeGap)}) of the manually delineated ESUs
 (Fig.~\ref{fig:barcode-gap-plot}). The minimum inter-ESU distance varies greatly
-with a minimum of \Sexpr{formatC(minInterText, digits=2, width=2)}\%, however a
-2\% cutoff to delineate ESUs with the threshold approach, would recover
-\Sexpr{formatC(percentThres, digits=2, width=2)}\% of the manually delineated
-ESUs.
+with a minimum of \Sexpr{formatC(minInterText, digits=2, width=2)}\%.
+
+% however a 2\% cutoff to delineate ESUs with the threshold approach, would
+% recover \Sexpr{formatC(percentThres, digits=2, width=2)}\% of the manually
+% delineated ESUs. % this is not accurate
+
+<<compare-manual-cluster-ESUs-data, cache=TRUE, dependson='holothuriidae-tree', warning=FALSE, results='hide', echo=FALSE>>=
+
+@
+
+
 
 
 \subsection{Geography, diversity and diversification}
@@ -526,13 +536,15 @@ significant (\Sexpr{ancovaFstat}, \Sexpr{ancovaP}). Neither the interaction
 between ``order'' and geographic distance (\Sexpr{interactionFstat},
 \Sexpr{interactionP}), nor the ``order'' terms (\Sexpr{interceptFstat}) were
 significant, indicating a common slope and a common intercept for the orders
-included in the analysis (Table~\ref{tab:isolation-by-distance-table}).  The
+included in the analysis (Table~\ref{tab:ibd-stats}).  The
 coefficients obtained based on the manually delineated ESUs for the
 Holothuriidae were almost identical (intercept:
 \Sexpr{formatC(coefficients(ibdHol)[1,1], digits=2)},
 SE=\Sexpr{formatC(coefficients(ibdHol)[1,2])}, slope:
 \Sexpr{formatC(coefficients(ibdHol)[2,1], digits=2)},
 SE=\Sexpr{formatC(coefficients(ibdHol)[2,2])}).
+
+% slope on Dendro alone: 1.451e-06 (SE: 4.49e-07) so still in the SE of the full ANCOVA
 
 
 <<isolation-by-distance-table, cache=TRUE, results='asis', echo=FALSE, dependson='isolation-by-distance-stats'>>=
@@ -590,9 +602,9 @@ or sister species across the Easter Pacific barrier
 
 \subsection{Diversity}
 
-The sea cucumber diversity is underestimated. Regardless of the method used to
-estimate ESUs from the genetic data, we recovered more species than we could
-identify based on accepted taxonomic names. The manual assessment of the ESUs
+Sea cucumber diversity is underestimated. Regardless of the method used to
+estimate ESUs from the genetic data, we recovered more species than we
+identified based on accepted taxonomic names. The manual assessment of the ESUs
 for the Holothuriidae indicates that the diversity is underestimated by
 approximately 50\%. This family is however the most easily accessible as it
 inhabits shallow waters, and most species have widespread geographical
@@ -603,16 +615,20 @@ The manual delineation of the ESUs indicates that 10\% of the species do not
 form reciprocally monophyletic clades separated by a barcoding gap that allow
 their delineation based on genetic data alone. These taxa represent either very
 recently diverged species forming monophyletic groups but with intra-genetic
-distances higher than the distance to their most closely related species (10 out
-of 15 ESUs), or ESUs that are not monophyletic. Interestingly the 5 ESUs
+distances higher than the distances to their most closely related species (10
+out of 15 ESUs), or ESUs that are not monophyletic. Interestingly the 5 ESUs
 concerned all belong to the subgenus \textit{Halodeima}: 3 ESUs of
-\textit{Holothuria edulis}, \textit{H. mexicana} and \textit{H. floridana}. The
-species involved are all unambiguously morphologically different and could be
-assigned to the correct species if a voucher specimen is
-available. Additionally, we only detected a single case of putative
-introgressive hybridization between two species of \textit{Bohadschia} (see
-\cite{Kim2013} for more details), in which the putative F1 hybrid has the
-intermediate phenotype of its parent species.
+\textit{Holothuria edulis}, \textit{H. mexicana} and
+\textit{H. floridana}. Additionally, 2 species of \textit{Actinopyga}, each
+represented by a single individual cluster with another \textit{Actinopyga}
+species (\textit{A. flammea} and \textit{A. caerulea} are indistinguishable from
+\textit{A. palauensis}). The species involved are all unambiguously
+morphologically different and could be assigned to the correct species if a
+voucher specimen is available. Additionally, we only detected a single case of
+putative introgressive hybridization between two species of \textit{Bohadschia}
+(see \cite{Kim2013} for more details), in which the putative F1 hybrid has the
+intermediate phenotype of its parent species but the COI sequence of either of
+its parent species.
 
 Funk and Ormland \cite{Funk2003} estimated that 23\% of the 2,319 animal species
 they surveyed were non-monophyletic in their mitochondrial genealogies. In the
@@ -644,7 +660,7 @@ morphological differentiation, these three processes operate on different time
 scales and are constrained by different evolutionary forces. These criteria may
 not be in agreement and may not be indicative of species limits. Barcoding
 allows to identify species groups that are characterized by these patterns, and
-that deserve to be investigate further.
+that deserve to be investigated further.
 
 % The low interspecific genetic distance leading to the lumping of different
 % species within a single ESU could also be the result of a slower molecular
@@ -760,11 +776,11 @@ sampled). Two lines of evidence lend support for the hypothesis of range
 expansion. First, the high dispersal abilities of the Aspidochirotida make the
 colonization of distant habitats possible once the barrier to dispersal has been
 removed. For instance, the Red Sea experienced several salinity crises, the
-latest as early as \textit{ca.} 19,000 years ago \cite{Siddal2003}. Therefore,
-the Red Sea fauna must have colonized the area from outside refugia following
-the salinity crisis. Of the 30 ESUs occurring in the Red Sea, five occur
-throughout the Indo-Pacific suggesting that they can expend their ranges
-rapidly.
+latest as early as \textit{ca.} 19,000 years ago
+\cite{DiBattista2013}. Therefore, the Red Sea fauna must have colonized the area
+from outside refugia following the salinity crisis. Of the 30 ESUs occurring in
+the Red Sea, five occur throughout the Indo-Pacific suggesting that they
+expended their ranges recently and rapidly.
 
 Second, many closely related ESUs occur in sympatry, indicating that
 reproductive isolation can be completed rapidly. For instance, in Chapter~2, we
@@ -773,19 +789,19 @@ sympatry even though they diverged less than 2 millions years ago. Four out of
 the eight complexes with three or more ESUs, have ESUs with overlapping
 ranges. This contrasts with other marine organisms, for which secondary sympatry
 in oceanic settings occurs slowly and takes at minimum 2 millions years but
-often more than 10 millions years \cite{Meyer2005, Quenouille2011, Malay2010,
-  Hodges2013}. The rapid acquisition of reproductive isolation could arise from
-premating isolation barriers such as differences in the timing of gamete release
-or gametic incompatibilities. Gamete recognition proteins are known to evolve
-rapidly and play a critical role in fecundation success of many free spawning
-marine invertebrates such as sea urchins \cite{Levitan2006, Lessios2011} and
-gastropods \cite{Hellberg2000}. For instance, strong positive selection has been
-detected in the GRPs between closely related species of sea urchins in sympatry
-but not in allopatry \cite{Geyer2003}, suggesting the role of these proteins in
-maintaining species limits.  GRPs have not yet been identified in sea cucumbers
-but bindin is known from sea urchins \cite{Lessios2011} and sea stars
-\cite{Patino2009} which indicates that it is plesiomorphic in the clade that sea
-cucumbers emerged from.
+often more than 10 millions years \cite{Meyer2005-evolution, Quenouille2011,
+  Malay2010, Hodge2012}. The rapid acquisition of reproductive isolation could
+arise from premating isolation barriers such as differences in the timing of
+gamete release or gametic incompatibilities caused by the gamete recognition
+proteins (GRPs). GRPs are known to evolve rapidly and play a critical role in
+fecundation success of many free spawning marine invertebrates such as sea
+urchins \cite{Levitan2006, Lessios2011} and gastropods \cite{Hellberg2000}. For
+instance, strong positive selection has been detected in the GRPs between
+closely related species of sea urchins in sympatry but not in allopatry
+\cite{Geyer2003}, suggesting the role of these proteins in maintaining species
+limits.  GRPs have not yet been identified in sea cucumbers but bindin is known
+from sea urchins \cite{Lessios2011} and sea stars \cite{Patino2009} which
+indicates that it is plesiomorphic in the clade that sea cucumbers emerged from.
 
 % use sister species of Red Sea to talk about ecological consequences of range
 % expansion.
@@ -803,10 +819,13 @@ cucumbers emerged from.
 
 \section{Supplementary material}
 
-<<sm-groups-comparison-plot, cache=TRUE, echo=FALSE, dependson='groups-comparison-plot', fig.height=6.5, fig.cap='Comparison of the number of ESUs (top), and the proportion of ESUs represented by a single individual (singletons, bottom) estimated with the pairwise distance method (pairwise) and the clustering method (cluster), based on uncorrected distances (uncorrected) or the Kimura 2-parameter distances (K2P), for the orders Apodida, Dendrochirotida and Elasipodida. The gray horizontal dashed line represents the number of named species sequenced.', fig.scap='Estimated number of ESUs'>>=
+<<sm-groups-comparison-plot, cache=TRUE, echo=FALSE, dependson='groups-comparison-plot', fig.height=6, fig.pos="h!", fig.cap='Comparison of the number of ESUs (top), and the proportion of ESUs represented by a single individual (singletons, bottom) estimated with the pairwise distance method (pairwise) and the clustering method (cluster), based on uncorrected distances (uncorrected) or the Kimura 2-parameter distances (K2P), for the orders Apodida, Dendrochirotida and Elasipodida. The gray horizontal dashed line represents the number of named species sequenced.', fig.scap='Estimated number of ESUs'>>=
 
 @
 
+<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap='Number of ESUs incorrectly assigned compared to the manual ESU delineation on the Holothuriidae for the thresholds using the pairwise distance method (pairwise) and theclustering method (cluster), based on uncorrected genetic distances or the Kimura 2-parameter distances (K2P).ESUs can be incorrectly assigned because of oversplitting (1 manually defined ESU results in several threshold-based ESU) or lumping (1 threshold-based ESU is comprised of several manually defined ESU). The lowest error rate is with the clustering method based on uncorrected distances.'>>=
+
+@
 
 \end{document}
 
