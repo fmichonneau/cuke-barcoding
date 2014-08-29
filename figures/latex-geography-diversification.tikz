@@ -1,4 +1,4 @@
-% Created by tikzDevice version 0.7.0 on 2014-08-26 12:50:19
+% Created by tikzDevice version 0.7.0 on 2014-08-29 15:17:10
 % !TEX encoding = UTF-8 Unicode
 
 \documentclass[12pt]{article}
@@ -66,120 +66,120 @@
 
 \begin{tikzpicture}[x=1pt,y=1pt]
 \definecolor[named]{fillColor}{rgb}{1.00,1.00,1.00}
-\path[use as bounding box,fill=fillColor,fill opacity=0.00] (0,0) rectangle (361.35,216.81);
+\path[use as bounding box,fill=fillColor,fill opacity=0.00] (0,0) rectangle (469.75,216.81);
 \begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (361.35,216.81);
+\path[clip] (  0.00,  0.00) rectangle (469.75,216.81);
 \definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
 \definecolor[named]{fillColor}{rgb}{1.00,1.00,1.00}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (  0.00,  0.00) rectangle (361.35,216.81);
+\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (  0.00,  0.00) rectangle (469.75,216.81);
 \end{scope}
 \begin{scope}
-\path[clip] ( 39.23, 36.44) rectangle (346.90,202.36);
+\path[clip] ( 72.12, 36.44) rectangle (455.30,202.36);
 \definecolor[named]{fillColor}{rgb}{0.90,0.90,0.90}
 
-\path[fill=fillColor] ( 39.23, 36.44) rectangle (346.90,202.36);
+\path[fill=fillColor] ( 72.12, 36.44) rectangle (455.30,202.36);
 \definecolor[named]{drawColor}{rgb}{0.95,0.95,0.95}
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] ( 39.23, 66.17) --
-	(346.90, 66.17);
+\path[draw=drawColor,line width= 0.3pt,line join=round] (140.77, 36.44) --
+	(140.77,202.36);
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] ( 39.23,110.53) --
-	(346.90,110.53);
+\path[draw=drawColor,line width= 0.3pt,line join=round] (243.22, 36.44) --
+	(243.22,202.36);
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] ( 39.23,154.89) --
-	(346.90,154.89);
+\path[draw=drawColor,line width= 0.3pt,line join=round] (345.67, 36.44) --
+	(345.67,202.36);
 
-\path[draw=drawColor,line width= 0.3pt,line join=round] ( 39.23,199.25) --
-	(346.90,199.25);
+\path[draw=drawColor,line width= 0.3pt,line join=round] (448.13, 36.44) --
+	(448.13,202.36);
 \definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 39.23, 43.99) --
-	(346.90, 43.99);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 72.12, 67.55) --
+	(455.30, 67.55);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 39.23, 88.35) --
-	(346.90, 88.35);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 72.12,119.40) --
+	(455.30,119.40);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 39.23,132.71) --
-	(346.90,132.71);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 72.12,171.25) --
+	(455.30,171.25);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 39.23,177.07) --
-	(346.90,177.07);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 89.54, 36.44) --
+	( 89.54,202.36);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 96.92, 36.44) --
-	( 96.92,202.36);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (191.99, 36.44) --
+	(191.99,202.36);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (193.06, 36.44) --
-	(193.06,202.36);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (294.45, 36.44) --
+	(294.45,202.36);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (289.21, 36.44) --
-	(289.21,202.36);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (396.90, 36.44) --
+	(396.90,202.36);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
-\path[fill=fillColor] ( 53.65, 43.99) rectangle (140.18,194.81);
+\path[fill=fillColor] ( 89.54, 44.22) rectangle (437.88, 90.88);
 \definecolor[named]{fillColor}{rgb}{0.00,0.73,0.22}
 
-\path[fill=fillColor] (149.80, 43.99) rectangle (236.33, 70.60);
+\path[fill=fillColor] ( 89.54, 96.07) rectangle (151.01,142.73);
 \definecolor[named]{fillColor}{rgb}{0.38,0.61,1.00}
 
-\path[fill=fillColor] (245.94, 43.99) rectangle (332.47, 48.42);
+\path[fill=fillColor] ( 89.54,147.92) rectangle ( 99.78,194.58);
 \end{scope}
 \begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (361.35,216.81);
+\path[clip] (  0.00,  0.00) rectangle (469.75,216.81);
 \definecolor[named]{drawColor}{rgb}{0.50,0.50,0.50}
 
-\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 32.12, 40.68) {0};
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 65.01, 64.25) {allopatric};
 
-\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 32.12, 85.04) {10};
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 65.01,116.09) {sympatric};
 
-\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 32.12,129.40) {20};
-
-\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 32.12,173.76) {30};
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 65.01,167.94) {parapatric};
 \end{scope}
 \begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (361.35,216.81);
+\path[clip] (  0.00,  0.00) rectangle (469.75,216.81);
 \definecolor[named]{drawColor}{rgb}{0.50,0.50,0.50}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 34.96, 43.99) --
-	( 39.23, 43.99);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 67.85, 67.55) --
+	( 72.12, 67.55);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 34.96, 88.35) --
-	( 39.23, 88.35);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 67.85,119.40) --
+	( 72.12,119.40);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 34.96,132.71) --
-	( 39.23,132.71);
-
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 34.96,177.07) --
-	( 39.23,177.07);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 67.85,171.25) --
+	( 72.12,171.25);
 \end{scope}
 \begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (361.35,216.81);
+\path[clip] (  0.00,  0.00) rectangle (469.75,216.81);
 \definecolor[named]{drawColor}{rgb}{0.50,0.50,0.50}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 96.92, 32.18) --
-	( 96.92, 36.44);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 89.54, 32.18) --
+	( 89.54, 36.44);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (193.06, 32.18) --
-	(193.06, 36.44);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (191.99, 32.18) --
+	(191.99, 36.44);
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (289.21, 32.18) --
-	(289.21, 36.44);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (294.45, 32.18) --
+	(294.45, 36.44);
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] (396.90, 32.18) --
+	(396.90, 36.44);
 \end{scope}
 \begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (361.35,216.81);
+\path[clip] (  0.00,  0.00) rectangle (469.75,216.81);
 \definecolor[named]{drawColor}{rgb}{0.50,0.50,0.50}
 
-\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 96.92, 22.72) {allopatric};
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 89.54, 22.72) {0};
 
-\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (193.06, 22.72) {sympatric};
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (191.99, 22.72) {10};
 
-\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (289.21, 22.72) {parapatric};
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (294.45, 22.72) {20};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (396.90, 22.72) {30};
 \end{scope}
 \begin{scope}
-\path[clip] (  0.00,  0.00) rectangle (361.35,216.81);
+\path[clip] (  0.00,  0.00) rectangle (469.75,216.81);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 19.11,119.40) {Number of ESU pairs};
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at (263.71, 10.84) {Number of ESU pairs};
 \end{scope}
 \end{tikzpicture}
 

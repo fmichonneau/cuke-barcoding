@@ -562,7 +562,7 @@ SE=\Sexpr{formatC(coefficients(ibdHol)[2,2])}).
 
 \subsubsection{Geography of diversification}
 
-<<geography-diversification, cache=TRUE, echo=FALSE, fig.width=5, fig.height=3, fig.scap='Geography of diversification', fig.cap='Number of geographic types for ESU pairs identified by the clustering method with a 4\\% threshold'>>=
+<<geography-diversification, cache=TRUE, echo=FALSE, fig.height=3, fig.scap='Geography of diversification', fig.cap='Number of geographic types for ESU pairs from the manually delineated ESUs in the Holothuriidae.'>>=
 
 @
 

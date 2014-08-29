@@ -843,7 +843,7 @@ nSymp <- tabRangeType["sympatric"]
 ggplot(esuRange) + geom_bar(aes(x=rangeType, fill=rangeType)) +
     xlab("") + ylab("Number of ESU pairs") +
     scale_fill_discrete("Type of geographic range") +
-    theme(legend.position="none")
+    theme(legend.position="none") + coord_flip()
 
 ### ---- geography-diversification-all ----
 source("R/test-allopatry-functions.R")
