@@ -5,7 +5,7 @@ library(xtable)
 library(car)
 library(wesanderson)
 library(tikzDevice)
-
+library(reshape2)
 
 ### ---- holothuriidae-tree ----
 source("R/test-allopatry-functions.R")
@@ -70,6 +70,72 @@ barcodeGap <- barcodeGap[is.finite(barcodeGap$maxIntra), ]
 percentGap   <- 100*sum(is.na(barcodeGap$species))/nrow(barcodeGap)
 minInterText <- 100*min(barcodeGap$minInter)
 percentThres <- 100*sum(barcodeGap$minInter > 0.02)/nrow(barcodeGap)
+
+### ---- compare-manual-cluster-ESUs-data ----
+accuracyGrps <- function(tree) {
+    clstrGrps <- tdata(tree, "tip")[, "Groups", drop=FALSE]
+    clstrGrps <- cbind(Labels=rownames(clstrGrps), clstrGrps=clstrGrps)
+    manGrps <- manESU[, c("Labels", "ESU_noGeo")]
+    manGrps$manGrps <- as.numeric(factor(manESU$ESU_noGeo))
+    compGrps <- merge(clstrGrps, manGrps, by="Labels")
+
+    uniqGrps <- unique(compGrps$manGrps)
+    compRes <- vector("list", length(uniqGrps))
+    for (i in 1:length(uniqGrps)) {
+        tmpDt <- subset(compGrps, manGrps == uniqGrps[i])
+        if (length(unique(tmpDt$manGrps)) > 1)
+            splits <- unique(tmpDt$Groups)
+        else splits <- NA
+        tmpDt2 <- subset(compGrps, Groups %in% unique(tmpDt$Groups))
+        if( length(unique(tmpDt2$manGrps)) > 1)
+            lumps <- unique(tmpDt2$manGrps)
+        else lumps <- NA
+        compRes[[i]] <- list(splits=splits, lumps=lumps)
+    }
+    nLumps <- sapply(compRes, function(x) x$lumps)
+    nLumps <- unlist(nLumps)
+    nLumps <- length(unique(nLumps[!is.na(nLumps)]))
+    nSplits <- sapply(compRes, function(x) x$splits)
+    nSplits <- unlist(nSplits)
+    nSplits <- length(unique(nSplits[!is.na(nSplits)]))
+    list(nLumps=nLumps, nSplits=nSplits)
+}
+
+pwiseTreeRaw <- lapply(load_thresholdPairwise(), function(x) load_tree_pairwiseGrps("raw", taxa="Holothuriidae", x))
+pwiseTreeK80 <- lapply(load_thresholdPairwise(), function(x) load_tree_pairwiseGrps("K80", taxa="Holothuriidae", x))
+clstrTreeRaw <- lapply(load_thresholdClusters(), function(x) load_tree_clusterGrps("raw", taxa="Holothuriidae", x))
+clstrTreeK80 <- lapply(load_thresholdClusters(), function(x) load_tree_clusterGrps("K80", taxa="Holothuriidae", x))
+
+pwiseGrpsRaw <- lapply(pwiseTreeRaw, accuracyGrps)
+pwiseGrpsK80 <- lapply(pwiseTreeK80, accuracyGrps)
+clstrGrpsRaw <- lapply(clstrTreeRaw, accuracyGrps)
+clstrGrpsK80 <- lapply(clstrTreeK80, accuracyGrps)
+
+pwiseDatRaw <- data.frame(method="pairwise", distance="raw", do.call("rbind", lapply(pwiseGrpsRaw, function(x) c(x[1], x[2]))))
+pwiseDatK80 <- data.frame(method="pairwise", distance="K2P", do.call("rbind", lapply(pwiseGrpsK80, function(x) c(x[1], x[2]))))
+clstrDatRaw <- data.frame(method="cluster", distance="raw", do.call("rbind", lapply(clstrGrpsRaw, function(x) c(x[1], x[2]))))
+clstrDatK80 <- data.frame(method="cluster", distance="K2P", do.call("rbind", lapply(clstrGrpsK80, function(x) c(x[1], x[2]))))
+
+compareManESUs <- rbind(pwiseDatRaw, pwiseDatK80, clstrDatRaw, clstrDatK80)
+
+compareManESUs <- data.frame(threshold=rep(load_thresholdPairwise(), 4 ), compareManESUs)
+compareManESUs$nSplits <- as.numeric(compareManESUs$nSplits)
+compareManESUs$nLumps <- as.numeric(compareManESUs$nLumps)
+allErrors <- compareManESUs$nSplits + compareManESUs$nLumps
+minError <- compareManESUs[which.min(allErrors), ]
+
+saveRDS(compareManESUs, file="tmp/compareManESUs.rds")
+
+### ---- compare-manual-cluster-ESUs-plot ----
+compareManESUs <- melt(compareManESUs, id.vars=c("threshold", "method", "distance"),
+                       measure.vars=c("nLumps", "nSplits"))
+levels(compareManESUs$distance)[levels(compareManESUs$distance) == "raw"] <- "Uncorrected"
+
+ggplot(compareManESUs, aes(x=threshold, y=value, fill=variable)) + geom_bar(stat="identity") +
+    facet_wrap(~ distance + method) + ylab("Number of ESUS") + xlab("Threshold") +
+    scale_fill_discrete(labels=c("oversplitted", "lumped")) +
+    guides(fill=guide_legend(title=NULL)) +
+    theme(legend.position="top")
 
 ### ---- geo-diff ----
 tmpGeoDiff <- grep("[A-Z]{2}$", names(wiGeoGrps), value=TRUE)
@@ -462,7 +528,7 @@ pSnglSm <- ggplot(tmpDtSm,
     scale_colour_manual(values=zisPal) + scale_shape_manual(values=seq(from=15, length.out=4)) +
     theme(legend.position="none")
 
-multiplot(nESUSm, pSnglSm, cols=1)
+multiplot(nESUSm, pSnglSm, layout=matrix(c(rep(1, 4), rep(2, 3)), ncol=1))
 
 ### ----- isolation-by-distance-data -----
 source("R/test-allopatry-functions.R")
@@ -573,6 +639,7 @@ interceptP <- paste("$P =", formatC(summAovIbd[[1]]$"Pr(>F)"[2], digits=2), "$")
 
 finalIbdAncova <- update(ibdAncova, . ~ . - Order - maxGeoDist:Order)
 
+ibdDendro <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order == "Dendrochirotida")
 
 ### ---- isolation-by-distance-table ----
 print(xtable(summary(finalIbdAncova), display=rep("g", 5), caption=c(paste("Coefficients of the regression",
