@@ -109,10 +109,10 @@ intra-specific variation, and with near-complete taxonomic sampling, it becomes
 possible to determine how often an unidentified sequence can be assigned to a
 known species accurately, but also to narrow down the identity of this unknown
 sequence to the species with intraspecific distances incompatible with the
-barcoding gap. Additionally, comprehensive sampling allows to gain insights into
-the amount of cryptic diversity, and the patterns of diversification
+barcoding gap. Additionally, comprehensive sampling allows one to gain insights
+into the amount of cryptic diversity, and the patterns of diversification
 characterizing the groups. It becomes possible to assess the generality of
-patterns unraveled in species-specific studies.
+patterns encountered in species-level studies.
 
 Sea cucumbers occur in most marine ecosystems, at all latitudes, from the
 intertidal to hadal depths. They constitute the largest invertebrate fishery in
@@ -128,43 +128,50 @@ intra-specific variation is poorly characterized since most descriptions
 illustrate ossicles from a single individual. Live coloration, which has not
 been traditionally used in species descriptions, is variable and can be
 indicative of species limits (see Chapter~2). The combination of poor taxonomic
-understanding, and a pressing need to understand species limits, make sea
-cucumbers a suitable group for a large-scale barcoding study.
+understanding, and a pressing need to understand species limits, make a
+large-scale barcoding study of sea cucumbers especially important.
 
-When the lineages identified with genetic data are associated with clear
-differences in morphology or other independent traits (behavior, ecology), the
-concept of evolutionary significant unit (ESU) \cite{Moritz1994} applies, and
-the lineages can be treated as species-level units. The discordance between
-genetic data and morphological traits results from (1) recently diverged species
-for which the mitochondrial lineages have not fully sorted according to the
-species tree; (2) introgression of a mitochondrial lineage from another species;
-(3) morphological polymorphism that does not reflect species limits
-\cite{Funk2003, Ballard2004}. These three processes will lead to similar
-patterns in mitochondrial genealogies with species appearing para- or
-polyphyletic. If these cases might have undesirable effects on the accuracy of
-species identification, they might provide insights into the biology of the
-species. For instance, sympatric paraphyletic species might be indicative of the
-rapid acquisition of reproductive isolation, while polyphyletic species might
-provide indication of hybridization. Through comprehensive sampling, we can
-identify species that show this pattern and deserve further investigation, and
-assess how common they are.
+One of the greatest limitations of single locus approaches, like barcoding, is
+that the gene tree (genealogy) may not reflect the species tree. Including
+independent characters (nuclear loci, morphological, behavioral, ecological,
+geographical, etc.) in analyses provides a mechanism for testing for
+incongruences between gene tree and species trees. Reciprocal monophyly in two
+or more independent characters demonstrates lack of gene flow and delineates
+lineages with independent evolutionary histories. Such lineages are termed
+evolutionary significant units (ESU) \cite{Moritz1994}, and can be treated as
+species-level units.
+
+When lineages identified with genetic data are associated with clear differences
+in morphology, morpho-taxonomic delineations are reinforced. Discordance between
+genetic data and morphological traits can result when (1) morphological change
+has been insufficient to separate species, even though genetic data suggest
+isolation; (2) morphological change associated with speciation was so rapid that
+mitochondrial lineages have not fully sorted; (3) genetic divergence in the
+marker (e.g., mtDNA) has been erased by introgression; (4) morphological
+polymorphism does not reflect species limits (see \cite{Funk2003, Ballard2004}
+for reviews). These situations might have undesirable effects on the accuracy of
+species identification, but they might provide insights into the biology of the
+species. While resolving the underlying cause of this discordance may require
+collecting additional evidence, as different processes will lead to the same
+pattern. Through comprehensive sampling, we can identify species that show this
+pattern and deserve further investigation, and assess how common they are.
 
 In sea cucumbers, as with other marine invertebrates, dispersal typically occurs
 during the larval stage. However, even if larvae can potentially travel long
 distances, their ability to maintain gene flow over long distances has been
 debated. If dispersal is spatially restricted, a pattern of
 isolation-by-distance (IBD), where genetic differentiation increases with
-geographical distance, may be detected. Larvae can be planktotrophic (they feed
-in the plankton), or oligotrophic (they feed on reserves included with the
-egg). A few species of sea cucumbers are also brooders, and adults release
-juveniles. The type of development and larvae may influence the dispersal
-potential of the species, with brooders having little dispersal potential while
-species with planktotrophic larvae might disperse over longer distances. While
-the reproductive biology of most sea cucumber species has not been investigated,
-it is recognized that most species of Aspidochirotida and Apodida have
-planktotrophic larvae, while species of Dendrochirotida have oligotrophic
-larvae. Therefore, we hypothesize that (1) species with oligotrophic development
-(Dendrichoritda) will show a stronger IBD pattern, and (2) will have smaller
+geographical distance is expected. Larvae can be planktotrophic (they feed in
+the plankton), or lecitotrophic (they feed on yolk reserves). A few species of
+sea cucumbers are brooders, and release juveniles. The type of development and
+larvae influences the dispersal potential of the species, with brooders having
+little dispersal potential except in species prone to rafting, while species
+with planktotrophic larvae might disperse over longer distances. While the
+reproductive biology of most sea cucumber species has not been investigated,
+most species of Aspidochirotida and Apodida appear to have planktotrophic
+larvae, while all species of Dendrochirotida have lecitotrophic
+larvae. Therefore, we hypothesize that (1) species with lecitotrophic
+development (Dendrochirotida) will show a steeper IBD pattern, and (2) smaller
 geographical ranges than species with planktotrophic development (Apodida and
 Aspidochirotida).
 
@@ -172,21 +179,24 @@ The Indo-Pacific is the richest marine biogeographic region, and the origin of
 this diversity remains contentious. The paucity of obvious barriers to gene flow
 in the Indo-Pacific in combination with high levels of cryptic diversity,
 challenge the traditional view that physical barriers are the primary driver of
-diversification in marine organisms. In most cases, cryptic lineages identified
-occurred in allopatry (e.g., \cite{Meyer2005-evolution, Vogler2008, Malay2010})
-but in sea cucumbers (see Chapter~2) recently diverged species do occur in
-sympatry. How common is this pattern?
+diversification in marine organisms. Yet, allopatric ranges have been found to
+predominate among young sister species in many groups (e.g.,
+\cite{Meyer2005-evolution, Vogler2008, Malay2010}). Exceptions are gaining
+attention, some pointing to a strong role for selection \cite{}. In Chapter 2, I
+showed that recently diverged sea cucumbers can also have sympatric ranges. How
+common is this pattern?
 
-Here, we assembled one of the largest, and the most comprehensive
-(geographically and taxonomically) barcoding data set. This dataset allows us to
-investigate levels of cryptic diversity and the geographic patterns of species
-diversity in sea cucumbers. Specifically, we ask: (1) how does the current sea
-cucumber taxonomy compare with the number of species estimated with barcoding?
-(2) how often do species are characterized by a pattern of genetic
-differentiation allowing identification with barcoding? (3) how does the type of
-larva influence the geographical distribution and the levels of genetic
-differentiation? (4) what is the most common mode of geographical distribution
-between species?
+Here, we assembled one of the largest and most comprehensive (geographically and
+taxonomically) barcoding data set. This dataset allows us to investigate levels
+of cryptic diversity and the geographic patterns of species diversity in sea
+cucumbers. Specifically, we ask: (1) How do estimates of species boundaries and
+diversity based on DNA sequence data compare with our current morpho-taxonomic
+assessment of sea cucumbers? Specifically, (1a) How common are cryptic species
+that were not recognized prior to genetic scrutiny, and (1b) How many species
+recognizable through morphological and other appraoches are missed by DNA
+barcoding? (2) How does the type of larval development influence the
+geographical distribution and genetic differentiation of species? (3) How does
+the frequency of sympatry change over time among sister species?
 
 % * In such cases, barcoding has typically revealed more diversity than previously
 % acknowledged. From the variety of studies, clearly many different patterns
@@ -210,10 +220,10 @@ preserved in 75\% ethanol. When possible tentacles were clipped, immediately put
 in 95-99\% ethanol, and later used for DNA extractions.  Specimens were
 deposited in the Invertebrate Zoology collections of the Florida Museum of
 Natural History, University of Florida (UF), Gainesville, FL, USA, while tissue
-samples are stored in the Genetic Resources Repository of this museum.
+samples are stored in the Genetic Resources Repository at UF.
 
 Additional samples were obtained through collaborators either from newly
-collected material or from preserved specimens deposited in other institutions.
+collected material or from preserved specimens deposited at other institutions.
 
 \Sexpr{dim(load_cukeAlg())[1]} individuals were identified and sequenced. They
 represent the worldwide diversity of sea cucumbers, with a particular focus on
@@ -246,8 +256,8 @@ manufacturer's protocol was used.
 We amplified the 5' end (655~base pairs) of the mitochondrial gene COI using the
 echinoderm primers developed by \cite{Hoareau2010}. The sequencing was performed
 at the Interdisciplinary Center Biotechnology Research at the University of
-Florida. Chromatograms were assembled and edited using Geneious 5.5.8
-\cite{Geneious558}.
+Florida, or at the Smithsonian Institution. Chromatograms were assembled and
+edited using Geneious 5.5.8 \cite{Geneious558}.
 
 We kept all sequences that were more than 500 bp, and that did not include any
 stop or non-sense codons that may have resulted from incorrect base calling
