@@ -8,6 +8,12 @@ all: cuke-barcoding.tex cuke-barcoding_nourl.bib clean-partial
 	-xelatex -interaction=nonstopmode "\input" cuke-barcoding.tex
 	xelatex -interaction=nonstopmode "\input" cuke-barcoding.tex
 
+docx: cuke-barcoding.tex
+	${RSCRIPT} removeShortCaptions.R "file='$<'"
+	pandoc --to=docx cuke-barcoding_noCapt.tex -o cuke-barcoding.docx
+	-rm cuke-barcoding_noCapt.tex
+
+
 cuke-barcoding.tex: cuke-barcoding.Rnw code/cuke-barcoding.R
 	${RSCRIPT} -e "library(knitr); knit('cuke-barcoding.Rnw')"
 
