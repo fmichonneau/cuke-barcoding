@@ -29,7 +29,7 @@
 \newcolumntype{b}{X}
 \newcolumntype{s}{>{\hsize=.2\hsize}X}
 
-\title{Barcoding in sea cucumbers}
+\title{More than meets the eyes: diversity and geographic patterns in sea cucumbers}
 
 \author[1]{Fran\c{c}ois Michonneau\thanks{francois.michonneau@gmail.com}}
 \author[1]{Gustav Paulay\thanks{paulay@flmnh.ufl.edu}}
@@ -830,7 +830,15 @@ indicates that it is plesiomorphic in the clade that sea cucumbers emerged from.
 
 @
 
-<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', fig.height=6.5, echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap=paste0('Number of ESUs incorrectly assigned compared to the manual ESU delineation on the Holothuriidae for the thresholds using the pairwise distance method (pairwise) and theclustering method (cluster), based on uncorrected genetic distances or the Kimura 2-parameter distances (K2P).ESUs can be incorrectly assigned because of oversplitting (1 manually defined ESU results in several threshold-based ESU) or lumping (1 threshold-based ESU is comprised of several manually defined ESU). The lowest error rate is with the clustering method based on uncorrected distances and a threshold of ', minError['threshold'], '.')>>=
+\pagebreak
+
+<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', fig.height=6.5, echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap=paste0('Number of ESUs incorrectly assigned compared to the manual ESU delineation on the Holothuriidae for the thresholds using the pairwise distance method (pairwise) and theclustering method (cluster), based on uncorrected genetic distances or the Kimura 2-parameter distances (K2P).ESUs can be incorrectly assigned because of oversplitting (1 manually defined ESU results in several threshold-based ESU) or lumping (1 threshold-based ESU is comprised of several manually defined ESU). The lowest error rate is with the clustering method based on uncorrected distances and a threshold of ', 100*minError['threshold'], '\\%.')>>=
+
+@
+
+\pagebreak
+
+<<ESU-table, cache=TRUE, echo=FALSE, results='asis'>>=
 
 @
 

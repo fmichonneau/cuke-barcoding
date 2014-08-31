@@ -71,6 +71,38 @@ percentGap   <- 100*sum(is.na(barcodeGap$species))/nrow(barcodeGap)
 minInterText <- 100*min(barcodeGap$minInter)
 percentThres <- 100*sum(barcodeGap$minInter > 0.02)/nrow(barcodeGap)
 
+### ---- ESU-table ----
+manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
+esuNm <- read.csv(file="data/raw/ESU_names.csv", stringsAsFactors=FALSE, header=FALSE)
+manESU$ESU_noGeo <- gsub("_[A-Z]{2}$", "", manESU$ESU_genetic)
+
+uniqESU <- unique(manESU$ESU_noGeo)
+for (i in 1:nrow(esuNm)) {
+    uniqESU <- gsub(esuNm[i, 1], paste0("\\\\textit{", esuNm[i, 2], "}"), uniqESU)
+}
+uniqESU <- gsub("_", " ", uniqESU)
+
+esuVouch <- sapply(noGeoGrps, function(x) {
+    tmpDB <- cukeDB[match(x, cukeDB$Labels_withAmb), ]
+    paste(tmpDB$Collection.Code, tmpDB$Catalog_number, sep="", collapse=", ")
+})
+
+esuVouch <- gsub("_", " ", esuVouch)
+
+headerTable <- paste("\\hline", paste(c("ESUs", "Vouchers"), collapse=" & "), "\\\\ \\hline \\endfirsthead \n",
+                     "\\caption{(continued) specimen information} \n")
+
+print(xtable(cbind(ESUs=uniqESU, Vouchers=esuVouch),
+             caption="List of manually delineated ESUs and associated vouchers",
+             label="tab:esu-info", align=c("llp{4.5in}")),
+      tabular.environment="longtable", floating=FALSE,
+      hline.after = c(-1, length(esuVouch)),
+      add.to.row = list(pos = list(-1, 0),
+          command = c(headerTable, "\\hline \\endhead \n")),
+      sanitize.text.function=function(x) {x}, caption.placement="top",
+      include.rownames=FALSE)
+
+
 ### ---- compare-manual-cluster-ESUs-data ----
 accuracyGrps <- function(tree) {
     clstrGrps <- tdata(tree, "tip")[, "Groups", drop=FALSE]
