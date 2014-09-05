@@ -1,4 +1,4 @@
-% Created by tikzDevice version 0.7.0 on 2014-08-29 15:35:23
+% Created by tikzDevice version 0.7.0 on 2014-09-05 17:08:56
 % !TEX encoding = UTF-8 Unicode
 
 \documentclass[12pt]{article}
@@ -49,7 +49,7 @@
 \newcolumntype{b}{X}
 \newcolumntype{s}{>{\hsize=.2\hsize}X}
 
-\title{Barcoding in sea cucumbers}
+\title{More than meets the eyes: diversity and geographic patterns in sea cucumbers}
 
 \author[1]{Fran\c{c}ois Michonneau\thanks{francois.michonneau@gmail.com}}
 \author[1]{Gustav Paulay\thanks{paulay@flmnh.ufl.edu}}
@@ -113,7 +113,7 @@
 
 \path[fill=fillColor] (320.68, 54.00) circle (  2.13);
 
-\path[fill=fillColor] (100.14, 54.00) circle (  2.13);
+\path[fill=fillColor] ( 99.63, 54.00) circle (  2.13);
 
 \path[fill=fillColor] (178.38, 54.00) circle (  2.13);
 

@@ -1,4 +1,4 @@
-% Created by tikzDevice version 0.7.0 on 2014-08-30 23:37:02
+% Created by tikzDevice version 0.7.0 on 2014-09-05 15:48:00
 % !TEX encoding = UTF-8 Unicode
 
 \documentclass[12pt]{article}
@@ -131,73 +131,73 @@
 \path[fill=fillColor] ( 55.78,232.69) rectangle ( 66.90,275.99);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] ( 55.78,275.99) rectangle ( 66.90,277.90);
+\path[fill=fillColor] ( 55.78,275.99) rectangle ( 66.90,278.37);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] ( 68.14,232.69) rectangle ( 79.26,251.25);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] ( 68.14,251.25) rectangle ( 79.26,254.10);
+\path[fill=fillColor] ( 68.14,251.25) rectangle ( 79.26,254.58);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] ( 80.50,232.69) rectangle ( 91.62,245.30);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] ( 80.50,245.30) rectangle ( 91.62,248.15);
+\path[fill=fillColor] ( 80.50,245.30) rectangle ( 91.62,248.63);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] ( 92.86,232.69) rectangle (103.98,239.82);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] ( 92.86,239.82) rectangle (103.98,244.58);
+\path[fill=fillColor] ( 92.86,239.82) rectangle (103.98,244.82);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (105.22,232.69) rectangle (116.34,234.59);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (105.22,234.59) rectangle (116.34,241.25);
+\path[fill=fillColor] (105.22,234.59) rectangle (116.34,241.49);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (117.57,232.69) rectangle (128.70,233.64);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (117.57,233.64) rectangle (128.70,241.73);
+\path[fill=fillColor] (117.57,233.64) rectangle (128.70,241.97);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (129.93,232.69) rectangle (141.06,233.64);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (129.93,233.64) rectangle (141.06,243.39);
+\path[fill=fillColor] (129.93,233.64) rectangle (141.06,243.63);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (142.29,232.69) rectangle (153.41,233.16);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (142.29,233.16) rectangle (153.41,244.58);
+\path[fill=fillColor] (142.29,233.16) rectangle (153.41,244.82);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (154.65,232.69) rectangle (165.77,232.69);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (154.65,232.69) rectangle (165.77,245.30);
+\path[fill=fillColor] (154.65,232.69) rectangle (165.77,245.54);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (179.37,232.69) rectangle (190.49,232.69);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (179.37,232.69) rectangle (190.49,246.25);
+\path[fill=fillColor] (179.37,232.69) rectangle (190.49,246.49);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (204.08,232.69) rectangle (215.21,232.69);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (204.08,232.69) rectangle (215.21,253.15);
+\path[fill=fillColor] (204.08,232.69) rectangle (215.21,253.39);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (228.80,232.69) rectangle (239.92,232.69);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (228.80,232.69) rectangle (239.92,255.53);
+\path[fill=fillColor] (228.80,232.69) rectangle (239.92,255.77);
 \end{scope}
 \begin{scope}
 \path[clip] (252.74,224.96) rectangle (455.30,394.84);
@@ -256,73 +256,73 @@
 \path[fill=fillColor] (261.95,232.69) rectangle (273.07,335.96);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (261.95,335.96) rectangle (273.07,336.44);
+\path[fill=fillColor] (261.95,335.96) rectangle (273.07,336.91);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (274.31,232.69) rectangle (285.43,304.79);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (274.31,304.79) rectangle (285.43,305.74);
+\path[fill=fillColor] (274.31,304.79) rectangle (285.43,306.21);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (286.67,232.69) rectangle (297.79,275.04);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (286.67,275.04) rectangle (297.79,275.99);
+\path[fill=fillColor] (286.67,275.04) rectangle (297.79,276.47);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (299.03,232.69) rectangle (310.15,259.34);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (299.03,259.34) rectangle (310.15,260.76);
+\path[fill=fillColor] (299.03,259.34) rectangle (310.15,261.24);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (311.39,232.69) rectangle (322.51,247.92);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (311.39,247.92) rectangle (322.51,249.34);
+\path[fill=fillColor] (311.39,247.92) rectangle (322.51,249.82);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (323.74,232.69) rectangle (334.87,241.25);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (323.74,241.25) rectangle (334.87,243.16);
+\path[fill=fillColor] (323.74,241.25) rectangle (334.87,243.63);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (336.10,232.69) rectangle (347.23,237.44);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (336.10,237.44) rectangle (347.23,240.30);
+\path[fill=fillColor] (336.10,237.44) rectangle (347.23,240.78);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (348.46,232.69) rectangle (359.58,234.59);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (348.46,234.59) rectangle (359.58,239.59);
+\path[fill=fillColor] (348.46,234.59) rectangle (359.58,240.06);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (360.82,232.69) rectangle (371.94,233.64);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (360.82,233.64) rectangle (371.94,240.06);
+\path[fill=fillColor] (360.82,233.64) rectangle (371.94,240.54);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (385.54,232.69) rectangle (396.66,233.16);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (385.54,233.16) rectangle (396.66,244.11);
+\path[fill=fillColor] (385.54,233.16) rectangle (396.66,244.35);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (410.25,232.69) rectangle (421.38,232.69);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (410.25,232.69) rectangle (421.38,245.77);
+\path[fill=fillColor] (410.25,232.69) rectangle (421.38,246.01);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (434.97,232.69) rectangle (446.09,232.69);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (434.97,232.69) rectangle (446.09,247.92);
+\path[fill=fillColor] (434.97,232.69) rectangle (446.09,248.15);
 \end{scope}
 \begin{scope}
 \path[clip] ( 46.57, 37.04) rectangle (249.13,206.92);
@@ -381,73 +381,73 @@
 \path[fill=fillColor] ( 55.78, 44.76) rectangle ( 66.90, 88.07);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] ( 55.78, 88.07) rectangle ( 66.90, 89.97);
+\path[fill=fillColor] ( 55.78, 88.07) rectangle ( 66.90, 90.45);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] ( 68.14, 44.76) rectangle ( 79.26, 63.32);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] ( 68.14, 63.32) rectangle ( 79.26, 66.18);
+\path[fill=fillColor] ( 68.14, 63.32) rectangle ( 79.26, 66.65);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] ( 80.50, 44.76) rectangle ( 91.62, 57.37);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] ( 80.50, 57.37) rectangle ( 91.62, 60.23);
+\path[fill=fillColor] ( 80.50, 57.37) rectangle ( 91.62, 60.70);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] ( 92.86, 44.76) rectangle (103.98, 51.90);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] ( 92.86, 51.90) rectangle (103.98, 56.66);
+\path[fill=fillColor] ( 92.86, 51.90) rectangle (103.98, 56.90);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (105.22, 44.76) rectangle (116.34, 47.14);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (105.22, 47.14) rectangle (116.34, 53.33);
+\path[fill=fillColor] (105.22, 47.14) rectangle (116.34, 53.56);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (117.57, 44.76) rectangle (128.70, 46.19);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (117.57, 46.19) rectangle (128.70, 53.80);
+\path[fill=fillColor] (117.57, 46.19) rectangle (128.70, 54.04);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (129.93, 44.76) rectangle (141.06, 45.71);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (129.93, 45.71) rectangle (141.06, 55.47);
+\path[fill=fillColor] (129.93, 45.71) rectangle (141.06, 55.71);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (142.29, 44.76) rectangle (153.41, 45.24);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (142.29, 45.24) rectangle (153.41, 55.94);
+\path[fill=fillColor] (142.29, 45.24) rectangle (153.41, 56.18);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (154.65, 44.76) rectangle (165.77, 44.76);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (154.65, 44.76) rectangle (165.77, 56.90);
+\path[fill=fillColor] (154.65, 44.76) rectangle (165.77, 57.13);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (179.37, 44.76) rectangle (190.49, 44.76);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (179.37, 44.76) rectangle (190.49, 57.85);
+\path[fill=fillColor] (179.37, 44.76) rectangle (190.49, 58.09);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (204.08, 44.76) rectangle (215.21, 44.76);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (204.08, 44.76) rectangle (215.21, 59.51);
+\path[fill=fillColor] (204.08, 44.76) rectangle (215.21, 59.75);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (228.80, 44.76) rectangle (239.92, 44.76);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (228.80, 44.76) rectangle (239.92, 65.46);
+\path[fill=fillColor] (228.80, 44.76) rectangle (239.92, 65.70);
 \end{scope}
 \begin{scope}
 \path[clip] (252.74, 37.04) rectangle (455.30,206.92);
@@ -512,67 +512,67 @@
 \path[fill=fillColor] (274.31, 44.76) rectangle (285.43,131.38);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (274.31,131.38) rectangle (285.43,132.33);
+\path[fill=fillColor] (274.31,131.38) rectangle (285.43,132.80);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (286.67, 44.76) rectangle (297.79,103.30);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (286.67,103.30) rectangle (297.79,104.25);
+\path[fill=fillColor] (286.67,103.30) rectangle (297.79,104.73);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (299.03, 44.76) rectangle (310.15, 84.98);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (299.03, 84.98) rectangle (310.15, 86.40);
+\path[fill=fillColor] (299.03, 84.98) rectangle (310.15, 86.88);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (311.39, 44.76) rectangle (322.51, 70.22);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (311.39, 70.22) rectangle (322.51, 71.65);
+\path[fill=fillColor] (311.39, 70.22) rectangle (322.51, 72.13);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (323.74, 44.76) rectangle (334.87, 60.23);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (323.74, 60.23) rectangle (334.87, 61.66);
+\path[fill=fillColor] (323.74, 60.23) rectangle (334.87, 62.13);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (336.10, 44.76) rectangle (347.23, 55.23);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (336.10, 55.23) rectangle (347.23, 57.61);
+\path[fill=fillColor] (336.10, 55.23) rectangle (347.23, 58.09);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (348.46, 44.76) rectangle (359.58, 49.76);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (348.46, 49.76) rectangle (359.58, 53.09);
+\path[fill=fillColor] (348.46, 49.76) rectangle (359.58, 53.56);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (360.82, 44.76) rectangle (371.94, 47.38);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (360.82, 47.38) rectangle (371.94, 52.85);
+\path[fill=fillColor] (360.82, 47.38) rectangle (371.94, 53.33);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (385.54, 44.76) rectangle (396.66, 46.19);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (385.54, 46.19) rectangle (396.66, 55.23);
+\path[fill=fillColor] (385.54, 46.19) rectangle (396.66, 55.47);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (410.25, 44.76) rectangle (421.38, 44.76);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (410.25, 44.76) rectangle (421.38, 56.18);
+\path[fill=fillColor] (410.25, 44.76) rectangle (421.38, 56.42);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
 \path[fill=fillColor] (434.97, 44.76) rectangle (446.09, 44.76);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (434.97, 44.76) rectangle (446.09, 57.85);
+\path[fill=fillColor] (434.97, 44.76) rectangle (446.09, 58.09);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,469.75);
