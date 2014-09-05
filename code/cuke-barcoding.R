@@ -68,6 +68,7 @@ barcodeGap$rangeType[is.na(barcodeGap$rangeType)] <- "unknown"
 barcodeGap <- barcodeGap[is.finite(barcodeGap$maxIntra), ]
 
 percentGap   <- 100*sum(is.na(barcodeGap$species))/nrow(barcodeGap)
+nGap <- sum(is.na(barcodeGap$species))
 minInterText <- 100*min(barcodeGap$minInter)
 percentThres <- 100*sum(barcodeGap$minInter > 0.02)/nrow(barcodeGap)
 
@@ -329,9 +330,7 @@ wormsSum <- wormsSum[, -match(c("Genus", "nSpp"), names(wormsSum))]
 wormsSum <- wormsSum[!duplicated(wormsSum), ]
 wormsSum <- rbind(wormsSum, data.frame(Family="", Order=names(wormsSumOrder), acceptedSpp=wormsSumOrder))
 
-sampTab <- data.frame(xtabs(~ higher + family, dat [Ideally need
-different terms for delineated entities by the 3 approaches –
-e.g. “morphospecies”, “ESUs”, and “mtLineages”]a=uniqSpp))
+sampTab <- data.frame(xtabs(~ higher + family, data=uniqSpp))
 sampTabOrder <- data.frame(xtabs(~ higher, data=uniqSpp), family = "")
 sampTab <- rbind(sampTab, sampTabOrder)
 sampTab <- sampTab[sampTab$Freq != 0, ]
@@ -357,14 +356,17 @@ sampTab$"# accepted"[nzchar(sampTab$Order)] <-
 
 sampTab <- rbind(sampTab, cbind(Order = "\\textbf{Total}", Family = "",
                                 "# sampled" = paste0("\\textbf{", nrow(uniqSpp), "}"),
-                                "# accepted" = paste0("\\textbf{", sum(wormsSum$acceptedSpp), "}")))
+                                "# accepted" = paste0("\\textbf{", sum(subset(wormsSum, Family != "")$acceptedSpp), "}")))
 
 colnames(sampTab)[3:4] <- paste0("\\", colnames(sampTab)[3:4])
 
 sampXtab <- xtable(sampTab,
-                   caption=paste("Number of named species sampled (\\# sampled)",
+                   caption=paste("Number of named morpho-species sampled (\\# sampled)",
                        "and number of accepted species (\\# accepted) for each",
-                       "family and each order of sea cucumber"),
+                       "family and each order of sea cucumber. Not all families were",
+                       "sampled, thus totals in some orders are more than sum of family",
+                       "diversities. This classification does not include modifications",
+                       "proposed by Smirnov \\cite{Smirnov2012}."),
                    label="tab:sampled-species", display=c("s", "s", "s", "d", "d"))
 
 print(sampXtab, include.rownames=FALSE, hline.after=c(-1, 0, hlinePos, nrow(sampXtab)),
@@ -570,7 +572,7 @@ multiplot(nESUSm, pSnglSm, layout=matrix(c(rep(1, 4), rep(2, 3)), ncol=1))
 
 ### ----- isolation-by-distance-data -----
 source("R/test-allopatry-functions.R")
-treeH <- load_tree_clusterGrps(distance="K80", taxa="all", threshold=0.02)
+treeH <- load_tree_clusterGrps(distance="raw", taxa="all", threshold=0.02)
 cukeDB <- load_cukeDB()
 grps <- tdata(treeH, "tip")[, "Groups", drop=FALSE]
 cukeAlg <- load_cukeAlg()
@@ -595,7 +597,7 @@ for (i in 1:length(uniqGrps)) {
     nInd[i] <- nrow(tmpCoords)
     matGeoDist[[i]] <- matGeoDistTmp
     tmpAlg <- cukeAlg[match(tmpSpp, dimnames(cukeAlg)[[1]]), ]
-    matGenDist[[i]] <- dist.dna(tmpAlg, model="K80")
+    matGenDist[[i]] <- dist.dna(tmpAlg, model="raw")
     tmpFamilies <- sapply(strsplit(tmpSpp, "_"), function(x) x[1])
     species[[i]] <- sapply(strsplit(tmpSpp, "_"), function(x) paste(x[2:3], collapse="_"))
     #stopifnot(length(unique(tmpFamilies)) < 2)
@@ -661,12 +663,19 @@ leveneIbdP <- paste("$P >", formatC(leveneIbd$"Pr(>F)"[1], digits=2),
 
 ibdAncova <- lm(maxGenDist ~ maxGeoDist*Order, data=distBySpecies,
                 subset=Order %in% orderToInclude)
+
+finalIbdAncova <- update(ibdAncova, . ~ . - Order - maxGeoDist:Order)
+
+summLmIbdFinal <- summary.lm(finalIbdAncova)
+summAovIbdFinal <- summary.aov(finalIbdAncova)
+
 summLmIbd <- summary.lm(ibdAncova)
 summAovIbd <- summary.aov(ibdAncova)
-ancovaFstat <- paste("$F(", paste(summLmIbd$fstatistic[2], summLmIbd$fstatistic[3], sep=", "), ")=",
-                     formatC(summLmIbd$fstatistic[1], digits=3), "$", sep="")
-ancovaP <- paste("$P <", ifelse(pf(summLmIbd$fstatistic[1], summLmIbd$fstatistic[2], summLmIbd$fstatistic[3], lower=F) < 0.001,
-                                0.001, pf(summLmIbd$fstatistic[1], summLmIbd$fstatistic[2], summLmIbd$fstatistic[3], lower=F)),
+
+ancovaFstat <- paste("$F(", paste(summLmIbdFinal$fstatistic[2], summLmIbdFinal$fstatistic[3], sep=", "), ")=",
+                     formatC(summLmIbdFinal$fstatistic[1], digits=3), "$", sep="")
+ancovaP <- paste("$P <", ifelse(pf(summLmIbdFinal$fstatistic[1], summLmIbdFinal$fstatistic[2], summLmIbdFinal$fstatistic[3], lower=F) < 0.001,
+                                0.001, pf(summLmIbdFinal$fstatistic[1], summLmIbdFinal$fstatistic[2], summLmIbdFinal$fstatistic[3], lower=F)),
                  "$")
 interactionFstat <- paste("$F(", paste(summAovIbd[[1]]$Df[3], summAovIbd[[1]]$Df[4], sep=", "), ")=",
                           formatC(summAovIbd[[1]]$"F value"[3], digits=3), "$", sep="")
@@ -674,8 +683,6 @@ interactionP <- paste("$P =", formatC(summAovIbd[[1]]$"Pr(>F)"[3], digits=2), "$
 interceptFstat <- paste("$F(", paste(summAovIbd[[1]]$Df[2], summAovIbd[[1]]$Df[4], sep=", "), ")=",
                           formatC(summAovIbd[[1]]$"F value"[2], digits=3), "$", sep="")
 interceptP <- paste("$P =", formatC(summAovIbd[[1]]$"Pr(>F)"[2], digits=2), "$")
-
-finalIbdAncova <- update(ibdAncova, . ~ . - Order - maxGeoDist:Order)
 
 ibdDendro <- lm(maxGenDist ~ maxGeoDist, data=distBySpecies, subset=Order == "Dendrochirotida")
 
@@ -696,7 +703,7 @@ ggplot(subset(distBySpecies, Order %in% orderToInclude),
                                slope=finalIbdAncova$coefficients[2], aes(colour=Order),
                                linetype=2) +
     facet_wrap(~ Order) + ylab("Maximum genetic distance (K2P)") +
-    xlab("Maximum genetic distance (km)") +
+    xlab("Maximum geographic distance (km)") +
     theme(legend.position="none")
 
 ### ---- barriers ----
@@ -879,10 +886,17 @@ percentPara <- 100*tabRangeType["parapatric"]/sum(tabRangeType)
 
 nSymp <- tabRangeType["sympatric"]
 
-ggplot(esuRange) + geom_bar(aes(x=rangeType, fill=rangeType)) +
-    xlab("") + ylab("Number of ESU pairs") +
-    scale_fill_discrete("Type of geographic range") +
-    theme(legend.position="none") + coord_flip()
+## ggplot(esuRange) + geom_bar(aes(x=rangeType, fill=rangeType)) +
+##     xlab("") + ylab("Number of ESU pairs") +
+##     scale_fill_discrete("Type of geographic range") +
+##     theme(legend.position="none") + coord_flip()
+
+ggplot(esuRange) +
+    geom_point(data=esuRange[!is.na(esuRange$rangeType), ],
+               aes(x=rangeType, y=meanInterDist, colour=rangeType),
+               position=position_jitter(width=.05, height=0)) +
+    coord_flip() + xlab("") + ylab("Mean inter-ESU distances") +
+    theme(legend.position="none")
 
 ### ---- geography-diversification-all ----
 source("R/test-allopatry-functions.R")

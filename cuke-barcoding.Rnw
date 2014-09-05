@@ -324,14 +324,14 @@ restricted to a geographical area. [!if we use this definition, we need to
 revisit some ESUs: e.g., nigralutea..., or need a different concept for ESUs
 with > 1 morphology]
 
-Third, we used mtDNA sequence data on its own for lineage delineation using a
-threshold approach \cite{Meyer2005-plos, Hebert2004}. Based on pairwise
-distances, we grouped individuals that differed from each other by a genetic
-distance below a given threshold. This method is strictly based on genetic
+Third, we used mtDNA sequence data on its own for lineage delineation
+(mtLineages) based on thresholds \cite{Meyer2005-plos, Hebert2004}. We grouped
+individuals that differed from each other by a genetic distance below a given
+threshold (``pairwise'' method). This method is strictly based on genetic
 distance and does not take into account phylogenetic information. We also
 identified monophyletic groups from neighbor-joining trees, reconstructed from
-the pairwise genetic distances. Groups were defined based on their coalescence
-depth, as defined by a threshold set \textit{a priori}.
+pairwise genetic distances (``cluster'' method). Groups were defined based on
+coalescence depths that were below a threshold set \textit{a priori}.
 
 For each of these two threshold-based approaches, we used both uncorrected
 distances ($p$) and the Kimura two-parameter (K2P) model \cite{Kimura1980} to
@@ -343,14 +343,16 @@ estimated the number of species recovered from our sample while varying the
 pairwise threshold value: \Sexpr{paste0(load_thresholdPairwise(), collapse=",
   ")}. Additionally, we estimated the proportion of singletons (proportion of
 the number species represented by a single individual) for each of these
-threshold values. If a suitable threshold allows the detection of the barcoding
-gap, we expect the number of estimated ESUs to not drop as abruptly once the
-threshold is high enough to capture the range of intra-ESU genetic
-distances. Similarly, we expect that the proportion of singletons stops
-decreasing when the threshold is high enough that it captures individuals with
-slightly divergent haplotypes. We repeated these analyses on the entire dataset,
-on each order, and each family to assess if different thresholds were needed for
-various taxonomic groups.
+threshold values.
+
+%% xx_Needs work_xx: %%
+If a suitable threshold allows the detection of the barcoding gap, we expect the
+number of estimated ESUs to not drop as abruptly once the threshold is high
+enough to capture the range of intra-ESU genetic distances. Similarly, we expect
+that the proportion of singletons stops decreasing when the threshold is high
+enough that it captures individuals with slightly divergent haplotypes. We
+repeated these analyses on the entire dataset, on each order, and each family to
+assess if different thresholds were needed for various taxonomic groups.
 
 
 \subsection{Geography, diversity and diversification}
@@ -371,22 +373,25 @@ various taxonomic groups.
 @
 
 To test whether mode of development had an impact on range size, we compared the
-maximum geographical distance between sampled individuals for each ESU as
-delineated with the threshold approach (4\% with cluster method).
+maximum geographical distance between sampled individuals for each mtLineage as
+delineated with the threshold approach (4\% with cluster method, justification
+below).
 
 To test for evidence of IBD we investigated the relationship between the maximum
 intra-ESU genetic distances and the maximum geographical distances sampled for
-each ESU represented by three or more individuals.  To assess if differences in
-the reproductive modes among the orders had an effect of the IBD pattern, we
-performed an analysis of covariance (ANCOVA) on the maximum genetic distance for
-each species as the response variable, the maximum geographic distance as the
-covariate, and the taxonomic order as the independent variable. We performed the
-analysis on the three most represented orders (\Sexpr{paste(orderToInclude,
-  collapse=', ')}).  The variances among the orders were homogeneous (Levene's
-test, \Sexpr{leveneIbdFstat}, \Sexpr{leveneIbdP}). To assess if using the
-threshold approach might have influenced the results, we compared the model
-obtained with the model estimated using the manually delineated ESUs with the
-Holothuriidae.
+each ESU represented by three or more individuals. If dispersal is spatially
+restricted, we expect genetic differentiation to increase with geographical
+distance. To assess if differences in the reproductive modes among the orders
+had an effect of the IBD pattern, we performed an analysis of covariance
+(ANCOVA) on the maximum genetic distance for each species as the response
+variable, the maximum geographic distance as the covariate, and the taxonomic
+order as the independent variable. We performed the analysis on the three most
+represented orders (\Sexpr{paste(orderToInclude, collapse=', ')}), which are
+also the best understood in terms of larval development. The variances among the
+orders were homogeneous (Levene's test, \Sexpr{leveneIbdFstat},
+\Sexpr{leveneIbdP}). To assess if using the threshold approach might have
+influenced the results, we compared the model obtained with the model estimated
+using the delineated ESUs with the Holothuriidae.
 
 % To test whether tropical and low-latitude species affected the IBD
 % pattern, we performed an ANCOVA on the maximum intra-ESU genetic distances as
@@ -403,24 +408,22 @@ Holothuriidae.
 \subsubsection{Geography of diversification}
 
 If speciation occurs in allopatry, recently diverged species may retain
-allopatric distributions. To investigate the geographic distributions of
-recently diverged ESUs, we tested whether the geographical ranges of sister ESUs
-overlapped. We identified sister ESUs based on the maximum-likelihood tree. If
-the distributions of the ESUs could be inferred with a polygon, we classified
-their distributions as: ``parapatric'' if less than 10\% of the range of the ESU
-with the smallest range overlapped with the ESU with the larger range,
-``sympatric'' is their ranges overlapped by more than 10\%, and ``allopatric''
-otherwise. If only one ESU had enough data to estimate its distribution with a
-polygon, and points were available for its sister ESU, we considered their
-distribution allopatric if none of the points were included in the polygon, and
-sympatric otherwise. We used the manually delineated ESUs for this analysis.
+allopatric distributions for a period of time. To investigate the geographic
+distributions of recently diverged ESUs, we evaluated whether the geographical
+ranges of sister ESUs overlapped. We identified sister ESUs based on the
+maximum-likelihood tree. If the distributions of the ESUs could be inferred with
+a polygon (i.e., consisted of at least 3 occurrences), we classified their
+distributions as: ``parapatric'' if less than 10\% of the range of the ESU with
+the smallest range overlapped with the ESU with the larger range, ``sympatric''
+is their ranges overlapped by more than 10\%, and ``allopatric'' otherwise. If
+only one ESU had enough data to estimate its distribution with a polygon, and
+points were available for its sister ESU, we considered their distribution
+allopatric if none of the points were included in the polygon, and sympatric
+otherwise. We used the manually delineated ESUs for this analysis.
 
 To investigate the relative contributions of geographic barriers to the
 formations of ESUs within the Indo-Pacific, we recorded the approximate
 boundaries separating allopatric sister ESUs.
-
-
-
 
 % \subsection{Molecular clock estimation}
 
@@ -464,20 +467,23 @@ Aspidochirotida, and in particular the family Holothuriidae were the most
 comprehensively sampled (\Sexpr{formatC(100*nSppAsp/nSppAll, width=2,
   format="d")}\% and \Sexpr{formatC(100*nSppHol/nSppAll, width=2, format="d")}\%
 of the total number of individuals respectively), with all genera and subgenera
-of the Holothuriidae represented, and 65\% for the currently accepted species
-names.
+of the Holothuriidae represented, and 65\% for the currently accepted species.
 
 On the entire dataset, regardless of the method or the distance threshold used,
-the number of estimated ESUs was greater than the number of named species
-indicating cryptic diversity. The pairwise distance method led to lower
-estimates than the clustering method and was less sensitive to the type of
-distance used (Fig.~\ref{fig:groups-comparison-plot}). At the order level, and
-for the Holothuriidae, the estimated number of ESUs plateaued for thresholds
-$\geq$ 4\% with the clustering method and for thresholds > 2\% with the pairwise
-distance method.
+the number of estimated mtLineages was greater than the number of named species
+indicating cryptic diversity. The pairwise distance method estimated lower
+number of mtLineages at the same thresholds than the clustering method and was
+less sensitive to the type of distance used
+(Fig.~\ref{fig:groups-comparison-plot}).
 
+% TODO -- At the order level, and for the
+% Holothuriidae, the estimated number of ESUs plateaued for thresholds $\geq$ 4\%
+% with the clustering method and for thresholds > 2\% with the pairwise distance
+% method.
+
+% TODO -- make this paragraph clearer
 When all sequences where analyzed, the proportion of singletons varied between
-35\% and 40\% for distance thresholds > 2\% for the pairwise method and for
+35\% and 40\% at the > 2\% for the pairwise method and for
 thresholds > 4\% for the clustering method
 (Fig.~\ref{fig:groups-comparison-plot}). Typically, these thresholds were more
 variable when analyzing each orders individually (3\% and 5\% for both the
@@ -488,23 +494,24 @@ Aspidochirotida and the Holothuriidae, 3\% and 2.5\% for the Apodida, 3\% and
 
 @
 
-With the manual delineation of the ESUs for the Holothuriidae, we recovered
-\Sexpr{formatC(100*(length(noGeoGrps)-nSppHol)/nSppHol, digits=2, width=2)}\%
-more ESUs (N=\Sexpr{length(noGeoGrps)} ESUs) than named species
-(N=\Sexpr{nSppHol}). \Sexpr{nCryptic} named species are cryptic complexes (ESUs
-are related to a named species) that include between 2 and 13
-ESUs. Additionally, \Sexpr{sum(newSpp)} ESUs appear to be undescribed species
-(not directly to a named species). \Sexpr{formatC(percentSinglHol, digits=2,
-  width=2)}\% of the ESUs were singletons. Most named species were reciprocally
-monophyletic and conformed to the ESU
-definition. \Sexpr{formatC(8/length(noGeoGrps), digits=2, width=2)}\% of the
-ESUs were non-monophyletic.
 
-The minimum inter-ESU genetic distance is greater than the maximum intra-ESU
-distance, indicating the presence of a barcoding gap for \Sexpr{percentGap}\%
-(N=\Sexpr{nrow(barcodeGap)}) of the manually delineated ESUs
-(Fig.~\ref{fig:barcode-gap-plot}). The minimum inter-ESU distance varies greatly
-with a minimum of \Sexpr{formatC(minInterText, digits=2, width=2)}\%.
+Manual delineation of the ESUs in the Holothuriidae revealed
+\Sexpr{length(noGeoGrps)} ESUs,
+\Sexpr{formatC(100*(length(noGeoGrps)-nSppHol)/nSppHol, digits=2, width=2)}\%
+more than named species (N=\Sexpr{nSppHol}). About one quarter
+(N=\Sexpr{nCryptic}) of named species were complexes, each including between 2
+and 13 ESUs. Additionally, \Sexpr{sum(newSpp)} ESUs appear to be undescribed
+species (not directly referable to a named
+species). \Sexpr{formatC(percentSinglHol, digits=2, width=2)}\% of the ESUs were
+singletons. Most named species were reciprocally monophyletic and conformed to
+the ESU definition. \Sexpr{formatC(100*8/length(noGeoGrps), digits=2,
+  width=2)}\% of the ESUs were non-monophyletic.
+
+The minimum inter-ESU genetic distance was greater than the maximum intra-ESU
+distance for \Sexpr{formatC(percentGap, digits=2, width=2)}\% (N=\Sexpr{nGap})
+of the manually delineated ESUs (Fig.~\ref{fig:barcode-gap-plot}). The minimum
+inter-ESU distance varied greatly, with a minimum of
+\Sexpr{formatC(minInterText, digits=2, width=2)}\%.
 
 % however a 2\% cutoff to delineate ESUs with the threshold approach, would
 % recover \Sexpr{formatC(percentThres, digits=2, width=2)}\% of the manually
@@ -521,7 +528,7 @@ with a minimum of \Sexpr{formatC(minInterText, digits=2, width=2)}\%.
 
 \subsubsection{Range size and isolation-by-distance}
 
-<<range-size-plot, cache=TRUE, echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.cap='Violin plot (width represent the kernel density estimate) of the maximum range sizes for the Apodida, Aspidochirotida, Dendrochirotida. Note that most Dendrichirotida have smaller distributions.', fig.height=3>>=
+<<range-size-plot, cache=TRUE, echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.cap='Violin plot (widths represent the density estimate) of the maximum range sizes for the Apodida, Aspidochirotida, Dendrochirotida. Note that most Dendrichirotida have smaller distributions.', fig.height=3>>=
 
 @
 
@@ -540,25 +547,20 @@ sdRange <- with(subset(distBySpecies, latCat == "tropical"),
                 tapply(maxGeoDist, Order, sd))
 @
 
-Dendrochirotida have smaller range sizes than the other two orders
-(Fig.~\ref{fig:range-size-plot}, median of the range sizes
-\Sexpr{formatC(medRgSizeAsp, format="d")}~km, \Sexpr{formatC(medRgSizeApo,
-  format="d")}~km, \Sexpr{formatC(medRgSizeDen, format="d")}~km for the
-Aspidochirotida, Apodida and Dendrochirotida respectively).
+Apodida and Aspidochirotida had larger range sizes than the Dendrochirotida
+(Fig.~\ref{fig:range-size-plot}, median of the range sizes of
+\Sexpr{formatC(medRgSizeApo, format="d")}~km, \Sexpr{formatC(medRgSizeAsp,
+  format="d")}~km, \Sexpr{formatC(medRgSizeDen, format="d")}~km respectively).
 
-We recovered a signal of isolation-by-distance (IBD) for the three orders
-included in the analysis (Fig.~\ref{fig:isolation-by-distance-plot},
-Table~\ref{tab:ibd-stats}).The ANCOVA testing for the effects of maximum
-geographic distance and ``order'' on the maximum genetic distance was
-significant (\Sexpr{ancovaFstat}, \Sexpr{ancovaP}). Neither the interaction
-between ``order'' and geographic distance (\Sexpr{interactionFstat},
-\Sexpr{interactionP}), nor the ``order'' terms (\Sexpr{interceptFstat}) were
-significant, indicating a common slope and a common intercept for the orders
-included in the analysis (Table~\ref{tab:ibd-stats}).  The
-coefficients obtained based on the manually delineated ESUs for the
+We recovered a signal for isolation-by-distance (IBD) in each of the three
+orders included in the analysis (ANCOVA, \Sexpr{ancovaFstat},
+\Sexpr{ancovaP}, Fig.~\ref{fig:isolation-by-distance-plot}). The slopes
+(\Sexpr{interactionFstat}, \Sexpr{interactionP}), and the intercepts
+(\Sexpr{interceptFstat}, \Sexpr{interceptP}) were similar across the three
+orders. The coefficients obtained based on the manually delineated ESUs for the
 Holothuriidae were almost identical (intercept:
 \Sexpr{formatC(coefficients(ibdHol)[1,1], digits=2)},
-SE=\Sexpr{formatC(coefficients(ibdHol)[1,2])}, slope:
+SE=\Sexpr{formatC(coefficients(ibdHol)[1,2], digits=2)}, slope:
 \Sexpr{formatC(coefficients(ibdHol)[2,1], digits=2)},
 SE=\Sexpr{formatC(coefficients(ibdHol)[2,2])}).
 
@@ -581,35 +583,41 @@ SE=\Sexpr{formatC(coefficients(ibdHol)[2,2])}).
 
 \subsubsection{Geography of diversification}
 
-<<geography-diversification, cache=TRUE, echo=FALSE, fig.height=3, fig.scap='Geography of diversification', fig.cap='Number of geographic types for ESU pairs from the manually delineated ESUs in the Holothuriidae.'>>=
+<<geography-diversification, cache=TRUE, echo=FALSE, fig.height=2, fig.cap='Mean genetic distances between sister ESUs occuring in sympatry, allopatry and parapatry.'>>=
 
 @
 
 We compared the geographic ranges of \Sexpr{sum(complete.cases(esuRange))} pairs
 of sister ESUs within the Holothuriidae. Most had allopatric distributions
-(\Sexpr{formatC(percentAllo, digits=2, width=2)}\%), the other sister ESUs were
+(\Sexpr{formatC(percentAllo, digits=2, width=2)}\%), the remaining were
 sympatric (\Sexpr{formatC(percentSymp, digits=2, width=2)}\%), or parapatric
-(\Sexpr{formatC(percentPara, digits=2, width=2)}\%,
-Fig.~\ref{fig:geography-diversification}).
+(\Sexpr{formatC(percentPara, digits=2, width=2)}\%).
 
+% need text about geography/genetic distances
+
+% TODO add map
 
 <<barriers, cache=TRUE, dependson='geography-diversification', echo=FALSE, fig.height=2, fig.cap='Mean genetic distances between sister ESUs separated by the Indian Ocean (IO) and the Pacific Ocean (PO), the Red Sea (RS) and the Pacific Ocean, and Hawaii (HI) and the Pacific Ocean'>>=
 
 @
 
-Among allopatric ESUs within the Holothuriidae, most
-(\Sexpr{formatC(percentIOPO, width=2, digits=2)}\%) separated between the Indian
-and Pacific Oceans. The other significant barriers included the Red Sea
-(\Sexpr{formatC(percentRSPO, width=2, digits=2)}\%) and the Hawaii Archipelago
-(\Sexpr{formatC(percentHIPO, width=2, digits=2)}\%). Other barriers included
-endemics restricted to remote archipelagos (Galapagos, French Polynesia), or
-continental areas with distinct ecological conditions (Eastern Pacific,
-Oman). The levels of genetic divergence for the ESU pairs separated across these
-basins varied greatly (Fig.~\ref{fig:barriers}). For the Red Sea/Pacific Ocean
-(RS/PO), and for the Indian Ocean/Pacific Ocean (IO/PO) pairs, distances
-clustered in two groups (RS/PO: ESU pairs with genetic distances \textasciitilde 5\% and >
-10\%; IO/PO: ESU pairs with genetic distances < 5\% and > 7.5\%)
-(Fig.~\ref{fig:barriers}).
+Sister species with allopatric ranges tended to straddle well-known
+biogeographic boundaries. Thus \Sexpr{formatC(percentIOPO, width=2, digits=2)}\%
+of the allopatric pairs separated between the Indian and Pacific Oceans,
+\Sexpr{formatC(percentRSPO, width=2, digits=2)}\% between the Red Sea/Arabic
+peninsula and the rest of the Indian Ocean, and \Sexpr{formatC(percentHIPO,
+  width=2, digits=2)}\% between the Hawaiian archipelago. Other barriers
+separated endemics restricted to remote locations and/or in areas with distinct
+ecological conditions (Galapagos, French Polynesia, Eastern Pacific, Oman). The
+levels of genetic divergence for the ESU pairs separated across these basins
+varied substantially (Fig.~\ref{fig:barriers}).
+
+% TODO - reword this
+For the Red Sea/Pacific Ocean (RS/PO), and for the Indian Ocean/Pacific Ocean
+(IO/PO) pairs, genetic distances between sister ESUs were not randomly spread
+but were separated clustered in two groups (RS/PO: ESU pairs with genetic
+distances \textasciitilde 5\% and > 10\%; IO/PO: ESU pairs with genetic
+distances < 5\% and > 7.5\%) (Fig.~\ref{fig:barriers}).
 
 \section{Discussion}
 
