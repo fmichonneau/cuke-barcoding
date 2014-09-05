@@ -87,9 +87,20 @@ source("R/load.R")
 
 \section{Introduction}
 
-Estimates for the number of species in the sea are poorly constrained because
+Estimates for the number of species on Earth are poorly constrained because
 sampling is challenging, and our understanding of species limits for most groups
-limited. Initially developed for species identification, DNA barcoding has
+limited. Most metazoan species are delineated based on morphological
+differences, however, these morpho-taxonomic delineations have been challenged
+by the advent of molecular data. Molecular data has revealed complexes of
+cryptic species (see Chapter~2, \cite{Hebert2004, Vogler2008,
+  Schlick-Steiner2010}) and elucidated intra-specific polymorphism
+\cite{Miranda2010}. More generally, molecular data has reinforced the idea that
+morphology based species limits can fail, in particular for organisms that do
+not rely on visual clues for finding a mates \cite{Knowlton1993, Knowlton2000}.
+
+Despite the advantages of
+
+Initially developed for species identification, DNA barcoding has
 become a popular technique to discover new species and evaluate species
 limits. By analyzing of a portion of the mitochondrial genome, barcoding has
 unraveled cryptic lineages, most often associated with differences in
@@ -198,6 +209,13 @@ barcoding? (2) How does the type of larval development influence the
 geographical distribution and genetic differentiation of species? (3) How does
 the frequency of sympatry change over time among sister species?
 
+%%% TODO -- need paragraph about thresholds in intro
+% It has been previously suggested that using a threshold equals to 10 times the
+% intraspecific distance \cite{Hebert2004a} for pairwise distance was
+% appropriate. However, this approach was not suitable in our study as the high
+% levels of cryptic species were considerably inflating the apparent levels of
+% intraspecific distances.
+
 % * In such cases, barcoding has typically revealed more diversity than previously
 % acknowledged. From the variety of studies, clearly many different patterns
 % emerge. Using large datasets allow to evaluate the relative importance of these
@@ -227,9 +245,9 @@ collected material or from preserved specimens deposited at other institutions.
 
 \Sexpr{dim(load_cukeAlg())[1]} individuals were identified and sequenced. They
 represent the worldwide diversity of sea cucumbers, with a particular focus on
-the species of the Indo-Pacific and the Antarctic regions
-(Fig.\ref{fig:sampling-maps}). The northern hemisphere and deep-water species outside
-of the Antarctic region are under-represented.
+species of the Indo-Pacific and the Antarctic regions
+(Fig.\ref{fig:sampling-maps}). The northern hemisphere and deep-water species
+outside of the Antarctic region are under-represented.
 
 <<sampling-maps, cache=TRUE, echo=FALSE, warning=FALSE, fig.height=6, fig.cap='Locations sampled'>>=
 
@@ -239,19 +257,20 @@ of the Antarctic region are under-represented.
 \subsection{Specimen identification} % M&M
 
 Most specimens were individually identified by GP, FM, Mark O'Loughlin and other
-taxonomic specialists. For most groups, survey of primary literature was used to
-assign the most accurate names.
+taxonomic specialists. For most groups, extensive survey of primary literature
+was used to assign the most accurate names.
 
 % This effort led to the re-discovery of taxonomic names that have been
 % forgotten/never used in the literature, and names were resurrected from
 % synonymies.
 
+
 \subsection{Sequencing and analysis} % M&M
 
 DNA was extracted according to one of the following three protocols: (1) DNAzol
 followed by QIAGEN PCR clean up kit; (2) organic extractions at the Smithsonian
-Institution using robotic facilities; (3) EZNA Mollusc kit. In each case, the
-manufacturer's protocol was used.
+Institution using robotic facilities; (3) Omega EZNA Mollusc kit. In each case,
+the manufacturer's protocol was used.
 
 We amplified the 5' end (655~base pairs) of the mitochondrial gene COI using the
 echinoderm primers developed by \cite{Hoareau2010}. The sequencing was performed
@@ -271,72 +290,67 @@ maximum-likelihood tree using RAxML 8.0.1 \cite{Stamatakis2014} with each codon
 position as a different partition, a GTR model of molecular evolution with a
 Gamma distributed rates of heterogeneity, and 500 bootstrap replicates.
 
-\subsection{Diversity}
+\subsection{Diversity}  % M&M
 
-In this study we use the term Evolutionary Significant Unit (ESU) to designate
-individuals that differ by species-level genetic differentiation and could
-potentially represent reproductively isolated lineages. Typically, this
-definition implies that these individuals also differ in another independent
-distinguishing characteristic such as a morphological trait or divergence in an
-independent genetic locus (\textit{sensu} \cite{Moritz1994}). Here, many of the
-ESUs identified differ morphologically, but it was not always possible to assess
-these differences owing to the few individuals available. In other cases, no
-obvious differences were detected but they may be characterized by subtle
-differences in their ossicle assemblages that have not been investigated
-thoroughly.
+<<n-species, cache=TRUE, echo=FALSE>>=
 
-For the Holothuriidae, which was the most densely sampled and represent a large
-portion of our dataset (\Sexpr{formatC(100*propHol, width=2, digits=2)}\%), we
-conducted a manual assessment of the ESUs. We assigned all individuals to ESUs
-based on genetic distinctiveness (individuals formed reciprocally monophyletic
-clades in COI), and unique morphological features (most often color patterns) or
-were restricted to a geographical area. We used these manually defined ESUs to
-compare with the number of ESUs estimated with the threshold approach (see
-below). Additionally, to determine ESUs that were not distinguished by a barcode
-gap, we compared the maximum intra-ESU distance to the minimum inter-ESU
-distance. ESUs that fell below the 1:1 line did not have a barcoding gap.
+@
 
 The size of the dataset restricts the methods that can be used to assess
 diversity, as computationally intensive methods such as the Generalized Mixed
 Yule Coalescent method \cite{Pons2006} cannot be used here. Other programs
 cannot accommodate such large dataset, and failed to complete the analysis
-(e.g. PTP \cite{Zhang2013}, AGBD \cite{Puillandre2012a}). Therefore, we were
-limited to use threshold-based methods to estimate the number of ESUs and used
-two approaches: pairwise distances and the cluster identification method.
+(e.g. PTP \cite{Zhang2013}, AGBD \cite{Puillandre2012a}). We assessed species
+boundaries and diversity in three ways.
 
-Based on pairwise distances, we grouped individuals that diverged at most by a
-given threshold. This method is strictly based on the genetic distance and does
-not take into account phylogenetic information.
+First, we used traditional morphological characters and current species concepts
+across the class to identify species to currently valid species names. For this
+assessment we used these names at face value, although we are aware of cryptic
+morphological variation in many species we have studied in depth, and such
+variation likely also exists in many less-studied forms. Overall,
+\Sexpr{undescSpp} morphospecies could not be assigned to a name, most
+representing undescribed species.
 
-We also used here a new method that identifies monophyletic clusters of
-individuals from a neighbor-joining tree (other tree reconstruction methods can
-be used), reconstructed from the pairwise genetic distances. Individuals
-belonging to the same cluster are separated by genetic distance less than a
-threshold set \textit{a priori}.
+Second we used the evolutionary significant unit (ESU) concept (\textit{sensu}
+\cite{Mortiz1994}) to evaluate diversity within the holothuriids = family
+Holothuriidae vs. holothuroids = class Holothuroidea). They were the most
+densely sampled and comprise almost half (\Sexpr{formatC(propHol, width=2,
+  format="d")}\%) of our dataset; they are also the focus of our taxonomic work
+and are the best known to us at the morpho-species level to assign all
+individuals to ESUs. Individuals were assigned to ESUs based on genetic
+distinctiveness (individuals formed reciprocally monophyletic clades in COI),
+and distinguishing morphological features (most often color patterns) or were
+restricted to a geographical area. [!if we use this definition, we need to
+revisit some ESUs: e.g., nigralutea..., or need a different concept for ESUs
+with > 1 morphology]
 
-For each of these two approaches, we used both uncorrected distances ($p$) and
-the Kimura two-parameter (K2P) distance \cite{Kimura1980} to estimate pairwise
-distances. The K2P distance is very widely used in barcoding studies, but a
-recent study indicated that the $p$ distance is probably more appropriate when
-comparing genetic distances between closely related species and may lead to
-higher rates of identification success \cite{Collins2012}. We estimated the
-number of species recovered from our sample while varying the pairwise threshold
-value: \Sexpr{paste0(load_thresholdPairwise(), collapse=", ")}. Additionally, we
-estimated the proportion of singletons (proportion of the number species
-represented by a single individual) for each of these threshold values. If a
-suitable threshold allows the detection of the barcoding gap, we expect the
-number of estimated ESUs to not drop as abruptly once the threshold is high
-enough to capture the range of intra-ESU genetic distances. Similarly, we expect
-that the proportion of singletons stops decreasing when the threshold is high
-enough that it captures individuals with slightly divergent haplotypes. We
-repeated these analyses on the entire dataset, on each order, and each family to
-assess if different thresholds were needed for various taxonomic groups.
+Third, we used mtDNA sequence data on its own for lineage delineation using a
+threshold approach \cite{Meyer2005-plos, Hebert2004}. Based on pairwise
+distances, we grouped individuals that differed from each other by a genetic
+distance below a given threshold. This method is strictly based on genetic
+distance and does not take into account phylogenetic information. We also
+identified monophyletic groups from neighbor-joining trees, reconstructed from
+the pairwise genetic distances. Groups were defined based on their coalescence
+depth, as defined by a threshold set \textit{a priori}.
 
-It has been previously suggested that using a threshold equals to 10 times the
-intraspecific distance \cite{Hebert2004a} for pairwise distance was
-appropriate. However, this approach was not suitable in our study as the high
-levels of cryptic species were considerably inflating the apparent levels of
-intraspecific distances.
+For each of these two threshold-based approaches, we used both uncorrected
+distances ($p$) and the Kimura two-parameter (K2P) model \cite{Kimura1980} to
+estimate genetic distances. The K2P model is very widely used in barcoding
+studies, but a recent study indicated that the $p$ distance is probably more
+appropriate when comparing genetic distances between closely related species and
+may lead to higher rates of identification success \cite{Collins2012}. We
+estimated the number of species recovered from our sample while varying the
+pairwise threshold value: \Sexpr{paste0(load_thresholdPairwise(), collapse=",
+  ")}. Additionally, we estimated the proportion of singletons (proportion of
+the number species represented by a single individual) for each of these
+threshold values. If a suitable threshold allows the detection of the barcoding
+gap, we expect the number of estimated ESUs to not drop as abruptly once the
+threshold is high enough to capture the range of intra-ESU genetic
+distances. Similarly, we expect that the proportion of singletons stops
+decreasing when the threshold is high enough that it captures individuals with
+slightly divergent haplotypes. We repeated these analyses on the entire dataset,
+on each order, and each family to assess if different thresholds were needed for
+various taxonomic groups.
 
 
 \subsection{Geography, diversity and diversification}
@@ -356,10 +370,9 @@ intraspecific distances.
 
 @
 
-To determine whether the mode of reproduction affected the range size of the
-ESUs, we compared the maximum geographical distance between sampled individuals
-for each ESU as delineated with the threshold approach (4\% with cluster
-method).
+To test whether mode of development had an impact on range size, we compared the
+maximum geographical distance between sampled individuals for each ESU as
+delineated with the threshold approach (4\% with cluster method).
 
 To test for evidence of IBD we investigated the relationship between the maximum
 intra-ESU genetic distances and the maximum geographical distances sampled for
@@ -420,10 +433,6 @@ boundaries separating allopatric sister ESUs.
 \section{Results}
 
 \subsection{Diversity}
-
-<<n-species, cache=TRUE, echo=FALSE>>=
-
-@
 
 <<cluster-groups-data, cache=TRUE, echo=FALSE>>=
 
@@ -832,7 +841,7 @@ indicates that it is plesiomorphic in the clade that sea cucumbers emerged from.
 
 \pagebreak
 
-<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', fig.height=6.5, echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap=paste0('Number of ESUs incorrectly assigned compared to the manual ESU delineation on the Holothuriidae for the thresholds using the pairwise distance method (pairwise) and theclustering method (cluster), based on uncorrected genetic distances or the Kimura 2-parameter distances (K2P).ESUs can be incorrectly assigned because of oversplitting (1 manually defined ESU results in several threshold-based ESU) or lumping (1 threshold-based ESU is comprised of several manually defined ESU). The lowest error rate is with the clustering method based on uncorrected distances and a threshold of ', 100*minError['threshold'], '\\%.')>>=
+<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', fig.pos='h!', fig.height=6.5, echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap=paste0('Number of ESUs incorrectly assigned compared to the manual ESU delineation on the Holothuriidae for the thresholds using the pairwise distance method (pairwise) and theclustering method (cluster), based on uncorrected genetic distances or the Kimura 2-parameter distances (K2P).ESUs can be incorrectly assigned because of oversplitting (1 manually defined ESU results in several threshold-based ESU) or lumping (1 threshold-based ESU is comprised of several manually defined ESU). The lowest error rate is with the clustering method based on uncorrected distances and a threshold of ', 100*minError['threshold'], '\\%.')>>=
 
 @
 

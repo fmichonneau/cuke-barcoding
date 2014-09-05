@@ -1,4 +1,4 @@
-% Created by tikzDevice version 0.7.0 on 2014-08-29 17:18:26
+% Created by tikzDevice version 0.7.0 on 2014-08-30 23:37:02
 % !TEX encoding = UTF-8 Unicode
 
 \documentclass[12pt]{article}
@@ -49,7 +49,7 @@
 \newcolumntype{b}{X}
 \newcolumntype{s}{>{\hsize=.2\hsize}X}
 
-\title{Barcoding in sea cucumbers}
+\title{More than meets the eyes: diversity and geographic patterns in sea cucumbers}
 
 \author[1]{Fran\c{c}ois Michonneau\thanks{francois.michonneau@gmail.com}}
 \author[1]{Gustav Paulay\thanks{paulay@flmnh.ufl.edu}}

@@ -94,7 +94,7 @@ headerTable <- paste("\\hline", paste(c("ESUs", "Vouchers"), collapse=" & "), "\
 
 print(xtable(cbind(ESUs=uniqESU, Vouchers=esuVouch),
              caption="List of manually delineated ESUs and associated vouchers",
-             label="tab:esu-info", align=c("llp{4.5in}")),
+             label="tab:esu-info", align=c("llp{4in}")),
       tabular.environment="longtable", floating=FALSE,
       hline.after = c(-1, length(esuVouch)),
       add.to.row = list(pos = list(-1, 0),
@@ -282,6 +282,10 @@ nSppApo <- nrow(subset(uniqSpp, higher=="Apodida"))
 nSppDen <- nrow(subset(uniqSpp, higher=="Dendrochirotida"))
 nSppEla <- nrow(subset(uniqSpp, higher=="Elasipodida"))
 
+undescSpp <- unique(paste(allSpp$family, allSpp$genusorhigher, allSpp$species, sep="_"))
+undescSpp <- grep("(n)?_sp(_|\\.|\\s|nov)?\\d?", undescSpp, value=T)
+undescSpp <- undescSpp[-grep("spic|spin|spect", undescSpp)]
+
 ### ---- worms-taxonomy ----
 ## library(taxize)
 ## cukeOrder <- worms_children(123083)
@@ -325,7 +329,9 @@ wormsSum <- wormsSum[, -match(c("Genus", "nSpp"), names(wormsSum))]
 wormsSum <- wormsSum[!duplicated(wormsSum), ]
 wormsSum <- rbind(wormsSum, data.frame(Family="", Order=names(wormsSumOrder), acceptedSpp=wormsSumOrder))
 
-sampTab <- data.frame(xtabs(~ higher + family, data=uniqSpp))
+sampTab <- data.frame(xtabs(~ higher + family, dat [Ideally need
+different terms for delineated entities by the 3 approaches –
+e.g. “morphospecies”, “ESUs”, and “mtLineages”]a=uniqSpp))
 sampTabOrder <- data.frame(xtabs(~ higher, data=uniqSpp), family = "")
 sampTab <- rbind(sampTab, sampTabOrder)
 sampTab <- sampTab[sampTab$Freq != 0, ]
@@ -975,15 +981,50 @@ for (i in 1:length(listCoords)) {
 }
 dev.off()
 
+### ---- map-species-pairs ----
 
+pdf(file="/tmp/spPairs.pdf")
+for (i in 1:length(sppNb)) {
+    sp1 <- allHllDf[grep(paste0("^", sppNb[[i]][1], "-"),  allHllDf$species), ]
+    sp2 <- allHllDf[grep(paste0("^", sppNb[[i]][2], "-"),  allHllDf$species), ]
+    tmpDt <- rbind(sp1, sp2)
 
-## ggplot(ptsDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-##     geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species),
-##                position = position_jitter(width=1, height=1), data=ptsDf) +
-##     coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-##     theme(panel.background = element_rect(fill="aliceblue"),
-##           legend.position = "none") +
-##     ylim(c(-30, 30)) + xlim(c(0, 300))
+    sp1Nm <- names(spatialSpecies[[2]])[sppNb[[i]][1]]
+    sp2Nm <- names(spatialSpecies[[2]])[sppNb[[i]][2]]
+
+    tmpDt2 <- rbind(cbind(spatialSpecies[[1]][[ sppNb[[i]] [1]]], species=sppNb[[i]][1]),
+                    cbind(spatialSpecies[[1]][[ sppNb[[i]] [2]]], species=sppNb[[i]][2]))
+    tmpDt2 <- tmpDt2[complete.cases(tmpDt2), ]
+
+    tmpMap <- ggplot(tmpDt2) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+        geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
+        theme(panel.background = element_rect(fill="aliceblue"),
+        legend.position = "none") +
+        xlab("Longitude") + ylab("Latitude") +
+        ggtitle(paste(sp1Nm, sp2Nm, spComp$rangeType[i], sep=" - "))
+
+    if (attr(spatialSpecies[[1]][[sppNb[[i]][1]]], "type-coords") == "polygon") {
+        tmpMap <- tmpMap + geom_polygon(data=subset(tmpDt2, species == sppNb[[i]][1]),
+                                        aes(x=long.recenter, y=decimalLatitude, fill="red"),
+                                        alpha=.3)
+    }
+
+    if (attr(spatialSpecies[[1]][[sppNb[[i]][2]]], "type-coords") == "polygon") {
+        tmpMap <- tmpMap + geom_polygon(data=subset(tmpDt2, species == sppNb[[i]][2]),
+                                        aes(x=long.recenter, y=decimalLatitude, fill="blue"),
+                                        alpha=.3)
+    }
+
+    if (abs(mean(range(tmpDt$decimalLatitude))) < 30) {
+        tmpMap <- tmpMap + coord_map(projection = "mercator", orientation=c(90, 160, 0))
+    } else if (mean(range(tmpDt$decimalLatitude)) > 30) {
+        tmpMap <- tmpMap + coord_map(projection = "ortho", orientation=c(90, 0, 0))
+    } else {
+        tmpMap <- tmpMap + coord_map(projection = "ortho", orientation=c(-90, 0, 0))
+    }
+    print(tmpMap)
+}
+dev.off()
 
 
 ### ---- summary-bPTP-results ----
