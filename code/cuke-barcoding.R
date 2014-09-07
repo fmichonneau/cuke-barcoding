@@ -15,12 +15,12 @@ manESU$ESU_noGeo <- gsub("_[A-Z]{2}$", "", manESU$ESU_genetic)
 cukeDistRaw <- load_cukeDist_raw()
 
 noGeoGrps <- split(manESU$Labels, manESU$ESU_noGeo)
-maxDistNoGeo <- sapply(noGeoGrps, function(x) {   max(dist.dna(cukeAlg[x, ], model="raw")) })
-meanDistNoGeo <- sapply(noGeoGrps, function(x) { mean(dist.dna(cukeAlg[x, ], model="raw")) })
+maxDistNoGeo <- sapply(noGeoGrps, function(x) {   intraESUDist(x, cukeDistRaw)$max })
+meanDistNoGeo <- sapply(noGeoGrps, function(x) { intraESUDist(x, cukeDistRaw)$mean })
 
 wiGeoGrps <- split(manESU$Labels, manESU$ESU_genetic)
-maxDistWiGeo <- sapply(wiGeoGrps, function(x) {   max(dist.dna(cukeAlg[x, ], model="raw")) })
-meanDistWiGeo <- sapply(wiGeoGrps, function(x) { mean(dist.dna(cukeAlg[x, ], model="raw")) })
+maxDistWiGeo <- sapply(wiGeoGrps, function(x) {   intraESUDist(x, cukeDistRaw)$max })
+meanDistWiGeo <- sapply(wiGeoGrps, function(x) { intraESUDist(x, cukeDistRaw)$mean })
 
 esus <- strsplit(unique(manESU$ESU_noGeo), "_")
 hasCryptic <- sapply(esus, function(x) length(x) > 2 & length(grep("nsp", x)) < 1)
