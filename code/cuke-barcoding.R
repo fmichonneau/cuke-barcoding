@@ -572,57 +572,32 @@ multiplot(nESUSm, pSnglSm, layout=matrix(c(rep(1, 4), rep(2, 3)), ncol=1))
 
 ### ----- isolation-by-distance-data -----
 source("R/test-allopatry-functions.R")
-treeH <- load_tree_clusterGrps(distance="raw", taxa="all", threshold=0.02)
+sppGrps <- load_species_clusterGrps(distance="raw", taxa="all", threshold=0.02)
 cukeDB <- load_cukeDB()
-grps <- tdata(treeH, "tip")[, "Groups", drop=FALSE]
-cukeAlg <- load_cukeAlg()
 
-uniqGrps <- unique(grps$Groups)
+nInd <- sapply(sppGrps, length)
+geoDist <- lapply(sppGrps, geoDistESU, cukeDB)
+genDist <- lapply(sppGrps, intraESUDist, cukeAlg, distance="raw")
 
-matGeoDist <- vector("list", length(uniqGrps))
-latCat <- character(length(uniqGrps))
-nInd <- numeric(length(uniqGrps))
-matGenDist <- vector("list", length(uniqGrps))
-families <- character(length(uniqGrps))
-species <- vector("list", length(uniqGrps))
-listCoords <- vector("list", length(uniqGrps))
-for (i in 1:length(uniqGrps)) {
-    tmpSpp <- rownames(subset(grps, Groups == uniqGrps[i]))
-    tmpCoords <- cukeDB[match(tmpSpp, cukeDB$Labels_withAmb),
-                        c("decimalLatitude", "decimalLongitude")]
-    listCoords[[i]] <- tmpCoords
-    matGeoDistTmp <- CalcGeoDists(cbind(deg2rad(tmpCoords$decimalLongitude),
-                                        deg2rad(tmpCoords$decimalLatitude)))
-    latCat[i] <- ifelse(mean(abs(tmpCoords$decimalLatitude)) < 23.4378, "tropical", "other")
-    nInd[i] <- nrow(tmpCoords)
-    matGeoDist[[i]] <- matGeoDistTmp
-    tmpAlg <- cukeAlg[match(tmpSpp, dimnames(cukeAlg)[[1]]), ]
-    matGenDist[[i]] <- dist.dna(tmpAlg, model="raw")
-    tmpFamilies <- sapply(strsplit(tmpSpp, "_"), function(x) x[1])
-    species[[i]] <- sapply(strsplit(tmpSpp, "_"), function(x) paste(x[2:3], collapse="_"))
-    #stopifnot(length(unique(tmpFamilies)) < 2)
-    if (length(unique(tmpFamilies)) >= 2 ) {
-        warning("Group ", i, " had more than 1 family.")
-        tmpFamilies <- NA
-    }
-    families[i] <- unique(tmpFamilies)
-}
+families <- sapply(sppGrps, function(x) {
+    fams <- sapply(strsplit(x, "_"), function(y) y[1])
+    ## TODO -- if (length(fams) > 1) warning("Group", x, "more than one fam")
+    fams[1]
+})
 
-meanGeoDist <- lapply(matGeoDist, mean)
-maxGeoDist <- lapply(matGeoDist, max)
-minGeoDist <- lapply(matGeoDist, min)
-fullGeoDist <- unlist(lapply(matGeoDist, as.numeric))
+species <- sapply(sppGrps, function(x) {
+    spp <- sapply(strsplit(x, "_"), function(y) paste(y[2:3], collapse="_"))
+    names(which.max(table(spp)))
+})
 
-meanGenDist <- lapply(matGenDist, mean)
-maxGenDist <- lapply(matGenDist, max)
-fullGenDist <- unlist(lapply(matGenDist, as.numeric))
+maxGeoDist <- sapply(geoDist, function(x) x$max)
+maxGenDist <- sapply(genDist, function(x) x$max)
 
-spp <- sapply(species, function(x) names(which.max(table(x))))
-
-distBySpecies <- data.frame(genDist = unlist(meanGenDist), geoDist = unlist(meanGeoDist),
-                            maxGenDist = unlist(maxGenDist),
-                            maxGeoDist = unlist(maxGeoDist), family = families,
-                            latCat = latCat, nInd = nInd, species = spp)
+distBySpecies <- data.frame(species = species,
+                            maxGenDist = sapply(genDist, function(x) x$max),
+                            maxGeoDist = sapply(geoDist, function(x) x$max),
+                            nInd = nInd,
+                            family = families)
 
 taxonomyDf <- load_taxonomyDf()
 distBySpecies <- merge(distBySpecies, taxonomyDf, by.x="family", by.y="taxa", all.x=TRUE)
