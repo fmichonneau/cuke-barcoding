@@ -308,11 +308,11 @@ across the class to identify species to currently valid species names. For this
 assessment we used these names at face value, although we are aware of cryptic
 morphological variation in many species we have studied in depth, and such
 variation likely also exists in many less-studied forms. Overall,
-\Sexpr{undescSpp} morphospecies could not be assigned to a name, most
+\Sexpr{undescSpp} morphospecies could not be assigned to a name, most likely
 representing undescribed species.
 
 Second we used the evolutionary significant unit (ESU) concept (\textit{sensu}
-\cite{Mortiz1994}) to evaluate diversity within the holothuriids = family
+\cite{Mortiz1994}) to evaluate diversity within the holothuriids (= family
 Holothuriidae vs. holothuroids = class Holothuroidea). They were the most
 densely sampled and comprise almost half (\Sexpr{formatC(propHol, width=2,
   format="d")}\%) of our dataset; they are also the focus of our taxonomic work
@@ -855,6 +855,29 @@ indicates that it is plesiomorphic in the clade that sea cucumbers emerged from.
 
 % use sister species of Red Sea to talk about ecological consequences of range
 % expansion.
+
+%%% database design
+% - sequences
+%   * sequence_id (=extraction number)
+%   * sequence
+%   * primer used
+%   * primers still included in sequence? (should actually be removed, could
+%   write function to test that on import)
+%   * pass quality control, if not give reason
+% - specimen
+%   * specimen ID
+%   * sequence_id
+%   * species
+%   * catalog number
+%   * institution code
+%   * latitude
+%   * longitude (force decimal WGS84)
+% - institutions
+%   * name
+%   * code
+% - ESUs
+% - taxonomy
+%
 
 
 
