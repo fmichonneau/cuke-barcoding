@@ -156,10 +156,17 @@ interESUDist <- function(ind1, ind2, alg, distance="raw") {
 }
 
 intraESUDist <- function(listSpecies, alg, distance="raw") {
+    listSpecies <- gsub("\\\"", "", listSpecies)
     sppLbl <- match(listSpecies, dimnames(alg)[[1]])
-    tmpAlg <- alg[sppLbl, ]
-    tmpDist <- ape::dist.dna(tmpAlg, model=distance)
-    list(mean=mean(tmpDist), max=max(tmpDist), min=min(tmpDist))
+    if (any(is.na(sppLbl))) stop("problem with the labels")
+    if (length(sppLbl) > 1) {
+        tmpAlg <- alg[sppLbl, ]
+        tmpDist <- ape::dist.dna(tmpAlg, model=distance)
+        list(mean=mean(tmpDist), max=max(tmpDist), min=min(tmpDist))
+    } else {
+        list(mean=NA, max=NA, min=NA)
+    }
+}
 
 }
 
