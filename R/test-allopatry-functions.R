@@ -218,7 +218,7 @@ testRangeType <- function(tr, alg, cukeDB, percentOverlap=10) {
 build_species_overlap <- function() {
     ## constants for this analysis
     thres <- 0.04
-    dst <- "K80"
+    dst <- "raw"
     tax <- "all"
 
     taxonomyDf <- load_taxonomyDf()
