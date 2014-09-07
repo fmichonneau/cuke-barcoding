@@ -32,7 +32,7 @@ newSpp <- sapply(esus, function(x) length(grep("nsp", x)) > 0)
 
 percentSinglHol <- 100*sum(sapply(noGeoGrps, function(x) length(x) == 1))/length(noGeoGrps)
 
-intraDist <- lapply(noGeoGrps, intraESUDist, cukeAlg)
+intraDist <- lapply(noGeoGrps, intraESUDist, cukeDistRaw)
 
 summaryInterDist <- function(listSpecies, cukeAlg) {
     lapply(listSpecies, function(x) {
@@ -596,7 +596,7 @@ cukeDB <- load_cukeDB()
 
 nInd <- sapply(sppGrps, length)
 geoDist <- lapply(sppGrps, geoDistESU, cukeDB)
-genDist <- lapply(sppGrps, intraESUDist, cukeAlg, distance="raw")
+genDist <- lapply(sppGrps, intraESUDist, cukeDistRaw)
 
 families <- sapply(sppGrps, function(x) {
     fams <- sapply(strsplit(x, "_"), function(y) y[1])
@@ -633,7 +633,7 @@ medRgSizeApo <- medRgSize["Apodida"]
 medRgSizeDen <- medRgSize["Dendrochirotida"]
 
 maxGeoDistHol <- sapply(noGeoGrps, function(x) geoDistESU(x, cukeDB)$max)
-genDistHol <- lapply(noGeoGrps, function(x) intraESUDist(x, cukeAlg))
+genDistHol <- lapply(noGeoGrps, function(x) intraESUDist(x, cukeDistRaw))
 maxGenDistHol <- sapply(genDistHol, function(x) x$max)
 distBySpeciesHol <- data.frame(maxGenDist=maxGenDistHol, maxGeoDist=maxGeoDistHol)
 distBySpeciesHol <- distBySpeciesHol[is.finite(distBySpeciesHol$maxGenDist) &
