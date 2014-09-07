@@ -140,6 +140,7 @@ load_cukeDist_raw <- function(overwrite=FALSE, ...) {
         cukeDist <- readRDS(file=fnm)
     } else {
         cukeDist <- ape::dist.dna(load_cukeAlg(), as.matrix=TRUE, model="raw")
+        saveRDS(cukeDist, file=fnm)
     }
     invisible(cukeDist)
 }
