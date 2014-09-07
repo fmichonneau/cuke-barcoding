@@ -136,19 +136,21 @@ esuPairs <- function(tr) {
     res
 }
 
-interESUDist <- function(ind1, ind2, alg, distance="raw") {
+interESUDist <- function(ind1, ind2, distMat, distance="raw") {
     ind1 <- gsub("\\\"", "", ind1)
     ind2 <- gsub("\\\"", "", ind2)
 
     if (length(ind1) && length(ind2)) {
-        if (any(is.na(match(c(ind1, ind2), dimnames(alg)[[1]]))))
+        iMat <- match(c(ind1, ind2), dimnames(distMat)[[1]])
+        if (any(is.na(iMat)))
             stop("problem")
-        ## browser()
-        tmpAlg <- alg[c(ind1, ind2), ]
-        tmpDist <- dist.dna(tmpAlg, model=distance, as.matrix=TRUE)
 
-        list(mean=mean(tmpDist[ind1, ind2]), max=max(tmpDist[ind1, ind2]),
-             min=min(tmpDist[ind1, ind2]))
+        tmpDistMat <- distMat[iMat, iMat]
+
+        tmpDistInter <- tmpDistMat[ind1, ind2]
+        list(mean=mean(tmpDistInter),
+             max=max(tmpDistInter),
+             min=min(tmpDistInter))
     }
     else {
         list(mean=NA, max=NA, min=NA)
