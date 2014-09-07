@@ -186,7 +186,7 @@ geoDistESU <- function(spp, cukeDB) {
     }
 }
 
-testRangeType <- function(tr, alg, cukeDB, percentOverlap=10) {
+testRangeType <- function(tr, distMat, cukeDB, percentOverlap=10) {
 
     grps <- tdata(tr, "tip")[, "Groups", drop=FALSE]
     sppGrps <- split(rownames(grps), grps$Groups)
@@ -205,7 +205,7 @@ testRangeType <- function(tr, alg, cukeDB, percentOverlap=10) {
     interDist <- lapply(esuPrs, function(x) {
         ind1 <- sppGrps[[x[1]]]
         ind2 <- sppGrps[[x[2]]]
-        interESUDist(ind1, ind2, alg)
+        interESUDist(ind1, ind2, distMat)
     })
 
     data.frame(species = unlist(do.call("rbind", lapply(rgType, function(x) x$species))),
@@ -247,7 +247,7 @@ build_species_overlap <- function() {
                 tree <- load_tree_pairwiseGrps(distance=dst, taxa=tax[j], threshold=thres)
             }
             tmpSpatial <- spatialFromSpecies(tree, cukeDB)
-            tmpGeoCtxt <- testRangeType(tree, tmpSpatial[[2]], cukeAlg)
+            tmpGeoCtxt <- testRangeType(tree, tmpSpatial[[2]], cukeDistRaw)
             res[[k]] <- tmpGeoCtxt
             k <- k+1
         }

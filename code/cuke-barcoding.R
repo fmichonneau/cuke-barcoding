@@ -12,6 +12,8 @@ source("R/test-allopatry-functions.R")
 manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
 manESU$ESU_noGeo <- gsub("_[A-Z]{2}$", "", manESU$ESU_genetic)
 
+cukeDistRaw <- load_cukeDist_raw()
+
 noGeoGrps <- split(manESU$Labels, manESU$ESU_noGeo)
 maxDistNoGeo <- sapply(noGeoGrps, function(x) {   max(dist.dna(cukeAlg[x, ], model="raw")) })
 meanDistNoGeo <- sapply(noGeoGrps, function(x) { mean(dist.dna(cukeAlg[x, ], model="raw")) })
@@ -35,7 +37,7 @@ intraDist <- lapply(noGeoGrps, intraESUDist, cukeAlg)
 summaryInterDist <- function(listSpecies, cukeAlg) {
     lapply(listSpecies, function(x) {
         lapply(listSpecies, function(y) {
-            interESUDist(x, y, cukeAlg)
+            interESUDist(x, y, cukeDistRaw)
         })
     })
 }
@@ -711,7 +713,7 @@ iopoGrps <- iopoGrps[sapply(iopoGrps, function(x) length(x) == 2)]
 iopoGenDist <- sapply(iopoGrps, function(x) {
     ind1 <- subset(iopoDist, iopoDist$ESU_genetic== x[1])$Labels
     ind2 <- subset(iopoDist, iopoDist$ESU_genetic== x[2])$Labels
-    interESUDist(ind1, ind2, cukeAlg)$mean
+    interESUDist(ind1, ind2, cukeDistRaw)$mean
 })
 
 iopoESUcat <- sapply(iopoGrps, function(x) {
@@ -735,7 +737,7 @@ rspoGrps <- rspoGrps[sapply(rspoGrps, function(x) length(x) == 2)]
 rspoGenDist <- sapply(rspoGrps, function(x) {
     ind1 <- subset(rspoDist, rspoDist$ESU_genetic== x[1])$Labels
     ind2 <- subset(rspoDist, rspoDist$ESU_genetic== x[2])$Labels
-    interESUDist(ind1, ind2, cukeAlg)$mean
+    interESUDist(ind1, ind2, cukeDistRaw)$mean
 })
 
 rspoESUcat <- sapply(rspoGrps, function(x) {
@@ -759,7 +761,7 @@ hipoGrps <- hipoGrps[sapply(hipoGrps, function(x) length(x) == 2)]
 hipoGenDist <- sapply(hipoGrps, function(x) {
     ind1 <- subset(hipoDist, hipoDist$ESU_genetic== x[1])$Labels
     ind2 <- subset(hipoDist, hipoDist$ESU_genetic== x[2])$Labels
-    interESUDist(ind1, ind2, cukeAlg)$mean
+    interESUDist(ind1, ind2, cukeDistRaw)$mean
 })
 
 hipoESUcat <- sapply(hipoGrps, function(x) {
@@ -859,7 +861,7 @@ ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
 ### ---- geography-diversification ----
 source("R/test-allopatry-functions.R")
 holTree <- load_tree_manualGrps()
-esuRange <- testRangeType(holTree, cukeAlg, cukeDB)
+esuRange <- testRangeType(holTree, cukeDistRaw, cukeDB)
 
 esuRange <- esuRange[complete.cases(esuRange), ]
 
@@ -902,7 +904,7 @@ tipLabels(mlTree) <- gsub("\\\"", "", tipLabels(mlTree))
 mlTree <- subset(mlTree, tips.exclude="Stichopodidae_Stichopus_horrens_Galapagos_Hickmanneed_Hickmanimmature")
 allGrps <- tdata(allTree, "tip")[, "Groups", drop=FALSE]
 allTreeMl <- addData(mlTree, tip.data=allGrps)
-esuRangeAll <- testRangeType(allTreeMl, cukeAlg, cukeDB)
+esuRangeAll <- testRangeType(allTreeMl, cukeDistRaw, cukeDB)
 
 esuRangeAll <- esuRangeAll[complete.cases(esuRangeAll), ]
 
