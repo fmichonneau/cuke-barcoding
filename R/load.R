@@ -134,6 +134,16 @@ load_cukeDB <- function(overwrite=FALSE) {
     invisible(cukeDB_lbls)
 }
 
+load_cukeDist_raw <- function(overwrite=FALSE, ...) {
+    fnm <- "data/cukeDist-raw.rds"
+    if (file.exists(fnm) && !overwrite) {
+        cukeDist <- readRDS(file=fnm)
+    } else {
+        cukeDist <- ape::dist.dna(load_cukeAlg(), as.matrix=TRUE, model="raw")
+    }
+    invisible(cukeDist)
+}
+
 load_cukeTree_raw <- function(overwrite=FALSE, ...) {
     fnm <- "data/cukeTree-raw.rds"
     if (file.exists(fnm) && !overwrite) {
