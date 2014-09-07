@@ -638,7 +638,7 @@ medRgSizeAsp <- medRgSize["Aspidochirotida"]
 medRgSizeApo <- medRgSize["Apodida"]
 medRgSizeDen <- medRgSize["Dendrochirotida"]
 
-maxGeoDistHol <- sapply(noGeoGrps, function(x) maxGeoDistESU(x, cukeDB))
+maxGeoDistHol <- sapply(noGeoGrps, function(x) geoDistESU(x, cukeDB)$max)
 genDistHol <- lapply(noGeoGrps, function(x) intraESUDist(x, cukeAlg))
 maxGenDistHol <- sapply(genDistHol, function(x) x$max)
 distBySpeciesHol <- data.frame(maxGenDist=maxGenDistHol, maxGeoDist=maxGeoDistHol)
