@@ -136,7 +136,7 @@ esuPairs <- function(tr) {
     res
 }
 
-interESUDist <- function(ind1, ind2, distMat, distance="raw") {
+interESUDist <- function(ind1, ind2, distMat) {
     ind1 <- gsub("\\\"", "", ind1)
     ind2 <- gsub("\\\"", "", ind2)
 
