@@ -168,6 +168,20 @@ intraESUDist <- function(listSpecies, alg, distance="raw") {
     }
 }
 
+
+geoDistESU <- function(spp, cukeDB) {
+    tmpCoords <- cukeDB[match(spp, cukeDB$Labels_withAmb),
+                        c("decimalLatitude", "decimalLongitude")]
+    tmpCoords <- tmpCoords[complete.cases(tmpCoords), ]
+    if (nrow(tmpCoords) > 1) {
+        matGeoDistTmp <- CalcGeoDists(cbind(deg2rad(tmpCoords$decimalLongitude),
+                                            deg2rad(tmpCoords$decimalLatitude)))
+        list(mean=mean(matGeoDistTmp, na.rm=TRUE),
+             max=max(matGeoDistTmp, na.rm=TRUE),
+             min=min(matGeoDistTmp, na.rm=TRUE))
+    } else {
+        list(mean=NA, max=NA, min=NA)
+    }
 }
 
 testRangeType <- function(tr, alg, cukeDB, percentOverlap=10) {
@@ -199,14 +213,6 @@ testRangeType <- function(tr, alg, cukeDB, percentOverlap=10) {
                minInterDist = unlist(do.call("rbind", lapply(interDist, function(x) x$min))),
                bootstrap = attr(esuPrs, "bootstrap")
                )
-}
-
-maxGeoDistESU <- function(spp, cukeDB) {
-    tmpCoords <- cukeDB[match(spp, cukeDB$Labels_withAmb),
-                        c("decimalLatitude", "decimalLongitude")]
-    matGeoDistTmp <- CalcGeoDists(cbind(deg2rad(tmpCoords$decimalLongitude),
-                                        deg2rad(tmpCoords$decimalLatitude)))
-    max(matGeoDistTmp, na.rm=T)
 }
 
 build_species_overlap <- function() {
