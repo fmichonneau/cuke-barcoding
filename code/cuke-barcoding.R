@@ -103,6 +103,20 @@ print(xtable(cbind(ESUs=uniqESU, Vouchers=esuVouch),
       sanitize.text.function=function(x) {x}, caption.placement="top",
       include.rownames=FALSE)
 
+### ---- figure-test ----
+aa <- cukeAlg[grep("cinerascens", dimnames(cukeAlg)[[1]]), ]
+aa <- aa[order(tdata(ptr, "tip")[grep("cinerascens", tipLabels(ptr)), "Groups"]), ]
+aa <- aa[-grep("Ningaloo|Moorea", dimnames(aa)[[1]]), ]
+dimnames(aa)[[1]] <- seq_len(dim(aa)[1])
+write.csv(file="tmp/cine.csv", dist.dna(aa, model="raw", as.matrix=TRUE))
+
+tt <- load_tree_clusterGrps("raw", "Holothuriidae", 0.02)
+tt <- subset(tt, tips.include=grep("cinerascens", tipLabels(tt)))
+
+svg(file="tmp/cine.svg")
+plot(ladderize(as(tt, "phylo")), show.tip.label=FALSE)
+add.scale.bar()
+dev.off()
 
 ### ---- compare-manual-cluster-ESUs-data ----
 accuracyGrps <- function(tree) {
