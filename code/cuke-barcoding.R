@@ -72,6 +72,9 @@ nGap <- sum(is.na(barcodeGap$species))
 minInterText <- 100*min(barcodeGap$minInter)
 percentThres <- 100*sum(barcodeGap$minInter > 0.02)/nrow(barcodeGap)
 
+treeH <- load_tree_raxml_phylo4()
+
+
 ### ---- ESU-table ----
 manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
 esuNm <- read.csv(file="data/raw/ESU_names.csv", stringsAsFactors=FALSE, header=FALSE)
