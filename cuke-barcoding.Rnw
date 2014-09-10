@@ -345,15 +345,13 @@ pairwise threshold value: \Sexpr{paste0(load_thresholdPairwise(), collapse=",
 the number species represented by a single individual) for each of these
 threshold values.
 
-%% xx_Needs work_xx: %%
-If a suitable threshold allows the detection of the barcoding gap, we expect the
-number of estimated ESUs to not drop as abruptly once the threshold is high
-enough to capture the range of intra-ESU genetic distances. Similarly, we expect
-that the proportion of singletons stops decreasing when the threshold is high
-enough that it captures individuals with slightly divergent haplotypes. We
-repeated these analyses on the entire dataset, on each order, and each family to
-assess if different thresholds were needed for various taxonomic groups.
-
+To assess the accuracy of the pairwise and clustering methods, and the most
+appropriate threshold, we compared the manually delineated ESUs to the
+mtLineages estimated by these methods. We tested which method (pairwise or
+clustering) and which threshold recovered most closely the manually delineated
+ESUs. We measured the error rate of the threshold-based approaches by recording
+the number of ESUs that were oversplit (1 ESU included more than 1 mtLineage) or
+lumped (1 mtLineage included more than 1 ESU) for each threshold.
 
 \subsection{Geography, diversity and diversification}
 
