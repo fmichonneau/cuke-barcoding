@@ -185,7 +185,7 @@ levels(compareManESUs$distance)[levels(compareManESUs$distance) == "raw"] <- "Un
 
 ggplot(compareManESUs, aes(x=threshold, y=value, fill=variable)) + geom_bar(stat="identity") +
     facet_wrap(~ distance + method) + ylab("Number of ESUS") + xlab("Threshold") +
-    scale_fill_discrete(labels=c("oversplitted", "lumped")) +
+    scale_fill_discrete(labels=c("oversplit", "lumped")) +
     guides(fill=guide_legend(title=NULL)) +
     theme(legend.position="top")
 
