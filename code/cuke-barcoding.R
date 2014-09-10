@@ -275,6 +275,7 @@ multiplot(pacificmap, northmap, southmap, layout=matrix(c(1,1,2,3), ncol=2, byro
 ### ---- n-species ----
 taxonomyDf <- load_taxonomyDf()
 cukeDB <- load_cukeDB()
+cukeAlg <- load_cukeAlg()
 
 cukeDBTmp <- cukeDB[match(dimnames(cukeAlg)[[1]], cukeDB$Labels_withAmb), ]
 genera <- unique(cukeDBTmp$genusorhigher)
@@ -457,6 +458,10 @@ nSpp <- data.frame(taxa=c("all", "Aspidochirotida", "Holothuriidae"),
 nHol <- data.frame(taxa=c("all", "Aspidochirotida", "Holothuriidae"),
                    nspp=c(NA, NA, length(noGeoGrps)))
 
+pSinglHol <- data.frame(taxa=c("all", "Aspidochirotida", "Holothuriidae"),
+                        psngl=c(NA, NA, sum(sapply(noGeoGrps,
+                            function(x) length(x) == 1))/length(noGeoGrps)))
+
 tmpDt <- subset(nGrpsDf, taxa %in% c("all", "Aspidochirotida", "Holothuriidae"))
 nESU <- ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
                           shape=interaction(distance, method))) +
@@ -486,6 +491,7 @@ pSngl <- ggplot(subset(nGrpsDf, taxa %in% c("all", "Holothuriidae", "Aspidochiro
               aes(x=threshold, y=pSngl, colour=interaction(distance, method),
                   shape=interaction(distance, method))) +
     geom_line() +  geom_point() + facet_wrap( ~ taxa) +
+    geom_hline(data=pSinglHol, aes(yintercept=psngl), colour="darkgreen", linetype=3) +
     ylab("Proportion of singletons") + xlab("Distance threshold") +
     scale_colour_manual(values=zisPal) + scale_shape_manual(values=seq(from=15, length.out=4)) +
     theme(legend.position="none")
