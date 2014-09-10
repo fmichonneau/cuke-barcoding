@@ -444,3 +444,59 @@ load_tree_manualGrps <- function(taxa="Holothuriidae", overwrite=FALSE) {
     }
     invisible(manESU)
 }
+
+load_localGap <- function(taxa="Holothuriidae",
+                          overwrite=FALSE) {
+
+    fnm <- "data/localGap-manualESUs.rds"
+    taxa <- match.arg(taxa) # only Holothuriidae for now
+    if (file.exists(fnm) && !overwrite) {
+        localGap <- readRDS(file=fnm)
+    } else {
+        summaryInterDist <- function(listSpecies, cukeAlg) {
+            lapply(listSpecies, function(x) {
+                lapply(listSpecies, function(y) {
+                    interESUDist(x, y, cukeDistRaw)
+                })
+            })
+        }
+        manESU <- load_manESU()
+        cukeDistRaw <- load_cukeDist_raw()
+
+        noGeoGrps <- split(manESU$Labels, manESU$ESU_noGeo)
+
+        summInterDist <- summaryInterDist(noGeoGrps, load_cukeAlg())
+
+        minInter <- mapply(function(summ, nm) {
+            minDist <- sapply(summ, function(x) x$min)
+            minDist <- minDist[-match(nm, names(minDist))]
+            minDist[which.min(minDist)]
+        }, summInterDist, names(summInterDist))
+
+        intraDist <- lapply(noGeoGrps, intraESUDist, cukeDistRaw)
+        maxIntra <- sapply(intraDist, function(x) x$max)
+
+        esuSpatial <- spatialFromSpecies(noGeoGrps, cukeDB)
+        nmEsuSpatial <- names(esuSpatial[[1]])
+
+        rgType <- lapply(names(minInter), function(x) {
+            spp <- unlist(strsplit(x, "\\."))
+            i <- grep(paste0("^", spp[1], "-"), nmEsuSpatial)
+            j <- grep(paste0("^", spp[2], "-"), nmEsuSpatial)
+            rangeType(i, j, esuSpatial[[2]])
+        })
+
+        localGap <- data.frame(minInter, maxIntra, row.names=names(minInter))
+
+        localGap$rangeType <- sapply(rgType, function(x) x$rangeType)
+        localGap$rangeType[is.na(localGap$rangeType)] <- "unknown"
+
+        localGap$species <- character(nrow(localGap))
+        localGap <- localGap[complete.cases(localGap), ]
+        localGap$species[localGap$maxIntra > localGap$minInter] <-
+            rownames(localGap)[localGap$maxIntra > localGap$minInter]
+
+        saveRDS(localGap, file=fnm)
+    }
+    localGap
+}

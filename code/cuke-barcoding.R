@@ -7,221 +7,6 @@ library(wesanderson)
 library(tikzDevice)
 library(reshape2)
 
-### ---- holothuriidae-tree ----
-source("R/test-allopatry-functions.R")
-manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
-manESU$ESU_noGeo <- gsub("_[A-Z]{2}$", "", manESU$ESU_genetic)
-
-cukeDistRaw <- load_cukeDist_raw()
-
-noGeoGrps <- split(manESU$Labels, manESU$ESU_noGeo)
-maxDistNoGeo <- sapply(noGeoGrps, function(x) {   intraESUDist(x, cukeDistRaw)$max })
-meanDistNoGeo <- sapply(noGeoGrps, function(x) { intraESUDist(x, cukeDistRaw)$mean })
-
-wiGeoGrps <- split(manESU$Labels, manESU$ESU_genetic)
-maxDistWiGeo <- sapply(wiGeoGrps, function(x) {   intraESUDist(x, cukeDistRaw)$max })
-meanDistWiGeo <- sapply(wiGeoGrps, function(x) { intraESUDist(x, cukeDistRaw)$mean })
-
-esus <- strsplit(unique(manESU$ESU_noGeo), "_")
-hasCryptic <- sapply(esus, function(x) length(x) > 2 & length(grep("nsp", x)) < 1)
-esuCryptic <- esus[hasCryptic]
-esuCryptic <- sapply(esuCryptic, function(x) paste0(x[1:2], collapse="_"))
-nCryptic <- length(unique(esuCryptic))
-
-newSpp <- sapply(esus, function(x) length(grep("nsp", x)) > 0)
-
-percentSinglHol <- 100*sum(sapply(noGeoGrps, function(x) length(x) == 1))/length(noGeoGrps)
-
-intraDist <- lapply(noGeoGrps, intraESUDist, cukeDistRaw)
-
-summaryInterDist <- function(listSpecies, cukeAlg) {
-    lapply(listSpecies, function(x) {
-        lapply(listSpecies, function(y) {
-            interESUDist(x, y, cukeDistRaw)
-        })
-    })
-}
-
-summInterDist <- summaryInterDist(noGeoGrps, cukeAlg)
-
-minInter <- mapply(function(summ, nm) {
-    minDist <- sapply(summ, function(x) x$min)
-    minDist <- minDist[-match(nm, names(minDist))]
-    minDist[which.min(minDist)]
-}, summInterDist, names(summInterDist))
-
-maxIntra <- sapply(intraDist, function(x) x$max)
-
-esuSpatial <- spatialFromSpecies(noGeoGrps, cukeDB)
-nmEsuSpatial <- names(esuSpatial[[1]])
-
-rgType <- lapply(names(minInter), function(x) {
-    spp <- unlist(strsplit(x, "\\."))
-    i <- grep(paste0("^", spp[1], "-"), nmEsuSpatial)
-    j <- grep(paste0("^", spp[2], "-"), nmEsuSpatial)
-    rangeType(i, j, esuSpatial[[2]])
-})
-
-barcodeGap <- data.frame(minInter, maxIntra, row.names=names(minInter))
-barcodeGap$species <- NA
-barcodeGap$species[maxIntra > minInter] <- rownames(barcodeGap)[maxIntra > minInter]
-barcodeGap$rangeType <- sapply(rgType, function(x) x$rangeType)
-barcodeGap$rangeType[is.na(barcodeGap$rangeType)] <- "unknown"
-barcodeGap <- barcodeGap[is.finite(barcodeGap$maxIntra), ]
-
-percentGap   <- 100*sum(is.na(barcodeGap$species))/nrow(barcodeGap)
-nGap <- sum(is.na(barcodeGap$species))
-minInterText <- 100*min(barcodeGap$minInter)
-percentThres <- 100*sum(barcodeGap$minInter > 0.02)/nrow(barcodeGap)
-
-treeH <- load_tree_raxml_phylo4()
-
-
-### ---- ESU-table ----
-manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
-esuNm <- read.csv(file="data/raw/ESU_names.csv", stringsAsFactors=FALSE, header=FALSE)
-manESU$ESU_noGeo <- gsub("_[A-Z]{2}$", "", manESU$ESU_genetic)
-
-uniqESU <- unique(manESU$ESU_noGeo)
-for (i in 1:nrow(esuNm)) {
-    uniqESU <- gsub(esuNm[i, 1], paste0("\\\\textit{", esuNm[i, 2], "}"), uniqESU)
-}
-uniqESU <- gsub("_", " ", uniqESU)
-
-esuVouch <- sapply(noGeoGrps, function(x) {
-    tmpDB <- cukeDB[match(x, cukeDB$Labels_withAmb), ]
-    paste(tmpDB$Collection.Code, tmpDB$Catalog_number, sep="", collapse=", ")
-})
-
-esuVouch <- gsub("_", " ", esuVouch)
-
-headerTable <- paste("\\hline", paste(c("ESUs", "Vouchers"), collapse=" & "), "\\\\ \\hline \\endfirsthead \n",
-                     "\\caption{(continued) specimen information} \n")
-
-print(xtable(cbind(ESUs=uniqESU, Vouchers=esuVouch),
-             caption="List of manually delineated ESUs and associated vouchers",
-             label="tab:esu-info", align=c("llp{4in}")),
-      tabular.environment="longtable", floating=FALSE,
-      hline.after = c(-1, length(esuVouch)),
-      add.to.row = list(pos = list(-1, 0),
-          command = c(headerTable, "\\hline \\endhead \n")),
-      sanitize.text.function=function(x) {x}, caption.placement="top",
-      include.rownames=FALSE)
-
-### ---- figure-test ----
-aa <- cukeAlg[grep("cinerascens", dimnames(cukeAlg)[[1]]), ]
-aa <- aa[order(tdata(ptr, "tip")[grep("cinerascens", tipLabels(ptr)), "Groups"]), ]
-aa <- aa[-grep("Ningaloo|Moorea", dimnames(aa)[[1]]), ]
-dimnames(aa)[[1]] <- seq_len(dim(aa)[1])
-write.csv(file="tmp/cine.csv", dist.dna(aa, model="raw", as.matrix=TRUE))
-
-tt <- load_tree_clusterGrps("raw", "Holothuriidae", 0.02)
-tt <- subset(tt, tips.include=grep("cinerascens", tipLabels(tt)))
-
-svg(file="tmp/cine.svg")
-plot(ladderize(as(tt, "phylo")), show.tip.label=FALSE)
-add.scale.bar()
-dev.off()
-
-### ---- compare-manual-cluster-ESUs-data ----
-accuracyGrps <- function(tree) {
-    clstrGrps <- tdata(tree, "tip")[, "Groups", drop=FALSE]
-    clstrGrps <- cbind(Labels=rownames(clstrGrps), clstrGrps=clstrGrps)
-    manGrps <- manESU[, c("Labels", "ESU_noGeo")]
-    manGrps$manGrps <- as.numeric(factor(manESU$ESU_noGeo))
-    compGrps <- merge(clstrGrps, manGrps, by="Labels")
-
-    uniqGrps <- unique(compGrps$manGrps)
-    compRes <- vector("list", length(uniqGrps))
-    for (i in 1:length(uniqGrps)) {
-        tmpDt <- subset(compGrps, manGrps == uniqGrps[i])
-        if (length(unique(tmpDt$Groups)) > 1)
-            lumps <- unique(tmpDt$Groups)
-        else lumps <- NA
-        tmpDt2 <- subset(compGrps, Groups %in% unique(tmpDt$Groups))
-        if( length(unique(tmpDt2$manGrps)) > 1)
-            splits <- unique(tmpDt2$manGrps)
-        else splits <- NA
-        compRes[[i]] <- list(splits=splits, lumps=lumps)
-    }
-    nLumps <- sapply(compRes, function(x) x$lumps)
-    nLumps <- unlist(nLumps)
-    nLumps <- length(unique(nLumps[!is.na(nLumps)]))
-    nSplits <- sapply(compRes, function(x) x$splits)
-    nSplits <- unlist(nSplits)
-    nSplits <- length(unique(nSplits[!is.na(nSplits)]))
-    list(nLumps=nLumps, nSplits=nSplits)
-}
-
-pwiseTreeRaw <- lapply(load_thresholdPairwise(), function(x) load_tree_pairwiseGrps("raw", taxa="Holothuriidae", x))
-pwiseTreeK80 <- lapply(load_thresholdPairwise(), function(x) load_tree_pairwiseGrps("K80", taxa="Holothuriidae", x))
-clstrTreeRaw <- lapply(load_thresholdClusters(), function(x) load_tree_clusterGrps("raw", taxa="Holothuriidae", x))
-clstrTreeK80 <- lapply(load_thresholdClusters(), function(x) load_tree_clusterGrps("K80", taxa="Holothuriidae", x))
-
-pwiseGrpsRaw <- lapply(pwiseTreeRaw, accuracyGrps)
-pwiseGrpsK80 <- lapply(pwiseTreeK80, accuracyGrps)
-clstrGrpsRaw <- lapply(clstrTreeRaw, accuracyGrps)
-clstrGrpsK80 <- lapply(clstrTreeK80, accuracyGrps)
-
-pwiseDatRaw <- data.frame(method="pairwise", distance="raw", do.call("rbind", lapply(pwiseGrpsRaw, function(x) c(x[1], x[2]))))
-pwiseDatK80 <- data.frame(method="pairwise", distance="K2P", do.call("rbind", lapply(pwiseGrpsK80, function(x) c(x[1], x[2]))))
-clstrDatRaw <- data.frame(method="cluster", distance="raw", do.call("rbind", lapply(clstrGrpsRaw, function(x) c(x[1], x[2]))))
-clstrDatK80 <- data.frame(method="cluster", distance="K2P", do.call("rbind", lapply(clstrGrpsK80, function(x) c(x[1], x[2]))))
-
-compareManESUs <- rbind(pwiseDatRaw, pwiseDatK80, clstrDatRaw, clstrDatK80)
-
-compareManESUs <- data.frame(threshold=rep(load_thresholdPairwise(), 4 ), compareManESUs)
-compareManESUs$nSplits <- as.numeric(compareManESUs$nSplits)
-compareManESUs$nLumps <- as.numeric(compareManESUs$nLumps)
-allErrors <- compareManESUs$nSplits + compareManESUs$nLumps
-minError <- compareManESUs[which.min(allErrors), ]
-
-saveRDS(compareManESUs, file="tmp/compareManESUs.rds")
-
-### ---- compare-manual-cluster-ESUs-plot ----
-compareManESUs <- melt(compareManESUs, id.vars=c("threshold", "method", "distance"),
-                       measure.vars=c("nLumps", "nSplits"))
-levels(compareManESUs$distance)[levels(compareManESUs$distance) == "raw"] <- "Uncorrected"
-
-ggplot(compareManESUs, aes(x=threshold, y=value, fill=variable)) + geom_bar(stat="identity") +
-    facet_wrap(~ distance + method) + ylab("Number of ESUS") + xlab("Threshold") +
-    scale_fill_discrete(labels=c("oversplit", "lumped")) +
-    guides(fill=guide_legend(title=NULL)) +
-    theme(legend.position="top")
-
-### ---- geo-diff ----
-tmpGeoDiff <- grep("[A-Z]{2}$", names(wiGeoGrps), value=TRUE)
-esuGeoDiff <- data.frame(wiGeo=tmpGeoDiff,
-                         noGeo=gsub("_[A-Z]{2}$", "", tmpGeoDiff),
-                         stringsAsFactors=FALSE)
-nEsuGeoDiff <- length(unique(esuGeoDiff$noGeo))
-
-### ---- barcode-gap-plot ----
-barcodeGap$species <- gsub("\\..+$", "", barcodeGap$species)
-barcodeGap$species <- gsub("^act_", "Actinopyga ", barcodeGap$species)
-barcodeGap$species <- gsub("^boh_", "Bohadschia ", barcodeGap$species)
-barcodeGap$species <- gsub("^hol_", "Holothuria ", barcodeGap$species)
-barcodeGap$species <- gsub("^lab_", "Labidodemas ", barcodeGap$species)
-barcodeGap$species <- gsub("atr($|_)", "atra ", barcodeGap$species)
-barcodeGap$species <- gsub("pal($|_)", "palauensis ", barcodeGap$species)
-barcodeGap$species <- gsub("imp($|_)", "impatiens ", barcodeGap$species)
-barcodeGap$species <- gsub("arg($|_)", "argus ", barcodeGap$species)
-barcodeGap$species <- gsub("are($|_)", "arenicola ", barcodeGap$species)
-barcodeGap$species <- gsub("edu($|_)", "edulis ", barcodeGap$species)
-barcodeGap$species <- gsub("fus($|_)", "fuscogilva ", barcodeGap$species)
-barcodeGap$species <- gsub("flo($|_)", "floridana ", barcodeGap$species)
-barcodeGap$species <- gsub("leu($|_)", "leucospilota ", barcodeGap$species)
-barcodeGap$species <- gsub("mex($|_)", "mexicana ", barcodeGap$species)
-barcodeGap$species <- gsub("moe($|_)", "moebii ", barcodeGap$species)
-barcodeGap$species <- gsub("sem($|_)", "semperianum ", barcodeGap$species)
-
-ggplot(barcodeGap) + geom_point(aes(x=maxIntra, y=minInter, colour=species)) +
-    geom_abline(slope=1, linetype=3, colour="gray40") + coord_fixed() +
-    xlim(c(0, 0.18)) + ylim(c(0, 0.18)) +
-    xlab("Maximum intra-ESU distance")  + ylab("Minimum inter-ESU distance") +
-    scale_colour_discrete(name="ESUs")
-
-
 ### ---- sampling-maps ----
 cukeDB <- load_cukeDB()
 
@@ -271,8 +56,7 @@ northmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray40", colour="g
 
 multiplot(pacificmap, northmap, southmap, layout=matrix(c(1,1,2,3), ncol=2, byrow=T))
 
-
-### ---- n-species ----
+### ---- morphospecies-stats ----
 taxonomyDf <- load_taxonomyDf()
 cukeDB <- load_cukeDB()
 cukeAlg <- load_cukeAlg()
@@ -281,7 +65,8 @@ cukeDBTmp <- cukeDB[match(dimnames(cukeAlg)[[1]], cukeDB$Labels_withAmb), ]
 genera <- unique(cukeDBTmp$genusorhigher)
 genera <- genera[-grep("\\?", genera)]
 
-allSpp <- cukeDBTmp[cukeDBTmp$genusorhigher %in% genera, c("family", "genusorhigher", "species")]
+allSpp <- cukeDBTmp[cukeDBTmp$genusorhigher %in% genera,
+                    c("family", "genusorhigher", "species")]
 allSpp <- allSpp[-which(is.na(allSpp$family)), ]
 uniqSpp <- unique(paste(allSpp$family, allSpp$genusorhigher, allSpp$species, sep="_"))
 uniqSpp <- uniqSpp[-grep("\\d", uniqSpp)]
@@ -307,32 +92,128 @@ undescSpp <- unique(paste(allSpp$family, allSpp$genusorhigher, allSpp$species, s
 undescSpp <- grep("(n)?_sp(_|\\.|\\s|nov)?\\d?", undescSpp, value=T)
 undescSpp <- undescSpp[-grep("spic|spin|spect", undescSpp)]
 
-### ---- worms-taxonomy ----
-## library(taxize)
-## cukeOrder <- worms_children(123083)
-## cukeOrder <- cukeOrder[cukeOrder$status == "accepted", ]
-## cukeAspId <- worms_children(cukeOrder$valid_AphiaID[cukeOrder$scientificname == "Aspidochirotida"])$valid_AphiaID
-## cukeAsp <- worms_children(unique(cukeAspId))
-## aspDf <- subset(cukeAsp, status == "accepted")[, c("order", "family", "genus", "valid_AphiaID")]
-## aspSpp <- worms_children(unique(aspDf$valid_AphiaID))
+### ---- esu-stats ----
+source("R/test-allopatry-functions.R")
+manESU <- load_manESU()
+cukeDistRaw <- load_cukeDist_raw()
+localGap <- load_localGap()
 
-## aspSpp <- lapply(unique(aspDf$valid_AphiaID), function(x) {
-##     i <- 1; j <- 1
-##     lim <- 10
-##     res <- vector("list", 10)
-##     while (TRUE) {
-##         tmpRes <- worms_children(x, offset=i)
-##         res[[j]] <- tmpRes
-##         if (nrow(tmpRes) < 50) break
-##         i <- i + 50
-##         j <- j + 1
-##     }
-##     res
-## })
+esus <- strsplit(unique(manESU$ESU_noGeo), "_")
+hasCryptic <- sapply(esus, function(x) length(x) > 2 & length(grep("nsp", x)) < 1)
+esuCryptic <- esus[hasCryptic]
+esuCryptic <- sapply(esuCryptic, function(x) paste0(x[1:2], collapse="_"))
+nCryptic <- length(unique(esuCryptic))
 
-## aspSpp <- lapply(aspSpp, function(x) x[!sapply(x, is.null)])
-## aspSpp <- do.call("rbind", aspSpp)
-## aspSppValid <- subset(aspSpp, status == "accepted")
+newSpp <- sapply(esus, function(x) length(grep("nsp", x)) > 0)
+
+percentSinglHol <- 100*sum(sapply(noGeoGrps, function(x) length(x) == 1))/length(noGeoGrps)
+
+
+percentGap   <- 100*sum(is.na(localGap$species))/nrow(localGap)
+nGap <- sum(is.na(localGap$species))
+minInterText <- 100*min(localGap$minInter)
+percentThres <- 100*sum(localGap$minInter > 0.02)/nrow(localGap)
+
+### ---- compare-manual-cluster-ESUs-data ----
+accuracyGrps <- function(tree) {
+    clstrGrps <- tdata(tree, "tip")[, "Groups", drop=FALSE]
+    clstrGrps <- cbind(Labels=rownames(clstrGrps), clstrGrps=clstrGrps)
+    manGrps <- manESU[, c("Labels", "ESU_noGeo")]
+    manGrps$manGrps <- as.numeric(factor(manESU$ESU_noGeo))
+    compGrps <- merge(clstrGrps, manGrps, by="Labels")
+
+    uniqGrps <- unique(compGrps$manGrps)
+    compRes <- vector("list", length(uniqGrps))
+    for (i in 1:length(uniqGrps)) {
+        tmpDt <- subset(compGrps, manGrps == uniqGrps[i])
+        if (length(unique(tmpDt$Groups)) > 1)
+            lumps <- unique(tmpDt$Groups)
+        else lumps <- NA
+        tmpDt2 <- subset(compGrps, Groups %in% unique(tmpDt$Groups))
+        if( length(unique(tmpDt2$manGrps)) > 1)
+            splits <- unique(tmpDt2$manGrps)
+        else splits <- NA
+        compRes[[i]] <- list(splits=splits, lumps=lumps)
+    }
+    nLumps <- sapply(compRes, function(x) x$lumps)
+    nLumps <- unlist(nLumps)
+    nLumps <- length(unique(nLumps[!is.na(nLumps)]))
+    nSplits <- sapply(compRes, function(x) x$splits)
+    nSplits <- unlist(nSplits)
+    nSplits <- length(unique(nSplits[!is.na(nSplits)]))
+    list(nLumps=nLumps, nSplits=nSplits)
+}
+
+pwiseTreeRaw <- lapply(load_thresholdPairwise(), function(x) load_tree_pairwiseGrps("raw", taxa="Holothuriidae", x))
+pwiseTreeK80 <- lapply(load_thresholdPairwise(), function(x) load_tree_pairwiseGrps("K80", taxa="Holothuriidae", x))
+clstrTreeRaw <- lapply(load_thresholdClusters(), function(x) load_tree_clusterGrps("raw", taxa="Holothuriidae", x))
+clstrTreeK80 <- lapply(load_thresholdClusters(), function(x) load_tree_clusterGrps("K80", taxa="Holothuriidae", x))
+
+pwiseGrpsRaw <- lapply(pwiseTreeRaw, accuracyGrps)
+pwiseGrpsK80 <- lapply(pwiseTreeK80, accuracyGrps)
+clstrGrpsRaw <- lapply(clstrTreeRaw, accuracyGrps)
+clstrGrpsK80 <- lapply(clstrTreeK80, accuracyGrps)
+
+pwiseDatRaw <- data.frame(method="pairwise", distance="raw", do.call("rbind", lapply(pwiseGrpsRaw, function(x) c(x[1], x[2]))))
+pwiseDatK80 <- data.frame(method="pairwise", distance="K2P", do.call("rbind", lapply(pwiseGrpsK80, function(x) c(x[1], x[2]))))
+clstrDatRaw <- data.frame(method="cluster", distance="raw", do.call("rbind", lapply(clstrGrpsRaw, function(x) c(x[1], x[2]))))
+clstrDatK80 <- data.frame(method="cluster", distance="K2P", do.call("rbind", lapply(clstrGrpsK80, function(x) c(x[1], x[2]))))
+
+compareManESUs <- rbind(pwiseDatRaw, pwiseDatK80, clstrDatRaw, clstrDatK80)
+
+compareManESUs <- data.frame(threshold=rep(load_thresholdPairwise(), 4), compareManESUs)
+compareManESUs$nSplits <- as.numeric(compareManESUs$nSplits)
+compareManESUs$nLumps <- as.numeric(compareManESUs$nLumps)
+allErrors <- compareManESUs$nSplits + compareManESUs$nLumps
+minError <- compareManESUs[which.min(allErrors), ]
+
+saveRDS(compareManESUs, file="tmp/compareManESUs.rds")
+
+### ---- compare-manual-cluster-ESUs-plot ----
+compareManESUs <- melt(compareManESUs, id.vars=c("threshold", "method", "distance"),
+                       measure.vars=c("nLumps", "nSplits"))
+levels(compareManESUs$distance)[levels(compareManESUs$distance) == "raw"] <- "Uncorrected"
+
+ggplot(compareManESUs, aes(x=threshold, y=value, fill=variable)) + geom_bar(stat="identity") +
+    facet_wrap(~ distance + method) + ylab("Number of ESUS") + xlab("Threshold") +
+    scale_fill_discrete(labels=c("oversplit", "lumped")) +
+    guides(fill=guide_legend(title=NULL)) +
+    theme(legend.position="top")
+
+### ---- geo-diff ----
+manESU <- load_manESU()
+wiGeoGrps <- split(manESU$Labels, manESU$ESU_genetic)
+tmpGeoDiff <- grep("[A-Z]{2}$", names(wiGeoGrps), value=TRUE)
+esuGeoDiff <- data.frame(wiGeo=tmpGeoDiff,
+                         noGeo=gsub("_[A-Z]{2}$", "", tmpGeoDiff),
+                         stringsAsFactors=FALSE)
+nEsuGeoDiff <- length(unique(esuGeoDiff$noGeo))
+
+### ---- barcode-gap-plot ----
+barcodeGap$species <- gsub("\\..+$", "", barcodeGap$species)
+barcodeGap$species <- gsub("^act_", "Actinopyga ", barcodeGap$species)
+barcodeGap$species <- gsub("^boh_", "Bohadschia ", barcodeGap$species)
+barcodeGap$species <- gsub("^hol_", "Holothuria ", barcodeGap$species)
+barcodeGap$species <- gsub("^lab_", "Labidodemas ", barcodeGap$species)
+barcodeGap$species <- gsub("atr($|_)", "atra ", barcodeGap$species)
+barcodeGap$species <- gsub("pal($|_)", "palauensis ", barcodeGap$species)
+barcodeGap$species <- gsub("imp($|_)", "impatiens ", barcodeGap$species)
+barcodeGap$species <- gsub("arg($|_)", "argus ", barcodeGap$species)
+barcodeGap$species <- gsub("are($|_)", "arenicola ", barcodeGap$species)
+barcodeGap$species <- gsub("edu($|_)", "edulis ", barcodeGap$species)
+barcodeGap$species <- gsub("fus($|_)", "fuscogilva ", barcodeGap$species)
+barcodeGap$species <- gsub("flo($|_)", "floridana ", barcodeGap$species)
+barcodeGap$species <- gsub("leu($|_)", "leucospilota ", barcodeGap$species)
+barcodeGap$species <- gsub("mex($|_)", "mexicana ", barcodeGap$species)
+barcodeGap$species <- gsub("moe($|_)", "moebii ", barcodeGap$species)
+barcodeGap$species <- gsub("sem($|_)", "semperianum ", barcodeGap$species)
+
+ggplot(barcodeGap) + geom_point(aes(x=maxIntra, y=minInter, colour=species)) +
+    geom_abline(slope=1, linetype=3, colour="gray40") + coord_fixed() +
+    xlim(c(0, 0.18)) + ylim(c(0, 0.18)) +
+    xlab("Maximum intra-ESU distance")  + ylab("Minimum inter-ESU distance") +
+    scale_colour_discrete(name="ESUs")
+
 
 ### ---- sampled-species ----
 worms <- read.csv(file="data/raw/cuke-worms.csv", stringsAsFactors=FALSE)
@@ -649,6 +530,7 @@ ggplot(subset(distBySpecies, Order %in% orderToInclude),
     theme(legend.position="none")
 
 ### ---- barriers ----
+manESU <- load_manESU()
 iopoDist <- manESU[grep("_(IO|PO)$", manESU$ESU_genetic), ]
 iopoESU <- gsub("_[A-Z]{2}$", "", iopoDist$ESU_genetic)
 iopoESU <- gsub("(\\d{1})[a-z]{1}", "\\1", iopoESU)
@@ -982,6 +864,53 @@ for (i in 1:length(sppNb)) {
 }
 dev.off()
 
+### ---- esu-table ----
+manESU <- load_manESU()
+esuNm <- read.csv(file="data/raw/ESU_names.csv", stringsAsFactors=FALSE, header=FALSE)
+
+uniqESU <- unique(manESU$ESU_noGeo)
+for (i in 1:nrow(esuNm)) {
+    uniqESU <- gsub(esuNm[i, 1], paste0("\\\\textit{", esuNm[i, 2], "}"), uniqESU)
+}
+uniqESU <- gsub("_", " ", uniqESU)
+
+esuVouch <- sapply(noGeoGrps, function(x) {
+    tmpDB <- cukeDB[match(x, cukeDB$Labels_withAmb), ]
+    paste(tmpDB$Collection.Code, tmpDB$Catalog_number, sep="", collapse=", ")
+})
+
+esuVouch <- gsub("_", " ", esuVouch)
+
+headerTable <- paste("\\hline", paste(c("ESUs", "Vouchers"), collapse=" & "), "\\\\ \\hline \\endfirsthead \n",
+                     "\\caption{(continued) specimen information} \n")
+
+print(xtable(cbind(ESUs=uniqESU, Vouchers=esuVouch),
+             caption="List of manually delineated ESUs and associated vouchers",
+             label="tab:esu-info", align=c("llp{4in}")),
+      tabular.environment="longtable", floating=FALSE,
+      hline.after = c(-1, length(esuVouch)),
+      add.to.row = list(pos = list(-1, 0),
+          command = c(headerTable, "\\hline \\endhead \n")),
+      sanitize.text.function=function(x) {x}, caption.placement="top",
+      include.rownames=FALSE)
+
+### ---- figure-test ----
+aa <- cukeAlg[grep("cinerascens", dimnames(cukeAlg)[[1]]), ]
+aa <- aa[order(tdata(ptr, "tip")[grep("cinerascens", tipLabels(ptr)), "Groups"]), ]
+aa <- aa[-grep("Ningaloo|Moorea", dimnames(aa)[[1]]), ]
+dimnames(aa)[[1]] <- seq_len(dim(aa)[1])
+write.csv(file="tmp/cine.csv", dist.dna(aa, model="raw", as.matrix=TRUE))
+
+tt <- load_tree_clusterGrps("raw", "Holothuriidae", 0.02)
+tt <- subset(tt, tips.include=grep("cinerascens", tipLabels(tt)))
+
+svg(file="tmp/cine.svg")
+plot(ladderize(as(tt, "phylo")), show.tip.label=FALSE)
+add.scale.bar()
+dev.off()
+
+
+########################       below is old code      ##########################
 
 ### ---- summary-bPTP-results ----
 resPTP <- readLines("data/bPTP/bPTP_fullTree.PTPPartitonSummary.txt")
