@@ -409,8 +409,13 @@ load_species_clusterGrps <- function(distance="raw", taxa="all",
     split(rownames(grps), gg)
 }
 
-load_tree_manualGrps <- function(taxa="Holothuriidae",
-                                 overwrite=FALSE) {
+load_manESU <- function(taxa="Holothuriidae") {
+    manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
+    manESU$ESU_noGeo <- gsub("_[A-Z]{2}$", "", manESU$ESU_genetic)
+    manESU
+}
+
+load_tree_manualGrps <- function(taxa="Holothuriidae", overwrite=FALSE) {
     fnm <- "data/cukeTree-manualESUs.rds"
     ##distance <- match.arg(distance, c("raw", "K80"))
     taxa <- match.arg(taxa) ## only Holothuriidae for now
@@ -429,8 +434,7 @@ load_tree_manualGrps <- function(taxa="Holothuriidae",
         ##   - If same complex and same ESUs: hol_ver_1_IO and hol_ver_1_PO
         ##     (IO or PO not rec. monophyletic, or sing. ind. w/ low div.)
         ##   - If different ESUs but not sisters: hol_ver_1 and hol_ver_2
-        manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
-        manESU$ESU_noGeo <- gsub("_[A-Z]{2}$", "", manESU$ESU_genetic)
+        manESU <- load_manESU()
         tree <- load_tree_raxml_phylo4(taxa)
         tDat <- data.frame(as.numeric(factor(manESU$ESU_noGeo)))
         names(tDat) <- "Groups"
