@@ -1,4 +1,4 @@
-% Created by tikzDevice version 0.7.0 on 2014-09-05 15:48:00
+% Created by tikzDevice version 0.7.0 on 2014-09-10 12:29:07
 % !TEX encoding = UTF-8 Unicode
 
 \documentclass[12pt]{article}
@@ -738,51 +738,51 @@
 \path[clip] (  0.00,  0.00) rectangle (469.75,469.75);
 \definecolor[named]{fillColor}{rgb}{1.00,1.00,1.00}
 
-\path[fill=fillColor] (181.99,419.35) rectangle (319.89,445.23);
+\path[fill=fillColor] (188.96,419.35) rectangle (312.91,445.23);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,469.75);
 \definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
 \definecolor[named]{fillColor}{rgb}{0.95,0.95,0.95}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (190.59,423.62) rectangle (207.94,440.96);
+\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (197.57,423.62) rectangle (214.91,440.96);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,469.75);
 \definecolor[named]{fillColor}{rgb}{0.97,0.46,0.43}
 
-\path[fill=fillColor] (190.59,423.62) rectangle (207.94,440.96);
+\path[fill=fillColor] (197.57,423.62) rectangle (214.91,440.96);
 
-\path[] (190.59,423.62) --
-	(207.94,440.96);
+\path[] (197.57,423.62) --
+	(214.91,440.96);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,469.75);
 \definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
 \definecolor[named]{fillColor}{rgb}{0.95,0.95,0.95}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (263.19,423.62) rectangle (280.54,440.96);
+\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (256.22,423.62) rectangle (273.56,440.96);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,469.75);
 \definecolor[named]{fillColor}{rgb}{0.00,0.75,0.77}
 
-\path[fill=fillColor] (263.19,423.62) rectangle (280.54,440.96);
+\path[fill=fillColor] (256.22,423.62) rectangle (273.56,440.96);
 
-\path[] (263.19,423.62) --
-	(280.54,440.96);
+\path[] (256.22,423.62) --
+	(273.56,440.96);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,469.75);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (210.11,428.98) {oversplitted};
+\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (217.08,428.98) {oversplit};
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,469.75);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (282.71,428.98) {lumped};
+\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (275.73,428.98) {lumped};
 \end{scope}
 \end{tikzpicture}
 
