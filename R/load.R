@@ -1,4 +1,5 @@
 source("R/build.R")
+source("R/genFasta.R")
 
 source("R/load_cukeDB.R")
 source("R/load_cukeAlg.R")
