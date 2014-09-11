@@ -450,8 +450,7 @@ load_tree_manualGrps <- function(taxa="Holothuriidae", overwrite=FALSE) {
     invisible(manESU)
 }
 
-load_localGap <- function(taxa="Holothuriidae",
-                          overwrite=FALSE) {
+load_localGap <- function(taxa="Holothuriidae", overwrite=FALSE) {
 
     fnm <- "data/localGap-manualESUs.rds"
     taxa <- match.arg(taxa) # only Holothuriidae for now
