@@ -191,26 +191,13 @@ esuGeoDiff <- data.frame(wiGeo=tmpGeoDiff,
                          stringsAsFactors=FALSE)
 nEsuGeoDiff <- length(unique(esuGeoDiff$noGeo))
 
-### ---- barcode-gap-plot ----
-barcodeGap$species <- gsub("\\..+$", "", barcodeGap$species)
-barcodeGap$species <- gsub("^act_", "Actinopyga ", barcodeGap$species)
-barcodeGap$species <- gsub("^boh_", "Bohadschia ", barcodeGap$species)
-barcodeGap$species <- gsub("^hol_", "Holothuria ", barcodeGap$species)
-barcodeGap$species <- gsub("^lab_", "Labidodemas ", barcodeGap$species)
-barcodeGap$species <- gsub("atr($|_)", "atra ", barcodeGap$species)
-barcodeGap$species <- gsub("pal($|_)", "palauensis ", barcodeGap$species)
-barcodeGap$species <- gsub("imp($|_)", "impatiens ", barcodeGap$species)
-barcodeGap$species <- gsub("arg($|_)", "argus ", barcodeGap$species)
-barcodeGap$species <- gsub("are($|_)", "arenicola ", barcodeGap$species)
-barcodeGap$species <- gsub("edu($|_)", "edulis ", barcodeGap$species)
-barcodeGap$species <- gsub("fus($|_)", "fuscogilva ", barcodeGap$species)
-barcodeGap$species <- gsub("flo($|_)", "floridana ", barcodeGap$species)
-barcodeGap$species <- gsub("leu($|_)", "leucospilota ", barcodeGap$species)
-barcodeGap$species <- gsub("mex($|_)", "mexicana ", barcodeGap$species)
-barcodeGap$species <- gsub("moe($|_)", "moebii ", barcodeGap$species)
-barcodeGap$species <- gsub("sem($|_)", "semperianum ", barcodeGap$species)
+### ---- local-gap-plot ----
+localGap <- load_localGap()
+localGap$species <- gsub("\\..+$", "", localGap$species)
+for (i in 1:nrow(esuNm)) { localGap$species <- gsub(esuNm[i, 1], esuNm[i, 2], localGap$species)}
+localGap$species <- gsub("_", " ", localGap$species)
 
-ggplot(barcodeGap) + geom_point(aes(x=maxIntra, y=minInter, colour=species)) +
+ggplot(localGap) + geom_point(aes(x=maxIntra, y=minInter, colour=species)) +
     geom_abline(slope=1, linetype=3, colour="gray40") + coord_fixed() +
     xlim(c(0, 0.18)) + ylim(c(0, 0.18)) +
     xlab("Maximum intra-ESU distance")  + ylab("Minimum inter-ESU distance") +
