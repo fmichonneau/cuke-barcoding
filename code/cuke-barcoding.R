@@ -115,7 +115,6 @@ percentSinglHol <- 100*sum(sapply(manGrps, function(x) length(x) == 1))/length(m
 percentGap   <- 100*sum(is.na(localGap$species))/nrow(localGap)
 nGap <- sum(is.na(localGap$species))
 minInterText <- 100*min(localGap$minInter)
-percentThres <- 100*sum(localGap$minInter > 0.02)/nrow(localGap)
 
 ### ---- compare-manual-cluster-ESUs-data ----
 accuracyGrps <- function(tree) {
