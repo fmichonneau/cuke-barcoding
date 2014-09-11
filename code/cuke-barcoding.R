@@ -336,11 +336,6 @@ percentPara <- 100*tabRangeType["parapatric"]/sum(tabRangeType)
 
 nSymp <- tabRangeType["sympatric"]
 
-## ggplot(esuRange) + geom_bar(aes(x=rangeType, fill=rangeType)) +
-##     xlab("") + ylab("Number of ESU pairs") +
-##     scale_fill_discrete("Type of geographic range") +
-##     theme(legend.position="none") + coord_flip()
-
 ggplot(esuRange) +
     geom_point(data=esuRange[!is.na(esuRange$rangeType), ],
                aes(x=rangeType, y=meanInterDist, colour=rangeType),

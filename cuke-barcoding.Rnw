@@ -542,17 +542,6 @@ inter-ESU distance varied greatly, with a minimum of
 @
 
 
-<<ibd-text-stats, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE>>=
-tmpDendro <- subset(distBySpecies, Order == "Dendrochirotida")
-maxDistDendro <- tmpDendro[which.max(tmpDendro$maxGeoDist), ] #$
-gMaxDistDendro <- round(maxDistDendro$maxGeoDist, 0) #$
-genMaxDistDendro <- maxDistDendro$maxGenDist #$
-meanRange <- with(subset(distBySpecies, latCat == "tropical"),
-                  tapply(maxGeoDist, Order, mean))
-sdRange <- with(subset(distBySpecies, latCat == "tropical"),
-                tapply(maxGeoDist, Order, sd))
-@
-
 Apodida and Aspidochirotida had larger range sizes than the Dendrochirotida
 (Fig.~\ref{fig:range-size-plot}, median of the range sizes of
 \Sexpr{formatC(medRgSizeApo, format="d")}~km, \Sexpr{formatC(medRgSizeAsp,
