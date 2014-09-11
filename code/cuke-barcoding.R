@@ -116,6 +116,118 @@ percentGap   <- 100*sum(is.na(localGap$species))/nrow(localGap)
 nGap <- sum(is.na(localGap$species))
 minInterText <- 100*min(localGap$minInter)
 
+### ---- cluster-groups-data ----
+taxonomyDf <- load_taxonomyDf()
+treeGrpsFiles <- list.files(pattern="cukeTree-.+-\\d+\\.rds$",
+                            path="data", full.names=TRUE)
+treeGrps <- lapply(treeGrpsFiles, readRDS)
+nGrpsVec <- sapply(treeGrps, function(tr) max(tdata(tr, "tip")$Groups))
+pSnglVec <- sapply(treeGrps, function(tr) {
+    tabGrp <- table(tdata(tr, "tip")$Groups) == 1
+    sum(tabGrp)/length(tabGrp)
+})
+
+factStr <- lapply(treeGrpsFiles, function(x) {
+    tmpStr <- gsub("^data/", "", x)
+    tmpStr <- gsub("\\.rds$", "", tmpStr)
+    ## to fix the ones done on all species
+    tmpStr <- gsub("(cukeTree-(raw|k2p)-)(\\d+)", "\\1all-\\3", tmpStr)
+    tmpStr <- strsplit(tmpStr, "-")
+    data.frame(distance=tmpStr[[1]][2], taxa=tmpStr[[1]][3],
+               threshold=tmpStr[[1]][4], stringsAsFactors=FALSE)
+})
+factDf <- do.call("rbind", factStr)
+factDf$threshold <- as.numeric(gsub("^0", "0.", factDf$threshold))
+factDf$threshold <- factDf$threshold*2
+
+nGrpsClustersDf <- cbind(factDf, nGrps=nGrpsVec, pSngl=pSnglVec)
+nGrpsClustersDf <- merge(nGrpsClustersDf, taxonomyDf, all.x=TRUE)
+nGrpsClustersDf$taxa <- factor(nGrpsClustersDf$taxa)
+nGrpsClustersDf$distance <- factor(nGrpsClustersDf$distance)
+nGrpsClustersDf$method <- "Clusters"
+
+### ---- pairwise-groups-data ----
+source("R/pairwise-groups-functions.R")
+pairwiseGrpRes <- load_pairwiseGrpRes()
+thresVec <- load_thresholdPairwise()
+pairwiseGrpFactors <- rep(names(pairwiseGrpRes), each=length(thresVec))
+pairwiseGrpFactors <- strsplit(pairwiseGrpFactors, "-")
+pairwiseGrpFactors <- do.call("rbind", pairwiseGrpFactors)
+pairwiseGrpFactors <- data.frame(distance=pairwiseGrpFactors[, 1],
+                                 taxa=pairwiseGrpFactors[, 2],
+                                 threshold=rep(thresVec, length(pairwiseGrpRes)))
+
+nGrpsPairwise <- lapply(pairwiseGrpRes, function(x) sapply(x, length))
+pSnglPairwise <- lapply(pairwiseGrpRes, function(x) sapply(x, getPropSngl))
+
+nGrpsPairwiseDf <- data.frame(pairwiseGrpFactors, nGrps=unlist(nGrpsPairwise),
+                              pSngl=unlist(pSnglPairwise))
+nGrpsPairwiseDf$method <- "Pairwise"
+
+## merging earlier messes up the ordering
+nGrpsPairwiseDf <- merge(nGrpsPairwiseDf, taxonomyDf)
+
+### ---- sampled-species ----
+worms <- read.csv(file="data/raw/cuke-worms.csv", stringsAsFactors=FALSE)
+worms <- subset(worms, worms$"Status..WoRMS." == "accepted")
+wormsTab <- data.frame(xtabs(~ Order.current + Family.current + Genus.current, data=worms))
+wormsTab <- wormsTab[wormsTab$Freq != 0, ]
+names(wormsTab) <- c("Order", "Family", "Genus", "nSpp")
+
+wormsSumOrder <- with(wormsTab, tapply(nSpp, Order, sum))
+wormsSumFam <- with(wormsTab, tapply(nSpp, Family, sum))
+
+wormsSum <- data.frame(Family = names(wormsSumFam), acceptedSpp=wormsSumFam)
+wormsSum <- merge(wormsSum, wormsTab, by="Family", all.x=TRUE)
+wormsSum <- wormsSum[, -match(c("Genus", "nSpp"), names(wormsSum))]
+wormsSum <- wormsSum[!duplicated(wormsSum), ]
+wormsSum <- rbind(wormsSum, data.frame(Family="", Order=names(wormsSumOrder), acceptedSpp=wormsSumOrder))
+
+sampTab <- data.frame(xtabs(~ higher + family, data=uniqSpp))
+sampTabOrder <- data.frame(xtabs(~ higher, data=uniqSpp), family = "")
+sampTab <- rbind(sampTab, sampTabOrder)
+sampTab <- sampTab[sampTab$Freq != 0, ]
+names(sampTab) <- c("Order", "Family", "# sampled")
+
+sampTab <- merge(sampTab, wormsSum)
+
+names(sampTab)[ncol(sampTab)] <- "# accepted"
+
+sampTab$Family <- factor(sampTab$Family,
+                         levels=c(levels(sampTab$Family)[nlevels(sampTab$Family)],
+                         levels(sampTab$Family)[-nlevels(sampTab$Family)]))
+sampTab <- sampTab[order(sampTab$Family), ]
+sampTab <- sampTab[order(sampTab$Order), ]
+hlinePos <- cumsum(table(sampTab$Order))
+sampTab$Order <- as.character(sampTab$Order)
+sampTab$Order <- paste("\\textbf{", sampTab$Order, "}", sep="")
+sampTab$Order[duplicated(sampTab$Order)] <- ""
+sampTab$"# sampled"[nzchar(sampTab$Order)] <-
+    paste("\\textbf{", sampTab$"# sampled"[nzchar(sampTab$Order)], "}", sep="")
+sampTab$"# accepted"[nzchar(sampTab$Order)] <-
+    paste("\\textbf{", sampTab$"# accepted"[nzchar(sampTab$Order)], "}", sep="")
+
+sampTab <- rbind(sampTab, cbind(Order = "\\textbf{Total}", Family = "",
+                                "# sampled" = paste0("\\textbf{", nrow(uniqSpp), "}"),
+                                "# accepted" = paste0("\\textbf{", sum(subset(wormsSum, Family != "")$acceptedSpp), "}")))
+
+colnames(sampTab)[3:4] <- paste0("\\", colnames(sampTab)[3:4])
+
+sampXtab <- xtable(sampTab,
+                   caption=paste("Number of named morpho-species sampled (\\# sampled)",
+                       "and number of accepted species (\\# accepted) for each",
+                       "family and each order of sea cucumber. Not all families were",
+                       "sampled, thus totals in some orders are more than sum of family",
+                       "diversities. This classification does not include modifications",
+                       "proposed by Smirnov \\cite{Smirnov2012}."),
+                   label="tab:sampled-species", display=c("s", "s", "s", "d", "d"))
+
+print(sampXtab, include.rownames=FALSE, hline.after=c(-1, 0, hlinePos, nrow(sampXtab)),
+      sanitize.text.function=function(x) {x})
+
+
+
+
 ### ---- compare-manual-cluster-ESUs-data ----
 accuracyGrps <- function(tree) {
     clstrGrps <- tdata(tree, "tip")[, "Groups", drop=FALSE]
@@ -182,15 +294,6 @@ ggplot(compareManESUs, aes(x=threshold, y=value, fill=variable)) + geom_bar(stat
     guides(fill=guide_legend(title=NULL)) +
     theme(legend.position="top")
 
-### ---- geo-diff ----
-manESU <- load_manESU()
-wiGeoGrps <- split(manESU$Labels, manESU$ESU_genetic)
-tmpGeoDiff <- grep("[A-Z]{2}$", names(wiGeoGrps), value=TRUE)
-esuGeoDiff <- data.frame(wiGeo=tmpGeoDiff,
-                         noGeo=gsub("_[A-Z]{2}$", "", tmpGeoDiff),
-                         stringsAsFactors=FALSE)
-nEsuGeoDiff <- length(unique(esuGeoDiff$noGeo))
-
 ### ---- local-gap-plot ----
 localGap <- load_localGap()
 esuNm <- read.csv(file="data/raw/ESU_names.csv", stringsAsFactors=FALSE, header=FALSE)
@@ -205,116 +308,132 @@ ggplot(localGap) + geom_point(aes(x=maxIntra, y=minInter, colour=species)) +
     xlab("Maximum intra-ESU distance")  + ylab("Minimum inter-ESU distance") +
     scale_colour_discrete(name="ESUs")
 
+### ---- range-size-plot ----
+ggplot(subset(distBySpecies, Order %in% orderToInclude)) +
+    geom_violin(aes(x=Order, y=maxGeoDist, fill=Order, colour=Order)) +
+    xlab("") + ylab("Maximum distance (km)") +
+    theme(legend.position="none")
 
-### ---- sampled-species ----
-worms <- read.csv(file="data/raw/cuke-worms.csv", stringsAsFactors=FALSE)
-worms <- subset(worms, worms$"Status..WoRMS." == "accepted")
-wormsTab <- data.frame(xtabs(~ Order.current + Family.current + Genus.current, data=worms))
-wormsTab <- wormsTab[wormsTab$Freq != 0, ]
-names(wormsTab) <- c("Order", "Family", "Genus", "nSpp")
+### ---- geography-diversification ----
+source("R/test-allopatry-functions.R")
+holTree <- load_tree_manualGrps()
+esuRange <- testRangeType(holTree, cukeDistRaw, cukeDB)
 
-wormsSumOrder <- with(wormsTab, tapply(nSpp, Order, sum))
-wormsSumFam <- with(wormsTab, tapply(nSpp, Family, sum))
+esuRange <- esuRange[complete.cases(esuRange), ]
 
-wormsSum <- data.frame(Family = names(wormsSumFam), acceptedSpp=wormsSumFam)
-wormsSum <- merge(wormsSum, wormsTab, by="Family", all.x=TRUE)
-wormsSum <- wormsSum[, -match(c("Genus", "nSpp"), names(wormsSum))]
-wormsSum <- wormsSum[!duplicated(wormsSum), ]
-wormsSum <- rbind(wormsSum, data.frame(Family="", Order=names(wormsSumOrder), acceptedSpp=wormsSumOrder))
+esuRange$species <- as.character(esuRange$species)
 
-sampTab <- data.frame(xtabs(~ higher + family, data=uniqSpp))
-sampTabOrder <- data.frame(xtabs(~ higher, data=uniqSpp), family = "")
-sampTab <- rbind(sampTab, sampTabOrder)
-sampTab <- sampTab[sampTab$Freq != 0, ]
-names(sampTab) <- c("Order", "Family", "# sampled")
+esuRange$rangeType <- factor(esuRange$rangeType, levels=c("allopatric", "sympatric", "parapatric"))
 
-sampTab <- merge(sampTab, wormsSum)
+esuRange <- esuRange[-match("54-Holothuria_excellens/192-Pearsonothuria_graeffei", esuRange$species), ]
+esuRange[match("177-Holothuria_unicolor/184-Holothuria_zihuatanensis", esuRange$species), "rangeType"] <- "allopatric"
 
-names(sampTab)[ncol(sampTab)] <- "# accepted"
+tabRangeType <- table(esuRange$rangeType)
 
-sampTab$Family <- factor(sampTab$Family,
-                         levels=c(levels(sampTab$Family)[nlevels(sampTab$Family)],
-                         levels(sampTab$Family)[-nlevels(sampTab$Family)]))
-sampTab <- sampTab[order(sampTab$Family), ]
-sampTab <- sampTab[order(sampTab$Order), ]
-hlinePos <- cumsum(table(sampTab$Order))
-sampTab$Order <- as.character(sampTab$Order)
-sampTab$Order <- paste("\\textbf{", sampTab$Order, "}", sep="")
-sampTab$Order[duplicated(sampTab$Order)] <- ""
-sampTab$"# sampled"[nzchar(sampTab$Order)] <-
-    paste("\\textbf{", sampTab$"# sampled"[nzchar(sampTab$Order)], "}", sep="")
-sampTab$"# accepted"[nzchar(sampTab$Order)] <-
-    paste("\\textbf{", sampTab$"# accepted"[nzchar(sampTab$Order)], "}", sep="")
+percentAllo <- 100*tabRangeType["allopatric"]/sum(tabRangeType)
+percentSymp <- 100*tabRangeType["sympatric"]/sum(tabRangeType)
+percentPara <- 100*tabRangeType["parapatric"]/sum(tabRangeType)
 
-sampTab <- rbind(sampTab, cbind(Order = "\\textbf{Total}", Family = "",
-                                "# sampled" = paste0("\\textbf{", nrow(uniqSpp), "}"),
-                                "# accepted" = paste0("\\textbf{", sum(subset(wormsSum, Family != "")$acceptedSpp), "}")))
+nSymp <- tabRangeType["sympatric"]
 
-colnames(sampTab)[3:4] <- paste0("\\", colnames(sampTab)[3:4])
+## ggplot(esuRange) + geom_bar(aes(x=rangeType, fill=rangeType)) +
+##     xlab("") + ylab("Number of ESU pairs") +
+##     scale_fill_discrete("Type of geographic range") +
+##     theme(legend.position="none") + coord_flip()
 
-sampXtab <- xtable(sampTab,
-                   caption=paste("Number of named morpho-species sampled (\\# sampled)",
-                       "and number of accepted species (\\# accepted) for each",
-                       "family and each order of sea cucumber. Not all families were",
-                       "sampled, thus totals in some orders are more than sum of family",
-                       "diversities. This classification does not include modifications",
-                       "proposed by Smirnov \\cite{Smirnov2012}."),
-                   label="tab:sampled-species", display=c("s", "s", "s", "d", "d"))
+ggplot(esuRange) +
+    geom_point(data=esuRange[!is.na(esuRange$rangeType), ],
+               aes(x=rangeType, y=meanInterDist, colour=rangeType),
+               position=position_jitter(width=.05, height=0)) +
+    coord_flip() + xlab("") + ylab("Mean inter-ESU distances") +
+    theme(legend.position="none")
 
-print(sampXtab, include.rownames=FALSE, hline.after=c(-1, 0, hlinePos, nrow(sampXtab)),
-      sanitize.text.function=function(x) {x})
+### ---- barriers ----
+manESU <- load_manESU()
+iopoDist <- manESU[grep("_(IO|PO)$", manESU$ESU_genetic), ]
+iopoESU <- gsub("_[A-Z]{2}$", "", iopoDist$ESU_genetic)
+iopoESU <- gsub("(\\d{1})[a-z]{1}", "\\1", iopoESU)
+iopoDist$iopoESU <- iopoESU
 
+iopoGrps <- split(iopoDist$ESU_genetic, iopoDist$iopoESU)
+iopoGrps <- lapply(iopoGrps, function(x) unique(x))
+iopoGrps <- iopoGrps[sapply(iopoGrps, function(x) length(x) == 2)]
 
-### ---- cluster-groups-data ----
-taxonomyDf <- load_taxonomyDf()
-treeGrpsFiles <- list.files(pattern="cukeTree-.+-\\d+\\.rds$",
-                            path="data", full.names=TRUE)
-treeGrps <- lapply(treeGrpsFiles, readRDS)
-nGrpsVec <- sapply(treeGrps, function(tr) max(tdata(tr, "tip")$Groups))
-pSnglVec <- sapply(treeGrps, function(tr) {
-    tabGrp <- table(tdata(tr, "tip")$Groups) == 1
-    sum(tabGrp)/length(tabGrp)
+iopoGenDist <- sapply(iopoGrps, function(x) {
+    ind1 <- subset(iopoDist, iopoDist$ESU_genetic== x[1])$Labels
+    ind2 <- subset(iopoDist, iopoDist$ESU_genetic== x[2])$Labels
+    interESUDist(ind1, ind2, cukeDistRaw)$mean
 })
 
-factStr <- lapply(treeGrpsFiles, function(x) {
-    tmpStr <- gsub("^data/", "", x)
-    tmpStr <- gsub("\\.rds$", "", tmpStr)
-    ## to fix the ones done on all species
-    tmpStr <- gsub("(cukeTree-(raw|k2p)-)(\\d+)", "\\1all-\\3", tmpStr)
-    tmpStr <- strsplit(tmpStr, "-")
-    data.frame(distance=tmpStr[[1]][2], taxa=tmpStr[[1]][3],
-               threshold=tmpStr[[1]][4], stringsAsFactors=FALSE)
+iopoESUcat <- sapply(iopoGrps, function(x) {
+    if (length(grep("\\d{1}[a-z]{1}", x)) == 2) "inter"
+    else "intra"
 })
-factDf <- do.call("rbind", factStr)
-factDf$threshold <- as.numeric(gsub("^0", "0.", factDf$threshold))
-factDf$threshold <- factDf$threshold*2
 
-nGrpsClustersDf <- cbind(factDf, nGrps=nGrpsVec, pSngl=pSnglVec)
-nGrpsClustersDf <- merge(nGrpsClustersDf, taxonomyDf, all.x=TRUE)
-nGrpsClustersDf$taxa <- factor(nGrpsClustersDf$taxa)
-nGrpsClustersDf$distance <- factor(nGrpsClustersDf$distance)
-nGrpsClustersDf$method <- "Clusters"
+iopoDat <- data.frame(barrier="IO/PO", genDist=iopoGenDist, esuCat=iopoESUcat)
 
-### ---- pairwise-groups-data ----
-source("R/pairwise-groups-functions.R")
-pairwiseGrpRes <- load_pairwiseGrpRes()
-thresVec <- load_thresholdPairwise()
-pairwiseGrpFactors <- rep(names(pairwiseGrpRes), each=length(thresVec))
-pairwiseGrpFactors <- strsplit(pairwiseGrpFactors, "-")
-pairwiseGrpFactors <- do.call("rbind", pairwiseGrpFactors)
-pairwiseGrpFactors <- data.frame(distance=pairwiseGrpFactors[, 1],
-                                 taxa=pairwiseGrpFactors[, 2],
-                                 threshold=rep(thresVec, length(pairwiseGrpRes)))
+##
 
-nGrpsPairwise <- lapply(pairwiseGrpRes, function(x) sapply(x, length))
-pSnglPairwise <- lapply(pairwiseGrpRes, function(x) sapply(x, getPropSngl))
+rspoDist <- manESU[grep("_(RS|PO)$", manESU$ESU_genetic), ]
+rspoESU <- gsub("_[A-Z]{2}$", "", rspoDist$ESU_genetic)
+rspoESU <- gsub("(\\d{1})[a-z]{1}", "\\1", rspoESU)
+rspoDist$rspoESU <- rspoESU
 
-nGrpsPairwiseDf <- data.frame(pairwiseGrpFactors, nGrps=unlist(nGrpsPairwise),
-                              pSngl=unlist(pSnglPairwise))
-nGrpsPairwiseDf$method <- "Pairwise"
+rspoGrps <- split(rspoDist$ESU_genetic, rspoDist$rspoESU)
+rspoGrps <- lapply(rspoGrps, function(x) unique(x))
+rspoGrps <- rspoGrps[sapply(rspoGrps, function(x) length(x) == 2)]
 
-## merging earlier messes up the ordering
-nGrpsPairwiseDf <- merge(nGrpsPairwiseDf, taxonomyDf)
+rspoGenDist <- sapply(rspoGrps, function(x) {
+    ind1 <- subset(rspoDist, rspoDist$ESU_genetic== x[1])$Labels
+    ind2 <- subset(rspoDist, rspoDist$ESU_genetic== x[2])$Labels
+    interESUDist(ind1, ind2, cukeDistRaw)$mean
+})
+
+rspoESUcat <- sapply(rspoGrps, function(x) {
+    if (length(grep("\\d{1}[a-z]{1}", x)) == 2) "inter"
+    else "intra"
+})
+
+rspoDat <- data.frame(barrier="RS/PO", genDist=rspoGenDist, esuCat=rspoESUcat)
+
+##
+
+hipoDist <- manESU[grep("_(HI|PO|IW)$", manESU$ESU_genetic), ]
+hipoESU <- gsub("_[A-Z]{2}$", "", hipoDist$ESU_genetic)
+hipoESU <- gsub("(\\d{1})[a-z]{1}", "\\1", hipoESU)
+hipoDist$hipoESU <- hipoESU
+
+hipoGrps <- split(hipoDist$ESU_genetic, hipoDist$hipoESU)
+hipoGrps <- lapply(hipoGrps, function(x) unique(x))
+hipoGrps <- hipoGrps[sapply(hipoGrps, function(x) length(x) == 2)]
+
+hipoGenDist <- sapply(hipoGrps, function(x) {
+    ind1 <- subset(hipoDist, hipoDist$ESU_genetic== x[1])$Labels
+    ind2 <- subset(hipoDist, hipoDist$ESU_genetic== x[2])$Labels
+    interESUDist(ind1, ind2, cukeDistRaw)$mean
+})
+
+hipoESUcat <- sapply(hipoGrps, function(x) {
+    if (length(grep("\\d{1}[a-z]{1}", x)) == 2) "inter"
+    else "intra"
+})
+
+hipoDat <- data.frame(barrier="HI/PO", genDist=hipoGenDist, esuCat=hipoESUcat)
+
+geoDat <- rbind(iopoDat, rspoDat, hipoDat)
+geoDat <- subset(geoDat, esuCat == "inter")
+
+percentIOPO <- 100*sum(geoDat$barrier == "IO/PO")/tabRangeType["allopatric"]
+percentRSPO <- 100*sum(geoDat$barrier == "RS/PO")/tabRangeType["allopatric"]
+percentHIPO <- 100*sum(geoDat$barrier == "HI/PO")/tabRangeType["allopatric"]
+
+ggplot(geoDat) + geom_point(aes(y=barrier, x=genDist, colour=barrier)) +
+    ylab("") + xlab("Genetic distances (uncorrected)") +
+    theme(legend.position="none")
+
+
+
+
 
 
 ### ---- groups-comparison-plot ----
@@ -412,250 +531,52 @@ multiplot(nESUSm, pSnglSm, layout=matrix(c(rep(1, 4), rep(2, 3)), ncol=1))
 
 
 
-### ---- range-size-plot ----
-ggplot(subset(distBySpecies, Order %in% orderToInclude)) +
-    geom_violin(aes(x=Order, y=maxGeoDist, fill=Order, colour=Order)) +
-    xlab("") + ylab("Maximum distance (km)") +
-    theme(legend.position="none")
-
-
-
-
-### ---- barriers ----
-manESU <- load_manESU()
-iopoDist <- manESU[grep("_(IO|PO)$", manESU$ESU_genetic), ]
-iopoESU <- gsub("_[A-Z]{2}$", "", iopoDist$ESU_genetic)
-iopoESU <- gsub("(\\d{1})[a-z]{1}", "\\1", iopoESU)
-iopoDist$iopoESU <- iopoESU
-
-iopoGrps <- split(iopoDist$ESU_genetic, iopoDist$iopoESU)
-iopoGrps <- lapply(iopoGrps, function(x) unique(x))
-iopoGrps <- iopoGrps[sapply(iopoGrps, function(x) length(x) == 2)]
-
-iopoGenDist <- sapply(iopoGrps, function(x) {
-    ind1 <- subset(iopoDist, iopoDist$ESU_genetic== x[1])$Labels
-    ind2 <- subset(iopoDist, iopoDist$ESU_genetic== x[2])$Labels
-    interESUDist(ind1, ind2, cukeDistRaw)$mean
-})
-
-iopoESUcat <- sapply(iopoGrps, function(x) {
-    if (length(grep("\\d{1}[a-z]{1}", x)) == 2) "inter"
-    else "intra"
-})
-
-iopoDat <- data.frame(barrier="IO/PO", genDist=iopoGenDist, esuCat=iopoESUcat)
-
-##
-
-rspoDist <- manESU[grep("_(RS|PO)$", manESU$ESU_genetic), ]
-rspoESU <- gsub("_[A-Z]{2}$", "", rspoDist$ESU_genetic)
-rspoESU <- gsub("(\\d{1})[a-z]{1}", "\\1", rspoESU)
-rspoDist$rspoESU <- rspoESU
-
-rspoGrps <- split(rspoDist$ESU_genetic, rspoDist$rspoESU)
-rspoGrps <- lapply(rspoGrps, function(x) unique(x))
-rspoGrps <- rspoGrps[sapply(rspoGrps, function(x) length(x) == 2)]
-
-rspoGenDist <- sapply(rspoGrps, function(x) {
-    ind1 <- subset(rspoDist, rspoDist$ESU_genetic== x[1])$Labels
-    ind2 <- subset(rspoDist, rspoDist$ESU_genetic== x[2])$Labels
-    interESUDist(ind1, ind2, cukeDistRaw)$mean
-})
-
-rspoESUcat <- sapply(rspoGrps, function(x) {
-    if (length(grep("\\d{1}[a-z]{1}", x)) == 2) "inter"
-    else "intra"
-})
-
-rspoDat <- data.frame(barrier="RS/PO", genDist=rspoGenDist, esuCat=rspoESUcat)
-
-##
-
-hipoDist <- manESU[grep("_(HI|PO|IW)$", manESU$ESU_genetic), ]
-hipoESU <- gsub("_[A-Z]{2}$", "", hipoDist$ESU_genetic)
-hipoESU <- gsub("(\\d{1})[a-z]{1}", "\\1", hipoESU)
-hipoDist$hipoESU <- hipoESU
-
-hipoGrps <- split(hipoDist$ESU_genetic, hipoDist$hipoESU)
-hipoGrps <- lapply(hipoGrps, function(x) unique(x))
-hipoGrps <- hipoGrps[sapply(hipoGrps, function(x) length(x) == 2)]
-
-hipoGenDist <- sapply(hipoGrps, function(x) {
-    ind1 <- subset(hipoDist, hipoDist$ESU_genetic== x[1])$Labels
-    ind2 <- subset(hipoDist, hipoDist$ESU_genetic== x[2])$Labels
-    interESUDist(ind1, ind2, cukeDistRaw)$mean
-})
-
-hipoESUcat <- sapply(hipoGrps, function(x) {
-    if (length(grep("\\d{1}[a-z]{1}", x)) == 2) "inter"
-    else "intra"
-})
-
-hipoDat <- data.frame(barrier="HI/PO", genDist=hipoGenDist, esuCat=hipoESUcat)
-
-geoDat <- rbind(iopoDat, rspoDat, hipoDat)
-geoDat <- subset(geoDat, esuCat == "inter")
-
-percentIOPO <- 100*sum(geoDat$barrier == "IO/PO")/tabRangeType["allopatric"]
-percentRSPO <- 100*sum(geoDat$barrier == "RS/PO")/tabRangeType["allopatric"]
-percentHIPO <- 100*sum(geoDat$barrier == "HI/PO")/tabRangeType["allopatric"]
-
-ggplot(geoDat) + geom_point(aes(y=barrier, x=genDist, colour=barrier)) +
-    ylab("") + xlab("Genetic distances (uncorrected)") +
-    theme(legend.position="none")
-
-### ---- global-diversity-map ----
+### ---- map-orders ----
 globalMap <- map_data("world2")
-source("R/test-allopatry-functions.R")
-manGrps <- load_species_manualGrps()
 
-spatialSpecies <- spatialFromSpecies(manGrps,
-                                     load_cukeDB())
-
-isPolygon <- sapply(spatialSpecies[[1]], function(x) attr(x, "type-coords") == "polygon")
-spatialHull <- spatialSpecies[[1]][isPolygon]
-tmpSpp <- rep(names(spatialHull), sapply(spatialHull, function(x) nrow(x)))
-allHllDf <- do.call("rbind", spatialHull)
-allHllDf <- cbind(allHllDf, species=tmpSpp)
-pointPNG <- SpatialPoints(cbind(140, 0), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
-nSppPNG <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointPNG, x))
-
-pointCaro <- SpatialPoints(cbind(145, 10), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
-nSppCaro  <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointCaro, x))
-
-pointPhil <- SpatialPoints(cbind(120, 15), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
-nSppPhil <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointPhil, x))
-
-pointPoly <- SpatialPoints(cbind(208, -17), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
-nSppPoly <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointPoly, x))
-
-pointMada <- SpatialPoints(cbind(50, -13), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
-nSppMada <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointMada, x))
-
-pointOki <- SpatialPoints(cbind(128.2, 26), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
-nSppOki <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointOki, x))
-
-pointGuam <- SpatialPoints(cbind(144.724, 13.4), proj4string=CRS("+proj=longlat +datum=WGS84 +units=m"))
-nSppGuam <- sapply(spatialSpecies[[2]][isPolygon], function(x) gWithin(pointGuam, x))
-
-allSppNm <- rep(names(spatialSpecies[[1]]), sapply(spatialSpecies[[1]], function(x) nrow(x)))
-allCoords <- do.call("rbind", spatialSpecies[[1]])
-allCoords <- cbind(allCoords, species=allSppNm)
-
-## Red Sea
-redSea <- subset(allCoords, decimalLatitude > 8 & decimalLatitude < 30 &
-                 decimalLongitude > 30 & decimalLongitude < 45)
-notRedSea <- subset(allCoords, !(decimalLatitude > 10 & decimalLatitude < 30 &
-                 decimalLongitude > 30 & decimalLongitude < 45))
-redSeaSpp <- unique(redSea$species)
-notRedSeaSpp <- unique(notRedSea$species)
-redSeaEnd <- setdiff(redSeaSpp, notRedSeaSpp)
-
-## Hawaii
-hawaii <- subset(allCoords, decimalLatitude > 17.5 & decimalLatitude < 25 &
-                 long.recenter > 194 & long.recenter < 206)
-notHawaii <- subset(allCoords, !(decimalLatitude > 17.5 & decimalLatitude < 25 &
-                 long.recenter > 190 & long.recenter < 210))
-hawaiiSpp <- unique(hawaii$species)
-notHawaiiSpp <- unique(notHawaii$species)
-hawaiiEnd <- setdiff(hawaiiSpp, notHawaiiSpp)
-
-#### ---- map-indian-ocean ----
-isPolygon <- sapply(spatialSpecies[[1]], function(x) attr(x, "type-coords") == "polygon")
-spatialHull <- spatialSpecies[[1]][isPolygon]
-tmpSpp <- rep(names(spatialHull), sapply(spatialHull, function(x) nrow(x)))
-allHllDf <- do.call("rbind", spatialHull)
-allHllDf <- cbind(allHllDf, species=tmpSpp)
-
-ggplot(allHllDf) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
-    geom_polygon(aes(x=long.recenter, y=decimalLatitude, fill=species),
-                 alpha=.05) +
-    coord_map(projection = "mercator", orientation=c(90, 160, 0), xlim=c(30, 65),
-              ylim=c(32, -25)) +
-    #scale_fill_manual(values=rep("red", nlevels(allHllDf$species))) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position = "none") +
-    ylim(c(-30,30)) +# xlim(c(30, 65)) +
-    xlab("Longitude") + ylab("Latitude")
-
-
-
-### ---- geography-diversification ----
-source("R/test-allopatry-functions.R")
-holTree <- load_tree_manualGrps()
-esuRange <- testRangeType(holTree, cukeDistRaw, cukeDB)
-
-esuRange <- esuRange[complete.cases(esuRange), ]
-
-esuRange$species <- as.character(esuRange$species)
-
-esuRange$rangeType <- factor(esuRange$rangeType, levels=c("allopatric", "sympatric", "parapatric"))
-
-esuRange <- esuRange[-match("54-Holothuria_excellens/192-Pearsonothuria_graeffei", esuRange$species), ]
-esuRange[match("177-Holothuria_unicolor/184-Holothuria_zihuatanensis", esuRange$species), "rangeType"] <- "allopatric"
-
-tabRangeType <- table(esuRange$rangeType)
-
-percentAllo <- 100*tabRangeType["allopatric"]/sum(tabRangeType)
-percentSymp <- 100*tabRangeType["sympatric"]/sum(tabRangeType)
-percentPara <- 100*tabRangeType["parapatric"]/sum(tabRangeType)
-
-nSymp <- tabRangeType["sympatric"]
-
-## ggplot(esuRange) + geom_bar(aes(x=rangeType, fill=rangeType)) +
-##     xlab("") + ylab("Number of ESU pairs") +
-##     scale_fill_discrete("Type of geographic range") +
-##     theme(legend.position="none") + coord_flip()
-
-ggplot(esuRange) +
-    geom_point(data=esuRange[!is.na(esuRange$rangeType), ],
-               aes(x=rangeType, y=meanInterDist, colour=rangeType),
-               position=position_jitter(width=.05, height=0)) +
-    coord_flip() + xlab("") + ylab("Mean inter-ESU distances") +
-    theme(legend.position="none")
-
-### ---- geography-diversification-all ----
-source("R/test-allopatry-functions.R")
-cukeAlg <- load_cukeAlg()
-cukeDB <- load_cukeDB()
-allTree <- load_tree_clusterGrps("raw", "all", 0.02)
-tipLabels(allTree) <- gsub("\\\"", "", tipLabels(allTree))
-allTree <- subset(allTree, tips.exclude="Stichopodidae_Stichopus_horrens_Galapagos_Hickmanneed_Hickmanimmature")
-mlTree <- load_tree_raxml_phylo4()
-tipLabels(mlTree) <- gsub("\\\"", "", tipLabels(mlTree))
-mlTree <- subset(mlTree, tips.exclude="Stichopodidae_Stichopus_horrens_Galapagos_Hickmanneed_Hickmanimmature")
-allGrps <- tdata(allTree, "tip")[, "Groups", drop=FALSE]
-allTreeMl <- addData(mlTree, tip.data=allGrps)
-esuRangeAll <- testRangeType(allTreeMl, cukeDistRaw, cukeDB)
-
-esuRangeAll <- esuRangeAll[complete.cases(esuRangeAll), ]
-
-esuRangeAll$species <- as.character(esuRangeAll$species)
-
-esuRangeAll$rangeType <- factor(esuRangeAll$rangeType, levels=c("allopatric", "sympatric", "parapatric"))
-
-tabRangeTypeAll <- table(esuRangeAll$rangeType)
-
-percentAlloAll <- 100*tabRangeTypeAll["allopatric"]/sum(tabRangeTypeAll)
-percentSympAll <- 100*tabRangeTypeAll["sympatric"]/sum(tabRangeTypeAll)
-percentParaAll <- 100*tabRangeTypeAll["parapatric"]/sum(tabRangeTypeAll)
-
-### ---- map-dendrochirotida ----
-dendroMap <- subset(load_cukeDB(), genusorhigher == "Phyrella")[, c("order", "genusorhigher", "species", "decimalLatitude", "decimalLongitude")]
+dendroMap <- subset(load_cukeDB(), order=="Dendrochirotida")[, c("order", "genusorhigher", "species", "decimalLatitude", "decimalLongitude")]
 center <- 150
 dendroMap$long.recenter <- ifelse(dendroMap$decimalLongitude < center - 180,
                                   dendroMap$decimalLongitude + 360,
                                   dendroMap$decimalLongitude)
 dendroMap <- dendroMap[complete.cases(dendroMap), ]
 
-ggplot(dendroMap) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x = long.recenter, y = decimalLatitude, colour=species), size=4, data=dendroMap) +
+den <- ggplot(dendroMap) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x = long.recenter, y = decimalLatitude), data=dendroMap) +
     coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
     theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position="none") +
+          legend.position="none") + xlab("Longitude") + ylab("Latitude") +
     xlim(c(0, 300)) + ylim(c(-45, 30))
 
+aspidoMap <- subset(load_cukeDB(), order=="Aspidochirotida")[, c("order", "genusorhigher", "species", "decimalLatitude", "decimalLongitude")]
+center <- 150
+aspidoMap$long.recenter <- ifelse(aspidoMap$decimalLongitude < center - 180,
+                                  aspidoMap$decimalLongitude + 360,
+                                  aspidoMap$decimalLongitude)
+aspidoMap <- aspidoMap[complete.cases(aspidoMap), ]
+
+asp <- ggplot(aspidoMap) + annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x = long.recenter, y = decimalLatitude), data=aspidoMap) +
+    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position="none") + xlab("Longitude") + ylab("Latitude") +
+    xlim(c(0, 300)) + ylim(c(-45, 30))
+
+apodiMap <- subset(load_cukeDB(), order=="Apodida")[, c("order", "genusorhigher", "species", "decimalLatitude", "decimalLongitude")]
+center <- 150
+apodiMap$long.recenter <- ifelse(apodiMap$decimalLongitude < center - 180,
+                                  apodiMap$decimalLongitude + 360,
+                                  apodiMap$decimalLongitude)
+apodiMap <- apodiMap[complete.cases(apodiMap), ]
+
+apo <- ggplot(apodiMap) +  annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x = long.recenter, y = decimalLatitude), data=apodiMap) +
+    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position="none") + xlab("Longitude") + ylab("Latitude") +
+    xlim(c(0, 300)) + ylim(c(-45, 30))
+
+multiplot(den, asp, apo, ncol=1)
 
 ### ---- mantel-test ----
 ### Doesn't really work given too much data, could instead do by species
@@ -668,94 +589,6 @@ ggplot(dendroMap) + annotation_map(globalMap, fill="gray40", colour="gray40") +
 ## geoDist <- CalcGeoDists(cbind(deg2rad(tmpCoords$decimalLongitude),
 ##                               deg2rad(tmpCoords$decimalLatitude)))
 
-
-### ---- distribution-maps ----
-globalMap <- map_data("world2")
-
-pdf(file="tmp/distributionMaps.pdf", paper="letter")
-for (i in 1:length(listCoords)) {
-    message(i)
-    tmpCoords <- listCoords[[i]]
-    center <- 150
-    tmpCoords$long.recenter <- ifelse(tmpCoords$decimalLongitude < center - 180,
-                                      tmpCoords$decimalLongitude + 360,
-                                      tmpCoords$decimalLongitude)
-    tmpCoords <- tmpCoords[complete.cases(tmpCoords), ]
-    if (nrow(tmpCoords) > 0) {
-        xx <- ggplot(tmpCoords) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-            geom_point(aes(x = long.recenter, y = decimalLatitude), data=tmpCoords) +
-                coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-                    theme(panel.background = element_rect(fill="aliceblue")) +
-                        ggtitle(paste(i, species[[i]][1]))
-        ## need to add this mumbo-jumbo otherwise it crashes R when points are
-        ##  too close to each others, forcing at least a 10x10° plot
-        if (abs(diff(range(tmpCoords$decimalLatitude))) < 10) {
-            yLim <- c(mean(range(tmpCoords$decimalLatitude)) - 5,
-                      mean(range(tmpCoords$decimalLatitude)) + 5)
-            xx <- xx + ylim(yLim)
-        }
-        if (abs(diff(range(tmpCoords$decimalLongitude))) < 10) {
-            xLim <- c(mean(range(tmpCoords$decimalLongitude)) - 5,
-                      mean(range(tmpCoords$decimalLongitude)) + 5)
-            xx <- xx + xlim(xLim)
-        }
-        if (length(unique(paste(tmpCoords$decimalLatitude, tmpCoords$decimalLongitude))) > 2) {
-            hll <- try(chull(tmpCoords$long.recenter, tmpCoords$decimalLatitude), silent=FALSE)
-            if (!inherits(hll, "try-error")) {
-                hll <- tmpCoords[hll, ]
-                xx <- xx + geom_polygon(data=hll, aes(x=long.recenter, y=decimalLatitude), alpha=.2)
-            }
-        }
-        print(xx)
-    }
-    else next
-}
-dev.off()
-
-### ---- map-species-pairs ----
-
-pdf(file="/tmp/spPairs.pdf")
-for (i in 1:length(sppNb)) {
-    sp1 <- allHllDf[grep(paste0("^", sppNb[[i]][1], "-"),  allHllDf$species), ]
-    sp2 <- allHllDf[grep(paste0("^", sppNb[[i]][2], "-"),  allHllDf$species), ]
-    tmpDt <- rbind(sp1, sp2)
-
-    sp1Nm <- names(spatialSpecies[[2]])[sppNb[[i]][1]]
-    sp2Nm <- names(spatialSpecies[[2]])[sppNb[[i]][2]]
-
-    tmpDt2 <- rbind(cbind(spatialSpecies[[1]][[ sppNb[[i]] [1]]], species=sppNb[[i]][1]),
-                    cbind(spatialSpecies[[1]][[ sppNb[[i]] [2]]], species=sppNb[[i]][2]))
-    tmpDt2 <- tmpDt2[complete.cases(tmpDt2), ]
-
-    tmpMap <- ggplot(tmpDt2) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-        geom_point(aes(x=long.recenter, y=decimalLatitude, colour=species)) +
-        theme(panel.background = element_rect(fill="aliceblue"),
-        legend.position = "none") +
-        xlab("Longitude") + ylab("Latitude") +
-        ggtitle(paste(sp1Nm, sp2Nm, spComp$rangeType[i], sep=" - "))
-
-    if (attr(spatialSpecies[[1]][[sppNb[[i]][1]]], "type-coords") == "polygon") {
-        tmpMap <- tmpMap + geom_polygon(data=subset(tmpDt2, species == sppNb[[i]][1]),
-                                        aes(x=long.recenter, y=decimalLatitude, fill="red"),
-                                        alpha=.3)
-    }
-
-    if (attr(spatialSpecies[[1]][[sppNb[[i]][2]]], "type-coords") == "polygon") {
-        tmpMap <- tmpMap + geom_polygon(data=subset(tmpDt2, species == sppNb[[i]][2]),
-                                        aes(x=long.recenter, y=decimalLatitude, fill="blue"),
-                                        alpha=.3)
-    }
-
-    if (abs(mean(range(tmpDt$decimalLatitude))) < 30) {
-        tmpMap <- tmpMap + coord_map(projection = "mercator", orientation=c(90, 160, 0))
-    } else if (mean(range(tmpDt$decimalLatitude)) > 30) {
-        tmpMap <- tmpMap + coord_map(projection = "ortho", orientation=c(90, 0, 0))
-    } else {
-        tmpMap <- tmpMap + coord_map(projection = "ortho", orientation=c(-90, 0, 0))
-    }
-    print(tmpMap)
-}
-dev.off()
 
 ### ---- esu-table ----
 manESU <- load_manESU()
@@ -827,425 +660,3 @@ for (i in 1:length(thres)) {
     res[[i]]$anyDup <- any(duplicated(unlist(sppPP)))
     res[[i]]$species <- unlist(sppPP)
 }
-
-### ---------  Make trees for each family
-## Get the families
-
-getFam <- sapply(dimnames(seqHol)[[1]], function(x) { unlist(strsplit(x, "_"))[1] })
-uniqFam <- unique(getFam)
-missing <- dimnames(seqHol)[[1]][which(getFam == "")]
-stopifnot(length(missing) == 0)
-
-treeForEachFamily <- function(uniqFam, alg, drawTrees=TRUE) {
-    res <- vector("list", length(uniqFam))
-    for (i in 1:length(uniqFam)) {
-        fam <- uniqFam[i]
-        message(fam)
-        if (nchar(fam) == 0 || fam == "?") next
-        selSeqI <- grep(paste("^", fam, "_", sep=""), dimnames(seqHol)[[1]])
-        selSeq <- alg[selSeqI, ]
-        if (nrow(selSeq) < 3) {
-            message("not enough sequences for ", fam, " to make a tree.")
-            next
-        }
-        dimnames(selSeq)[[1]] <- gsub(paste("^", fam, "_", sep=""), "", dimnames(selSeq)[[1]])
-        treTmp <- nj(dist.dna(selSeq))
-        res[[i]] <- treTmp
-        if (drawTrees) {
-            h <- (dim(selSeq)[1]/10) + 5
-            pdf(file=paste(fam, ".pdf", sep=""), height=h)
-            plot(ladderize(treTmp), no.margin=TRUE, cex=.7)
-            dev.off()
-        }
-        message("Done.")
-    }
-    res
-}
-
-treeForEachFamily(uniqFam, seqHol)
-
-### make findGroup more efficient
-
-synTr <- treeForEachFamily("Synaptidae", seqHol, drawTrees=FALSE)[[1]]
-synTr$edge.length[synTr$edge.length < 0] <- 1e-7
-synTr$tip.label <- make.unique(synTr$tip.label)
-synTr <- root(synTr, outgroup=grep("Leptosynapta|Patinapta", synTr$tip.label), resolve.root=TRUE)
-synTr4 <- as(synTr, "phylo4")
-
-system.time(synGr <- findGroups(synTr4, experimental=FALSE, parallel=TRUE))
-
-library(microbenchmark)
-microbenchmark(
-    sapply(nodeId(synTr4, "internal"), function(x)
-           distFromTip(synTr4, x, parallel=FALSE)),
-    sapply((nTips(synTr4)+1):(nEdges(synTr4)), function(x)
-           distFromTip(synTr4, x, parallel=FALSE)),
-    times=50L
-    )
-
-microbenchmark(
-    nodeId(synTr4, "all"),
-    nodeId(synTr4, "all2"))
-
-microbenchmark(
-    findGroups(synTr4, experimental=FALSE, parallel=FALSE),
-    findGroups(synTr4, experimental=TRUE, parallel=FALSE))
-
-library(lineprof)
-lp <- lineprof(findGroups(synTr4, experimental=FALSE, parallel=FALSE))
-
-
-
-
-################# below is old code
-
-treH$edge.length[treH$edge.length < 0] <- 0
-bootH <- boot.phylo(treH, seqH, function(xx) nj(dist.dna(xx)), B=100)
-treH$node.label <- bootH
-treHr <- root(treH, grep("^Pseudostichopus", treH$tip.label), resolve.root=TRUE)
-
-treH4 <- phylo4d(treHr, check.node.label="asdata")
-
-grpH1 <- findGroups(treH4, threshold=.005)
-grpH2 <- findGroups(treH4, threshold=.010)
-grpH3 <- findGroups(treH4, threshold=.015)
-grpH4 <- findGroups(treH4, threshold=.020)
-grpH5 <- findGroups(treH4, threshold=.025)
-grpH6 <- findGroups(treH4, threshold=.030)
-
-
-
-
-
-
-
-
-
-################## maybe for a later time, if doing analyses by family/orders.
-
-
-## Dendro
-dbDen <- subset(dbH, order_ == "Dendrochirotida")
-lblDen <- sapply(1:nrow(dbDen), function(i) genLabel(dbDen[i, ]))
-seqDen <- allEch[dimnames(allEch)[[1]] %in% lblDen, ]
-dimnames(seqDen)[[1]] <- make.unique(dimnames(seqDen)[[1]])
-treDen <- nj(dist.dna(seqDen))
-treDen$edge.length[treDen$edge.length < 0] <- 0
-bootDen <- boot.phylo(treDen, seqDen, function(xx) nj(dist.dna(xx)), B=100)
-treDen$node.label <- bootDen
-treDenr <- root(treDen, grep("^Lissothuria", treDen$tip.label), resolve.root=TRUE)
-treDen4 <- phylo4d(treDenr, check.node.label="asdata")
-
-grpDen1 <- findGroups(treDen4, threshold=.005)
-grpDen2 <- findGroups(treDen4, threshold=.010)
-grpDen3 <- findGroups(treDen4, threshold=.015)
-grpDen4 <- findGroups(treDen4, threshold=.020)
-grpDen5 <- findGroups(treDen4, threshold=.025)
-grpDen6 <- findGroups(treDen4, threshold=.030)
-
-## Apodid
-dbApo <- subset(dbH, order_ == "Apodida")
-lblApo <- sapply(1:nrow(dbApo), function(i) genLabel(dbApo[i, ]))
-seqApo <- allEch[dimnames(allEch)[[1]] %in% lblApo, ]
-dimnames(seqApo)[[1]] <- make.unique(dimnames(seqApo)[[1]])
-treApo <- nj(dist.dna(seqApo))
-treApo$edge.length[treApo$edge.length < 0] <- 0
-bootApo <- boot.phylo(treApo, seqApo, function(xx) nj(dist.dna(xx)), B=100)
-treApo$node.label <- bootApo
-treApor <- root(treApo, grep("^Polycheira", treApo$tip.label), resolve.root=TRUE)
-treApo4 <- phylo4d(treApor, check.node.label="asdata")
-
-grpApo1 <- findGroups(treApo4, threshold=.005)
-grpApo2 <- findGroups(treApo4, threshold=.010)
-grpApo3 <- findGroups(treApo4, threshold=.015)
-grpApo4 <- findGroups(treApo4, threshold=.020)
-grpApo5 <- findGroups(treApo4, threshold=.025)
-grpApo6 <- findGroups(treApo4, threshold=.030)
-
-## Aspido
-dbAsp <- subset(dbH, order_ == "Aspidochirotida")
-lblAsp <- sapply(1:nrow(dbAsp), function(i) genLabel(dbAsp[i, ]))
-seqAsp <- allEch[dimnames(allEch)[[1]] %in% lblAsp, ]
-dimnames(seqAsp)[[1]] <- make.unique(dimnames(seqAsp)[[1]])
-treAsp <- nj(dist.dna(seqAsp))
-treAsp$edge.length[treAsp$edge.length < 0] <- 0
-bootAsp <- boot.phylo(treAsp, seqAsp, function(xx) nj(dist.dna(xx)), B=100)
-treAsp$node.label <- bootAsp
-treAspr <- root(treAsp, grep("^Pseudostichopus", treAsp$tip.label), resolve.root=TRUE)
-treAsp4 <- phylo4d(treAspr, check.node.label="asdata")
-
-grpAsp1 <- findGroups(treAsp4, threshold=.005)
-grpAsp2 <- findGroups(treAsp4, threshold=.010)
-grpAsp3 <- findGroups(treAsp4, threshold=.015)
-grpAsp4 <- findGroups(treAsp4, threshold=.020)
-grpAsp5 <- findGroups(treAsp4, threshold=.025)
-grpAsp6 <- findGroups(treAsp4, threshold=.030)
-
-## Holoth
-dbHol <- subset(dbH, family == "Holothuriidae")
-lblHol <- sapply(1:nrow(dbHol), function(i) genLabel(dbHol[i, ]))
-seqHol <- allEch[dimnames(allEch)[[1]] %in% lblHol, ]
-dimnames(seqHol)[[1]] <- make.unique(dimnames(seqHol)[[1]])
-treHol <- nj(dist.dna(seqHol))
-treHol$edge.length[treHol$edge.length < 0] <- 0
-bootHol <- boot.phylo(treHol, seqHol, function(xx) nj(dist.dna(xx)), B=100)
-treHol$node.label <- bootHol
-treHolr <- root(treHol, grep("platei", treHol$tip.label), resolve.root=TRUE)
-treHol4 <- phylo4d(treHolr, check.node.label="asdata")
-
-grpHol1 <- findGroups(treHol4, threshold=.005)
-grpHol2 <- findGroups(treHol4, threshold=.010)
-grpHol3 <- findGroups(treHol4, threshold=.015)
-grpHol4 <- findGroups(treHol4, threshold=.020)
-grpHol5 <- findGroups(treHol4, threshold=.025)
-grpHol6 <- findGroups(treHol4, threshold=.030)
-
-
-nrow(seqH)
-c(getUniqueSeq(seqH))
-max(tipData(grpH3))
-table(table(tipData(grpH3)$Group))
-
-## holnm <- sapply(1:nrow(dbH), function(i) genSp(dbH[i, ]))
-## holnm <- cbind(lblH, holnm)
-## holnm <- holnm[lblH %in% dimnames(seqH)[[1]], ]
-## write.csv(unique(holnm[,2]), file="~/Documents/echinoBarcode/uniqueHolNm.csv")
-
-
-
-distH1 <- getIntraInterDist(grpH1, dist.dna(seqH, as.matrix=T), check.boot=80)
-distH2 <- getIntraInterDist(grpH2, dist.dna(seqH, as.matrix=T), check.boot=80)
-distH3 <- getIntraInterDist(grpH3, dist.dna(seqH, as.matrix=T), check.boot=80)
-distH4 <- getIntraInterDist(grpH4, dist.dna(seqH, as.matrix=T), check.boot=80)
-distH5 <- getIntraInterDist(grpH5, dist.dna(seqH, as.matrix=T), check.boot=80)
-distH6 <- getIntraInterDist(grpH6, dist.dna(seqH, as.matrix=T), check.boot=80)
-
-distDen1 <- getIntraInterDist(grpDen1, dist.dna(seqDen, as.matrix=T), check.boot=80)
-distDen2 <- getIntraInterDist(grpDen2, dist.dna(seqDen, as.matrix=T), check.boot=80)
-distDen3 <- getIntraInterDist(grpDen3, dist.dna(seqDen, as.matrix=T), check.boot=80)
-distDen4 <- getIntraInterDist(grpDen4, dist.dna(seqDen, as.matrix=T), check.boot=80)
-distDen5 <- getIntraInterDist(grpDen5, dist.dna(seqDen, as.matrix=T), check.boot=80)
-distDen6 <- getIntraInterDist(grpDen6, dist.dna(seqDen, as.matrix=T), check.boot=80)
-
-distApo1 <- getIntraInterDist(grpApo1, dist.dna(seqApo, as.matrix=T), check.boot=80)
-distApo2 <- getIntraInterDist(grpApo2, dist.dna(seqApo, as.matrix=T), check.boot=80)
-distApo3 <- getIntraInterDist(grpApo3, dist.dna(seqApo, as.matrix=T), check.boot=80)
-distApo4 <- getIntraInterDist(grpApo4, dist.dna(seqApo, as.matrix=T), check.boot=80)
-distApo5 <- getIntraInterDist(grpApo5, dist.dna(seqApo, as.matrix=T), check.boot=80)
-distApo6 <- getIntraInterDist(grpApo6, dist.dna(seqApo, as.matrix=T), check.boot=80)
-
-distAsp1 <- getIntraInterDist(grpAsp1, dist.dna(seqAsp, as.matrix=T), check.boot=80)
-distAsp2 <- getIntraInterDist(grpAsp2, dist.dna(seqAsp, as.matrix=T), check.boot=80)
-distAsp3 <- getIntraInterDist(grpAsp3, dist.dna(seqAsp, as.matrix=T), check.boot=80)
-distAsp4 <- getIntraInterDist(grpAsp4, dist.dna(seqAsp, as.matrix=T), check.boot=80)
-distAsp5 <- getIntraInterDist(grpAsp5, dist.dna(seqAsp, as.matrix=T), check.boot=80)
-distAsp6 <- getIntraInterDist(grpAsp6, dist.dna(seqAsp, as.matrix=T), check.boot=80)
-
-distHol1 <- getIntraInterDist(grpHol1, dist.dna(seqHol, as.matrix=T), check.boot=80)
-distHol2 <- getIntraInterDist(grpHol2, dist.dna(seqHol, as.matrix=T), check.boot=80)
-distHol3 <- getIntraInterDist(grpHol3, dist.dna(seqHol, as.matrix=T), check.boot=80)
-distHol4 <- getIntraInterDist(grpHol4, dist.dna(seqHol, as.matrix=T), check.boot=80)
-distHol5 <- getIntraInterDist(grpHol5, dist.dna(seqHol, as.matrix=T), check.boot=80)
-distHol6 <- getIntraInterDist(grpHol6, dist.dna(seqHol, as.matrix=T), check.boot=80)
-
-
-save.image(file="20120630.echinoBarcode.RData")
-
-### number of ESUs vs threshold
-nbEsu <- data.frame(Threshold=rep(1:6, 7),
-                    Class=c(rep("Asteroidea", 6),
-                      rep("Echinoidea", 6),
-                      rep("Holothuroidea", 6),
-                      rep("Dendrochirotida", 6),
-                      rep("Apodida", 6),
-                      rep("Aspidochirotida", 6),
-                      rep("Holothuriidae", 6)),
-                    NbESU=c(
-                      max(tipData(grpA1)$Groups),
-                      max(tipData(grpA2)$Groups),
-                      max(tipData(grpA3)$Groups),
-                      max(tipData(grpA4)$Groups),
-                      max(tipData(grpA5)$Groups),
-                      max(tipData(grpA6)$Groups),
-                      max(tipData(grpE1)$Groups),
-                      max(tipData(grpE2)$Groups),
-                      max(tipData(grpE3)$Groups),
-                      max(tipData(grpE4)$Groups),
-                      max(tipData(grpE5)$Groups),
-                      max(tipData(grpE6)$Groups),
-                      max(tipData(grpH1)$Groups),
-                      max(tipData(grpH2)$Groups),
-                      max(tipData(grpH3)$Groups),
-                      max(tipData(grpH4)$Groups),
-                      max(tipData(grpH5)$Groups),
-                      max(tipData(grpH6)$Groups),
-                      max(tipData(grpDen1)$Groups),
-                      max(tipData(grpDen2)$Groups),
-                      max(tipData(grpDen3)$Groups),
-                      max(tipData(grpDen4)$Groups),
-                      max(tipData(grpDen5)$Groups),
-                      max(tipData(grpDen6)$Groups),
-                      max(tipData(grpApo1)$Groups),
-                      max(tipData(grpApo2)$Groups),
-                      max(tipData(grpApo3)$Groups),
-                      max(tipData(grpApo4)$Groups),
-                      max(tipData(grpApo5)$Groups),
-                      max(tipData(grpApo6)$Groups),
-                      max(tipData(grpAsp1)$Groups),
-                      max(tipData(grpAsp2)$Groups),
-                      max(tipData(grpAsp3)$Groups),
-                      max(tipData(grpAsp4)$Groups),
-                      max(tipData(grpAsp5)$Groups),
-                      max(tipData(grpAsp6)$Groups),
-                      max(tipData(grpHol1)$Groups),
-                      max(tipData(grpHol2)$Groups),
-                      max(tipData(grpHol3)$Groups),
-                      max(tipData(grpHol4)$Groups),
-                      max(tipData(grpHol5)$Groups),
-                      max(tipData(grpHol6)$Groups)
-                      ))
-
-pdf(file="nbESU.pdf", width=8, height=3)
-ggplot(subset(nbEsu, Class %in% c("Echinoidea", "Asteroidea", "Holothuroidea")),
-              aes(x=Threshold, y=NbESU, group=Class, colour=Class)) + geom_line()
-dev.off()
-
-pdf(file="nbESU_hol.pdf", width=8, height=3)
-ggplot(subset(nbEsu, Class %in% c("Aspidochirotida", "Dendrochirotida", "Apodida", "Holothuriidae")),
-              aes(x=Threshold, y=NbESU, group=Class, colour=Class)) + geom_line()
-dev.off()
-
-
-## ### visualize sequence differences
-## varSA <- apply(seqA, 2, function(x) max(base.freq(x)))
-## varSH <- apply(seqH, 2, function(x) max(base.freq(x)))
-## varSE <- apply(seqE, 2, function(x) max(base.freq(x)))
-
-## par(mfrow=c(3,1))
-## plot(1-varSA, col="blue", type="h", pch=15, cex=.5)
-## plot(1-varSH, col="red", type="h", pch=15, cex=.5)
-## plot(1-varSE, col="green", type="h", pch=15, cex=.5)
-
-## matVar <- array(, dim=c(3,max(c(length(varSA), length(varSE), length(varSH)))))
-## matVar[1,] <- 1-varSA
-## matVar[2,] <- 1-varSE
-## matVar[3,] <- 1-varSH
-## barplot(matVar[,1:100], col=c("blue", "red", "green"), beside=T)
-
-allDist <- rbind(cbind(Order=rep("Asteroidea", nrow(distA1)), Threshold=rep(1, nrow(distA1)), distA1),
-        cbind(Order=rep("Asteroidea", nrow(distA2)), Threshold=rep(2, nrow(distA2)), distA2),
-        cbind(Order=rep("Asteroidea", nrow(distA3)), Threshold=rep(3, nrow(distA3)), distA3),
-        cbind(Order=rep("Asteroidea", nrow(distA4)), Threshold=rep(4, nrow(distA4)), distA4),
-        cbind(Order=rep("Asteroidea", nrow(distA5)), Threshold=rep(5, nrow(distA5)), distA5),
-        cbind(Order=rep("Asteroidea", nrow(distA6)), Threshold=rep(6, nrow(distA6)), distA6),
-        cbind(Order=rep("Echinoidea", nrow(distE1)), Threshold=rep(1, nrow(distE1)), distE1),
-        cbind(Order=rep("Echinoidea", nrow(distE2)), Threshold=rep(2, nrow(distE2)), distE2),
-        cbind(Order=rep("Echinoidea", nrow(distE3)), Threshold=rep(3, nrow(distE3)), distE3),
-        cbind(Order=rep("Echinoidea", nrow(distE4)), Threshold=rep(4, nrow(distE4)), distE4),
-        cbind(Order=rep("Echinoidea", nrow(distE5)), Threshold=rep(5, nrow(distE5)), distE5),
-        cbind(Order=rep("Echinoidea", nrow(distE6)), Threshold=rep(6, nrow(distE6)), distE6),
-        cbind(Order=rep("Holothuroidea", nrow(distH1)), Threshold=rep(1, nrow(distH1)), distH1),
-        cbind(Order=rep("Holothuroidea", nrow(distH2)), Threshold=rep(2, nrow(distH2)), distH2),
-        cbind(Order=rep("Holothuroidea", nrow(distH3)), Threshold=rep(3, nrow(distH3)), distH3),
-        cbind(Order=rep("Holothuroidea", nrow(distH4)), Threshold=rep(4, nrow(distH4)), distH4),
-        cbind(Order=rep("Holothuroidea", nrow(distH5)), Threshold=rep(5, nrow(distH5)), distH5),
-        cbind(Order=rep("Holothuroidea", nrow(distH6)), Threshold=rep(6, nrow(distH6)), distH6),
-        cbind(Order=rep("Dendrochirotida", nrow(distDen1)), Threshold=rep(1, nrow(distDen1)), distDen1),
-        cbind(Order=rep("Dendrochirotida", nrow(distDen2)), Threshold=rep(2, nrow(distDen2)), distDen2),
-        cbind(Order=rep("Dendrochirotida", nrow(distDen3)), Threshold=rep(3, nrow(distDen3)), distDen3),
-        cbind(Order=rep("Dendrochirotida", nrow(distDen4)), Threshold=rep(4, nrow(distDen4)), distDen4),
-        cbind(Order=rep("Dendrochirotida", nrow(distDen5)), Threshold=rep(5, nrow(distDen5)), distDen5),
-        cbind(Order=rep("Dendrochirotida", nrow(distDen6)), Threshold=rep(6, nrow(distDen6)), distDen6),
-        cbind(Order=rep("Apodida", nrow(distApo1)), Threshold=rep(1, nrow(distApo1)), distApo1),
-        cbind(Order=rep("Apodida", nrow(distApo2)), Threshold=rep(2, nrow(distApo2)), distApo2),
-        cbind(Order=rep("Apodida", nrow(distApo3)), Threshold=rep(3, nrow(distApo3)), distApo3),
-        cbind(Order=rep("Apodida", nrow(distApo4)), Threshold=rep(4, nrow(distApo4)), distApo4),
-        cbind(Order=rep("Apodida", nrow(distApo5)), Threshold=rep(5, nrow(distApo5)), distApo5),
-        cbind(Order=rep("Apodida", nrow(distApo6)), Threshold=rep(6, nrow(distApo6)), distApo6),
-        cbind(Order=rep("Aspidochirotida", nrow(distAsp1)), Threshold=rep(1, nrow(distAsp1)), distAsp1),
-        cbind(Order=rep("Aspidochirotida", nrow(distAsp2)), Threshold=rep(2, nrow(distAsp2)), distAsp2),
-        cbind(Order=rep("Aspidochirotida", nrow(distAsp3)), Threshold=rep(3, nrow(distAsp3)), distAsp3),
-        cbind(Order=rep("Aspidochirotida", nrow(distAsp4)), Threshold=rep(4, nrow(distAsp4)), distAsp4),
-        cbind(Order=rep("Aspidochirotida", nrow(distAsp5)), Threshold=rep(5, nrow(distAsp5)), distAsp5),
-        cbind(Order=rep("Aspidochirotida", nrow(distAsp6)), Threshold=rep(6, nrow(distAsp6)), distAsp6),
-        cbind(Order=rep("Holothuriidae", nrow(distHol1)), Threshold=rep(1, nrow(distHol1)), distHol1),
-        cbind(Order=rep("Holothuriidae", nrow(distHol2)), Threshold=rep(2, nrow(distHol2)), distHol2),
-        cbind(Order=rep("Holothuriidae", nrow(distHol3)), Threshold=rep(3, nrow(distHol3)), distHol3),
-        cbind(Order=rep("Holothuriidae", nrow(distHol4)), Threshold=rep(4, nrow(distHol4)), distHol4),
-        cbind(Order=rep("Holothuriidae", nrow(distHol5)), Threshold=rep(5, nrow(distHol5)), distHol5),
-        cbind(Order=rep("Holothuriidae", nrow(distHol6)), Threshold=rep(6, nrow(distHol6)), distHol6))
-
-
-svg(file="compareIntraInter.svg", width=9, height=5)
-ggplot(subset(allDist, Order %in% c("Asteroidea", "Echinoidea", "Holothuroidea") &
-              Threshold > 1),
-       aes(x=dist, fill=typeDist, alpha=.5)) + geom_density() +
-  facet_grid(Order ~ Threshold) + scale_fill_manual(values=c("yellow", "red"))
-dev.off()
-
-svg(file="compareIntraInterHol.svg", width=9, height=5)
-ggplot(subset(allDist, Order %in% c("Dendrochirotida", "Apodida", "Aspidochirotida", "Holothuriidae") &
-              Threshold > 1),
-       aes(x=dist, fill=typeDist, alpha=.5)) + geom_density() +
-  facet_grid(Order ~ Threshold) + scale_fill_manual(values=c("yellow", "red"))
-dev.off()
-
-### Geographic barriers
-treE3 <- grpE3
-tipLabels(treE3) <- paste(tipData(grpE3)$Group, tipLabels(treE3), sep="_")
-bs <- nodeData(treE3)[,1, drop=F]
-bsToShow <- rownames(bs)[bs > 80]
-pdf(file="echinoids-015.pdf", height=100)
-plot(as(treE3, "phylo"))
-nodelabels(rep("", length(bsToShow)), as.integer(bsToShow), frame="circ", cex=.5)
-dev.off()
-
-treA3 <- grpA3
-tipLabels(treA3) <- paste(tipData(grpA3)$Group, tipLabels(treA3), sep="_")
-bs <- nodeData(treA3)[,1, drop=F]
-bsToShow <- rownames(bs)[bs > 80]
-pdf(file="asteroids-015.pdf", height=100)
-plot(as(treA3, "phylo"))
-nodelabels(rep("", length(bsToShow)), as.integer(bsToShow), frame="circ", cex=.5)
-dev.off()
-
-treH3 <- grpH3
-tipLabels(treH3) <- paste(tipData(grpH3)$Group, tipLabels(treH3), sep="_")
-bs <- nodeData(treH3)[,1, drop=F]
-bsToShow <- rownames(bs)[bs > 80]
-pdf(file="holothuroids-015.pdf", height=100)
-plot(as(treH3, "phylo"), cex=.25)
-nodelabels(rep("", length(bsToShow)), as.integer(bsToShow), frame="circ", cex=.125)
-dev.off()
-
-geo <- read.csv(file="geographicBarriers.csv")
-propGeo <- with(geo, tapply(Allopatric, Class, function(x) {x <- x[!is.na(x)]; sum(x)/length(x)}))
-
-svg(file="rateGeo.svg")
-barplot(propGeo, ylim=c(0,1))
-dev.off()
-
-#############
-
-stdSeqLength <- function(alg) {
-
-}
-
-
-
-
-## ## if only ufid
-
-## ## yy <- sapply(xx, function(x) {
-## ##   xt <- unlist(strsplit(x, "_"))
-## ##   xt <- xt[length(xt)]
-## ##   if (length(grep("^[0-9]+$", xt)) == 1)
-## ##     TRUE
-## ##   else FALSE
-## ## })
-
-
-## ## zz <- sapply(xx[yy], function(x) {
-## ##   t <- unlist(strsplit(x, "_"))
-## ##   t[length(t)]
-## ##   })
