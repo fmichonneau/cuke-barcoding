@@ -98,6 +98,10 @@ manESU <- load_manESU()
 cukeDistRaw <- load_cukeDist_raw()
 localGap <- load_localGap()
 
+manGrps <- load_species_manualGrps()
+
+nESUs <- length(unique(manESU$ESU_noGeo))
+
 esus <- strsplit(unique(manESU$ESU_noGeo), "_")
 hasCryptic <- sapply(esus, function(x) length(x) > 2 & length(grep("nsp", x)) < 1)
 esuCryptic <- esus[hasCryptic]
@@ -108,6 +112,7 @@ newSpp <- sapply(esus, function(x) length(grep("nsp", x)) > 0)
 
 percentSinglHol <- 100*sum(sapply(noGeoGrps, function(x) length(x) == 1))/length(noGeoGrps)
 
+percentSinglHol <- 100*sum(sapply(manGrps, function(x) length(x) == 1))/length(manGrps)
 
 percentGap   <- 100*sum(is.na(localGap$species))/nrow(localGap)
 nGap <- sum(is.na(localGap$species))
@@ -327,6 +332,7 @@ nGrpsPairwiseDf <- merge(nGrpsPairwiseDf, taxonomyDf)
 
 
 ### ---- groups-comparison-plot ----
+manGrps <- load_species_manualGrps()
 nGrpsDf <- rbind(nGrpsClustersDf, nGrpsPairwiseDf)
 levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "K80"] <- "K2P"
 levels(nGrpsDf$distance)[levels(nGrpsDf$distance) == "k2p"] <- "K2P"
@@ -337,11 +343,11 @@ nSpp <- data.frame(taxa=c("all", "Aspidochirotida", "Holothuriidae"),
                    nspp=c(nSppAll, nSppAsp, nSppHol))
 
 nHol <- data.frame(taxa=c("all", "Aspidochirotida", "Holothuriidae"),
-                   nspp=c(NA, NA, length(noGeoGrps)))
+                   nspp=c(NA, NA, length(manGrps)))
 
 pSinglHol <- data.frame(taxa=c("all", "Aspidochirotida", "Holothuriidae"),
-                        psngl=c(NA, NA, sum(sapply(noGeoGrps,
-                            function(x) length(x) == 1))/length(noGeoGrps)))
+                        psngl=c(NA, NA, sum(sapply(manGrps,
+                            function(x) length(x) == 1))/length(manGrps)))
 
 tmpDt <- subset(nGrpsDf, taxa %in% c("all", "Aspidochirotida", "Holothuriidae"))
 nESU <- ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, method),
@@ -461,8 +467,9 @@ medRgSizeAsp <- medRgSize["Aspidochirotida"]
 medRgSizeApo <- medRgSize["Apodida"]
 medRgSizeDen <- medRgSize["Dendrochirotida"]
 
-maxGeoDistHol <- sapply(noGeoGrps, function(x) geoDistESU(x, cukeDB)$max)
-genDistHol <- lapply(noGeoGrps, function(x) intraESUDist(x, cukeDistRaw))
+manGrps <- load_species_manualGrps()
+maxGeoDistHol <- sapply(manGrps, function(x) geoDistESU(x, cukeDB)$max)
+genDistHol <- lapply(manGrps, function(x) intraESUDist(x, cukeDistRaw))
 maxGenDistHol <- sapply(genDistHol, function(x) x$max)
 distBySpeciesHol <- data.frame(maxGenDist=maxGenDistHol, maxGeoDist=maxGeoDistHol)
 distBySpeciesHol <- distBySpeciesHol[is.finite(distBySpeciesHol$maxGenDist) &
@@ -615,8 +622,9 @@ ggplot(geoDat) + geom_point(aes(y=barrier, x=genDist, colour=barrier)) +
 ### ---- global-diversity-map ----
 globalMap <- map_data("world2")
 source("R/test-allopatry-functions.R")
+manGrps <- load_species_manualGrps()
 
-spatialSpecies <- spatialFromSpecies(noGeoGrps,
+spatialSpecies <- spatialFromSpecies(manGrps,
                                      load_cukeDB())
 
 isPolygon <- sapply(spatialSpecies[[1]], function(x) attr(x, "type-coords") == "polygon")
@@ -867,6 +875,7 @@ dev.off()
 ### ---- esu-table ----
 manESU <- load_manESU()
 esuNm <- read.csv(file="data/raw/ESU_names.csv", stringsAsFactors=FALSE, header=FALSE)
+manGrps <- load_species_manualGrps()
 
 uniqESU <- unique(manESU$ESU_noGeo)
 for (i in 1:nrow(esuNm)) {
@@ -874,7 +883,7 @@ for (i in 1:nrow(esuNm)) {
 }
 uniqESU <- gsub("_", " ", uniqESU)
 
-esuVouch <- sapply(noGeoGrps, function(x) {
+esuVouch <- sapply(manGrps, function(x) {
     tmpDB <- cukeDB[match(x, cukeDB$Labels_withAmb), ]
     paste(tmpDB$Collection.Code, tmpDB$Catalog_number, sep="", collapse=", ")
 })

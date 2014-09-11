@@ -415,6 +415,11 @@ load_manESU <- function(taxa="Holothuriidae") {
     manESU
 }
 
+load_species_manualGrps <- function(taxa="Holothuriidae") {
+    manESU <- load_manESU()
+    split(manESU$Labels, manESU$ESU_noGeo)
+}
+
 load_tree_manualGrps <- function(taxa="Holothuriidae", overwrite=FALSE) {
     fnm <- "data/cukeTree-manualESUs.rds"
     ##distance <- match.arg(distance, c("raw", "K80"))
@@ -463,7 +468,7 @@ load_localGap <- function(taxa="Holothuriidae",
         manESU <- load_manESU()
         cukeDistRaw <- load_cukeDist_raw()
 
-        noGeoGrps <- split(manESU$Labels, manESU$ESU_noGeo)
+        noGeoGrps <- load_species_manualGrps()
 
         summInterDist <- summaryInterDist(noGeoGrps, load_cukeAlg())
 
