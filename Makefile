@@ -37,29 +37,42 @@ clean: clean-partial
 #data/raw/MARBoL_Echinos_VIII_2013.csv: make/build_cukeBarcodesCSV.R data/raw/MARBoL_Echinos_VIII_2013.xlsx
 #	${RSCRIPT} $<
 
-data/raw/cukeBarcodes.csv.rds: data/raw/MARBoL_Echinos_VIII_2013.csv
-	${RSCRIPT} -e "saveRDS(read.csv(file='$<', stringsAsFactors=FALSE), file='$@')"
+## database
+data/cukeDB_noLabels.rds: data/raw/MARBoL_Echinos_VIII_2013.csv R/load_cukeDB.R
+	${RSCRIPT} -e "source('R/load.R'); load_cukeDB_noLabels(overwrite=TRUE)"
 
-data/cukeBarcodes-aligned.fas: make/build_alignedFasta.R data/raw/cukeBarcodes.csv.rds R/genFasta.R
-	${RSCRIPT} -e "if (!file.exists('tmp/')) dir.create('tmp/');"
+## alignments
+data/cukeAlg-cleaned.fas: make/build_alignedFasta.R data/cukeDB_noLabels.rds R/genFasta.R
 	${RSCRIPT} $<
 
-data/cukeBarcodes-cleaned.fas: make/build_cleanedFasta.R data/cukeBarcodes-aligned.fas
-	${RSCRIPT} $<
+data/cukeAlg-flagAmb.rds: R/load_cukeAlg.R data/cukeAlg-cleaned.fas
+	${RSCRIPT} -e "source('R/load.R'); load_cukeAlg(overwrite=TRUE);"
 
-data/cukeBarcodes-flagAmb.rds: make/cukeBarcodes-flagAmb.rds.R data/cukeBarcodes-cleaned.fas
-	${RSCRIPT} $<
+## distance matrices
+data/cukeDist-raw.rds: R/load_cukeDist.R data/cukeAlg-flagAmb.rds
+	${RSCRIPT} -e "source('R/load.R'); load_cukeDist_raw(overwrite=TRUE)"
 
-data/cukeTree-k2p.rds: make/build_cukeTree_nj.R data/cukeBarcodes-flagAmb.rds
-	${RSCRIPT} $< "file.in='data/cukeBarcodes-flagAmb.rds', model='K80', file.out='$@', Nrep=200"
+data/cukeDist-k2p.rds: R/load_cukeDist.R data/cukeAlg-flagAmb.rds
+	${RSCRIPT} -e "source('R/load.R'); load_cukeDist_k2p(overwrite=TRUE)"
 
-data/cukeTree-raw.rds: make/build_cukeTree_nj.R data/cukeBarcodes-flagAmb.rds
-	${RSCRIPT} $< "file.in='data/cukeBarcodes-flagAmb.rds', model='raw', file.out='$@', Nrep=200"
+## NJ trees
+data/cukeTree-k2p.rds: make/build_cukeTree_NJ.R R/load_cukeTree_NJ.R data/cukeAlg-flagAmb.rds data/cukeDist-k2p.rds
+	${RSCRIPT} $< "model='K80', Nrep=200"
 
-data/cukeBarcodes-flagAmb.phy: data/cukeBarcodes-flagAmb.rds
-	${RSCRIPT} -e "library(ape); write.dna(readRDS('$<'), format='sequential', colw=1000, file='data/cukeBarcodes-flagAmb.phy')"
+data/cukeTree-k2p-phylo4.rds: data/cukeTree-k2p.rds
+	#dummy recipe
 
-## should I just keep the file in the raxml folder and create an rds file
+data/cukeTree-raw.rds: make/build_cukeTree_NJ.R R/load_cukeTree_NJ.R data/cukeAlg-flagAmb.rds data/cukeDist-raw.rds
+	${RSCRIPT} $< "model='raw', Nrep=200"
+
+data/cukeTree-raw-phylo4.rds: data/cukeTree-raw.rds
+	# dummy recipe
+
+## cukeDB with labels (the real deal)
+data/cukeDB_withLabels.rds: data/cukeDB_noLabels.rds data/cukeTree-raw-phylo4.rds R/genFasta.R R/load_cukeDB.R
+	${RSCRIPT} -e "source('R/load.R'); load_cukeDB(overwrite=TRUE)"
+
+## Should I just keep the file in the raxml folder and create an rds file
 ##   for it in the data/ folder instead?
 data/cukeBarcodes-raxml.tre: data/cukeBarcodes-flagAmb.phy ## not tested
 	${RSCRIPT} -e "source('R/build.R'); build_raxml_tree('$<');"
