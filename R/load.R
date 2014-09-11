@@ -494,9 +494,9 @@ load_localGap <- function(taxa="Holothuriidae", overwrite=FALSE) {
 
         localGap$rangeType <- sapply(rgType, function(x) x$rangeType)
         localGap$rangeType[is.na(localGap$rangeType)] <- "unknown"
-
-        localGap$species <- character(nrow(localGap))
         localGap <- localGap[complete.cases(localGap), ]
+
+        localGap$species <- NA
         localGap$species[localGap$maxIntra > localGap$minInter] <-
             rownames(localGap)[localGap$maxIntra > localGap$minInter]
 
