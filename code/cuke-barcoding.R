@@ -193,6 +193,8 @@ nEsuGeoDiff <- length(unique(esuGeoDiff$noGeo))
 
 ### ---- local-gap-plot ----
 localGap <- load_localGap()
+esuNm <- read.csv(file="data/raw/ESU_names.csv", stringsAsFactors=FALSE, header=FALSE)
+
 localGap$species <- gsub("\\..+$", "", localGap$species)
 for (i in 1:nrow(esuNm)) { localGap$species <- gsub(esuNm[i, 1], esuNm[i, 2], localGap$species)}
 localGap$species <- gsub("_", " ", localGap$species)
@@ -415,6 +417,7 @@ ggplot(subset(distBySpecies, Order %in% orderToInclude)) +
     geom_violin(aes(x=Order, y=maxGeoDist, fill=Order, colour=Order)) +
     xlab("") + ylab("Maximum distance (km)") +
     theme(legend.position="none")
+
 
 
 
