@@ -1,38 +1,19 @@
 source("R/build.R")
 source("R/genFasta.R")
+source("R/CalcGeoDist.R")
+source("R/findGroups.R")
 
 source("R/load_cukeDB.R")
 source("R/load_cukeAlg.R")
 source("R/load_cukeDist.R")
 source("R/load_cukeTree_NJ.R")
+source("R/load_taxonomyDf.R")
+source("R/load_clusterGrps.R")
 
-load_taxonomyDf <- function(overwrite=FALSE) {
-    fnm <- "data/taxonomyDf.rds"
-    if (file.exists(fnm) && !overwrite) {
-        taxonomyDf <- readRDS(fnm)
-    }
-    else {
-        cukeDB <- load_cukeDB()
-        uniqOrder <- unique(cukeDB$order)
-        uniqFamily <- unique(cukeDB$family)
-        uniqFamily <- uniqFamily[! uniqFamily %in%
-                                 c("Dactylochirotida", "?", "Uncertain")]
-        uniqTaxa <- c(uniqOrder, uniqFamily)
-        stopifnot(! any(duplicated(uniqTaxa)))
-        taxonomyDf <- data.frame(rank = c(rep("Order", length(uniqOrder) + 1),
-                                     rep("Family", length(uniqFamily))),
-                                 taxa = c("all", uniqOrder, uniqFamily))
-        stopifnot(! any(duplicated(taxonomyDf$taxa)))
-        testFamily <- as.matrix(xtabs(~ family + order, data=cukeDB,
-                                      subset = !family %in% c("Dactylochirotida", "?", "Uncertain")))
-        whichOrder <- apply(testFamily, 1, function(x) which(x != 0))
-        tmpFamily <- data.frame(taxa = names(whichOrder),
-                                higher=dimnames(testFamily)[[2]][whichOrder])
-        taxonomyDf <- merge(taxonomyDf, tmpFamily, all.x=TRUE)
-        saveRDS(taxonomyDf, file=fnm)
-    }
-    taxonomyDf
-}
+source("R/pairwise-groups-functions.R")
+source("R/test-allopatry-functions.R")
+
+phylobase.options(allow.duplicated.labels="ok")
 
 load_labelsFromTaxa <- function(taxa="all") {
     taxonomyDf <- load_taxonomyDf()
@@ -162,36 +143,7 @@ load_tree_pairwiseGrps <- function(distance="raw", taxa="all",
     addData(tree, tip.data=tmpGrps)
 }
 
-load_tree_clusterGrps <- function(distance="raw", taxa="all",
-                                  threshold=0.015) {
 
-    taxonomyDf <- load_taxonomyDf()
-    thres <- load_thresholdClusters()
-    taxa <- match.arg(as.character(taxa), taxonomyDf$taxa)
-    distance <- match.arg(distance, c("raw", "K80"))
-    stopifnot(length(threshold) == 1 && threshold %in% thres)
-
-    distance <- ifelse(identical(distance, "raw"), "raw", "k2p")
-
-    lstFiles <- list.files(path="data", pattern="cukeTree-.+-\\d+.rds$",
-                           full.names=TRUE)
-
-    nmRes <- paste("cukeTree", distance, taxa, gsub("\\.", "", threshold), sep="-")
-    nmRes <- file.path("data", paste0(nmRes, ".rds"))
-
-    if (file.exists(nmRes))
-        readRDS(file=nmRes)
-    else
-        stop("can't find ", nmRes)
-}
-
-load_species_clusterGrps <- function(distance="raw", taxa="all",
-                                     threshold=0.015) {
-    tr <- load_tree_clusterGrps(distance, taxa, threshold)
-    grps <- tdata(tr, "tip")[, "Groups", drop=FALSE]
-    gg <- factor(grps$Groups)
-    split(rownames(grps), gg)
-}
 
 load_manESU <- function(taxa="Holothuriidae") {
     manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
@@ -250,6 +202,7 @@ load_localGap <- function(taxa="Holothuriidae", overwrite=FALSE) {
         }
         manESU <- load_manESU()
         cukeDistRaw <- load_cukeDist_raw()
+        cukeDB <- load_cukeDB()
 
         noGeoGrps <- load_species_manualGrps()
 

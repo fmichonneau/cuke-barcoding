@@ -1,7 +1,3 @@
-source("R/load.R")
-source("R/CalcGeoDist.R")
-source("R/pairwise-groups-functions.R")
-
 spatialFromSpecies <- function(listSpecies, cukeDB) {
 
     allHll <- allSpatial <- vector("list", length(listSpecies))
@@ -163,6 +159,7 @@ intraESUDist <- function(listSpecies, distMat) {
     if (any(is.na(sppLbl))) stop("problem with the labels")
     if (length(sppLbl) > 1) {
         tmpDist <- distMat[sppLbl, sppLbl]
+        tmpDist <- as.dist(tmpDist)
         list(mean=mean(tmpDist), max=max(tmpDist), min=min(tmpDist))
     } else {
         list(mean=NA, max=NA, min=NA)

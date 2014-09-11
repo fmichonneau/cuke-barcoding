@@ -120,7 +120,7 @@ load_cukeDB_noLabels <- function(overwrite=FALSE) {
 load_cukeDB <- function(overwrite=FALSE) {
     fnm <- "data/cukeDB_withLabels.rds"
     if (file.exists(fnm) && !overwrite) {
-        cukeDB <- readRDS(file=fnm)
+        cukeDB_lbls <- readRDS(file=fnm)
     }
     else {
         cukeDB <- load_cukeDB_noLabels()

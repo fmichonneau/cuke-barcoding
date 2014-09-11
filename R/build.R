@@ -1,6 +1,4 @@
 source("R/packages.R")
-source("R/removeNodeLabels.R")
-
 
 build_raxml_tree <- function(algFile="data/cukeBarcodes-flagAmb.phy") {
     partFile <- "data/cukeBarcodes-partition"

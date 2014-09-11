@@ -57,13 +57,13 @@ data/cukeDist-k2p.rds: R/load_cukeDist.R data/cukeAlg-flagAmb.rds
 
 ## NJ trees
 data/cukeTree-k2p.rds: make/build_cukeTree_NJ.R R/load_cukeTree_NJ.R data/cukeAlg-flagAmb.rds data/cukeDist-k2p.rds
-	${RSCRIPT} $< "model='K80', Nrep=200"
+	${RSCRIPT} $< "model='K80', Nrep=1"
 
 data/cukeTree-k2p-phylo4.rds: data/cukeTree-k2p.rds
 	#dummy recipe
 
 data/cukeTree-raw.rds: make/build_cukeTree_NJ.R R/load_cukeTree_NJ.R data/cukeAlg-flagAmb.rds data/cukeDist-raw.rds
-	${RSCRIPT} $< "model='raw', Nrep=200"
+	${RSCRIPT} $< "model='raw', Nrep=1"
 
 data/cukeTree-raw-phylo4.rds: data/cukeTree-raw.rds
 	# dummy recipe
@@ -71,6 +71,19 @@ data/cukeTree-raw-phylo4.rds: data/cukeTree-raw.rds
 ## cukeDB with labels (the real deal)
 data/cukeDB_withLabels.rds: data/cukeDB_noLabels.rds data/cukeTree-raw-phylo4.rds R/genFasta.R R/load_cukeDB.R
 	${RSCRIPT} -e "source('R/load.R'); load_cukeDB(overwrite=TRUE)"
+
+## taxonomyDf
+data/taxonomyDf.rds: data/cukeDB_withLabels.rds R/load_taxonomyDf.R
+	${RSCRIPT} -e "source('R/load.R'); load_taxonomyDf(overwrite=TRUE)"
+
+## localGap
+data/localGap-manualESUs.rds: data/raw/manualESUs.csv data/cukeDist-raw.rds data/cukeDB_withLabels.rds
+	${RSCRIPT} -e "source('R/load.R'); load_localGap(overwrite=TRUE)"
+
+## clustering/distances
+## TODO --- better way to deal with the 100's of target file?
+data/cukeTree-raw-all-002.rds: data/cukeDB_withLabels.rds data/taxonomyDf.rds data/cukeTree-k2p-phylo4.rds data/cukeTree-raw-phylo4.rds
+	${RSCRIPT} -e "source('R/load.R'); build_cukeTree_clusterGrps(overwrite=TRUE)"
 
 ## Should I just keep the file in the raxml folder and create an rds file
 ##   for it in the data/ folder instead?

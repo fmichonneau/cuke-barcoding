@@ -1,5 +1,3 @@
-source("R/load.R")
-
 pairwiseGrps <- function(d, threshold) {
     iGrp <- lapply(1:ncol(d), function(j) dimnames(d)[[1]][d[, j] < threshold])
     sngl <- sapply(iGrp, function(x) length(x) == 1)
@@ -53,7 +51,7 @@ build_pairwiseGrpRes <- function(pairwiseGrpMdl, pairwiseGrpTax) {
     cukeAlg <- load_cukeAlg()
     cukeDB <- load_cukeDB()
     thresVec <- load_thresholdPairwise()
-    
+
     for (eachMdl in 1:length(pairwiseGrpMdl)) {
         for (eachTax in 1:length(pairwiseGrpTax)) {
             pairwiseGrpRes[[i]] <- getPairwiseGrp(alg=cukeAlg,
