@@ -45,11 +45,12 @@
 
 <<setup, echo=FALSE, cache=FALSE, include=FALSE>>=
 opts_chunk$set(fig.path="figures/latex-", cache.path="cache/latex-", dev="tikz",
-                external=TRUE, fig.width=6.5, fig.height=4, fig.align="center")
+                external=TRUE, fig.width=6.5, fig.height=4, fig.align="center") #$
 options(tikzDefaultEngine = "xetex")
 options(tikzDocumentDeclaration = paste(getOption("tikzDocumentDeclaration"),
             "\n\\renewcommand*{\\familydefault}{\\sfdefault}", sep=""))
 read_chunk("code/cuke-barcoding.R")
+read_chunk("code/isolation-by-distance.R")
 source("R/load.R")
 @ %$
 
@@ -306,9 +307,9 @@ stop or non-sense codons that may have resulted from incorrect base calling
 during the sequencing or the editing process. Sequences were aligned using MAFFT
 \cite{Katoh2013}.
 
-We generated Neighbor-Joining trees from pairwise uncorrected distances as well
-as using the Kimura 2-parameter correction \cite{Kimura1980}. We assessed branch
-support using 200 bootstrap replicates. Additionally, we constructed a
+We generated Neighbor-Joining (NJ) trees from pairwise uncorrected distances as
+well as using the Kimura 2-parameter correction \cite{Kimura1980}. We assessed
+branch support using 200 bootstrap replicates. Additionally, we constructed a
 maximum-likelihood tree using RAxML 8.0.1 \cite{Stamatakis2014} with each codon
 position as a different partition, a GTR model of molecular evolution with a
 Gamma distributed rates of heterogeneity, and 500 bootstrap replicates.
@@ -527,7 +528,7 @@ species were reciprocally monophyletic. \Sexpr{formatC(100*8/length(manGrps),
 % use word: bounding -- next closest ESU  (and make sure code corresponds)
 The minimum inter-ESU genetic distance was greater than the maximum intra-ESU
 distance for \Sexpr{formatC(percentGap, digits=2, width=2)}\% (N=\Sexpr{nGap})
-of the manually delineated ESUs (Fig.~\ref{fig:barcode-gap-plot}). The minimum
+of the manually delineated ESUs (Fig.~\ref{fig:local-gap-plot}). The minimum
 inter-ESU distance varied greatly, with a minimum of
 \Sexpr{formatC(minInterText, digits=2, width=2)}\%.
 
