@@ -108,9 +108,7 @@ esuCryptic <- esus[hasCryptic]
 esuCryptic <- sapply(esuCryptic, function(x) paste0(x[1:2], collapse="_"))
 nCryptic <- length(unique(esuCryptic))
 
-newSpp <- sapply(esus, function(x) length(grep("nsp", x)) > 0)
-
-percentSinglHol <- 100*sum(sapply(noGeoGrps, function(x) length(x) == 1))/length(noGeoGrps)
+newSpp <- sum(sapply(esus, function(x) length(grep("nsp", x)) > 0))
 
 percentSinglHol <- 100*sum(sapply(manGrps, function(x) length(x) == 1))/length(manGrps)
 
