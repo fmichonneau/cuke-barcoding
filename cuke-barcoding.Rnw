@@ -464,10 +464,6 @@ of the boundaries separating allopatric sister ESUs.
 
 @
 
-<<mean-intra-named-species, cache=TRUE, dependson='morphospecies-stats', echo=FALSE>>=
-
-@
-
 % - [results] show image that represent: differences in topologies,
 % (paraphyly/polyphyly), long branches
 % - [results] adequate sampling across the range of the species
@@ -548,9 +544,9 @@ inter-ESU distance varied greatly, with a minimum of
 
 <<ibd-text-stats, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE>>=
 tmpDendro <- subset(distBySpecies, Order == "Dendrochirotida")
-maxDistDendro <- tmpDendro[which.max(tmpDendro$maxGeoDist), ]
-gMaxDistDendro <- round(maxDistDendro$maxGeoDist, 0)
-genMaxDistDendro <- maxDistDendro$maxGenDist
+maxDistDendro <- tmpDendro[which.max(tmpDendro$maxGeoDist), ] #$
+gMaxDistDendro <- round(maxDistDendro$maxGeoDist, 0) #$
+genMaxDistDendro <- maxDistDendro$maxGenDist #$
 meanRange <- with(subset(distBySpecies, latCat == "tropical"),
                   tapply(maxGeoDist, Order, mean))
 sdRange <- with(subset(distBySpecies, latCat == "tropical"),
