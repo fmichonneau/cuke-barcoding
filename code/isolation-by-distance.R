@@ -1,6 +1,6 @@
 ### ----- isolation-by-distance-data -----
 source("R/test-allopatry-functions.R")
-sppGrps <- load_species_clusterGrps(distance="raw", taxa="all", threshold=0.02)
+sppGrps <- load_species_clusterGrps(distance="raw", taxa="all", threshold=0.0225)
 cukeDB <- load_cukeDB()
 cukeDistRaw <- load_cukeDist_raw()
 
@@ -123,6 +123,13 @@ ggplot(subset(distBySpecies, Order %in% orderToInclude),
     geom_point() + geom_abline(intercept=finalIbdAncova$coefficients[1],
                                slope=finalIbdAncova$coefficients[2], aes(colour=Order),
                                linetype=2) +
-    facet_wrap(~ Order) + ylab("Maximum genetic distance (K2P)") +
+    geom_smooth(method="lm", se=FALSE) +
+    facet_wrap(~ Order) + ylab("Maximum genetic distance (uncorrected)") +
     xlab("Maximum geographic distance (km)") +
+    theme(legend.position="none")
+
+### ---- range-size-plot ----
+ggplot(subset(distBySpecies, Order %in% orderToInclude)) +
+    geom_violin(aes(x=Order, y=maxGeoDist, fill=Order, colour=Order)) +
+    xlab("") + ylab("Maximum distance (km)") +
     theme(legend.position="none")

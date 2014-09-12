@@ -285,8 +285,8 @@ taxonomic specialists. For most groups, extensive survey of primary literature
 was used to assign the most accurate names.
 
 
-% TODO -- include proportions of specimens thoroughly identified, number of
-% species that are cryptic complexes
+% include proportions of specimens thoroughly identified, number of species that
+% are cryptic complexes
 
 
 \subsection{Sequencing and analysis} % M&M
@@ -354,21 +354,21 @@ Third, we used mtDNA sequence data on its own for lineage delineation
 individuals that differed from each other by a genetic distance below a given
 threshold (``pairwise'' method). This method is strictly based on genetic
 distance and does not take into account phylogenetic information. We also
-identified monophyletic groups from neighbor-joining trees, reconstructed from
+identified monophyletic groups from Neighbor-Joining trees, reconstructed from
 pairwise genetic distances (``clustering'' method). Groups were defined based on
 coalescence depths that were below a threshold set \textit{a priori}.
 
 For each of these two threshold-based approaches, we used both uncorrected
 distances ($p$) and the Kimura two-parameter (K2P) model \cite{Kimura1980} to
-estimate genetic distances. The K2P model is very widely used in barcoding
-studies, but a recent study indicated that the $p$ distance is probably more
-appropriate when comparing genetic distances between closely related species and
-may lead to higher rates of identification success \cite{Collins2012}. We
-estimated the number of species recovered from our sample while varying the
-pairwise threshold value: \Sexpr{paste0(load_thresholdPairwise(), collapse=",
-  ")}. Additionally, we estimated the proportion of singletons (proportion of
-the number species represented by a single individual) for each of these
-threshold values.
+estimate genetic distances. The K2P model is very widely used when analyzing
+barcoding data, but a recent study indicated that the $p$ distance is probably
+more appropriate when comparing genetic distances between closely related
+species and may lead to higher rates of identification success
+\cite{Collins2012}. We estimated the number of species recovered from our sample
+while varying the pairwise threshold value:
+\Sexpr{paste0(load_thresholdPairwise(), collapse=", ")}. Additionally, we
+estimated the proportion of singletons (proportion of the number species
+represented by a single individual) for each of these threshold values.
 
 To assess the accuracy of the pairwise and clustering methods, and the most
 appropriate threshold, we compared the manually delineated ESUs to the
@@ -476,41 +476,6 @@ most comprehensively sampled (\Sexpr{formatC(100*nSppAsp/nSppAll, width=2,
 of the total number of individuals respectively), with all genera and subgenera
 of the Holothuriidae represented, and 65\% for the currently accepted species.
 
-On the entire dataset, regardless of the method or the distance threshold used,
-the number of estimated mtLineages was greater than the number of named species
-indicating cryptic diversity (and also unidentified species). The pairwise
-distance method estimated lower number of mtLineages at the same thresholds than
-the clustering method and was less sensitive to the type of distance used
-(Fig.~\ref{fig:groups-comparison-plot}).
-
-
-<<compare-manual-cluster-ESUs-data, cache=TRUE, dependson='esu-stats', warning=FALSE, results='hide', echo=FALSE>>=
-
-@
-
-<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', fig.pos='h!', fig.height=6.5, echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap=paste0('Number of ESUs incorrectly assigned compared to the manual ESU delineation on the Holothuriidae for the thresholds using the pairwise distance method (pairwise) and theclustering method (cluster), based on uncorrected genetic distances or the Kimura 2-parameter distances (K2P).ESUs can be incorrectly assigned because of oversplitting (1 manually defined ESU results in several threshold-based ESU) or lumping (1 threshold-based ESU is comprised of several manually defined ESU). The lowest error rate is with the clustering method based on uncorrected distances and a threshold of ', 100*minError['threshold'], '\\%.')>>=
-
-@
-
-% TODO -- At the order level, and for the
-% Holothuriidae, the estimated number of ESUs plateaued for thresholds $\geq$ 4\%
-% with the clustering method and for thresholds > 2\% with the pairwise distance
-% method.
-
-% TODO -- make this paragraph clearer
-When all sequences where analyzed, the proportion of singletons varied between
-35\% and 40\% at the > 2\% for the pairwise method and for
-thresholds > 4\% for the clustering method
-(Fig.~\ref{fig:groups-comparison-plot}). Typically, these thresholds were more
-variable when analyzing each orders individually (3\% and 5\% for both the
-Aspidochirotida and the Holothuriidae, 3\% and 2.5\% for the Apodida, 3\% and
-3\% for the Dendrochirotida, 2\% and 4\% for the Elasipodida).
-
-<<local-gap-plot, cache=TRUE, results='hide', echo=FALSE, warning=FALSE, fig.cap='Comparison of inter- and intra-ESU uncorrected COI distances. For each ESU we compared the maximum intra-ESU genetic distance with the minimum inter-ESU distances, ESU above (gray) the 1:1 dotted line can be easily delineated with the barcoding gap, the ESUs falling below the line (colored) cannot.', fig.height=4.5>>=
-
-@
-
-
 Manual delineation of the ESUs in the Holothuriidae revealed \Sexpr{nESUs} ESUs,
 \Sexpr{formatC(100*(nESUs-nSppHol)/nSppHol, digits=2, width=2)}\% more than
 named species (N=\Sexpr{nSppHol}). About one quarter (N=\Sexpr{nCryptic}) of
@@ -521,12 +486,56 @@ directly referable to a named species). \Sexpr{formatC(percentSinglHol,
 species were reciprocally monophyletic. \Sexpr{formatC(100*8/length(manGrps),
   digits=2, width=2)}\% of the ESUs were non-monophyletic.
 
-% use word: bounding -- next closest ESU  (and make sure code corresponds)
-The minimum inter-ESU genetic distance was greater than the maximum intra-ESU
-distance for \Sexpr{formatC(percentGap, digits=2, width=2)}\% (N=\Sexpr{nGap})
-of the manually delineated ESUs (Fig.~\ref{fig:local-gap-plot}). The minimum
-inter-ESU distance varied greatly, with a minimum of
-\Sexpr{formatC(minInterText, digits=2, width=2)}\%.
+The distance to the nearest neighboring ESU was greater than the maximum
+intra-ESU distance for \Sexpr{formatC(percentGap, digits=2, width=2)}\%
+(N=\Sexpr{nGap}) of the manually delineated ESUs
+(Fig.~\ref{fig:local-gap-plot}). The minimum inter-ESU distance varied greatly,
+but was $>$ 2\% for \Sexpr{formatC(percentGreater02, digits=2, width=2)}\%
+(N=\Sexpr{nGreater02}).
+
+<<local-gap-plot, cache=TRUE, results='hide', echo=FALSE, warning=FALSE, fig.cap='Comparison of inter- and intra-ESU uncorrected COI distances. For each ESU we compared the maximum intra-ESU genetic distance with the minimum inter-ESU distances, ESU above (gray) the 1:1 dotted line can be easily delineated with the barcoding gap, the ESUs falling below the line (colored) cannot.', fig.height=4.5>>=
+
+@
+
+On the entire dataset, regardless of the method or the distance threshold used,
+the number of estimated mtLineages was greater than the number of
+morpho-species. The pairwise distance method estimated lower numbers of
+mtLineages at the same thresholds than the clustering method and was less
+sensitive to the type of distance used (Fig.~\ref{fig:groups-comparison-plot},
+\ref{fig:sm-groups-comparison-plot}).
+
+The threshold approaches estimated similar numbers of mtLineages and proportions
+of singletons as for the ESUs with thresholds of 3\%, 4.5\%, and 5\% for the
+pairwise (both distances), the clustering method using uncorrected distances,
+and the clustering methods using K2P distances respectively
+(Fig.~\ref{fig:groups-comparison-plot}).
+
+<<compare-manual-cluster-ESUs-data, cache=TRUE, dependson='esu-stats', warning=FALSE, results='hide', echo=FALSE>>=
+
+@
+
+The clustering method with a threshold of 4.5\% led to the lowest error rate
+compared to the ESUs with
+\Sexpr{formatC(100*(minError$nSplits+minError$nLumps)/nESUs, digits=2,
+  width=2)}\% (N=\Sexpr{minError$nSplits+minError$nLumps}) of the ESUs
+delineated incorrectly. The number of mtLineages estimated with this method was
+slightly lower than the number of ESUs
+(\Sexpr{length(load_species_clusterGrps('raw', 'Holothuriidae', 0.025))} and
+\Sexpr{nESUs} respectively) as more ESUs were lumped than split
+(\Sexpr{minError$nSplits} and \Sexpr{minError$nLumps} respectively). Hereafter,
+the number of mtLineages is based on the estimation using the clustering method,
+using uncorrected distances and a 4.5\% threshold.
+
+
+<<check-error, error=TRUE, echo=FALSE>>=
+stopifnot(identical(minError$threshold, 0.045))
+stopifnot(minError$method == "cluster")
+@
+
+
+<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', fig.pos='!', fig.height=6.5, echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap=paste0('Number of ESUs incorrectly assigned compared to the manual ESU delineation on the Holothuriidae for the thresholds using the pairwise distance method (pairwise) and theclustering method (cluster), based on uncorrected genetic distances or the Kimura 2-parameter distances (K2P).ESUs can be incorrectly assigned because of oversplitting (1 manually defined ESU results in several threshold-based ESU) or lumping (1 threshold-based ESU is comprised of several manually defined ESU). The lowest error rate is with the clustering method based on uncorrected distances and a threshold of ', 100*minError['threshold'], '\\%.')>>=
+
+@
 
 
 \subsection{Geography, diversity and diversification}  % res
@@ -538,9 +547,8 @@ inter-ESU distance varied greatly, with a minimum of
 @
 
 % also add slope for each order
-<<isolation-by-distance-plot, cache=TRUE, echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.scap='Genetic and geographic distances for each order', fig.cap='Maximum genetic distance and maximum geographic distance for ESUs identified with the clustering approach with a threshold of 4\\%, represented by at least 3 individuals. Dashed lines represent the model estimated by an ANCOVA using the order as the independent variable.', fig.height=4>>=
+<<isolation-by-distance-plot,cache=TRUE,echo=FALSE,warning=FALSE,dependson='isolation-by-distance-data',results='hide',fig.scap='Genetic and geographic distances for each order',fig.cap='Maximum genetic distance and maximum geographic distance for mtLineages~identified with the clustering approach 4.5\\% threshold represented by at least 3~ individuals. Dashed lines  represent the model estimated by an ANCOVA using the order as the independent variable. Solid lines represent the linear model for each order.', fig.height=4>>=
 @
-
 
 Apodida and Aspidochirotida had larger range sizes than the Dendrochirotida
 (Fig.~\ref{fig:range-size-plot}, median of the range sizes of
@@ -548,16 +556,13 @@ Apodida and Aspidochirotida had larger range sizes than the Dendrochirotida
   format="d")}~km, \Sexpr{formatC(medRgSizeDen, format="d")}~km respectively).
 
 
-% add reference to table for the slope/intercept
 We recovered a signal for isolation-by-distance (IBD) in each of the three
 orders included in the analysis (ANCOVA, \Sexpr{ancovaFstat}, \Sexpr{ancovaP},
-Fig.~\ref{fig:isolation-by-distance-plot}). The slopes
-(\Sexpr{interactionFstat}, \Sexpr{interactionP}), and the intercepts
-(\Sexpr{interceptFstat}, \Sexpr{interceptP}) were similar across the three
-orders and not significantly different and the manually
-definitely %maybe put ANOCA stats here for clarity.
-The slope and intercept obtained based from the ESUs for the
-Holothuriidae were almost identical (intercept:
+Fig.~\ref{fig:isolation-by-distance-plot}, Table~\ref{tab:ibd-stats}). The
+slopes and the intercepts were similar across the three orders (slope
+interaction: \Sexpr{interactionFstat}, \Sexpr{interactionP}; intercept
+interaction: \Sexpr{interceptFstat}, \Sexpr{interceptP}), and were not
+significantly different from the coefficients estimated on the ESUs (intercept:
 \Sexpr{formatC(coefficients(ibdHol)[1,1], digits=2)},
 SE=\Sexpr{formatC(coefficients(ibdHol)[1,2], digits=2)}, slope:
 \Sexpr{formatC(coefficients(ibdHol)[2,1], digits=2)},
@@ -586,17 +591,17 @@ SE=\Sexpr{formatC(coefficients(ibdHol)[2,2])}).
 
 @
 
-% Add number of sister ESUs Holothuriidae used, and make sure it's in the
-% methods -- refer to
-
-%% add t-test
+%% add test
 We compared the geographic ranges of \Sexpr{sum(complete.cases(esuRange))} pairs
 of sister ESUs within the Holothuriidae. Most had allopatric distributions
 (\Sexpr{formatC(percentAllo, digits=2, width=2)}\%), the remaining were
 sympatric (\Sexpr{formatC(percentSymp, digits=2, width=2)}\%), or parapatric
 (\Sexpr{formatC(percentPara, digits=2, width=2)}\%).
 
-% need text about geography/genetic distances
+There was no evidence that sister ESUs occurring in sympatry were older than
+ESUs occurring in allopatry.  Half (N=\Sexpr{nBelowMedian}) of the sympatric
+sister ESUs showed genetic distances lower than the median of the distances
+observed for allopatric ESUs (Fig.~\ref{fig:geography-diversification}).
 
 % TODO add map
 
@@ -611,8 +616,9 @@ of the allopatric pairs separated between the Indian and Pacific Oceans,
 peninsula and the rest of the Indian Ocean, and \Sexpr{formatC(percentHIPO,
   width=2, digits=2)}\% between the Hawaiian archipelago. Other barriers
 separated endemics restricted to remote locations and/or in areas with distinct
-ecological conditions (Galapagos, French Polynesia, Eastern Pacific, Oman). The
-levels of genetic divergence for the ESU pairs separated across these basins
+ecological conditions (Galapagos, French Polynesia, Eastern Pacific, Oman).
+
+The levels of genetic divergence for the ESU pairs separated across these basins
 varied substantially (Fig.~\ref{fig:barriers}).
 
 % TODO - reword this --- it looks like 2 groups
@@ -640,6 +646,12 @@ best studied, as it is easily accessible as it inhabits shallow waters, species
 are large, many are economically important, and most species have widespread
 geographical distributions. Other families likely have higher levels of
 unrecognized diversity.
+
+
+Differences in estimate between the methods come from bias in the way they
+estimate species that cannot reflect the complexity of the biological
+processes. Some ESUs are not reciprocally monophyletic and therefore will not be
+identified correctly by the clustering method. [expand]
 
 % reinforce that people think we are done with sampling diversity, a new species
 % isn't exciting
@@ -926,13 +938,11 @@ indicates that it is plesiomorphic in the clade that sea cucumbers emerged from.
 
 \section{Supplementary material}
 
-<<groups-comparison-plot, dependson=c('pairwise-groups-data', 'cluster-groups-data', 'morphospecies-stats', 'esu-stats'), cache=TRUE, echo=FALSE, fig.height=6.5, fig.cap='Comparison of the number of ESUs (top), and the proportion of ESUs represented by a single individual (singletons, bottom) estimated with the pairwise distance method (pairwise) and the clustering method (cluster), based on uncorrected distances (uncorrected) or the Kimura 2-parameter distances (K2P), for the entire dataset (all), the order Aspidochirotida and the family Holothuriidae. The horizontal dashed line represents the number of named species sequenced, the dotted line represents the number of ESU (top), and the proportion of singleton (bottom) delineated manually.', fig.scap='Estimated number of ESUs', warning=FALSE>>=
+<<groups-comparison-plot, dependson=c('pairwise-groups-data','cluster-groups-data', 'morphospecies-stats', 'esu-stats'), cache=TRUE,echo=FALSE, fig.height=6, fig.pos='h!', fig.cap='Comparison of the number of mtLineages (top), and the proportion of mtLineages represented by a single individual (singletons, bottom) estimated with the pairwise distance method (pairwise) and the clustering method (cluster), based on uncorrected distances (uncorrected) or the Kimura 2-parameter distances (K2P), for the entire dataset (all), the order Aspidochirotida and the family Holothuriidae. The horizontal dashed line represents the number of named species sequenced, the dotted line represents the number of mtLineages (top), and the proportion of singleton (bottom) delineated manually.', fig.scap='Estimated number of mtLineages', warning=FALSE>>=
 
 @
 
-\pagebreak
-
-<<sm-groups-comparison-plot, cache=TRUE, echo=FALSE, dependson='groups-comparison-plot', fig.height=6, fig.pos="h!", fig.cap='Comparison of the number of ESUs (top), and the proportion of ESUs represented by a single individual (singletons, bottom) estimated with the pairwise distance method (pairwise) and the clustering method (cluster), based on uncorrected distances (uncorrected) or the Kimura 2-parameter distances (K2P), for the orders Apodida, Dendrochirotida and Elasipodida. The gray horizontal dashed line represents the number of named species sequenced.', fig.scap='Estimated number of ESUs'>>=
+<<sm-groups-comparison-plot, cache=TRUE, echo=FALSE, dependson='groups-comparison-plot', fig.height=6, fig.pos='h!', fig.cap='Comparison of the number of mtLineages (top), and the proportion of mtLineages represented by a single individual (singletons, bottom) estimated with the pairwise distance method (pairwise) and the clustering method (cluster), based on uncorrected distances (uncorrected) or the Kimura 2-parameter distances (K2P), for the orders Apodida, Dendrochirotida and Elasipodida. The gray horizontal dashed line represents the number of named species sequenced.', fig.scap='Estimated number of mtLineages'>>=
 
 @
 
