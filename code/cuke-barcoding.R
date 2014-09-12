@@ -114,7 +114,9 @@ percentSinglHol <- 100*sum(sapply(manGrps, function(x) length(x) == 1))/length(m
 
 percentGap   <- 100*sum(is.na(localGap$species))/nrow(localGap)
 nGap <- sum(is.na(localGap$species))
-minInterText <- 100*min(localGap$minInter)
+
+nGreater02 <- sum(localGap$minInter > 0.02)
+percentGreater02 <- 100*nGreater02/nrow(localGap)
 
 ### ---- cluster-groups-data ----
 taxonomyDf <- load_taxonomyDf()
@@ -223,7 +225,8 @@ sampXtab <- xtable(sampTab,
                    label="tab:sampled-species", display=c("s", "s", "s", "d", "d"))
 
 print(sampXtab, include.rownames=FALSE, hline.after=c(-1, 0, hlinePos, nrow(sampXtab)),
-      sanitize.text.function=function(x) {x})
+      sanitize.text.function=function(x) {x},
+      table.placement="ht!")
 
 
 
@@ -241,12 +244,12 @@ accuracyGrps <- function(tree) {
     for (i in 1:length(uniqGrps)) {
         tmpDt <- subset(compGrps, manGrps == uniqGrps[i])
         if (length(unique(tmpDt$Groups)) > 1)
-            lumps <- unique(tmpDt$Groups)
-        else lumps <- NA
+            splits <- unique(tmpDt$Groups)
+        else splits <- NA
         tmpDt2 <- subset(compGrps, Groups %in% unique(tmpDt$Groups))
         if( length(unique(tmpDt2$manGrps)) > 1)
-            splits <- unique(tmpDt2$manGrps)
-        else splits <- NA
+            lumps <- unique(tmpDt2$manGrps)
+        else lumps <- NA
         compRes[[i]] <- list(splits=splits, lumps=lumps)
     }
     nLumps <- sapply(compRes, function(x) x$lumps)
@@ -289,8 +292,8 @@ compareManESUs <- melt(compareManESUs, id.vars=c("threshold", "method", "distanc
 levels(compareManESUs$distance)[levels(compareManESUs$distance) == "raw"] <- "Uncorrected"
 
 ggplot(compareManESUs, aes(x=threshold, y=value, fill=variable)) + geom_bar(stat="identity") +
-    facet_wrap(~ distance + method) + ylab("Number of ESUS") + xlab("Threshold") +
-    scale_fill_discrete(labels=c("oversplit", "lumped")) +
+    facet_wrap(~ distance + method) + ylab("Number of mtLineages") + xlab("Threshold") +
+    scale_fill_discrete(labels=c("lumped", "oversplit")) +
     guides(fill=guide_legend(title=NULL)) +
     theme(legend.position="top")
 
@@ -305,14 +308,8 @@ localGap$species <- gsub("_", " ", localGap$species)
 ggplot(localGap) + geom_point(aes(x=maxIntra, y=minInter, colour=species)) +
     geom_abline(slope=1, linetype=3, colour="gray40") + coord_fixed() +
     xlim(c(0, 0.18)) + ylim(c(0, 0.18)) +
-    xlab("Maximum intra-ESU distance")  + ylab("Minimum inter-ESU distance") +
+    xlab("Maximum distance to closest neighboring ESU")  + ylab("Minimum inter-ESU distance") +
     scale_colour_discrete(name="ESUs")
-
-### ---- range-size-plot ----
-ggplot(subset(distBySpecies, Order %in% orderToInclude)) +
-    geom_violin(aes(x=Order, y=maxGeoDist, fill=Order, colour=Order)) +
-    xlab("") + ylab("Maximum distance (km)") +
-    theme(legend.position="none")
 
 ### ---- geography-diversification ----
 source("R/test-allopatry-functions.R")
@@ -336,11 +333,14 @@ percentPara <- 100*tabRangeType["parapatric"]/sum(tabRangeType)
 
 nSymp <- tabRangeType["sympatric"]
 
+medianDist <- median(subset(esuRange, rangeType == "allopatric")$meanInterDist)
+nBelowMedian <- sum(subset(esuRange, rangeType=="sympatric")$meanInterDist < medianDist)
+
 ggplot(esuRange) +
     geom_point(data=esuRange[!is.na(esuRange$rangeType), ],
                aes(x=rangeType, y=meanInterDist, colour=rangeType),
-               position=position_jitter(width=.05, height=0)) +
-    coord_flip() + xlab("") + ylab("Mean inter-ESU distances") +
+               position=position_jitter(width=.07, height=0)) +
+    coord_flip() + xlab("") + ylab("Mean genetic distances between sister ESUs (uncorrected)") +
     theme(legend.position="none")
 
 ### ---- barriers ----
@@ -455,22 +455,22 @@ nESU <- ggplot(tmpDt, aes(x=threshold, y=nGrps, colour=interaction(distance, met
     geom_line() + geom_point() + facet_wrap( ~ taxa) +
     geom_hline(data=nSpp, aes(yintercept=nspp), colour="gray40", linetype=2) +
     geom_hline(data=nHol, aes(yintercept=nspp), colour="darkgreen", linetype=3) +
-    ylab("Number of ESUs") +
+    ylab("Number of mtLineages") +
     theme(legend.position="top", axis.title.x=element_blank()) +
     scale_colour_manual(name=element_blank(),
                         values=zisPal,
                         breaks=c("K2P.Clusters", "raw.Clusters",
                             "K2P.Pairwise", "raw.Pairwise"),
-                        labels=c("K2P - Cluster",
-                            "Uncorrected - Cluster",
+                        labels=c("K2P - Clustering",
+                            "Uncorrected - Clustering",
                             "K2P - Pairwise",
                             "Uncorrected - Pairwise")) +
     scale_shape_manual(name=element_blank(),
                         values=seq(from=15, length.out=4),
                         breaks=c("K2P.Clusters", "raw.Clusters",
                             "K2P.Pairwise", "raw.Pairwise"),
-                        labels=c("K2P - Cluster",
-                            "Uncorrected - Cluster",
+                        labels=c("K2P - Clustering",
+                            "Uncorrected - Clustering",
                             "K2P - Pairwise",
                             "Uncorrected - Pairwise"))
 
@@ -495,22 +495,22 @@ nESUSm <- ggplot(tmpDtSm, aes(x=threshold, y=nGrps, colour=interaction(distance,
                           shape=interaction(distance, method))) +
     geom_line() + geom_point() + facet_wrap( ~ taxa) +
     geom_hline(data=nSppSm, aes(yintercept=nspp), colour="gray40", linetype=2) +
-    ylab("Number of ESUs") +
+    ylab("Number of mtLineages") +
     theme(legend.position="top", axis.title.x=element_blank()) +
     scale_colour_manual(name=element_blank(),
                         values=zisPal,
                         breaks=c("K2P.Clusters", "raw.Clusters",
                             "K2P.Pairwise", "raw.Pairwise"),
-                        labels=c("K2P - Cluster",
-                            "Uncorrected - Cluster",
+                        labels=c("K2P - Clustering",
+                            "Uncorrected - Clustering",
                             "K2P - Pairwise",
                             "Uncorrected - Pairwise")) +
     scale_shape_manual(name=element_blank(),
                         values=seq(from=15, length.out=4),
                         breaks=c("K2P.Clusters", "raw.Clusters",
                             "K2P.Pairwise", "raw.Pairwise"),
-                        labels=c("K2P - Cluster",
-                            "Uncorrected - Cluster",
+                        labels=c("K2P - Clustering",
+                            "Uncorrected - Clustering",
                             "K2P - Pairwise",
                             "Uncorrected - Pairwise"))
 
@@ -614,7 +614,7 @@ print(xtable(cbind(ESUs=uniqESU, Vouchers=esuVouch),
       add.to.row = list(pos = list(-1, 0),
           command = c(headerTable, "\\hline \\endhead \n")),
       sanitize.text.function=function(x) {x}, caption.placement="top",
-      include.rownames=FALSE)
+      table.placement="ht!" include.rownames=FALSE)
 
 ### ---- figure-test ----
 aa <- cukeAlg[grep("cinerascens", dimnames(cukeAlg)[[1]]), ]
