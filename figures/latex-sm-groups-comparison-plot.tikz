@@ -1,4 +1,4 @@
-% Created by tikzDevice version 0.7.0 on 2014-09-10 23:14:47
+% Created by tikzDevice version 0.7.0 on 2014-09-11 22:25:52
 % !TEX encoding = UTF-8 Unicode
 
 \documentclass[12pt]{article}
@@ -1244,35 +1244,35 @@
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 19.11,286.66) {Number of ESUs};
+\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at ( 19.11,286.66) {Number of mtLineages};
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{fillColor}{rgb}{1.00,1.00,1.00}
 
-\path[fill=fillColor] ( 36.39,383.21) rectangle (465.48,409.09);
+\path[fill=fillColor] ( 22.85,383.21) rectangle (479.02,409.09);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
 \definecolor[named]{fillColor}{rgb}{0.95,0.95,0.95}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] ( 45.00,387.48) rectangle ( 62.34,404.83);
+\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] ( 31.46,387.48) rectangle ( 48.80,404.83);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{drawColor}{rgb}{0.23,0.60,0.70}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] ( 46.73,396.15) -- ( 60.61,396.15);
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 33.19,396.15) -- ( 47.07,396.15);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{fillColor}{rgb}{0.23,0.60,0.70}
 
-\path[fill=fillColor] ( 51.54,394.02) --
-	( 55.80,394.02) --
-	( 55.80,398.29) --
-	( 51.54,398.29) --
+\path[fill=fillColor] ( 38.00,394.02) --
+	( 42.26,394.02) --
+	( 42.26,398.29) --
+	( 38.00,398.29) --
 	cycle;
 \end{scope}
 \begin{scope}
@@ -1299,21 +1299,21 @@
 \definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
 \definecolor[named]{fillColor}{rgb}{0.95,0.95,0.95}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (248.46,387.48) rectangle (265.80,404.83);
+\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (262.00,387.48) rectangle (279.34,404.83);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{drawColor}{rgb}{0.92,0.80,0.16}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (250.19,396.15) -- (264.07,396.15);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (263.73,396.15) -- (277.61,396.15);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{fillColor}{rgb}{0.92,0.80,0.16}
 
-\path[fill=fillColor] (257.13,399.47) --
-	(260.00,394.49) --
-	(254.26,394.49) --
+\path[fill=fillColor] (270.67,399.47) --
+	(273.55,394.49) --
+	(267.80,394.49) --
 	cycle;
 \end{scope}
 \begin{scope}
@@ -1321,47 +1321,47 @@
 \definecolor[named]{drawColor}{rgb}{1.00,1.00,1.00}
 \definecolor[named]{fillColor}{rgb}{0.95,0.95,0.95}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (338.07,387.48) rectangle (355.42,404.83);
+\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (351.61,387.48) rectangle (368.96,404.83);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{drawColor}{rgb}{0.95,0.10,0.00}
 
-\path[draw=drawColor,line width= 0.6pt,line join=round] (339.81,396.15) -- (353.68,396.15);
+\path[draw=drawColor,line width= 0.6pt,line join=round] (353.35,396.15) -- (367.22,396.15);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{fillColor}{rgb}{0.95,0.10,0.00}
 
-\path[fill=fillColor] (344.61,396.15) --
-	(346.75,398.29) --
-	(348.88,396.15) --
-	(346.75,394.02) --
+\path[fill=fillColor] (358.15,396.15) --
+	(360.29,398.29) --
+	(362.42,396.15) --
+	(360.29,394.02) --
 	cycle;
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 64.51,392.85) {K2P - Cluster};
+\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 50.97,392.85) {K2P - Clustering};
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (148.39,392.85) {Uncorrected - Cluster};
+\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (148.39,392.85) {Uncorrected - Clustering};
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (267.97,392.85) {K2P - Pairwise};
+\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (281.51,392.85) {K2P - Pairwise};
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
 \definecolor[named]{drawColor}{rgb}{0.00,0.00,0.00}
 
-\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (357.59,392.85) {Uncorrected - Pairwise};
+\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (371.13,392.85) {Uncorrected - Pairwise};
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,185.84);
