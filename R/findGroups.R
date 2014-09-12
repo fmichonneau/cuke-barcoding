@@ -101,13 +101,17 @@ findGroups <- function(tr, threshold=.015, experimental=FALSE, parallel=TRUE) {
   edgeGrp <- do.call("rbind", lapply(descGrp, function(x) {
       if(length(x) > 1) cbind(head(x, -1), tail(x, -1)) else NULL
   }))
-  graphGrp <- graph.data.frame(edgeGrp)
-  descGrp <- c(split(V(graphGrp)$name, clusters(graphGrp)$membership),
-               descGrp[snglGrp])
+  if (!is.null(edgeGrp)) {
+      graphGrp <- graph.data.frame(edgeGrp)
+      descGrp <- c(split(V(graphGrp)$name, clusters(graphGrp)$membership),
+                   descGrp[snglGrp])
 
-  ## add singletons
-  missingGrps <- setdiff(nodeId(tr, "tip"), as.numeric(unlist(descGrp)))
-  descGrp <- c(descGrp, as.list(missingGrps))
+      ## add singletons
+      missingGrps <- setdiff(nodeId(tr, "tip"), as.numeric(unlist(descGrp)))
+      descGrp <- c(descGrp, as.list(missingGrps))
+  } else {
+      descGrp <- nodeId(tr, "tip")
+  }
 
   ## Return tip labels
   grp <- sapply(descGrp, function(x) tipLabels(tr)[as.numeric(x)])
