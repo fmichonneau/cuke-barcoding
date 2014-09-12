@@ -17,7 +17,7 @@ build_cukeTree <- function(alg, model, Nrep) {
 
     treH <- ape::nj(dMat)
     bootH <- ape::boot.phylo(treH, alg, function(xx) {
-        ape::nj(ape::dist.dna(xx, model=model, pairwise.deletion=TRUE))
+        ape::nj(ape::dist.dna(xx, model=model))
     }, B=Nrep)
     treH$node.label <- bootH
     treH

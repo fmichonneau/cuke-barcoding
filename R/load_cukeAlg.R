@@ -8,12 +8,13 @@ load_cukeAlg <- function(overwrite=FALSE) {
         algFile <- "data/cukeAlg-cleaned.fas"
 
         ## identify sequences with ambiguities and rename them
-        ambSeq <- checkAmbiguity(file=algFile)
+        ambSeq <- checkAmbiguity(file=algFile, quiet=TRUE)
         oldNm <- names(ambSeq)
         newNm <- paste(oldNm, "_", sapply(ambSeq, length), "amb", sep="")
 
         cukeAlg <- read.dna(file=algFile, format="fasta")
-        dimnames(cukeAlg)[[1]][match(oldNm, dimnames(cukeAlg)[[1]])] <- newNm
+        #dimnames(cukeAlg)[[1]][match(oldNm, dimnames(cukeAlg)[[1]])] <- newNm
+        cukeAlg <- cukeAlg[-match(oldNm, dimnames(cukeAlg)[[1]]), ]
         cukeAlg <- cleanSeqLabels(cukeAlg, software="RAxML")
         dimnames(cukeAlg)[[1]] <- gsub("\\\"", "", dimnames(cukeAlg)[[1]])
         saveRDS(cukeAlg, file="data/cukeAlg-flagAmb.rds")
