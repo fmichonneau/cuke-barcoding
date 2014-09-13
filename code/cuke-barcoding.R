@@ -336,7 +336,7 @@ localGap$species <- gsub("_", " ", localGap$species)
 ggplot(localGap) + geom_point(aes(x=maxIntra, y=minInter, colour=species)) +
     geom_abline(slope=1, linetype=3, colour="gray40") + coord_fixed() +
     xlim(c(0, 0.18)) + ylim(c(0, 0.18)) +
-    xlab("Maximum distance to closest neighboring ESU")  + ylab("Minimum inter-ESU distance") +
+    xlab("Maximum intra-ESU distance")  + ylab("Minimum distance to the closest neighboring ESU") +
     scale_colour_discrete(name="ESUs")
 
 ### ---- geography-diversification ----
