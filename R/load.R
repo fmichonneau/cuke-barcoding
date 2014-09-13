@@ -148,6 +148,7 @@ load_tree_pairwiseGrps <- function(distance="raw", taxa="all",
 load_manESU <- function(taxa="Holothuriidae") {
     manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
     manESU$ESU_noGeo <- gsub("_[A-Z]{2}$", "", manESU$ESU_genetic)
+    manESU <- manESU[-grep("\\d+amb$", manESU$Labels), ]
     manESU
 }
 
