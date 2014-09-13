@@ -293,26 +293,34 @@ clstrGrpsK80 <- lapply(clstrTreeK80, accuracyGrps)
 
 pwiseDatRaw <- data.frame(method="pairwise", distance="raw", do.call("rbind", lapply(pwiseGrpsRaw, function(x) c(x[1], x[2]))))
 pwiseDatK80 <- data.frame(method="pairwise", distance="K2P", do.call("rbind", lapply(pwiseGrpsK80, function(x) c(x[1], x[2]))))
-clstrDatRaw <- data.frame(method="cluster", distance="raw", do.call("rbind", lapply(clstrGrpsRaw, function(x) c(x[1], x[2]))))
-clstrDatK80 <- data.frame(method="cluster", distance="K2P", do.call("rbind", lapply(clstrGrpsK80, function(x) c(x[1], x[2]))))
+clstrDatRaw <- data.frame(method="clustering", distance="raw", do.call("rbind", lapply(clstrGrpsRaw, function(x) c(x[1], x[2]))))
+clstrDatK80 <- data.frame(method="clustering", distance="K2P", do.call("rbind", lapply(clstrGrpsK80, function(x) c(x[1], x[2]))))
 
 compareManESUs <- rbind(pwiseDatRaw, pwiseDatK80, clstrDatRaw, clstrDatK80)
 
-compareManESUs <- data.frame(threshold=rep(load_thresholdPairwise(), 4), compareManESUs)
+nGrps <- sapply(c(pwiseTreeRaw, pwiseTreeK80, clstrTreeRaw, clstrTreeK80),
+                function(x) max(tdata(x, "tip")[, "Groups"]))
+
+compareManESUs <- data.frame(threshold=rep(load_thresholdPairwise(), 4), compareManESUs, nGrps=nGrps)
 compareManESUs$nSplits <- as.numeric(compareManESUs$nSplits)
 compareManESUs$nLumps <- as.numeric(compareManESUs$nLumps)
 allErrors <- compareManESUs$nSplits + compareManESUs$nLumps
+compareManESUs <- cbind(compareManESUs, allErrors=allErrors)
 minError <- compareManESUs[which.min(allErrors), ]
+
+compareManESUs$pLumps <- compareManESUs$nLumps/compareManESUs$nGrps
+compareManESUs$pSplits <- compareManESUs$nSplits/compareManESUs$nGrps
 
 saveRDS(compareManESUs, file="tmp/compareManESUs.rds")
 
 ### ---- compare-manual-cluster-ESUs-plot ----
 compareManESUs <- melt(compareManESUs, id.vars=c("threshold", "method", "distance"),
-                       measure.vars=c("nLumps", "nSplits"))
+                       measure.vars=c("pLumps", "pSplits"))
 levels(compareManESUs$distance)[levels(compareManESUs$distance) == "raw"] <- "Uncorrected"
 
 ggplot(compareManESUs, aes(x=threshold, y=value, fill=variable)) + geom_bar(stat="identity") +
-    facet_wrap(~ distance + method) + ylab("Number of mtLineages") + xlab("Threshold") +
+    facet_wrap(~ distance + method) + ylab("Proportion of misassigned mtLineages") +
+    xlab("Genetic distance threshold") +
     scale_fill_discrete(labels=c("lumped", "oversplit")) +
     guides(fill=guide_legend(title=NULL)) +
     theme(legend.position="top")
