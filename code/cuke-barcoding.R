@@ -93,6 +93,17 @@ undescSpp <- grep("(n)?_sp(_|\\.|\\s|nov)?\\d?", undescSpp, value=T)
 undescSpp <- undescSpp[-grep("spic|spin|spect", undescSpp)]
 
 ### ---- esu-stats ----
+isMonophyletic <- function(lbl, tree) {
+    if (length(lbl) < 2) {
+        NA
+    } else {
+        desc <- descendants(tree, MRCA(tree, lbl), "tips")
+        if (length(desc) == length(lbl))
+            TRUE
+        else FALSE
+    }
+}
+
 source("R/test-allopatry-functions.R")
 manESU <- load_manESU()
 cukeDistRaw <- load_cukeDist_raw()
@@ -117,6 +128,15 @@ nGap <- sum(is.na(localGap$species))
 
 nGreater02 <- sum(localGap$minInter > 0.02)
 percentGreater02 <- 100*nGreater02/nrow(localGap)
+
+holTree <- load_cukeTree_raw_phylo4()
+toKeep <- intersect(manESU$Labels, tipLabels(holTree))
+holTree <- subset(holTree, tips.include=toKeep)
+
+taxLbl <- split(manESU$Labels, manESU$ESU_taxonomy)
+
+taxMono <- sapply(taxLbl, function(x) isMonophyletic(x, holTree))
+percentTaxMono <- 100*(1 - sum(taxMono, na.rm=TRUE)/sum(!is.na(taxMono)))
 
 ### ---- cluster-groups-data ----
 taxonomyDf <- load_taxonomyDf()
