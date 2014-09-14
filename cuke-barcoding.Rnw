@@ -899,16 +899,25 @@ early as \textit{ca.}  19,000 years ago \cite{DiBattista2013}. Therefore, the
 Red Sea fauna must have colonized the area from outside refugia following the
 salinity crises.
 
-The models of speciation associated with these biogeographic barriers are key to
-understand the drivers of diversification within the Indo-Pacific
-\cite{Hickerson2008}. A model of classic vicariance emphasizes the importance of
-large-scale events (e.g., geological) that split an ancestral population into
-populations that diverge in isolation. A modified version of this model (``soft
-vicariance'') proposes that long-distance gene flow connect diverging
-populations that eventually become separated by changes in oceanographic
-conditions. Under a peripatric model, a new population is founded by the
-colonization of a small number of individuals from a larger source population
-\cite{Hickerson2008}.
+Understanding how these barriers drive speciation events across these
+biogeographic barriers is key to uncover the mechanisms generating diversity
+within the Indo-Pacific. Three models have been proposed to explain how these
+barriers might be acting \cite{Hickerson2008}. A model of classic vicariance
+emphasizes the importance of large-scale events (e.g., geological) that split an
+ancestral population into populations that diverge in isolation. A modified
+version of this model (``soft vicariance'') proposes that long-distance gene
+flow connects diverging populations that eventually become separated by changes
+in oceanographic conditions. Under a peripatric model, a new population is
+founded by the colonization of a small number of individuals from a larger
+source population \cite{Hickerson2008}. Additionally, determining whether sister
+species separated by same the barrier, diverged concomitantly could inform on
+the relative importance of extrinsic factors (e.g., geology, climate)
+\textit{vs.} intrinsic factors (e.g., selection) in generating diversity. Our
+analyses limit the inference on the nature of these barriers and whether they
+affected all species synchronously, however, the spread of genetic distances
+(Fig.~\ref{fig:barriers}) suggests multiple events. Determining the model of
+speciation that best explains the patterns of divergence would require
+additional analyses such as \cite{Hickerson2006, Hickerson2008}.
 
 Compared to studies on other taxonomically well-understood marine organisms, we
 recovered a higher proportion of sister ESUs occurring in sympatry for the
