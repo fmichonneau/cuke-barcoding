@@ -103,54 +103,60 @@ cryptic species (see Chapter~2, \cite{Hebert2004, Vogler2008,
 Many groups of marine organisms remain poorly explored or understood
 taxonomically \citep{Bucklin2011}, because the morphological characters
 traditionally used to delineate species frequently vary little among related
-species \citep{Knowlton1993}. Molecular data are then especially useful to guide
+species \citep{Knowlton1993}. Initially developed for species identification,
+DNA barcoding has become a popular technique to discover new species, to guide
 taxonomic decisions and clarify species limits. Molecular assessment of species
 limits in marine organisms has often led to recognition of high levels of
 cryptic diversity (e.g., \citealp{Meyer2005-evolution, OLoughlin2011}), even for
 well-known species (e.g., \citealp{Vogler2008}).
 
+The importance of barcoding for species identification has been renewed with the
+development of metabarcoding: the DNA-based community analysis of environmental
+samples. Second generation sequencing technologies allow the parallel sequencing
+of many gene copies, and can therefore be used to identify a diversity of
+species of small size (e.g., meiofauna in marine benthic sediments), lacking
+distinguishing morphological features (e.g., larvae in the plankton), or
+digested in the gut of their predators \cite{Leray}.
 
+For species delineation, one of the greatest limitations of single locus
+approaches like barcoding, is that the gene tree (genealogy) may not reflect the
+species tree \cite{Meyer2005-plos, Funk2003}. Including independent characters
+(e.g., nuclear loci, morphological, behavioral, ecological, geographical) in
+analyses provides a mechanism for testing for incongruences between gene tree
+and species trees. Reciprocal monophyly in two or more independent characters
+demonstrates lack of gene flow and delineates lineages with independent
+evolutionary histories. Such lineages are termed evolutionary significant units
+(ESU) \cite{Moritz1994}, and can be treated as species-level units. However,
+they do not necessarily represent biological species, and their reproductive
+isolation can only be assessed when ESUs occur in sympatry.
 
-% develop about spp id -- envt/meta barcoding
+When lineages identified with genetic data are associated with clear differences
+in morphology, morpho-taxonomic delineations are reinforced. Discordance between
+genetic data and morphological traits can occur when (1) morphological change
+has been insufficient to separate species, even though genetic data suggest
+isolation; (2) morphological change associated with speciation was so rapid that
+mitochondrial lineages have not fully sorted; (3) genetic divergence in the
+marker (e.g., mtDNA) has been erased by introgression; (4) morphological
+polymorphism does not reflect species limits (see \cite{Funk2003, Ballard2004}
+for reviews). These situations might have undesirable effects on the accuracy of
+species identification, but they might provide insights into the biology of the
+species. While resolving the underlying cause of this discordance may require
+collecting additional evidence, as different processes will lead to the same
+pattern. Through comprehensive sampling, we can identify species that show this
+pattern and deserve further investigation, and assess how common they are. For
+species identification, species sharing haplotypes might be misidentified in
+particular if no voucher information is available.
 
-% incorporate early on paragraph about species delineation, species concept used
-% reciprocal monophyly clues of isolation
-% independent characters indicative of isolation
-% test in nature when in sympatry but not in allopatry
-
-Despite the advantages of
-
-Initially developed for species identification, DNA barcoding has
-become a popular technique to discover new species and evaluate species
-limits. By analyzing of a portion of the mitochondrial genome, barcoding has
-unraveled cryptic lineages, most often associated with differences in
-morphology, coloration or behavior \cite{Knowlton1993, Knowlton2000}. However, because
-barcoding is based on a single locus, genetic differentiation does not always
-track species limits \cite{Funk2003}. Introgression, ancestral polymorphisms,
-and incomplete lineage sorting may lead to non-reciprocally monophyletic groups
-with the mitochondrial genealogies compromising the accuracy of species
-identification with barcoding.
-
-% use for identification comprehensive sampling -- thresholds
-% explain barcoding gap, relate to thresholds, say something about sampling and
-% coalescent (if beyond known coalescent  and/or below a threhold red flag for
-% more in depth investigation)
-One of the greatest limitations of single locus approaches, like barcoding, is
-that the gene tree (genealogy) may not reflect the species tree. Including
-independent characters (nuclear loci, morphological, behavioral, ecological,
-geographical, etc.) in analyses provides a mechanism for testing for
-incongruences between gene tree and species trees. Reciprocal monophyly in two
-or more independent characters demonstrates lack of gene flow and delineates
-lineages with independent evolutionary histories. Such lineages are termed
-evolutionary significant units (ESU) \cite{Moritz1994}, and can be treated as
-species-level units.
-
-% in this paragraph needs to split question of species diversity and species
-% delineation
-
-% start these paragraphs by goals: how can we delineate species? what's the
-% diversity?
 The success of species identification with barcoding is dependent on the
+comprehensiveness of the reference database to identify the species of
+interest. Sampling extensively species diversity and intra-specific genetic
+variation ensures that an unidentified sequence will have an exact match in the
+reference database. Indeed, if the unknown sequence has an exact match, the
+error rate will only depend on the proportion of species that share
+haplotypes. If the unknown sequence is not in the reference database, it could
+either represent an unsampled haplotype of a known species, or a new
+species. Determining which of these situations
+The
 barcoding gap: the absence of overlap between intra-specific and inter-specific
 distances \cite{Meyer2005-plos}. The characterization of this gap, or its
 absence, requires a comprehensive sampling both within and across species.  If
@@ -164,21 +170,21 @@ into the amount of cryptic diversity, and the patterns of diversification
 characterizing the groups. It becomes possible to assess the generality of
 patterns encountered in species-level studies.
 
+% use for identification comprehensive sampling -- thresholds
+% explain barcoding gap, relate to thresholds, say something about sampling and
+% coalescent (if beyond known coalescent  and/or below a threhold red flag for
+% more in depth investigation)
 
-When lineages identified with genetic data are associated with clear differences
-in morphology, morpho-taxonomic delineations are reinforced. Discordance between
-genetic data and morphological traits can result when (1) morphological change
-has been insufficient to separate species, even though genetic data suggest
-isolation; (2) morphological change associated with speciation was so rapid that
-mitochondrial lineages have not fully sorted; (3) genetic divergence in the
-marker (e.g., mtDNA) has been erased by introgression; (4) morphological
-polymorphism does not reflect species limits (see \cite{Funk2003, Ballard2004}
-for reviews). These situations might have undesirable effects on the accuracy of
-species identification, but they might provide insights into the biology of the
-species. While resolving the underlying cause of this discordance may require
-collecting additional evidence, as different processes will lead to the same
-pattern. Through comprehensive sampling, we can identify species that show this
-pattern and deserve further investigation, and assess how common they are.
+
+% in this paragraph needs to split question of species diversity and species
+% delineation
+
+% start these paragraphs by goals: how can we delineate species? what's the
+% diversity?
+
+
+
+
 
 Sea cucumbers occur in most marine ecosystems, at all latitudes, from the
 intertidal to hadal depths. They constitute the largest invertebrate fishery in
@@ -720,15 +726,15 @@ Introgression appear uncommon among marine invertebrates (e.g.,
 (e.g.~\cite{Addison2009, Harper2007}). Two instances of hybridization between
 sea cucumber species have been documented \cite{Uthicke2005, Kim2013}. However,
 in both cases hybrids do not appear to backcross with their parental species
-limiting the possibility for introgression. Teasing out the processes that are
-leading to non-monophyletic patterns observed in COI requires multilocus
-dataset, which analyzed with the multicoalescent \cite{Heled2010} might provide
-support for reproductive isolation among the putative species. Recently
-developed methods that use single nucleotide polymorphisms (SNP) across the
-genome \cite{Leache2014a} appear as powerful tools to explore species limits
-among closely related taxa. These approaches remain expansive and time-consuming
-but come in complement of single-locus studies to untangle the lineages that are
-not monophyletic.
+limiting the possibility for genomic introgression. Teasing out the processes
+that are leading to non-monophyletic patterns observed in COI requires
+multilocus dataset, which analyzed with the multicoalescent \cite{Heled2010}
+might provide support for reproductive isolation among the putative
+species. Recently developed methods that use single nucleotide polymorphisms
+(SNP) across the genome \cite{Leache2014a} appear as powerful tools to explore
+species limits among closely related taxa. These approaches remain expansive and
+time-consuming but come in complement of single-locus studies to untangle the
+lineages that are not monophyletic.
 
 
 \subsection{Methodological considerations}
@@ -785,6 +791,9 @@ depend on the proportion of species that share haplotypes. However, if the
 sequence is not in the database, accuracy of the identification will also depend
 on the accuracy with which the sequence can be predicted to belong to a species
 included in the database.
+
+% TODO -- emphasize that even in absence of monophyly can still narrow down
+% species to 2 possibilities.
 
 In our ESU dataset, only 7 out of \Sexpr{nESUs} ESUs
 (\Sexpr{formatC(100*7/nESUs, digits=2, width=2)}\%) share haplotypes indicating
