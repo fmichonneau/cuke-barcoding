@@ -771,18 +771,32 @@ One of the main applications of DNA barcoding is to facilitate species
 identification, especially when only non-diagnostic parts are available (e.g.,
 when processed for trade \cite{Uthicke2009a}, larvae \cite{Baldwin2014}, gut
 content \cite{Leray2011}). Accurate identification requires a comprehensive
-database of DNA sequences to capture the diversity of species, and associated
+database of DNA sequences to capture the diversity of species, and
 intra-specific variation. If the sequences for the individuals to be identified
 are included in the database, the accuracy of the identification will only
 depend on the proportion of species that share haplotypes. However, if the
 sequence is not in the database, accuracy of the identification will also depend
-on whether the sequence can be predicted to belong to a known species. it can
-either be attributed to a known species or to an unknown species depending on
-how divergent it is from sequences included in the database.
+on the accuracy with which the sequence can be predicted to belong to a species
+included in the database.
 
+In our ESU dataset, only 7 out of \Sexpr{nESUs} ESUs
+(\Sexpr{formatC(100*7/nESUs, digits=2, width=2)}\%) share haplotypes indicating
+that individuals can be identified with high accuracy through DNA barcoding if
+their sequences have an exact match in our database.
 
+Sequences without a match in reference databases are typically assigned to a
+known species in the database if the sequences differ by less than a threshold,
+or to new species if the genetic distances are above this threshold
+\cite{Meyer2005-plos}. The threshold was estimated based on the extent of
+overlap between intra- and interspecific genetic variation among the species
+considered, the barcoding gap. One of the issues associated with this concept is
+that increased sampling reduce the barcoding gap by capturing rare, divergent
+haplotypes that increase the overlap between intra- and interspecific variation
+\cite{Meyer2005-plos, Moritz2004}. More recent developments account for the
+distance to the nearest neighbor to determine whether a sequence represent an
+unsampled species \cite{Ratnasingham2013}.
 
-\subsection{Geography, diversity and diversification}
+\subsection{Geography of diversification}
 
 % still species with geo issues
 % - H. roseomaculata -- cont. in Seychelles extends dist.
@@ -798,11 +812,16 @@ how divergent it is from sequences included in the database.
 % something about how diversity of patterns diversity of patterns in the Indian
 % Ocean displacement of Red Sea by expansion of Pacific Ocean species
 
-Most sister ESUs were found in allopatry indicating the importance of
-geographical isolation in the diversification of sea cucumbers. Allopatric
-speciation appears to be the most common mode in animals \cite{Coyne2004} and is
-also the most prevalent mode in marine organisms (e.g.,
-\cite{Meyer2005-evolution, Malay2010}).
+Understanding the geographic context of speciation can inform the nature and
+strength of evolutionary forces that are driving reproductive isolation
+\cite{Coyne2004}. Additionally, understanding the factors that limit how soon
+after diverging in allopatry species can co-occur, or how often -- if ever --
+species might be able to diverge in sympatry, may contribute to the
+heterogeneity in the spatial distribution of species diversity. In oceans where
+organisms might disperse over large distances and barriers to dispersal are
+rare, opportunities for geographic isolation seem limited. However, species with
+short-lived larvae are expected to have smaller geographic ranges, and higher
+levels of genetic differentiation across their ranges.
 
 % TODO -- need to expand the following with real vs. sampled genetic variation
 % size of geographical ranges
@@ -821,23 +840,6 @@ ESUs that span either the Indian or the Pacific oceans. These results suggest
 that the type of larvae influence patterns of diversity and modes of
 diversification.
 
-% TODO -- finish this paragraph (numbers) + add discussion about Hawaii and Red
-% Sea
-As species of Apodida and Aspidochirotida can maintain connectivity across very
-large distances, opportunities for allopatric speciation are
-limited. Nevertheless, well known biogeographic barriers have served to drive
-speciation as evidenced by allopatric sis ESUs in the Holothuriidae straddling
-these. Basinal separation between the Indian and the Pacific Oceans, and
-isolation of Red Sea/Arabia and Hawaiian archipelago were the three most
-important barriers for cladogenesis (Fig.~ \ref{fig:map-barriers}). The Indian
-Ocean and the Pacific Ocean were isolated several times throughout the
-Pleistocene \cite{Voris2000} which could have contributed to the isolation and
-divergence of the species across the Indo-Pacific Barrier (IBP). The IBP is a
-recognized marine biogeographic barrier, and in a recent review, 15 out of 18
-species of fish and invertebrates surveyed showed genetic differentiation across
-this barrier \cite{Gaither2010}. Here we found, xx\% of the species to show
-differences...
-
 Dendrochirotida species tend to have restricted ranges, with many species known
 only from single localities, and species within a genus are often strictly
 allopatric. In the Indo-Pacific, most species of Dendrochirotida are restricted
@@ -846,13 +848,67 @@ that reach the Central Pacific. This pattern could be explained by the
 combination of limited dispersal abilities that make the insular Pacific
 difficult to reach, and the suspension feeding mode of this group that cannot
 inhabit the oligotrophic environments that constitute oceanic islands
-\cite{Michonneau2013}. The limited dispersal abilities of the Dendrochirotida
-also lead to a different mode of diversification where speciation can occur at
-small spatial scales, often along continental margins leading to regional
-radiations, a pattern that is not observed in Aspidochirotida or the Apodida.
+\cite{Michonneau2013}. However, as some Dendrochirotida species are panmictic
+across continental areas of the Indian Ocean, dispersal limitation seem unlikely
+lending support to the importance of ecology to explain the distribution of this
+group.
+
+% The limited dispersal abilities of the Dendrochirotida also lead to a different
+% mode of diversification where speciation can occur at small spatial scales,
+% often along continental margins leading to regional radiations, a pattern that
+% is not observed in Aspidochirotida or the Apodida.
 
 %% important role of ecology for limiting range of Dendro than dispersal as not
 %% found in central Pacific.
+
+%% <<map-orders, cache=TRUE, echo=FALSE, results='hide', fig.pos='!', fig.height=6.5, fig.cap='Contrasting distribution among three orders. Note that the Dendrochirotida (top) are absent from the Central Pacific, while the other two orders occur throughout.'>>=
+
+%% @
+
+
+
+As species of Apodida and Aspidochirotida can maintain connectivity across very
+large distances, opportunities for allopatric speciation are
+limited. Nevertheless, most sister ESUs were found in allopatry indicating the
+importance of geographical isolation in the diversification of sea
+cucumbers. Allopatric speciation appears to be the most common mode in animals
+\cite{Coyne2004} and is also the most prevalent mode in marine organisms (e.g.,
+\cite{Meyer2005-evolution, Malay2010}). Well known biogeographic barriers have
+served to drive speciation as evidenced by allopatric sister ESUs in the
+Holothuriidae straddling these. Basinal separation between the Indian and the
+Pacific Oceans, and isolation of Red Sea/Arabia and Hawaiian archipelago were
+the three most important barriers for cladogenesis (Fig.~
+\ref{fig:map-barriers}).
+
+The Indian Ocean and the Pacific Ocean were isolated several times throughout
+the Pleistocene \cite{Voris2000} which could have contributed to the isolation
+and divergence of the species across the Indo-Pacific Barrier (IBP). The IBP is
+a recognized marine biogeographic barrier, and in a recent review, 15 out of 18
+species of fish and invertebrates surveyed showed genetic differentiation across
+this barrier \cite{Gaither2010}.
+
+The Hawaiian archipelago and the Red Sea are well recognized areas of endemism
+in the Indo-Pacific \cite{Allen2008, Malay2010, DiBattista2013, Hodge2014}. The
+Hawaiian archipelago is remote and its endemics are thought to have originated
+through peripatric speciation events \cite{Malay2010, Hodge2014}. The Red Sea is
+separated from the Indian Ocean by narrow strait that likely limits population
+connectivity with the rest of the Indo-Pacific. This, in combination with its
+distinct oceanographic conditions, maintains the distinctiveness of the
+fauna. However, the Red Sea experienced several salinity crises, the latest as
+early as \textit{ca.}  19,000 years ago \cite{DiBattista2013}. Therefore, the
+Red Sea fauna must have colonized the area from outside refugia following the
+salinity crises.
+
+The models of speciation associated with these biogeographic barriers are key to
+understand the drivers of diversification within the Indo-Pacific
+\cite{Hickerson2008}. A model of classic vicariance emphasizes the importance of
+large-scale events (e.g., geological) that split an ancestral population into
+populations that diverge in isolation. A modified version of this model (``soft
+vicariance'') proposes that long-distance gene flow connect diverging
+populations that eventually become separated by changes in oceanographic
+conditions. Under a peripatric model, a new population is founded by the
+colonization of a small number of individuals from a larger source population
+\cite{Hickerson2008}.
 
 Compared to studies on other taxonomically well-understood marine organisms, we
 recovered a higher proportion of sister ESUs occurring in sympatry for the
@@ -898,29 +954,6 @@ indicates that it is plesiomorphic in the clade that sea cucumbers emerged from.
 
 % use sister species of Red Sea to talk about ecological consequences of range
 % expansion.
-
-%%% database design
-% - sequences
-%   * sequence_id (=extraction number)
-%   * sequence
-%   * primer used
-%   * primers still included in sequence? (should actually be removed, could
-%   write function to test that on import)
-%   * pass quality control, if not give reason
-% - specimen
-%   * specimen ID
-%   * sequence_id
-%   * species
-%   * catalog number
-%   * institution code
-%   * latitude
-%   * longitude (force decimal WGS84)
-% - institutions
-%   * name
-%   * code
-% - ESUs
-% - taxonomy
-%
 
 
 
@@ -1041,3 +1074,26 @@ indicates that it is plesiomorphic in the clade that sea cucumbers emerged from.
 % invertebrates not really possible because fossils are too limited. However,
 % there are several pairs of sister species across isthmus of Panama, so we can
 % evaluate differences in rates, and
+
+
+%%% database design
+% - sequences
+%   * sequence_id (=extraction number)
+%   * sequence
+%   * primer used
+%   * primers still included in sequence? (should actually be removed, could
+%   write function to test that on import)
+%   * pass quality control, if not give reason
+% - specimen
+%   * specimen ID
+%   * sequence_id
+%   * species
+%   * catalog number
+%   * institution code
+%   * latitude
+%   * longitude (force decimal WGS84)
+% - institutions
+%   * name
+%   * code
+% - ESUs
+% - taxonomy
