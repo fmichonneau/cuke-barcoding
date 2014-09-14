@@ -1,6 +1,6 @@
 ### ---- load-packages ---
 source("R/packages.R")
-source("R/multiplot.R")
+source("R/load.R")
 library(xtable)
 library(car)
 library(wesanderson)
@@ -565,7 +565,7 @@ dendroMap$long.recenter <- ifelse(dendroMap$decimalLongitude < center - 180,
 dendroMap <- dendroMap[complete.cases(dendroMap), ]
 
 den <- ggplot(dendroMap) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x = long.recenter, y = decimalLatitude), data=dendroMap) +
+    geom_point(aes(x = long.recenter, y = decimalLatitude), data=dendroMap, color="red") +
     coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
     theme(panel.background = element_rect(fill="aliceblue"),
           legend.position="none") + xlab("Longitude") + ylab("Latitude") +
@@ -579,7 +579,7 @@ aspidoMap$long.recenter <- ifelse(aspidoMap$decimalLongitude < center - 180,
 aspidoMap <- aspidoMap[complete.cases(aspidoMap), ]
 
 asp <- ggplot(aspidoMap) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x = long.recenter, y = decimalLatitude), data=aspidoMap) +
+    geom_point(aes(x = long.recenter, y = decimalLatitude), data=aspidoMap, color="red") +
     coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
     theme(panel.background = element_rect(fill="aliceblue"),
           legend.position="none") + xlab("Longitude") + ylab("Latitude") +
@@ -593,13 +593,21 @@ apodiMap$long.recenter <- ifelse(apodiMap$decimalLongitude < center - 180,
 apodiMap <- apodiMap[complete.cases(apodiMap), ]
 
 apo <- ggplot(apodiMap) +  annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x = long.recenter, y = decimalLatitude), data=apodiMap) +
+    geom_point(aes(x = long.recenter, y = decimalLatitude), data=apodiMap, color="red") +
     coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
     theme(panel.background = element_rect(fill="aliceblue"),
           legend.position="none") + xlab("Longitude") + ylab("Latitude") +
     xlim(c(0, 300)) + ylim(c(-45, 30))
 
-multiplot(den, asp, apo, ncol=1)
+allOrderMap <- rbind(apodiMap, aspidoMap, dendroMap)
+
+ggplot(allOrderMap) +  annotation_map(globalMap, fill="gray40", colour="gray40") +
+    geom_point(aes(x = long.recenter, y = decimalLatitude, colour=order), data=allOrderMap,
+               position=position_jitter(height=1, width=1)) +
+    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
+    theme(panel.background = element_rect(fill="aliceblue"),
+          legend.position="none") + xlab("Longitude") + ylab("Latitude") +
+    xlim(c(0, 300)) + ylim(c(-45, 30))
 
 ### ---- mantel-test ----
 ### Doesn't really work given too much data, could instead do by species

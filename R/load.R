@@ -2,6 +2,7 @@ source("R/build.R")
 source("R/genFasta.R")
 source("R/CalcGeoDist.R")
 source("R/findGroups.R")
+source("R/multiplot.R")
 
 source("R/load_cukeDB.R")
 source("R/load_cukeAlg.R")
