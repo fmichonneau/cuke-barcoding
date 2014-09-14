@@ -98,11 +98,18 @@ differences, however, these morpho-taxonomic delineations have been challenged
 by the advent of molecular data. Molecular data has revealed complexes of
 cryptic species (see Chapter~2, \cite{Hebert2004, Vogler2008,
   Schlick-Steiner2010}) and elucidated intra-specific polymorphism
-\cite{Miranda2010}. More generally, molecular data has reinforced the idea that
-morphology based species limits can fail, in particular for organisms that do
-not rely on visual clues for finding a mates \cite{Knowlton1993, Knowlton2000}.
+\cite{Miranda2010}.
 
-% more about challenges of species limits in marine species.
+Many groups of marine organisms remain poorly explored or understood
+taxonomically \citep{Bucklin2011}, because the morphological characters
+traditionally used to delineate species frequently vary little among related
+species \citep{Knowlton1993}. Molecular data are then especially useful to guide
+taxonomic decisions and clarify species limits. Molecular assessment of species
+limits in marine organisms has often led to recognition of high levels of
+cryptic diversity (e.g., \citealp{Meyer2005-evolution, OLoughlin2011}), even for
+well-known species (e.g., \citealp{Vogler2008}).
+
+
 
 % develop about spp id -- envt/meta barcoding
 
@@ -917,46 +924,56 @@ analyses limit the inference on the nature of these barriers and whether they
 affected all species synchronously, however, the spread of genetic distances
 (Fig.~\ref{fig:barriers}) suggests multiple events. Determining the model of
 speciation that best explains the patterns of divergence would require
-additional analyses such as \cite{Hickerson2006, Hickerson2008}.
+additional analyses such as \cite{Hickerson2006, Hickerson2008}. Hodge
+\textit{et al} \cite{Hodge2014} showed that coral reef species endemic to the
+Red Sea diverged steadily through time, while species endemic to the Hawaiian
+archipelago diverged in two pulses (0-3 million years ago [Mya] and 9-13
+Mya). Our data for Hawaii is limited, but consistent with these results as the
+lowest divergence is for 2 species of the \textit{Holothuria impatiens} complex
+with divergences estimated at 2 Mya (Chapter~2).
 
 Compared to studies on other taxonomically well-understood marine organisms, we
 recovered a higher proportion of sister ESUs occurring in sympatry for the
-Holothuriidae. For instance, all ESUs are strictly allopatric in
-\cite{Meyer2005-evolution}, and one out of 40 ESUs are sympatric in
-\cite{Malay2010}. %TODO -- make it more summary like
+Holothuriidae. For instance, sister ESUs are almost always allopatric in oceanic
+settings for molluscs (e.g., \cite{Meyer2005-evolution, Reid2006b,
+  Williams2011}) and arthropods (one out of 40 ESUs for hermit crabs in
+\cite{Malay2010}). In contrast, we recovered several closely related and
+sympatric ESUs, that exhibit distinct color patterns and/or ecology, show little
+differentiation in, and cannot be separated by, mitochondrial sequences
+alone. If these forms represent distinct species (as their morphology and
+biology suggest, a pattern we also found in other holothuroids and echinoderms),
+it would indicate that they have diversified much more rapidly than other marine
+invertebrates. Additionally, in our study many closely related ESUs occur in
+sympatry, indicating that reproductive isolation can be completed rapidly. For
+instance, in Chapter~2, we showed how 3 ESUs in the \textit{Holothuria
+  impatiens} complex, occur in sympatry even though they diverged less than 2
+millions years ago. Four out of the eight complexes with three or more ESUs,
+have ESUs with overlapping ranges. This contrasts with other marine organisms,
+for which secondary sympatry in oceanic settings occurs slowly and takes at
+minimum 2 millions years but often more than 10 millions years
+\cite{Meyer2005-evolution, Quenouille2011, Malay2010, Hodge2012}.
+
 This difference could be the result of sympatric speciation, more rapid
 secondary sympatry (speciation occurred in allopatry, but the resulting species
 extended their ranges, and are now sympatric), or a sampling artifact (the
-actual sister species has not been sampled). Two lines of evidence lend support
-for the hypothesis of range expansion. First, the high dispersal abilities of
-the Aspidochirotida make the colonization of distant habitats possible once the
-barrier to dispersal has been removed. For instance, the Red Sea experienced
-several salinity crises, the latest as early as \textit{ca.}  19,000 years ago
-\cite{DiBattista2013}. Therefore, the Red Sea fauna must have colonized the area
-from outside refugia following the salinity crisis. Of the 30 ESUs occurring in
-the Red Sea, five occur throughout the Indo-Pacific suggesting that they
-expended their ranges recently and rapidly.
+actual sister species has not been sampled). If speciation in complete sympatry
+remains controversial, recent studies have shown that selection along depth
+gradients \cite{Prada2013}, host shifts \cite{Munday2004} or other forms of
+selection (reviewed in \cite{Bowen2013}) might promote divergence even with some
+levels of gene flow.
 
-Second, many closely related ESUs occur in sympatry, indicating that
-reproductive isolation can be completed rapidly. For instance, in Chapter~2, we
-showed how 3 ESUs in the \textit{Holothuria impatiens} complex, occur in
-sympatry even though they diverged less than 2 millions years ago. Four out of
-the eight complexes with three or more ESUs, have ESUs with overlapping
-ranges. This contrasts with other marine organisms, for which secondary sympatry
-in oceanic settings occurs slowly and takes at minimum 2 millions years but
-often more than 10 millions years \cite{Meyer2005-evolution, Quenouille2011,
-  Malay2010, Hodge2012}. The rapid acquisition of reproductive isolation could
-arise from premating isolation barriers such as differences in the timing of
-gamete release or gametic incompatibilities caused by the gamete recognition
-proteins (GRPs). GRPs are known to evolve rapidly and play a critical role in
-fecundation success of many free spawning marine invertebrates such as sea
-urchins \cite{Levitan2006, Lessios2011} and gastropods \cite{Hellberg2000}. For
-instance, strong positive selection has been detected in the GRPs between
-closely related species of sea urchins in sympatry but not in allopatry
-\cite{Geyer2003}, suggesting the role of these proteins in maintaining species
-limits.  GRPs have not yet been identified in sea cucumbers but bindin is known
-from sea urchins \cite{Lessios2011} and sea stars \cite{Patino2009} which
-indicates that it is plesiomorphic in the clade that sea cucumbers emerged from.
+The rapid acquisition of reproductive isolation could arise from premating
+isolation barriers such as differences in the timing of gamete release or
+gametic incompatibilities caused by the gamete recognition proteins (GRPs). GRPs
+are known to evolve rapidly and play a critical role in fecundation success of
+many free spawning marine invertebrates such as sea urchins \cite{Levitan2006,
+  Lessios2011} and gastropods \cite{Hellberg2000}. For instance, strong positive
+selection has been detected in the GRPs between closely related species of sea
+urchins in sympatry but not in allopatry \cite{Geyer2003}, suggesting the role
+of these proteins in maintaining species limits.  GRPs have not yet been
+identified in sea cucumbers but bindin is known from sea urchins
+\cite{Lessios2011} and sea stars \cite{Patino2009} which indicates that it is
+plesiomorphic in the clade that sea cucumbers emerged from.
 
 % expand this to talk about density dependence in Levitan
 
