@@ -1,4 +1,4 @@
-% Created by tikzDevice version 0.7.0 on 2014-09-12 18:20:55
+% Created by tikzDevice version 0.7.0 on 2014-09-16 22:50:53
 % !TEX encoding = UTF-8 Unicode
 
 \documentclass[12pt]{article}
@@ -21,7 +21,7 @@
 
 
 
-\usepackage{natbib}
+%\usepackage{natbib}
 \usepackage{authblk}
 \usepackage{tabularx}
 \usepackage{float}
