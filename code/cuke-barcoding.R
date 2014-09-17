@@ -92,6 +92,9 @@ undescSpp <- unique(paste(allSpp$family, allSpp$genusorhigher, allSpp$species, s
 undescSpp <- grep("(n)?_sp(_|\\.|\\s|nov)?\\d?", undescSpp, value=T)
 undescSpp <- undescSpp[-grep("spic|spin|spect", undescSpp)]
 
+propHol <- 100*length(grep("^Holothuriidae", dimnames(cukeAlg)[[1]]))/dim(cukeAlg)[1]
+
+
 ### ---- esu-stats ----
 isMonophyletic <- function(lbl, tree) {
     if (length(lbl) < 2) {

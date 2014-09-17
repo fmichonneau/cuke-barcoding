@@ -70,15 +70,15 @@ source("R/load.R")
   good potential for identifying cryptic species and improve our understanding
   of marine biodiversity. We present the results of a large scale barcoding
   effort for holothuroids (sea cucumbers). We sequenced
-  \Sexpr{dim(load_cukeAlg())[1]} individuals from numerous localities spanning the
-  diversity of habitats in which the species occur, with a particular focus in
+  \Sexpr{dim(load_cukeAlg())[1]} individuals from numerous localities spanning
+  the diversity of habitats in which the group occur, with a particular focus in
   the shallow tropics (Indo-Pacific and Caribbean) and the Antarctic region. The
   number of cryptic species is much higher than currently recognized. The vast
   majority of sister species have allopatric distributions, with species showing
   genetic differentiation between ocean basins, and some are even differentiated
   among archipelagos. However, many closely related and sympatric forms, that
-  exhibit distinct color patterns and/or ecology, show little differentiation in,
-  and cannot be separated by, COI sequence. This pattern is much more common
+  exhibit distinct color patterns and/or ecology, show little differentiation
+  in, and cannot be separated by, COI sequence. This pattern is much more common
   among echinoderms than among molluscs or arthropods. This suggests that
   echinoderms acquire reproductive isolation at a much faster pace than other
   marine phyla. Understanding the causes behind such pattern will refine our
@@ -95,40 +95,50 @@ Estimates for the number of species on Earth are poorly constrained because
 sampling is challenging, and our understanding of species limits for most groups
 limited. Most metazoan species are delineated based on morphological
 differences, however, these morpho-taxonomic delineations have been challenged
-by the advent of molecular data. Molecular data has revealed complexes of
-cryptic species (see Chapter~2, \cite{Hebert2004, Vogler2008,
-  Schlick-Steiner2010}) and elucidated intra-specific polymorphism
-\cite{Miranda2010}.
+by the advent of molecular data that have revealed complexes of cryptic species
+(see Chapter~2, \cite{Hebert2004, Vogler2008, Schlick-Steiner2010}) and
+elucidated intra-specific polymorphism \cite{Miranda2010}. In particular, DNA
+barcoding emerged as a powerful technique to identify species, discover new
+species, and clarify species limits.
 
-Many groups of marine organisms remain poorly explored or understood
-taxonomically \citep{Bucklin2011}, because the morphological characters
-traditionally used to delineate species frequently vary little among related
-species \citep{Knowlton1993}. Initially developed for species identification,
-DNA barcoding has become a popular technique to discover new species, to guide
-taxonomic decisions and clarify species limits. Molecular assessment of species
-limits in marine organisms has often led to recognition of high levels of
-cryptic diversity (e.g., \citealp{Meyer2005-evolution, OLoughlin2011}), even for
-well-known species (e.g., \citealp{Vogler2008}).
-
-The importance of barcoding for species identification has been renewed with the
+The importance of barcoding for species identification has been revived with the
 development of metabarcoding: the DNA-based community analysis of environmental
-samples. Second generation sequencing technologies allow the parallel sequencing
-of many gene copies, and can therefore be used to identify a diversity of
-species of small size (e.g., meiofauna in marine benthic sediments), lacking
-distinguishing morphological features (e.g., larvae in the plankton), or
-digested in the gut of their predators \cite{Leray}.
+samples. Second generation sequencing technologies allows the parallel
+sequencing of many gene copies, and can therefore be used to identify a
+diversity of species of small size (e.g., meiofauna in marine benthic
+sediments), lacking distinguishing morphological features (e.g., larvae in the
+plankton), or digested in the gut of their predators \cite{Leray2013}.
+
+The success of species identification with these approaches relies on a
+comprehensive database that allow the matching of sequences to be identified
+(unknown) to reference sequences. The reference database needs to be
+comprehensive to capture both the intra-specific genetic variation and the
+diversity of species to ensure that an unidentified sequence will have an exact
+match in the reference database \cite{Meyer2005-plos}. In this case, the error
+rate will only depend on the proportion of species that share haplotypes. If the
+unknown sequence is not in the reference database, it could either represent an
+unsampled haplotype of a sampled species, or an unsampled species. Assigning
+these unmatched sequences to an unsampled species has typically relied on the
+``barcoding gap'', the absence of overlap between intra-specific and
+inter-specific distances \cite{Meyer2005-plos}. If the unknown sequence diverged
+by a genetic distance above a threshold (typically 10 times the average
+intraspecific distance, see \cite{Hebert2004}) it would be attributed to a new
+species. However, intensive sampling typically revealed divergent haplotypes
+that reduced the ``barcoding gap'' \cite{Bergsten2012a}. Additionally,
+differences in rates of molecular evolution among species make the application
+of a single threshold for species delineation challenging \cite{Meyer2005-plos}.
 
 For species delineation, one of the greatest limitations of single locus
 approaches like barcoding, is that the gene tree (genealogy) may not reflect the
-species tree \cite{Meyer2005-plos, Funk2003}. Including independent characters
-(e.g., nuclear loci, morphological, behavioral, ecological, geographical) in
-analyses provides a mechanism for testing for incongruences between gene tree
-and species trees. Reciprocal monophyly in two or more independent characters
-demonstrates lack of gene flow and delineates lineages with independent
-evolutionary histories. Such lineages are termed evolutionary significant units
-(ESU) \cite{Moritz1994}, and can be treated as species-level units. However,
-they do not necessarily represent biological species, and their reproductive
-isolation can only be assessed when ESUs occur in sympatry.
+species tree \cite{Funk2003}. Including independent characters (e.g., nuclear
+loci, morphological, behavioral, ecological, geographical) in analyses provides
+a mechanism for testing for incongruences between gene trees  and species
+trees. Reciprocal monophyly in two or more independent characters demonstrates
+lack of gene flow and delineates lineages with independent evolutionary
+histories. Such lineages are termed evolutionary significant units (ESU)
+\cite{Moritz1994}, and can be treated as species-level units. However, they do
+not necessarily represent biological species, and their reproductive isolation
+can only be assessed when ESUs occur in sympatry.
 
 When lineages identified with genetic data are associated with clear differences
 in morphology, morpho-taxonomic delineations are reinforced. Discordance between
@@ -140,44 +150,40 @@ marker (e.g., mtDNA) has been erased by introgression; (4) morphological
 polymorphism does not reflect species limits (see \cite{Funk2003, Ballard2004}
 for reviews). These situations might have undesirable effects on the accuracy of
 species identification, but they might provide insights into the biology of the
-species. While resolving the underlying cause of this discordance may require
-collecting additional evidence, as different processes will lead to the same
-pattern. Through comprehensive sampling, we can identify species that show this
-pattern and deserve further investigation, and assess how common they are. For
-species identification, species sharing haplotypes might be misidentified in
-particular if no voucher information is available.
+species.
 
-The success of species identification with barcoding is dependent on the
-comprehensiveness of the reference database to identify the species of
-interest. Sampling extensively species diversity and intra-specific genetic
-variation ensures that an unidentified sequence will have an exact match in the
-reference database. Indeed, if the unknown sequence has an exact match, the
-error rate will only depend on the proportion of species that share
-haplotypes. If the unknown sequence is not in the reference database, it could
-either represent an unsampled haplotype of a known species, or a new
-species. Determining which of these situations
-The
-barcoding gap: the absence of overlap between intra-specific and inter-specific
-distances \cite{Meyer2005-plos}. The characterization of this gap, or its
-absence, requires a comprehensive sampling both within and across species.  If
-species are sampled throughout their ranges, we can assess levels of
-intra-specific variation, and with near-complete taxonomic sampling, it becomes
-possible to determine how often an unidentified sequence can be assigned to a
-known species accurately, but also to narrow down the identity of this unknown
-sequence to the species with intraspecific distances incompatible with the
-barcoding gap. Additionally, comprehensive sampling allows one to gain insights
-into the amount of cryptic diversity, and the patterns of diversification
-characterizing the groups. It becomes possible to assess the generality of
-patterns encountered in species-level studies.
+Many groups of marine organisms remain poorly explored or understood
+taxonomically \cite{Bucklin2011}, because the morphological characters
+traditionally used to delineate species frequently vary little among related
+species \cite{Knowlton1993}. Molecular assessment of species limits in marine
+organisms has often led to recognition of high levels of cryptic diversity
+(e.g., \cite{Meyer2005-evolution, OLoughlin2011}), even for well-known species
+(e.g., \cite{Vogler2008}). These patterns have challenged the paradigm that the
+high dispersal potential of the larval stage in marine invertebrates limits
+their diversification \cite{Paulay2006}.
 
-% use for identification comprehensive sampling -- thresholds
-% explain barcoding gap, relate to thresholds, say something about sampling and
-% coalescent (if beyond known coalescent  and/or below a threhold red flag for
-% more in depth investigation)
+The Indo-Pacific is the richest marine biogeographic region, and the origin of
+this diversity remains contentious. The paucity of obvious barriers to gene flow
+in the Indo-Pacific in combination with high levels of cryptic diversity,
+challenge the traditional view that physical barriers are the primary driver of
+diversification in marine organisms. Yet, allopatric ranges have been found to
+predominate among young sister species in many groups (e.g.,
+\cite{Meyer2005-evolution, Vogler2008, Malay2010}). Exceptions are gaining
+attention, some pointing to a strong role for selection \cite{Bowen2013}.
+
+Here, we assembled one of the largest and most comprehensive (geographically and
+taxonomically) barcoding data set. This dataset allows us to investigate levels
+of cryptic diversity and the geographic patterns of species diversity in sea
+cucumbers. Specifically, we ask: (1) How do estimates of species boundaries and
+diversity based on DNA sequence data compare with our current morpho-taxonomic
+assessment of sea cucumbers? Specifically, (1a) How common are cryptic species
+that were not recognized prior to genetic scrutiny, and (1b) How many species
+recognizable through morphological and other appraoches are missed by DNA
+barcoding? (2) How does the type of larval development influence the
+geographical distribution and genetic differentiation of species? (3) How does
+the frequency of sympatry change over time among sister species?
 
 
-% in this paragraph needs to split question of species diversity and species
-% delineation
 
 % start these paragraphs by goals: how can we delineate species? what's the
 % diversity?
@@ -222,28 +228,6 @@ development (Dendrochirotida) will show a steeper IBD pattern, and (2) smaller
 geographical ranges than species with planktotrophic development (Apodida and
 Aspidochirotida).
 
-The Indo-Pacific is the richest marine biogeographic region, and the origin of
-this diversity remains contentious. The paucity of obvious barriers to gene flow
-in the Indo-Pacific in combination with high levels of cryptic diversity,
-challenge the traditional view that physical barriers are the primary driver of
-diversification in marine organisms. Yet, allopatric ranges have been found to
-predominate among young sister species in many groups (e.g.,
-\cite{Meyer2005-evolution, Vogler2008, Malay2010}). Exceptions are gaining
-attention, some pointing to a strong role for selection \cite{}. In Chapter 2, I
-showed that recently diverged sea cucumbers can also have sympatric ranges. How
-common is this pattern?
-
-Here, we assembled one of the largest and most comprehensive (geographically and
-taxonomically) barcoding data set. This dataset allows us to investigate levels
-of cryptic diversity and the geographic patterns of species diversity in sea
-cucumbers. Specifically, we ask: (1) How do estimates of species boundaries and
-diversity based on DNA sequence data compare with our current morpho-taxonomic
-assessment of sea cucumbers? Specifically, (1a) How common are cryptic species
-that were not recognized prior to genetic scrutiny, and (1b) How many species
-recognizable through morphological and other appraoches are missed by DNA
-barcoding? (2) How does the type of larval development influence the
-geographical distribution and genetic differentiation of species? (3) How does
-the frequency of sympatry change over time among sister species?
 
 %%% TODO -- need paragraph about thresholds in intro
 % It has been previously suggested that using a threshold equals to 10 times the
@@ -354,7 +338,7 @@ accurately. Therefore, a proportion of the morphospecies for which we could not
 assign a name might match already described species, but others are undescribed.
 
 Second we used the evolutionary significant unit (ESU) concept (\textit{sensu}
-\cite{Mortiz1994}) to evaluate diversity within the holothuriids (= family
+\cite{Moritz1994}) to evaluate diversity within the holothuriids (= family
 Holothuriidae vs. holothuroids = class Holothuroidea). They were the most
 densely sampled and comprise almost half (\Sexpr{formatC(propHol, width=2,
   format="d")}\%) of our dataset; they are also the focus of our taxonomic work
@@ -375,7 +359,7 @@ coalescence depths that were below a threshold set \textit{a priori}.
 For each of these two threshold-based approaches, we used both uncorrected
 distances ($p$) and the Kimura two-parameter (K2P) model \cite{Kimura1980} to
 estimate genetic distances. The K2P model is very widely used when analyzing
-barcoding data, but a recent study indicated that the $p$ distance is probably
+barcoding data, but a recent study indicated that $p$ distances are probably
 more appropriate when comparing genetic distances between closely related
 species and may lead to higher rates of identification success
 \cite{Collins2012}. We estimated the number of species recovered from our sample
@@ -388,10 +372,10 @@ To assess the accuracy of the pairwise and clustering methods, and the most
 appropriate threshold, we compared the manually delineated ESUs to the
 mtLineages estimated by these methods. We tested which method (pairwise or
 clustering) and which threshold recovered most closely the manually delineated
-ESUs. We measured the error rate of the threshold-based approaches by recording
-the number of ESUs that were oversplit (one ESU included more than one
-mtLineage) or lumped (one mtLineage included more than one ESU) for each
-threshold.
+ESUs (closest estimated number and lowest error rate). We measured the error
+rate of the threshold-based approaches by recording the number of ESUs that were
+oversplit (one ESU included more than one mtLineage) or lumped (one mtLineage
+included more than one ESU) for each threshold.
 
 \subsection{Geography, diversity and diversification}  % M&M
 
@@ -412,7 +396,7 @@ threshold.
 
 To test whether mode of development had an impact on range size, we compared the
 maximum geographical distance between sampled individuals for each mtLineage as
-delineated with the threshold approach (4\% threshold with cluster method,
+delineated with the threshold approach (4.5\% threshold with clustering method,
 justification below).
 
 % see how to work around the pairwise diff. based on > 4%
@@ -494,7 +478,7 @@ Manual delineation of the ESUs in the Holothuriidae revealed \Sexpr{nESUs} ESUs,
 \Sexpr{formatC(100*(nESUs-nSppHol)/nSppHol, digits=2, width=2)}\% more than
 named species (N=\Sexpr{nSppHol}). About one quarter (N=\Sexpr{nCryptic}) of
 named species were complexes, each including between 2 and 13
-ESUs. Additionally, \Sexpr{newSpp} ESUs appear to be undescribed species (not
+ESUs. Additionally, \Sexpr{newSpp} ESUs appeared to be undescribed species (not
 directly referable to a named species). \Sexpr{formatC(percentSinglHol,
   digits=2, width=2)}\% of the ESUs were singletons. Most but not all named
 species were reciprocally monophyletic. \Sexpr{formatC(100*8/length(manGrps),
@@ -514,7 +498,7 @@ but was $>$ 2\% for \Sexpr{formatC(percentGreater02, digits=2, width=2)}\%
 On the entire dataset, regardless of the method or the distance threshold used,
 the number of estimated mtLineages was greater than the number of
 morpho-species. The pairwise distance method estimated lower numbers of
-mtLineages at the same thresholds than the clustering method and was less
+mtLineages at the same thresholds than the clustering method, and was less
 sensitive to the type of distance used (Fig.~\ref{fig:groups-comparison-plot},
 \ref{fig:sm-groups-comparison-plot}).
 
@@ -699,15 +683,15 @@ to not form reciprocally monophyletic lineages (e.g., Stichopodidae).
 Funk and Ormland \cite{Funk2003} estimated that 23\% of the 2,319 animal species
 they surveyed were non-monophyletic in their mitochondrial genealogies. Such
 species may not be distinguishable with DNA barcoding, and this high proportion
-has been used as an argument against the method (e.g., \cite{Moritz2004}).
-Funk and Omland found that the proportion of polyphyletic species was negatively
+has been used as an argument against the method (e.g., \cite{Moritz2004}).  Funk
+and Omland found that the proportion of polyphyletic species was negatively
 correlated with the intensity of study, indicating that inadequate taxonomy
 might have inflated their results. Here, we recovered much lower rates of
 non-monophyly among the manually defined ESUs (2.5\%, N=5), but comparable rates
 when investigating morphospecies (\Sexpr{formatC(percentTaxMono, digits=2,
   width=2)}\%, N=\Sexpr{sum(taxMono, na.rm=TRUE)}). Careful taxonomic
 investigation is thus required to ensure accurate estimation of non-monophyly,
-and highlight biologically interesting cases.
+and highlights biologically interesting cases.
 
 Three hypotheses can explain the absence of reciprocal monophyly in these
 morphologically distinct morphospecies. First, these species might have diverged
@@ -746,7 +730,7 @@ nature of boundaries between taxa and evolutionary groups creates conflict
 during the delineation process. In particular, attempting to delineate
 reproductively isolated taxa on the basis of genetic differentiation of a single
 marker will always be associated with some rate of failure if two or more
-species share haplotypes. The goal is therefore to find a method that capture
+species share haplotypes. The goal is therefore to find a method that captures
 best the range of genetic differentiation observed across species while
 identifying conflict in the data pointing to species that will be problematic to
 delineate, and might provide interesting biological insights.
@@ -907,9 +891,9 @@ The Hawaiian archipelago and the Red Sea are well recognized areas of endemism
 in the Indo-Pacific \cite{Allen2008, Malay2010, DiBattista2013, Hodge2014}. The
 Hawaiian archipelago is remote and its endemics are thought to have originated
 through peripatric speciation events \cite{Malay2010, Hodge2014}. The Red Sea is
-separated from the Indian Ocean by narrow strait that likely limits population
+separated from the Indian Ocean by a narrow strait that likely limits population
 connectivity with the rest of the Indo-Pacific. This, in combination with its
-distinct oceanographic conditions, maintains the distinctiveness of the
+peculiar oceanographic conditions, maintains the distinctiveness of the
 fauna. However, the Red Sea experienced several salinity crises, the latest as
 early as \textit{ca.}  19,000 years ago \cite{DiBattista2013}. Therefore, the
 Red Sea fauna must have colonized the area from outside refugia following the
@@ -926,7 +910,7 @@ flow connects diverging populations that eventually become separated by changes
 in oceanographic conditions. Under a peripatric model, a new population is
 founded by the colonization of a small number of individuals from a larger
 source population \cite{Hickerson2008}. Additionally, determining whether sister
-species separated by same the barrier, diverged concomitantly could inform on
+species separated by the same barrier, diverged concomitantly could inform on
 the relative importance of extrinsic factors (e.g., geology, climate)
 \textit{vs.} intrinsic factors (e.g., selection) in generating diversity. Our
 analyses limit the inference on the nature of these barriers and whether they
@@ -934,12 +918,12 @@ affected all species synchronously, however, the spread of genetic distances
 (Fig.~\ref{fig:barriers}) suggests multiple events. Determining the model of
 speciation that best explains the patterns of divergence would require
 additional analyses such as \cite{Hickerson2006, Hickerson2008}. Hodge
-\textit{et al} \cite{Hodge2014} showed that coral reef species endemic to the
-Red Sea diverged steadily through time, while species endemic to the Hawaiian
-archipelago diverged in two pulses (0-3 million years ago [Mya] and 9-13
-Mya). Our data for Hawaii is limited, but consistent with these results as the
-lowest divergence is for 2 species of the \textit{Holothuria impatiens} complex
-with divergences estimated at 2 Mya (Chapter~2).
+\textit{et al} \cite{Hodge2014} showed that coral reef fish species endemic to
+the Red Sea diverged steadily through time, while species endemic to the
+Hawaiian archipelago diverged in two pulses (0-3 million years ago [Mya] and
+9-13 Mya). Our data for Hawaii is limited, but consistent with these results as
+the lowest divergence is for 2 species of the \textit{Holothuria impatiens}
+complex with divergences estimated at 2 Mya (Chapter~2).
 
 Compared to studies on other taxonomically well-understood marine organisms, we
 recovered a higher proportion of sister ESUs occurring in sympatry for the
@@ -947,7 +931,7 @@ Holothuriidae. For instance, sister ESUs are almost always allopatric in oceanic
 settings for molluscs (e.g., \cite{Meyer2005-evolution, Reid2006b,
   Williams2011}) and arthropods (one out of 40 ESUs for hermit crabs in
 \cite{Malay2010}). In contrast, we recovered several closely related and
-sympatric ESUs, that exhibit distinct color patterns and/or ecology, show little
+sympatric ESUs that exhibit distinct color patterns and/or ecology, show little
 differentiation in, and cannot be separated by, mitochondrial sequences
 alone. If these forms represent distinct species (as their morphology and
 biology suggest, a pattern we also found in other holothuroids and echinoderms),
