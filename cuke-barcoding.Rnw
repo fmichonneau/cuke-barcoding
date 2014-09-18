@@ -110,23 +110,23 @@ sediments), lacking distinguishing morphological features (e.g., larvae in the
 plankton), or digested in the gut of their predators \cite{Leray2013}.
 
 The success of species identification with these approaches relies on a
-comprehensive database that allow the matching of sequences to be identified
-(unknown) to reference sequences. The reference database needs to be
-comprehensive to capture both the intra-specific genetic variation and the
-diversity of species to ensure that an unidentified sequence will have an exact
-match in the reference database \cite{Meyer2005-plos}. In this case, the error
-rate will only depend on the proportion of species that share haplotypes. If the
-unknown sequence is not in the reference database, it could either represent an
-unsampled haplotype of a sampled species, or an unsampled species. Assigning
-these unmatched sequences to an unsampled species has typically relied on the
-``barcoding gap'', the absence of overlap between intra-specific and
-inter-specific distances \cite{Meyer2005-plos}. If the unknown sequence diverged
-by a genetic distance above a threshold (typically 10 times the average
-intraspecific distance, see \cite{Hebert2004}) it would be attributed to a new
-species. However, intensive sampling typically revealed divergent haplotypes
-that reduced the ``barcoding gap'' \cite{Bergsten2012a}. Additionally,
-differences in rates of molecular evolution among species make the application
-of a single threshold for species delineation challenging \cite{Meyer2005-plos}.
+comprehensive database to match sequences to be identified (unknowns) to
+reference sequences. The reference database needs to be comprehensive to capture
+both the intra-specific genetic variation and the diversity of species to ensure
+that unknowns will have an exact match in the reference database
+\cite{Meyer2005-plos}. In this case, the error rate will only depend on the
+proportion of species that share haplotypes. If the unknown sequence is not in
+the reference database, it could either represent an unsampled haplotype of a
+sampled species, or an unsampled species. Assigning these unmatched sequences to
+an unsampled species has typically relied on the ``barcoding gap'', the absence
+of overlap between intra-specific and inter-specific distances
+\cite{Meyer2005-plos}. If the unknown sequence diverged by a genetic distance
+above a threshold (typically 10 times the average intraspecific distance, see
+\cite{Hebert2004}), it would be attributed to a new species. However, intensive
+sampling typically revealed divergent haplotypes that reduced the ``barcoding
+gap'' \cite{Bergsten2012a}. Additionally, differences in rates of molecular
+evolution among species make the application of a single threshold for species
+delineation challenging \cite{Meyer2005-plos}.
 
 For species delineation, one of the greatest limitations of single locus
 approaches like barcoding, is that the gene tree (genealogy) may not reflect the
@@ -165,32 +165,21 @@ their diversification \cite{Paulay2006}.
 The Indo-Pacific is the richest marine biogeographic region, and the origin of
 this diversity remains contentious. The paucity of obvious barriers to gene flow
 in the Indo-Pacific in combination with high levels of cryptic diversity,
-challenge the traditional view that physical barriers are the primary driver of
-diversification in marine organisms. Yet, allopatric ranges have been found to
-predominate among young sister species in many groups (e.g.,
+question the importance of physical barriers to drive diversification in marine
+organisms. Yet, allopatric ranges predominate among young sister species (e.g.,
 \cite{Meyer2005-evolution, Vogler2008, Malay2010}). Exceptions are gaining
 attention, some pointing to a strong role for selection \cite{Bowen2013}.
 
 Here, we assembled one of the largest and most comprehensive (geographically and
-taxonomically) barcoding data set. This dataset allows us to investigate levels
+taxonomically) barcoding dataset. This dataset allows us to investigate levels
 of cryptic diversity and the geographic patterns of species diversity in sea
 cucumbers. Specifically, we ask: (1) How do estimates of species boundaries and
 diversity based on DNA sequence data compare with our current morpho-taxonomic
-assessment of sea cucumbers? Specifically, (1a) How common are cryptic species
-that were not recognized prior to genetic scrutiny, and (1b) How many species
-recognizable through morphological and other appraoches are missed by DNA
-barcoding? (2) How does the type of larval development influence the
-geographical distribution and genetic differentiation of species? (3) How does
-the frequency of sympatry change over time among sister species?
-
-
-
-% start these paragraphs by goals: how can we delineate species? what's the
-% diversity?
-
-
-
-
+assessment of sea cucumbers? (2) What is proportion of species that share
+haplotypes, and how does it impact the identification success using DNA
+barcoding in this group? (3) How does the type of larval development influence
+the geographical distribution and genetic differentiation of species? (4) How
+does the frequency of sympatry change over time among sister species?
 
 Sea cucumbers occur in most marine ecosystems, at all latitudes, from the
 intertidal to hadal depths. They constitute the largest invertebrate fishery in
@@ -604,8 +593,6 @@ sister ESUs showed genetic distances lower than the median of the distances
 observed for allopatric ESUs
 (Fig.~\ref{fig:geography-diversification}).
 
-% TODO add map
-
 <<barriers, cache=TRUE, dependson='geography-diversification', echo=FALSE, fig.height=2, fig.cap='Mean genetic distances between sister ESUs separated by the Indian Ocean (IO) and the Pacific Ocean (PO), the Red Sea (RS) and the Pacific Ocean, and Hawaii (HI) and the Pacific Ocean'>>=
 
 @
@@ -648,11 +635,11 @@ common. Regardless of the approach used to estimate diversity from genetic data,
 we recovered more species than we identified based on accepted taxonomic
 names. In the best data, (i.e., the manual assessment of the ESUs for the
 Holothuriidae), the diversity is underestimated by at least 50\%, a proportion
-that will increase with further sampling. This family is the best studied: it is
-easily accessible as it inhabits shallow waters, species are large, many are
-economically important, and most species have widespread geographical
-distributions. Other families likely have higher levels of unrecognized
-diversity.
+that will increase with further sampling as evidenced by the high proportion of
+singletons. This family is the best studied: it is easily accessible as it
+inhabits shallow waters, species are large, many are economically important, and
+most species have widespread geographical distributions. Other families likely
+have higher levels of unrecognized diversity.
 
 Such levels of unrecognized diversity were not expected, and contrast with other
 marine invertebrates that have received more taxonomic attention (8 out of 263
