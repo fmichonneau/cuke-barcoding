@@ -624,6 +624,16 @@ suggestive that isolation was asynchronous (Fig.~\ref{fig:barriers}). For the
 three barriers investigated, distances seemed to form two groups separated by at
 least 2.5\% divergence.
 
+\begin{figure}[!hb]
+{\centering
+\includegraphics[width=\colwidth]{figures/map-barriers}
+}
+\label{fig:map-barriers}
+\caption{Approximate location of the boundaries between allopatric ESUs. Numbers
+  indicate diversification events across these boundaries. Pink line 3 events,
+  dashed yellow line 1 event.}
+\end{figure}
+
 
 \section{Discussion}
 
