@@ -345,7 +345,7 @@ ggplot(localGap) + geom_point(aes(x=maxIntra, y=minInter, colour=species)) +
 ### ---- geography-diversification ----
 source("R/test-allopatry-functions.R")
 holTree <- load_tree_manualGrps()
-esuRange <- testRangeType(holTree, cukeDistRaw, cukeDB)
+esuRange <- testRangeType(holTree, load_cukeDist_raw(), load_cukeDB())
 
 esuRange <- esuRange[complete.cases(esuRange), ]
 
@@ -376,6 +376,7 @@ ggplot(esuRange) +
 
 ### ---- barriers ----
 manESU <- load_manESU()
+cukeDistRaw <- load_cukeDist_raw()
 iopoDist <- manESU[grep("_(IO|PO)$", manESU$ESU_genetic), ]
 iopoESU <- gsub("_[A-Z]{2}$", "", iopoDist$ESU_genetic)
 iopoESU <- gsub("(\\d{1})[a-z]{1}", "\\1", iopoESU)
