@@ -202,11 +202,12 @@ names(wormsTab) <- c("Order", "Family", "Genus", "nSpp")
 wormsSumOrder <- with(wormsTab, tapply(nSpp, Order, sum))
 wormsSumFam <- with(wormsTab, tapply(nSpp, Family, sum))
 
-wormsSum <- data.frame(Family = names(wormsSumFam), acceptedSpp=wormsSumFam)
+wormsSum <- data.frame(Family = names(wormsSumFam), "# accepted"=wormsSumFam, check.names=FALSE)
 wormsSum <- merge(wormsSum, wormsTab, by="Family", all.x=TRUE)
 wormsSum <- wormsSum[, -match(c("Genus", "nSpp"), names(wormsSum))]
 wormsSum <- wormsSum[!duplicated(wormsSum), ]
-wormsSum <- rbind(wormsSum, data.frame(Family="", Order=names(wormsSumOrder), acceptedSpp=wormsSumOrder))
+wormsSum <- rbind(wormsSum, data.frame(Family="", Order=names(wormsSumOrder),
+                                       "# accepted"=wormsSumOrder, check.names=FALSE))
 
 sampTab <- data.frame(xtabs(~ higher + family, data=uniqSpp))
 sampTabOrder <- data.frame(xtabs(~ higher, data=uniqSpp), family = "")
@@ -214,9 +215,36 @@ sampTab <- rbind(sampTab, sampTabOrder)
 sampTab <- sampTab[sampTab$Freq != 0, ]
 names(sampTab) <- c("Order", "Family", "# sampled")
 
-sampTab <- merge(sampTab, wormsSum)
+uniqFam <- as.character(taxonomyDf$taxa[taxonomyDf$rank == "Family"])
+nESUsPerFam <- sapply(uniqFam, function(x) {
+    length(load_species_clusterGrps(distance="raw", threshold=0.0225, taxa=x))
+})
+nESUsPerFam <- data.frame(taxa=names(nESUsPerFam), mtLineages=nESUsPerFam,
+                          stringsAsFactors=FALSE)
+nESUsPerFam <- merge(taxonomyDf, nESUsPerFam)
 
-names(sampTab)[ncol(sampTab)] <- "# accepted"
+uniqOrder <- as.character(taxonomyDf$taxa[taxonomyDf$rank == "Order"])
+uniqOrder <- uniqOrder[-match("all", uniqOrder)]
+nESUsPerOrder <- sapply(uniqOrder, function(x) {
+    length(load_species_clusterGrps(distance="raw", threshold=0.0225, taxa=x))
+})
+nESUsPerOrder <- data.frame(taxa=names(nESUsPerOrder), mtLineages=nESUsPerOrder,
+                            stringsAsFactors=FALSE)
+nESUsPerOrder <- merge(taxonomyDf, nESUsPerOrder)
+
+nESUsPerTaxa <- rbind(nESUsPerFam, nESUsPerOrder)
+nESUsPerTaxa$taxa <- as.character(nESUsPerTaxa$taxa)
+nESUsPerTaxa$higher <- as.character(nESUsPerTaxa$higher)
+nESUsPerTaxa <- nESUsPerTaxa[, -match("rank", colnames(nESUsPerTaxa))]
+toSwitch <- is.na(nESUsPerTaxa$higher)
+nESUsPerTaxa$higher[toSwitch] <- nESUsPerTaxa$taxa[toSwitch]
+nESUsPerTaxa$taxa[toSwitch] <- ""
+names(nESUsPerTaxa) <- c("Family", "Order", "# mtLineages")
+
+sampTab <- merge(sampTab, wormsSum)
+sampTab <- merge(sampTab, nESUsPerTaxa)
+sampTab$"# mtLineages"[is.na(sampTab$"# mtLineages")] <- nESUsPerOrder
+sampTab <- sampTab[, c("Order", "Family", "# accepted", "# sampled", "# mtLineages")]
 
 sampTab$Family <- factor(sampTab$Family,
                          levels=c(levels(sampTab$Family)[nlevels(sampTab$Family)],
@@ -231,21 +259,36 @@ sampTab$"# sampled"[nzchar(sampTab$Order)] <-
     paste("\\textbf{", sampTab$"# sampled"[nzchar(sampTab$Order)], "}", sep="")
 sampTab$"# accepted"[nzchar(sampTab$Order)] <-
     paste("\\textbf{", sampTab$"# accepted"[nzchar(sampTab$Order)], "}", sep="")
+sampTab$"# mtLineages"[nzchar(sampTab$Order)] <-
+    paste("\\textbf{", sampTab$"# mtLineages"[nzchar(sampTab$Order)], "}", sep="")
 
-sampTab <- rbind(sampTab, cbind(Order = "\\textbf{Total}", Family = "",
-                                "# sampled" = paste0("\\textbf{", nrow(uniqSpp), "}"),
-                                "# accepted" = paste0("\\textbf{", sum(subset(wormsSum, Family != "")$acceptedSpp), "}")))
 
-colnames(sampTab)[3:4] <- paste0("\\", colnames(sampTab)[3:4])
+sampTab <- rbind(sampTab,
+                 cbind(Order = "\\textbf{Total}", Family = "",
+                       "# sampled" = paste0("\\textbf{", nrow(uniqSpp), "}"),
+                       "# accepted" = paste0("\\textbf{", sum(subset(wormsSum, Family != "")$acceptedSpp), "}"),
+                       "# mtLineages" = paste0("\\textbf{", length(load_species_clusterGrps(distance="raw",
+                           threshold=0.0225,
+                           taxa="all")), "}")))
+
+colnames(sampTab)[3:5] <- paste0("\\", colnames(sampTab)[3:5])
 
 sampXtab <- xtable(sampTab,
                    caption=paste("Number of named morpho-species sampled (\\# sampled)",
-                       "and number of accepted species (\\# accepted) for each",
-                       "family and each order of sea cucumber. Not all families were",
+                       "number of accepted species (\\# accepted) and",
+                       "number of mtLineages (\\# mtLineages) estimated with the clustering",
+                       "method and a 4.5\\% threshold for each",
+                       "family and each order of sea cucumber. There were", nESUs, "ESUs",
+                       "delineated for the Holothuriidae. Not all families were",
                        "sampled, thus totals in some orders are more than sum of family",
                        "diversities. This classification does not include modifications",
-                       "proposed by Smirnov \\cite{Smirnov2012}."),
-                   label="tab:sampled-species", display=c("s", "s", "s", "d", "d"))
+                       "proposed by Smirnov \\cite{Smirnov2012}. Estimations of the number",
+                       "of mtLineages is based on different datasets for families and orders,",
+                       "thus totals for some orders may differ because of taxonomic uncertainty",
+                       "(samples identified at the order level but not at the family level), or",
+                       "differences in lineages delineation when the entire order is considered"),
+                   label="tab:sampled-species", display=c("s", "s", "s", "d", "d", "d"),
+                   align=rep("l", 6))
 
 print(sampXtab, include.rownames=FALSE, hline.after=c(-1, 0, hlinePos, nrow(sampXtab)),
       sanitize.text.function=function(x) {x},
