@@ -472,8 +472,9 @@ named species were complexes, each including between 2 and 13
 ESUs. Additionally, \Sexpr{newSpp} ESUs appeared to be undescribed species (not
 directly referable to a named species). \Sexpr{formatC(percentSinglHol,
   digits=2, width=2)}\% of the ESUs were singletons. Most but not all named
-species were reciprocally monophyletic. \Sexpr{formatC(100*8/length(manGrps),
-  digits=2, width=2)}\% of the ESUs were non-monophyletic.
+species were reciprocally monophyletic (\Sexpr{formatC(percentESUNotMono, digits=2,
+  width=2)}\%, N=\Sexpr{sum(!is.na(esuMono))-sum(esuMono, na.rm=TRUE)} of the
+ESUs were non-monophyletic).
 
 The distance to the nearest neighboring ESU was greater than the maximum
 intra-ESU distance for \Sexpr{formatC(percentGap, digits=2, width=2)}\%
@@ -656,13 +657,14 @@ The ESU approach provides guidelines for identitying of biological species. Even
 if correlation between independent traits does not guarantee that ESUs are
 biological species, the concept demonstrates lack of gene flow and provides a
 powerful indirect test for reproductive isolation \cite{Meyer2005-plos}. More
-than 90\% (N=\Sexpr{nESUs-15}) of ESUs identified for the Holothuriidae are
-reciprocally monophyletic in COI and are morphologically distinct, making them
-natural targets for taxonomic revision. The ESUs that are not reciprocally
-monophyletic for COI sequences are either (1) monophyletic but their closest
-neighbor is separated by distances lower than the maximum intra-ESU distances
-(10 out of 15 ESUs), or (2) not monophyletic. Interestingly the 5 ESUs that are
-not monophyletic all belong to the subgenus \textit{Halodeima}: 3 ESUs of
+than \Sexpr{formatC(percentESUMono, digits=2, width=2)}\% (N=\Sexpr{sum(esuMono,
+  na.rm=TRUE)}) of ESUs identified for the Holothuriidae are reciprocally
+monophyletic in COI and are morphologically distinct, making them natural
+targets for taxonomic revision. The ESUs that are not reciprocally monophyletic
+for COI sequences are either (1) monophyletic but their closest neighbor is
+separated by distances lower than the maximum intra-ESU distances (10 out of 15
+ESUs), or (2) not monophyletic. Interestingly the 5 ESUs that are not
+monophyletic all belong to the subgenus \textit{Halodeima}: 3 ESUs of
 \textit{Holothuria edulis}, \textit{H. mexicana} and
 \textit{H. floridana}. Additionally, 2 species of \textit{Actinopyga}, each
 represented by a single individual are paraphyletic with \textit{Actinopyga}
@@ -671,7 +673,6 @@ species (\textit{A. flammea} and \textit{A. caerulea} are indistinguishable from
 to not form reciprocally monophyletic lineages (e.g., the \textit{Stichopus
   ``variegatus''} complex in the Stichopodidae).
 
-% TODO use \Sexpr for \% of non-mono recip ESU
 Funk and Ormland \cite{Funk2003} estimated that 23\% of the 2,319 animal species
 they surveyed were non-monophyletic in their mitochondrial genealogies. Such
 species may not be distinguishable with DNA barcoding, and this high proportion
@@ -682,7 +683,8 @@ an important source of this error, and may have inflated their results. Here, we
 recovered similar rates of non-monophyly when considering currently defined
 morphospecies (\Sexpr{formatC(percentTaxMono, digits=2, width=2)}\%,
 N=\Sexpr{sum(taxMono, na.rm=TRUE)}), but much lower rates when using ESUs
-defined by integrative taxonomic study ESUs (2.5\%, N=5). Careful taxonomic
+defined by integrative taxonomic study ESUs (\Sexpr{formatC(percentESUNotMono,
+  digits=2, width=2)}\%, N=\Sexpr{sum(!esuMono, na.rm=TRUE)}). Careful taxonomic
 investigation is thus required to ensure accurate estimation of non-monophyly,
 and to highlight biologically interesting cases.
 
@@ -778,10 +780,10 @@ species included in the database.
 % TODO -- emphasize that even in absence of monophyly can still narrow down
 % species to 2 possibilities.
 
-In our ESU dataset, only 7 out of \Sexpr{nESUs} ESUs
-(\Sexpr{formatC(100*7/nESUs, digits=2, width=2)}\%) share haplotypes indicating
-that individuals can be identified with high accuracy through DNA barcoding if
-their sequences have an exact match in our database.
+In our ESU dataset, if the unknown sequences have an exact match in our
+database, individuals can be identified with high accuracy through DNA
+barcoding, as only 7 out of \Sexpr{nESUs} ESUs (\Sexpr{formatC(100*7/nESUs,
+  digits=2, width=2)}\%) share haplotypes. However,
 
 Sequences without a match in reference databases are typically assigned to a
 known species in the database if the sequences differ by less than a threshold,
