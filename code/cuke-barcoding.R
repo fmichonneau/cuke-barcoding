@@ -137,9 +137,13 @@ toKeep <- intersect(manESU$Labels, tipLabels(holTree))
 holTree <- subset(holTree, tips.include=toKeep)
 
 taxLbl <- split(manESU$Labels, manESU$ESU_taxonomy)
-
 taxMono <- sapply(taxLbl, function(x) isMonophyletic(x, holTree))
 percentTaxMono <- 100*(1 - sum(taxMono, na.rm=TRUE)/sum(!is.na(taxMono)))
+
+esuLbl <- load_species_manualGrps()
+esuMono <- sapply(esuLbl, function(x) isMonophyletic(x, holTree))
+percentESUNotMono <- 100*(1 - sum(esuMono, na.rm=TRUE)/sum(!is.na(esuMono)))
+percentESUMono <- 100 - percentESUNotMono
 
 ### ---- cluster-groups-data ----
 taxonomyDf <- load_taxonomyDf()
