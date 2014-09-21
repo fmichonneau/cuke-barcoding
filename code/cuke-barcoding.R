@@ -383,6 +383,16 @@ localGap$species <- gsub("\\..+$", "", localGap$species)
 for (i in 1:nrow(esuNm)) { localGap$species <- gsub(esuNm[i, 1], esuNm[i, 2], localGap$species)}
 localGap$species <- gsub("_", " ", localGap$species)
 
+## esuMono comes from the esu-stats chunk
+whichNotMono <- names(esuMono)[!esuMono & !is.na(esuMono)]
+for (i in 1:nrow(esuNm)) { whichNotMono <- gsub(esuNm[i, 1], esuNm[i, 2], whichNotMono) }
+whichNotMono <- gsub("_", " ", whichNotMono)
+noGapSpp <- na.omit(localGap$species)
+problemESUs <- union(noGapSpp, whichNotMono)
+
+nProblemESUs <- length(problemESUs) + 1  # to account for A. flammea which is a singleton
+percentProblemESUs <- nProblemESUs/nESUs # nESUs comes from esu-stats chunk
+
 ggplot(localGap) + geom_point(aes(x=maxIntra, y=minInter, colour=species)) +
     geom_abline(slope=1, linetype=3, colour="gray40") + coord_fixed() +
     xlim(c(0, 0.18)) + ylim(c(0, 0.18)) +
