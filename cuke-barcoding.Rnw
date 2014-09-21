@@ -483,7 +483,7 @@ intra-ESU distance for \Sexpr{formatC(percentGap, digits=2, width=2)}\%
 but was $>$ 2\% for \Sexpr{formatC(percentGreater02, digits=2, width=2)}\%
 (N=\Sexpr{nGreater02}).
 
-<<local-gap-plot, cache=TRUE, results='hide', echo=FALSE, warning=FALSE, fig.cap='Comparison of inter- and intra-ESU uncorrected COI distances. For each ESU we compared the maximum intra-ESU genetic distance with the minimum inter-ESU distances, ESU above (gray) the 1:1 dotted line can be easily delineated with the barcoding gap, the ESUs falling below the line (colored) cannot.', fig.height=4.5>>=
+<<local-gap-plot, cache=TRUE, dependson='esu-stats', results='hide', echo=FALSE, warning=FALSE, fig.cap='Comparison of inter- and intra-ESU uncorrected COI distances. For each ESU we compared the maximum intra-ESU genetic distance with the minimum inter-ESU distances, ESU above (gray) the 1:1 dotted line can be easily delineated with the barcoding gap, the ESUs falling below the line (colored) cannot.', fig.height=4.5>>=
 
 @
 
