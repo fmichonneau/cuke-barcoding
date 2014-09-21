@@ -763,8 +763,6 @@ approaches.
 
 \subsection{DNA barcoding for species identification in sea cucumbers}
 
-%% TODO -- revisit this part
-
 One of the main applications of DNA barcoding is to facilitate species
 identification, especially when only non-diagnostic parts are available (e.g.,
 when processed for trade \cite{Uthicke2009a}, in larvae \cite{Baldwin2014}, for
@@ -772,10 +770,14 @@ gut contents \cite{Leray2011}). Accurate identification requires a comprehensive
 database of DNA sequences to capture the diversity of species, as well as
 intra-specific variation. If the sequences for the individuals to be identified
 have exact matches in the reference database, the accuracy of the identification
-will only depend on the proportion of species that share haplotypes. However, if
-the sequence is not in the database, accuracy of the identification will also
-depend on the accuracy with which the sequence can be predicted to belong to a
-species included in the database.
+will only depend on the proportion of species that share haplotypes. However,
+commonly, these unknowns will not be in the database, therefore the accuracy of
+a positive identification will also depend on the accuracy with which the
+sequence can be predicted to belong to a species included in the database, and
+the probability that species included in the database share unsampled
+haplotypes. The accuracy with which a sequence can be predicted to belong to a
+species included in the database is related to the proportion of species that
+are not monophyletic.
 
 % TODO -- emphasize that even in absence of monophyly can still narrow down
 % species to 2 possibilities.
@@ -783,19 +785,28 @@ species included in the database.
 In our ESU dataset, if the unknown sequences have an exact match in our
 database, individuals can be identified with high accuracy through DNA
 barcoding, as only 7 out of \Sexpr{nESUs} ESUs (\Sexpr{formatC(100*7/nESUs,
-  digits=2, width=2)}\%) share haplotypes. However,
+  digits=2, width=2)}\%) share haplotypes. If the unknown sequences belong to
+ESUs that are not reciprocally monophyletic, or that are characterized by higher
+intra-ESU distances than the distance to the closest neighboring ESU, they will
+likely be misidentified. Together with the non-monophyletic ESUs, they represent
+\Sexpr{formatC(percentProblemESUs, width=2, digits=2)}\% (N=\Sexpr{nProblemESUs}
+ESUs) of our ESU dataset.
 
 Sequences without a match in reference databases are typically assigned to a
-known species in the database if the sequences differ by less than a threshold,
-or to new species if the genetic distances are above this threshold
-\cite{Meyer2005-plos}. The threshold was estimated based on the extent of
-overlap between intra- and interspecific genetic variation among the species
-considered, the barcoding gap. One of the issues associated with this concept is
-that increased sampling reduce the barcoding gap by capturing rare, divergent
-haplotypes that increase the overlap between intra- and interspecific variation
-\cite{Meyer2005-plos, Moritz2004}. More recent developments account for the
-distance to the nearest neighbor to determine whether a sequence represent an
-unsampled species \cite{Ratnasingham2013}.
+sampled species if the sequences differ by less than a threshold, or are
+considered as unsampled species if the genetic distances are above this
+threshold \cite{Meyer2005-plos}. This is typically done either in the context of
+pairwise genetic distances or in the context of the closest match in a
+Neighbor-Joining tree. Thresholds are estimated based on the extent of overlap
+between intra- and interspecific genetic variation among the species considered,
+the barcoding gap. One of the issues associated with this concept is that
+increased sampling reduce, and often eliminate, the barcoding gap by capturing
+closely related yet good species, or rare, divergent haplotypes that increase
+the overlap between intra- and interspecific variation \cite{Meyer2005-plos,
+  Moritz2004}. More recent methodological developments account for the distance
+to the nearest neighbor to determine whether a sequence represents an unsampled
+species \cite{Ratnasingham2013}, or use a machine learning approach to detect
+features in the sequence that allow species identification \cite{Weitschek2013}.
 
 \subsection{Geography of diversification}
 
