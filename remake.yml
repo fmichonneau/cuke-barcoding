@@ -1,0 +1,16 @@
+packages:
+  - ape
+  - phylobase
+  - ggplot2
+  - igraph
+  - methods
+  - doMC
+  - chopper
+  - maps
+  - sp
+  - rgeos
+  - xtable
+  - car
+  - wesanderson
+  - tikzDevice
+  - reshape2
