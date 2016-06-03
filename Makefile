@@ -17,7 +17,7 @@ docx: cuke-barcoding.tex cuke-barcoding_nourl.bib
 cuke-barcoding.tex: cuke-barcoding.Rnw code/cuke-barcoding.R
 	${RSCRIPT} -e "library(knitr); knit('cuke-barcoding.Rnw')"
 
-cuke-barcoding_nourl.bib: cuke-barcoding.Rnw
+cuke-barcoding_nourl.bib: cuke-barcoding.Rnw ~/Library/Barcoding.bib
 	-cp ~/Library/Barcoding.bib cuke-barcoding.bib
 	${RSCRIPT} parseURLs.R
 
