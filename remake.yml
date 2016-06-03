@@ -25,10 +25,10 @@ targets:
 
   all:
     depends:
-      - init
+      - .init
       - cukeDB
 
-  init:
+  .init:
     command: init()
 
   echinoDB:
@@ -48,10 +48,10 @@ targets:
     command: load_cukeAlg("data/seq/cukeAlg-cleaned.fas")
 
   cuke_tree_raw:
-    command: load_cukeTree_raw(cuke_alg)
+    command: load_cuke_tree(cuke_alg, dist_mat = cuke_dist_raw, Nrep=I(1))
 
   cuke_tree_k2p:
-    command: load_cukeTree_k2p(cuke_alg)
+    command: load_cuke_tree(cuke_alg, dist_mat = cuke_dist_k2p, Nrep=I(1))
 
   cuke_tree_raw_phylo4:
     command: load_cukeTree_raw_phylo4(cuke_tree_raw)
@@ -67,3 +67,9 @@ targets:
 
   data/seq/cukeAlg-cleaned.fas:
     command: generate_cleaned_cuke_fasta("data/seq/cukeAlg-aligned.fas")
+
+  cuke_dist_raw:
+    command: load_cuke_dist_raw(cuke_alg)
+
+  cuke_dist_k2p:
+    command: load_cuke_dist_k2p(cuke_alg)

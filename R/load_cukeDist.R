@@ -1,23 +1,14 @@
-load_cukeDist_raw <- function(overwrite=FALSE, ...) {
-    fnm <- "data/cukeDist-raw.rds"
-    if (file.exists(fnm) && !overwrite) {
-        cukeDist <- readRDS(file=fnm)
-    } else {
-        cukeDist <- ape::dist.dna(load_cukeAlg(), as.matrix=TRUE, model="raw",
-                                  pairwise.deletion=FALSE)
-        saveRDS(cukeDist, file=fnm)
-    }
-    invisible(cukeDist)
+load_cuke_dist <- function(alg, model) {
+    model <- match.arg(model,  c("raw", "K80"))
+    cukeDist <- ape::dist.dna(alg, as.matrix=TRUE, model=model,
+                              pairwise.deletion=FALSE)
+    cukeDist
 }
 
-load_cukeDist_k2p <- function(overwrite=FALSE, ...) {
-    fnm <- "data/cukeDist-k2p.rds"
-    if (file.exists(fnm) && !overwrite) {
-        cukeDist <- readRDS(file=fnm)
-    } else {
-        cukeDist <- ape::dist.dna(load_cukeAlg(), as.matrix=TRUE, model="K80",
-                                  pairwise.deletion=FALSE)
-        saveRDS(cukeDist, file=fnm)
-    }
-    invisible(cukeDist)
+load_cuke_dist_raw <- function(cuke_alg) {
+   load_cuke_dist(cuke_alg, model = "raw")
+}
+
+load_cuke_dist_k2p <- function(cuke_alg) {
+    load_cuke_dist(cuke_alg, model = "K80")
 }

@@ -6,16 +6,8 @@ removeNodeLabels <- function(phy) {
     phy
 }
 
-build_cukeTree <- function(alg, model, Nrep) {
-    model <- match.arg(model, c("raw", "K80"))
-    if (identical(model, "raw")) {
-        dMat <- load_cukeDist_raw()
-    }
-    else if (identical(model, "K80")) {
-        dMat <- load_cukeDist_k2p()
-    } else stop("Houston, we have a problem")
-
-    treH <- ape::nj(dMat)
+build_cuke_tree <- function(alg, dist_mat, Nrep) {
+    treH <- ape::nj(dist_mat)
     bootH <- ape::boot.phylo(treH, alg, function(xx) {
         ape::nj(ape::dist.dna(xx, model=model))
     }, B=Nrep)
@@ -23,7 +15,7 @@ build_cukeTree <- function(alg, model, Nrep) {
     treH
 }
 
-build_cukeTree_phylo4 <- function(tree) {
+build_cuke_tree_phylo4 <- function(tree) {
     tree$edge.length[tree$edge.length < 0] <- 1e-6
     ## TODO -- double check that using 1 blindly doesn't cause
     ## any issues
@@ -39,24 +31,18 @@ build_cukeTree_phylo4 <- function(tree) {
     treeP4
 }
 
-load_cukeTree_raw <- function(cukeAlg, Nrep, ...) {
+load_cuke_tree <- function(cuke_alg, dist_mat, Nrep, ...) {
     if(missing(Nrep)) Nrep <- 200
-    cukeTree <- build_cukeTree(cukeAlg, model="raw", Nrep=Nrep, ...)
+    cukeTree <- build_cuke_tree(cuke_alg, dist_mat, Nrep=Nrep, ...)
     invisible(cukeTree)
 }
 
-load_cukeTree_k2p <- function(cukeAlg, Nrep, ...) {
-    if(missing(Nrep)) Nrep <- 200
-    cukeTree <- build_cukeTree(cukeAlg, model="K80", Nrep=Nrep, ...)
-    invisible(cukeTree)
-}
-
-load_cukeTree_raw_phylo4 <- function(cuke_tree_raw) {
-    cukeTree4 <- build_cukeTree_phylo4(cuke_tree_raw)
+load_cuke_tree_raw_phylo4 <- function(cuke_tree_raw) {
+    cukeTree4 <- build_cuke_tree_phylo4(cuke_tree_raw)
     invisible(cukeTree4)
 }
 
-load_cukeTree_k2p_phylo4 <- function(cuke_tree_k2p) {
-    cukeTree4 <- build_cukeTree_phylo4(cuke_tree_k2p)
+load_cuke_tree_k2p_phylo4 <- function(cuke_tree_k2p) {
+    cukeTree4 <- build_cuke_tree_phylo4(cuke_tree_k2p)
     invisible(cukeTree4)
 }
