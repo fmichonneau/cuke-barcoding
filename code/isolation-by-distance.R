@@ -126,7 +126,7 @@ ggplot(subset(distBySpecies, Order %in% orderToInclude),
     geom_smooth(method="lm", se=FALSE) +
     facet_wrap(~ Order) + ylab("Maximum genetic distance (uncorrected)") +
     xlab("Maximum geographic distance (km)") +
-    theme(legend.position="none")
+    theme(legend.position="none") + ylim(c(0, 0.045))
 
 ### ---- range-size-plot ----
 ggplot(subset(distBySpecies, Order %in% orderToInclude)) +
