@@ -269,20 +269,19 @@ sampTab$"# mtLineages"[nzchar(sampTab$Order)] <-
 
 sampTab <- rbind(sampTab,
                  cbind(Order = "\\textbf{Total}", Family = "",
+                       "# accepted" = paste0("\\textbf{", sum(subset(wormsSum, Family != "")$"# accepted"), "}"),
                        "# sampled" = paste0("\\textbf{", nrow(uniqSpp), "}"),
-                       "# accepted" = paste0("\\textbf{", sum(subset(wormsSum, Family != "")$acceptedSpp), "}"),
                        "# mtLineages" = paste0("\\textbf{", length(load_species_clusterGrps(distance="raw",
-                           threshold=0.0225,
-                           taxa="all")), "}")))
+                           threshold=0.0225, taxa="all")), "}")))
 
 colnames(sampTab)[3:5] <- paste0("\\", colnames(sampTab)[3:5])
 
 sampXtab <- xtable(sampTab,
-                   caption=paste("Number of named morpho-species sampled (\\# sampled)",
-                       "number of accepted species (\\# accepted) and",
+                   caption=paste("Number of named morpho-species sampled (\\# sampled),",
+                       "number of accepted species (\\# accepted), and",
                        "number of mtLineages (\\# mtLineages) estimated with the clustering",
                        "method and a 4.5\\% threshold for each",
-                       "family and each order of sea cucumber. There were", nESUs, "ESUs",
+                       "family and each order of sea cucumbers. There were", nESUs, "ESUs",
                        "delineated for the Holothuriidae. Not all families were",
                        "sampled, thus totals in some orders are more than sum of family",
                        "diversities. This classification does not include modifications",
@@ -296,7 +295,7 @@ sampXtab <- xtable(sampTab,
 
 print(sampXtab, include.rownames=FALSE, hline.after=c(-1, 0, hlinePos, nrow(sampXtab)),
       sanitize.text.function=function(x) {x},
-      table.placement="ht!")
+      table.placement="ht!", caption.placement="top")
 
 
 
@@ -356,12 +355,17 @@ compareManESUs$nSplits <- as.numeric(compareManESUs$nSplits)
 compareManESUs$nLumps <- as.numeric(compareManESUs$nLumps)
 allErrors <- compareManESUs$nSplits + compareManESUs$nLumps
 compareManESUs <- cbind(compareManESUs, allErrors=allErrors)
-minError <- compareManESUs[which.min(allErrors), ]
 
 compareManESUs$pLumps <- compareManESUs$nLumps/compareManESUs$nGrps
 compareManESUs$pSplits <- compareManESUs$nSplits/compareManESUs$nGrps
 
 saveRDS(compareManESUs, file="tmp/compareManESUs.rds")
+
+minError <- compareManESUs[which(allErrors <= min(allErrors)), ]
+
+if (nrow(minError) > 1) {
+    minError <- minError[which.min(nESUs - minError$nGrps), ]
+}
 
 ### ---- compare-manual-cluster-ESUs-plot ----
 compareManESUs <- melt(compareManESUs, id.vars=c("threshold", "method", "distance"),
@@ -391,7 +395,7 @@ noGapSpp <- na.omit(localGap$species)
 problemESUs <- union(noGapSpp, whichNotMono)
 
 nProblemESUs <- length(problemESUs) + 1  # to account for A. flammea which is a singleton
-percentProblemESUs <- nProblemESUs/nESUs # nESUs comes from esu-stats chunk
+percentProblemESUs <- 100 * nProblemESUs/nESUs # nESUs comes from esu-stats chunk
 
 ggplot(localGap) + geom_point(aes(x=maxIntra, y=minInter, colour=species)) +
     geom_abline(slope=1, linetype=3, colour="gray40") + coord_fixed() +
