@@ -14,3 +14,56 @@ packages:
   - wesanderson
   - tikzDevice
   - reshape2
+  - seqinr
+
+
+sources:
+  - R/
+
+
+targets:
+
+  all:
+    depends:
+      - init
+      - cukeDB
+
+  init:
+    command: init()
+
+  echinoDB:
+    command: load_echinoDB()
+    depends: "data/raw/MARBoL_Echinos_VIII_2013.csv"
+
+  cukeDB_noLabels:
+    command: load_cukeDB_noLabels(echinoDB)
+
+  cukeDB:
+    command: load_cukeDB(cukeDB_noLabels, cuke_tree_raw_phylo4)
+
+  taxonomy:
+    command: load_taxonomy_df(cukeDB)
+
+  cuke_alg:
+    command: load_cukeAlg("data/seq/cukeAlg-cleaned.fas")
+
+  cuke_tree_raw:
+    command: load_cukeTree_raw(cuke_alg)
+
+  cuke_tree_k2p:
+    command: load_cukeTree_k2p(cuke_alg)
+
+  cuke_tree_raw_phylo4:
+    command: load_cukeTree_raw_phylo4(cuke_tree_raw)
+
+  cuke_tree_k2p_phylo4:
+    command: load_cukeTree_k2p_phylo4(cuke_tree_k2p)
+
+  data/seq/cukeAlg-unaligned.fas:
+    command: generate_unaligned_cuke_fasta(cukeDB_noLabels)
+
+  data/seq/cukeAlg-aligned.fas:
+    command: generate_aligned_cuke_fasta("data/seq/cukeAlg-unaligned.fas")
+
+  data/seq/cukeAlg-cleaned.fas:
+    command: generate_cleaned_cuke_fasta("data/seq/cukeAlg-aligned.fas")

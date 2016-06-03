@@ -1,5 +1,4 @@
 ### Compare with sequences submitted to genbank
-ufgb <- read.csv(file="data/UF_genbankSequences.csv", stringsAsFactors=FALSE)
 testGBseq <- function(gb, db) {
     if (! file.exists("/tmp/seq")) {
         stop("Create /tmp/seq before running this script.")
@@ -21,7 +20,7 @@ testGBseq <- function(gb, db) {
         else {
             lFiles[i] <- algNm
             ## Sequence 1 - what's in the database
-            ## Sequence 2 - what's in GenBank            
+            ## Sequence 2 - what's in GenBank
             seqNm1 <- paste(">", tmpDB$GenBankSubmission, "_", tmpDB$Sample, sep="")
             seqNm2 <- paste(">", gb$genbankNb[i], "_", gb$vou[i], sep="")
             seq1 <- tmpDB$Sequence
@@ -47,10 +46,15 @@ testGBseq <- function(gb, db) {
     mSeq <- mergeAlignment(lFiles[nzchar(lFiles)], output=oFile, seqFolder="/tmp/seq")
     res
 }
-compareSeqTmp <- testGBseq(gb=ufgb, db=allDB)
 
-compareSeq <- data.frame(compareSeqTmp, stringsAsFactors=FALSE)
-compareSeq$sameLength <- as.logical(compareSeq$sameLength)
-allGood <- compareSeq$sameLength & compareSeq$nAmb1 == compareSeq$nAmb2 & compareSeq$distGenIs0 == 0
-compareSeqPb <- compareSeq[!allGood, ]
-write.csv(compareSeqPb, file="/tmp/compareSeq.csv")
+if (FALSE) {
+    ufgb <- read.csv(file="data/UF_genbankSequences.csv", stringsAsFactors=FALSE)
+
+    compareSeqTmp <- testGBseq(gb=ufgb, db=allDB)
+
+    compareSeq <- data.frame(compareSeqTmp, stringsAsFactors=FALSE)
+    compareSeq$sameLength <- as.logical(compareSeq$sameLength)
+    allGood <- compareSeq$sameLength & compareSeq$nAmb1 == compareSeq$nAmb2 & compareSeq$distGenIs0 == 0
+    compareSeqPb <- compareSeq[!allGood, ]
+    write.csv(compareSeqPb, file="/tmp/compareSeq.csv")
+    }
