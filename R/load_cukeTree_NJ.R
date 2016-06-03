@@ -39,58 +39,24 @@ build_cukeTree_phylo4 <- function(tree) {
     treeP4
 }
 
-load_cukeTree_raw <- function(overwrite=FALSE, Nrep, ...) {
-    fnm <- "data/cukeTree-raw.rds"
-    if (file.exists(fnm) && !overwrite) {
-        cukeTree <- readRDS(file=fnm)
-        cukeTree$tip.label <- gsub("\\\"", "", cukeTree$tip.label)
-    }
-    else {
-        if(missing(Nrep)) Nrep <- 200
-        cukeAlg <- load_cukeAlg()
-        cukeTree <- build_cukeTree(cukeAlg, model="raw", Nrep=Nrep, ...)
-        saveRDS(cukeTree, file=fnm)
-    }
+load_cukeTree_raw <- function(cukeAlg, Nrep, ...) {
+    if(missing(Nrep)) Nrep <- 200
+    cukeTree <- build_cukeTree(cukeAlg, model="raw", Nrep=Nrep, ...)
     invisible(cukeTree)
 }
 
-load_cukeTree_k2p <- function(overwrite=FALSE, Nrep, ...) {
-    fnm <- "data/cukeTree-k2p.rds"
-    if (file.exists(fnm) && !overwrite) {
-        cukeTree <- readRDS(file=fnm)
-        cukeTree$tip.label <- gsub("\\\"", "", cukeTree$tip.label)
-    }
-    else {
-        if(missing(Nrep)) Nrep <- 200
-        cukeAlg <- load_cukeAlg()
-        cukeTree <- build_cukeTree(cukeAlg, model="K80", Nrep=Nrep, ...)
-        saveRDS(cukeTree, file=fnm)
-    }
+load_cukeTree_k2p <- function(cukeAlg, Nrep, ...) {
+    if(missing(Nrep)) Nrep <- 200
+    cukeTree <- build_cukeTree(cukeAlg, model="K80", Nrep=Nrep, ...)
     invisible(cukeTree)
 }
 
-load_cukeTree_raw_phylo4 <- function(overwrite=FALSE) {
-    fnm <- "data/cukeTree-raw-phylo4.rds"
-    if (file.exists(fnm) && !overwrite) {
-        cukeTree4 <- readRDS(fnm)
-    }
-    else {
-        tmpTr <- load_cukeTree_raw()
-        cukeTree4 <- build_cukeTree_phylo4(tmpTr)
-        saveRDS(cukeTree4, file=fnm)
-    }
+load_cukeTree_raw_phylo4 <- function(cuke_tree_raw) {
+    cukeTree4 <- build_cukeTree_phylo4(cuke_tree_raw)
     invisible(cukeTree4)
 }
 
-load_cukeTree_k2p_phylo4 <- function(overwrite=FALSE) {
-    fnm <- "data/cukeTree-k2p-phylo4.rds"
-    if (file.exists(fnm) && !overwrite) {
-        cukeTree4 <- readRDS(fnm)
-    }
-    else {
-        tmpTr <- load_cukeTree_k2p()
-        cukeTree4 <- build_cukeTree_phylo4(tmpTr)
-        saveRDS(cukeTree4, file=fnm)
-    }
+load_cukeTree_k2p_phylo4 <- function(cuke_tree_k2p) {
+    cukeTree4 <- build_cukeTree_phylo4(cuke_tree_k2p)
     invisible(cukeTree4)
 }

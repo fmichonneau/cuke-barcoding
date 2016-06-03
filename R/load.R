@@ -1,6 +1,7 @@
-phylobase.options(allow.duplicated.labels="ok")
-registerDoMC()
-
+init <- function() {
+    phylobase.options(allow.duplicated.labels="ok")
+    registerDoMC()
+}
 
 load_labelsFromTaxa <- function(taxa="all") {
     taxonomyDf <- load_taxonomyDf()
