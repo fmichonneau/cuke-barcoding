@@ -30,15 +30,19 @@
 \newcolumntype{b}{X}
 \newcolumntype{s}{>{\hsize=.2\hsize}X}
 
-\title{More than meets the eyes: diversity and geographic patterns in sea cucumbers}
+\title{More than meets the eye: diversity and geographic patterns in sea cucumbers}
 
 \author[1]{Fran\c{c}ois Michonneau\thanks{francois.michonneau@gmail.com}}
+\author[1]{Sarah McPherson}
+\author[2]{P. Mark O'Loughlin}
 \author[1]{Gustav Paulay\thanks{paulay@flmnh.ufl.edu}}
 
 \affil[1]{Florida Museum of Natural History, University of Florida, Gainesville,
   FL 32611-7800, USA}
 
+\affil[2]{Marine Biology Section, Museum Victoria, GPO Box 666, Melbourne, Victoria 3001, Australia}
 \renewcommand\Authands{ and }
+\date{}
 
 % -------- end of header --------- %
 
@@ -67,22 +71,22 @@ source("R/load.R")
   evaluating species boundaries, while gaining insights into the biology of the
   species. DNA barcoding with a region of cytochrome oxidase 1 (COI) is now
   widely used as a first pass for molecular evaluation of diversity, as it has
-  good potential for identifying cryptic species and improve our understanding
+  good potential for identifying cryptic species and improving our understanding
   of marine biodiversity. We present the results of a large scale barcoding
   effort for holothuroids (sea cucumbers). We sequenced
   \Sexpr{dim(load_cukeAlg())[1]} individuals from numerous localities spanning
-  the diversity of habitats in which the group occur, with a particular focus in
+  the diversity of habitats in which the group occurs, with a particular focus in
   the shallow tropics (Indo-Pacific and Caribbean) and the Antarctic region. The
   number of cryptic species is much higher than currently recognized. The vast
   majority of sister species have allopatric distributions, with species showing
   genetic differentiation between ocean basins, and some are even differentiated
   among archipelagos. However, many closely related and sympatric forms, that
   exhibit distinct color patterns and/or ecology, show little differentiation
-  in, and cannot be separated by, COI sequence. This pattern is much more common
-  among echinoderms than among molluscs or arthropods. This suggests that
+  in, and cannot be separated by, COI sequence data. This pattern is much more
+  common among echinoderms than among molluscs or arthropods, and suggests that
   echinoderms acquire reproductive isolation at a much faster pace than other
-  marine phyla. Understanding the causes behind such pattern will refine our
-  understanding of diversification and biodiversity among echinoderms.
+  marine phyla. Understanding the causes behind such patterns will refine our
+  understanding of diversification and biodiversity in the sea.
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,7 +100,7 @@ sampling is challenging, and our understanding of species limits for most groups
 limited. Most metazoan species are delineated based on morphological
 differences, however, these morpho-taxonomic delineations have been challenged
 by the advent of molecular data that have revealed complexes of cryptic species
-(see Chapter~2, \cite{Hebert2004, Vogler2008, Schlick-Steiner2010}) and
+(\cite{Hebert2004, Vogler2008, Schlick-Steiner2010, Michonneau2015-impatiens}) and
 elucidated intra-specific polymorphism \cite{Miranda2010}. In particular, DNA
 barcoding emerged as a powerful technique to identify species, discover new
 species, and clarify species limits.
@@ -196,9 +200,9 @@ levels. Ossicles cannot always be used to tease apart species, and
 intra-specific variation is poorly characterized since most descriptions
 illustrate ossicles from a single individual. Live coloration, which has not
 been traditionally used in species descriptions, is variable and can be
-indicative of species limits (see Chapter~2). The combination of poor taxonomic
-understanding, and a pressing need to understand species limits, make a
-large-scale barcoding study of sea cucumbers especially important.
+indicative of species limits \cite{Michonneau2015-impatiens}. The combination of
+poor taxonomic understanding, and a pressing need to understand species limits,
+make a large-scale barcoding study of sea cucumbers especially important.
 
 In sea cucumbers, as with other marine invertebrates, dispersal typically occurs
 during the larval stage. However, even if larvae can potentially travel long
@@ -502,21 +506,22 @@ the approach and the type of distance used (Fig.~\ref{fig:groups-comparison-plot
 
 @
 
-The greatest correspondence among threshold methods tried to ESUs delineated was
-with the clustering method and a threshold of 4.5\%; this method delineated
+The greatest correspondence among threshold methods compared to ESUs delineated
+was with the clustering method and a threshold of 4.5\%; this method delineated
 \Sexpr{formatC(100*(minError$nSplits+minError$nLumps)/nESUs, digits=2,
   width=2)}\% (N=\Sexpr{minError$nSplits+minError$nLumps}) of the ESUs
 incorrectly. The number of mtLineages estimated with this method was slightly
 lower than the number of ESUs (\Sexpr{length(load_species_clusterGrps('raw',
   'Holothuriidae', 0.025))} and \Sexpr{nESUs} respectively) as more ESUs were
-lumped than split (\Sexpr{minError$nSplits} and \Sexpr{minError$nLumps}
+lumped than split (\Sexpr{minError$nLumps} and \Sexpr{minError$nSplits}
 respectively). Thus, we chose the clustering method, using uncorrected distances
 and a 4.5\% threshold to assess mtLineage diversity in subsequent analyses
 (Table~\ref{tab:sampled-species}).
 
-<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', fig.pos='!', fig.height=6.5, echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap=paste0('Proportion of mtLineages incorrectly assigned compared to ESUs delineated on the Holothuriidae using pairwise and clustering methods, based on uncorrected and  Kimura 2-parameter genetic distances (K2P). mtLineages can be incorrectly assigned because of oversplitting (one ESU represented in two or more mtLineages), or lumping (one mtLineage is comprised of several ESUs). The lowest error rate is with the ', minError['method'], ' method based on', minError['distance'], 'distances and a threshold of ', 100*minError['threshold'], '\\%.')>>=
+<<compare-manual-cluster-ESUs-plot, cache=TRUE, results='hide', fig.pos='!', fig.height=6.5, echo=FALSE, dependson='compare-manual-cluster-ESUs-data', fig.cap=paste0('Proportion of mtLineages incorrectly assigned compared to ESUs delineated on the Holothuriidae using pairwise and clustering methods, based on uncorrected and  Kimura 2-parameter genetic distances (K2P). mtLineages can be incorrectly assigned because of oversplitting (one ESU represented in two or more mtLineages), or lumping (one mtLineage is comprised of several ESUs). The lowest error rate is with the ', as.character(minError$method), ' method based on ', as.character(minError$distance), ' distances and a threshold of ', 100*minError$threshold, '\\%.')>>=
 
 @
+
 
 
 \subsection{Geography, diversity and diversification}  % res
@@ -603,17 +608,16 @@ Eastern Pacific, Oman).
 
 Genetic divergences across the main biogeographic boundaries were variable, and
 suggestive that isolation was asynchronous (Fig.~\ref{fig:barriers}). For the
-three barriers investigated, distances seemed to form two groups separated by at
-least 2.5\% divergence.
+three barriers investigated, genetic distances seemed to form two groups
+separated by at least 2.5\% divergence.
 
 \begin{figure}[!hb]
 {\centering
-\includegraphics[width=\colwidth]{figures/map-barriers}
+\includegraphics{figures/map-barriers}
 }
-\label{fig:map-barriers}
 \caption{Approximate location of the boundaries between allopatric ESUs. Numbers
   indicate diversification events across these boundaries. Pink line 3 events,
-  dashed yellow line 1 event.}
+  dashed yellow line 1 event. \label{fig:map-barriers}}
 \end{figure}
 
 
@@ -628,7 +632,7 @@ Sea cucumber diversity is underestimated because many species currently
 delineated are complexes of several ESUs and because undescribed species are
 common. Regardless of the approach used to estimate diversity from genetic data,
 we recovered more species than we identified based on accepted taxonomic
-names. In the best data, (i.e., the manual assessment of the ESUs for the
+names. In the best data (i.e., the manual assessment of the ESUs for the
 Holothuriidae), the diversity is underestimated by at least 50\%, a proportion
 that will increase with further sampling as evidenced by the high proportion of
 singletons. This family is the best studied: it is easily accessible as it
@@ -645,11 +649,12 @@ taxonomically, as variation in taxonomic characters appear to be limited and
 documented. However, our data show that many of the current morphospecies
 concepts, even in the best known family (i.e., Holothuriidae), are in many cases
 inaccurate and do not reflect the species limits suggested by genetic data. Our
-studies (e.g., Chapter~1 and 2) and others (e.g., \cite{Kim2013}) have
-emphasized that genetic data can help redefine the morphological traits that can
-be used to delineate species. Notably, differences in color patterns emerge as
-useful indicators of species limits. A taxonomic overhaul, guided by genetic
-data, is needed to clarify species limits in all sea cucumbers.
+studies (e.g., \cite{Michonneau2014, Michonneau2015-impatiens}) and others
+(e.g., \cite{Kim2013}) have emphasized that genetic data can help redefine the
+morphological traits that can be used to delineate species. Notably, differences
+in color patterns emerge as useful indicators of species limits. A taxonomic
+overhaul, guided by genetic data, is needed to clarify species limits in all sea
+cucumbers.
 
 \subsection{Species limits}
 
@@ -711,11 +716,11 @@ limiting the possibility for genomic introgression. Teasing out the processes
 that are leading to non-monophyletic patterns observed in COI requires
 multilocus dataset, which analyzed with the multicoalescent \cite{Heled2010}
 might provide support for reproductive isolation among the putative species (see
-Chapter~2). Recently developed methods that use single nucleotide polymorphisms
-(SNP) across the genome \cite{Leache2014a} appear as powerful tools to explore
-species limits among closely related taxa. These approaches remain expansive and
-time-consuming but come in complement of single-locus studies to untangle the
-lineages that are not monophyletic.
+\cite{Michonneau2015-impatiens}). Recently developed methods that use single
+nucleotide polymorphisms (SNP) across the genome \cite{Leache2014a} appear as
+powerful tools to explore species limits among closely related taxa. These
+approaches remain expensive and time-consuming but come in complement of
+single-locus studies to untangle the lineages that are not monophyletic.
 
 
 \subsection{Methodological considerations}
@@ -734,7 +739,7 @@ observed across species while identifying conflict in the data pointing to
 species that will be problematic to delineate, and might provide interesting
 biological insights.
 
-Beyond species that share haplotypes, analytical challenge with methods
+Beyond species that share haplotypes, analytical challenges with methods
 estimating species limits only from genetic datasets, is to account for
 variation in both intraspecific and interspecific (to the closest species)
 genetic distances. Higher than average intraspecific distances will lead to
@@ -742,7 +747,7 @@ oversplitting by recognizing divergent haplotypes as species, while lower than
 overage distances to the nearest neighbor will lead to lumping. In our study,
 the lowest error rate associated with threshold-based delineation was similar
 across the methods used (about 20\%), but the pairwise approach was more
-conservative by estimating higher lumping rates and less lineages than the
+conservative by estimating higher lumping rates and fewer lineages than the
 clustering method. By only delineating lineages based on distances and no
 phylogenetic information, the pairwise approach lumped reciprocally monophyletic
 lineages separated by low inter-ESUs genetic distances.
@@ -752,12 +757,12 @@ inter-specific distances, such as GMYC \cite{Pons2006, Monaghan2009}, or ABGD
 \cite{Puillandre2012}, might provide more accurate estimates. However, the
 available softwares that implement these approaches are not designed to analyze
 dataset as large as in this study. GMYC is also sensitive to the method used to
-obtain the ultrametric tree needed for the analysis (see Chapter~2), which could
-have large effects on analyses of dataset like ours. Few studies have compared
-the performance of GMYC in groups well-understood taxonomically, but Talavera
-\textit{et al.} \cite{Talavera2013} found that it led to a 20\% error rate in
-butterflies, which is comparable to what we found here using threshold-based
-approaches.
+obtain the ultrametric tree needed for the analysis
+(\cite{Michonneau2015-impatiens}), which could have large effects on analyses of
+dataset like ours. Few studies have compared the performance of GMYC in groups
+well-understood taxonomically, but Talavera \textit{et al.} \cite{Talavera2013}
+found that it led to a 20\% error rate in butterflies, which is comparable to
+what we found here using threshold-based approaches.
 
 % how does it compare across taxa?
 
@@ -771,10 +776,10 @@ database of DNA sequences to capture the diversity of species, as well as
 intra-specific variation. If the sequences for the individuals to be identified
 have exact matches in the reference database, the accuracy of the identification
 will only depend on the proportion of species that share haplotypes. However,
-commonly, these unknowns will not be in the database, therefore the accuracy of
-a positive identification will also depend on the accuracy with which the
-sequence can be predicted to belong to a species included in the database, and
-the probability that species included in the database share unsampled
+commonly, these unknowns will not be in the database, and the accuracy of a
+positive identification will also depend on the accuracy with which the sequence
+can be predicted to belong to a species included in the database, and the
+probability that species included in the database share unsampled
 haplotypes. The accuracy with which a sequence can be predicted to belong to a
 species included in the database is related to the proportion of species that
 are not monophyletic.
@@ -856,7 +861,7 @@ Dendrochirotida species tend to have restricted ranges, with many species known
 only from single localities, and species within a genus are often strictly
 allopatric. In the Indo-Pacific, most species of Dendrochirotida are restricted
 to continental areas, with \textit{Afrocucumis africana} being the only species
-that reach the Central Pacific. This pattern could be explained by the
+that reaches the Central Pacific. This pattern could be explained by the
 combination of limited dispersal abilities that make the insular Pacific
 difficult to reach, and the suspension feeding mode of this group that cannot
 inhabit the oligotrophic environments that characterize oceanic islands
@@ -936,7 +941,7 @@ the Red Sea diverged steadily through time, while species endemic to the
 Hawaiian archipelago diverged in two pulses (0-3 million years ago [Mya] and
 9-13 Mya). Our data for Hawaii is limited, but consistent with these results as
 the lowest divergence is for 2 species of the \textit{Holothuria impatiens}
-complex with divergences estimated at 2 Mya (Chapter~2).
+complex with divergences estimated at 2 Mya (\cite{Michonneau2015-impatiens}).
 
 Compared to studies on other taxonomically well-understood marine organisms, we
 recovered a higher proportion of sister ESUs occurring in sympatry for the
@@ -951,10 +956,10 @@ and biology suggest, a pattern we also found in other holothuroids and
 echinoderms), it would indicate that they have diversified more rapidly than
 most marine invertebrates. Additionally, in our study many closely related ESUs
 occur in sympatry, indicating that reproductive isolation can be completed
-rapidly. For instance, in Chapter~2, we showed how 3 ESUs in the
-\textit{Holothuria impatiens} complex, occur in sympatry even though they
-diverged less than 2 millions years ago. Four out of the eight complexes with
-three or more ESUs, have ESUs with overlapping ranges. This contrasts with other
+rapidly. For instance, we showed how 3 ESUs in the \textit{Holothuria impatiens}
+complex, occur in sympatry even though they diverged less than 2 millions years
+ago \cite{Michonneau2015-impatiens}. Four out of the eight complexes with three
+or more ESUs, have ESUs with overlapping ranges. This contrasts with other
 marine organisms, for which secondary sympatry in oceanic settings occurs slowly
 and takes at minimum 2 millions years but often more than 10 millions years
 \cite{Meyer2005-evolution, Quenouille2011, Malay2010, Hodge2012}.
@@ -986,6 +991,33 @@ plesiomorphic in the clade that sea cucumbers emerged from.
 
 % use sister species of Red Sea to talk about ecological consequences of range
 % expansion.
+
+
+\section{Conclusion}
+
+Our study shows that species diversity in sea cucumbers is underestimated by at
+least 50\%. In many cases, DNA barcoding data appears useful to guide taxonomic
+decisions, as most unrecognized species differ in live coloration, but are
+currently not recognized as they do not vary in the taxonomic characters
+typically used to tease apart species.
+
+Some morpho-species cannot be distinguished on the basis of DNA barcoding data
+alone. They might point to interesting biological cases of rapid reproductive
+isolation in sympatry or introgression. However, teasing out among these
+hypotheses requires additional data to sample a higher proportion of the genome.
+
+These exceptions make identification from COI sequences alone challenging. They
+are however relatively uncommon, and barcoding will be accurate in species
+identification for most species with a success rate close of 90\%. When
+morphological information is available, accuracy will be higher.
+
+Our comprehensive dataset allowed us to explore geographic patterns of
+diversification. Divergence in allopatry is the most common mode of speciation,
+but sea cucumbers show high proportion of closely related species occurring in
+sympatry, a pattern that differs from other marine invertebrates. The mechanisms
+underlying this pattern are still unknown but rapid evolution in gamete
+recognition proteins seems to be driving similar patterns in other groups of
+echinoderms, but remain to be identified in sea cucumbers.
 
 
 
