@@ -1,19 +1,3 @@
-source("R/build.R")
-source("R/genFasta.R")
-source("R/CalcGeoDist.R")
-source("R/findGroups.R")
-source("R/multiplot.R")
-
-source("R/load_cukeDB.R")
-source("R/load_cukeAlg.R")
-source("R/load_cukeDist.R")
-source("R/load_cukeTree_NJ.R")
-source("R/load_taxonomyDf.R")
-source("R/load_clusterGrps.R")
-
-source("R/pairwise-groups-functions.R")
-source("R/test-allopatry-functions.R")
-
 phylobase.options(allow.duplicated.labels="ok")
 
 load_labelsFromTaxa <- function(taxa="all") {
