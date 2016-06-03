@@ -1,4 +1,4 @@
-% Created by tikzDevice version 0.7.0 on 2014-09-16 22:50:53
+% Created by tikzDevice version 0.7.0 on 2014-09-21 17:25:39
 % !TEX encoding = UTF-8 Unicode
 
 \documentclass[12pt]{article}
@@ -1230,7 +1230,7 @@
 \definecolor[named]{drawColor}{rgb}{0.00,0.39,0.00}
 \definecolor[named]{fillColor}{rgb}{0.00,0.39,0.00}
 
-\path[draw=drawColor,line width= 0.6pt,dash pattern=on 1pt off 3pt ,line join=round,fill=fillColor] (323.33,227.36) -- (455.30,227.36);
+\path[draw=drawColor,line width= 0.6pt,dash pattern=on 1pt off 3pt ,line join=round,fill=fillColor] (323.33,227.55) -- (455.30,227.55);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
@@ -2675,7 +2675,7 @@
 \definecolor[named]{drawColor}{rgb}{0.00,0.39,0.00}
 \definecolor[named]{fillColor}{rgb}{0.00,0.39,0.00}
 
-\path[draw=drawColor,line width= 0.6pt,dash pattern=on 1pt off 3pt ,line join=round,fill=fillColor] (320.54, 55.76) -- (455.30, 55.76);
+\path[draw=drawColor,line width= 0.6pt,dash pattern=on 1pt off 3pt ,line join=round,fill=fillColor] (320.54, 56.37) -- (455.30, 56.37);
 \end{scope}
 \begin{scope}
 \path[clip] (  0.00,  0.00) rectangle (469.75,433.62);
