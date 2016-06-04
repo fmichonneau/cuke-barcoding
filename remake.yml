@@ -27,6 +27,7 @@ targets:
     depends:
       - .init
       - cukeDB
+      - compare_identifications
 
   .init:
     command: init()
@@ -74,4 +75,4 @@ targets:
     command: load_cuke_dist_k2p(cuke_alg)
 
   compare_identifications:
-    command: compare_idig_cuke_db()
+    command: compare_idig_cuke_db(cuke_db = cukeDB)
