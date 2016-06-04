@@ -6,7 +6,7 @@ removeNodeLabels <- function(phy) {
     phy
 }
 
-build_cuke_tree <- function(alg, dist_mat, Nrep) {
+build_cuke_tree <- function(alg, dist_mat, model, Nrep) {
     treH <- ape::nj(dist_mat)
     bootH <- ape::boot.phylo(treH, alg, function(xx) {
         ape::nj(ape::dist.dna(xx, model=model))
@@ -31,9 +31,9 @@ build_cuke_tree_phylo4 <- function(tree) {
     treeP4
 }
 
-load_cuke_tree <- function(cuke_alg, dist_mat, Nrep, ...) {
+load_cuke_tree <- function(cuke_alg, dist_mat, model, Nrep, ...) {
     if(missing(Nrep)) Nrep <- 200
-    cukeTree <- build_cuke_tree(cuke_alg, dist_mat, Nrep=Nrep, ...)
+    cukeTree <- build_cuke_tree(cuke_alg, dist_mat, model = model, Nrep=Nrep, ...)
     invisible(cukeTree)
 }
 

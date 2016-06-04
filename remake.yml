@@ -47,16 +47,16 @@ targets:
     command: load_cukeAlg("data/seq/cukeAlg-cleaned.fas")
 
   cuke_tree_raw:
-    command: load_cuke_tree(cuke_alg, dist_mat = cuke_dist_raw, Nrep=I(1))
+    command: load_cuke_tree(cuke_alg, dist_mat = cuke_dist_raw, model=I("raw"), Nrep=I(1))
 
   cuke_tree_k2p:
-    command: load_cuke_tree(cuke_alg, dist_mat = cuke_dist_k2p, Nrep=I(1))
+    command: load_cuke_tree(cuke_alg, dist_mat = cuke_dist_k2p, model=I("K80"), Nrep=I(1))
 
   cuke_tree_raw_phylo4:
-    command: load_cukeTree_raw_phylo4(cuke_tree_raw)
+    command: load_cuke_tree_raw_phylo4(cuke_tree_raw)
 
   cuke_tree_k2p_phylo4:
-    command: load_cukeTree_k2p_phylo4(cuke_tree_k2p)
+    command: load_cuke_tree_k2p_phylo4(cuke_tree_k2p)
 
   data/seq/cukeAlg-unaligned.fas:
     command: generate_unaligned_cuke_fasta(cukeDB_noLabels)
@@ -72,3 +72,6 @@ targets:
 
   cuke_dist_k2p:
     command: load_cuke_dist_k2p(cuke_alg)
+
+  compare_identifications:
+    command: compare_idig_cuke_db()
