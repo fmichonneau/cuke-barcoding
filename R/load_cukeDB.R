@@ -1,18 +1,19 @@
-load_echinoDB <- function() {
-    echinoDB <- read.csv(file="data/raw/MARBoL_Echinos_VIII_2013.csv",
+load_echinoDB <- function(cuke_file) {
+    echinoDB <- read.csv(file=cuke_file,
                          stringsAsFactors=FALSE)
     echinoDB
 }
 
 load_cukeDB_noLabels <- function(echinoDB) {
 
-    cukeDB <- subset(echinoDB, class_ == "Holothuroidea")
+    cukeDB <- subset(echinoDB, class == "Holothuroidea")
     cukeDB <- subset(cukeDB, pass.seq != "GenBank")
     cukeDB <- subset(cukeDB, pass.seq != "fix")
     cukeDB <- subset(cukeDB, pass.seq != "no_seq_yet")
     cukeDB <- subset(cukeDB, pass.seq != "no")
     cukeDB <- subset(cukeDB, Notes != "MH sequence")
     cukeDB <- subset(cukeDB, pass.seq != "duplicate")
+    cukeDB <- cukeDB[nzchar(cukeDB$Sample), ]
 
     ## Taxonomic check
     testGenera <- as.matrix(xtabs(~ genusorhigher + family, data=cukeDB,
@@ -24,6 +25,7 @@ load_cukeDB_noLabels <- function(echinoDB) {
                                   subset=family != "Uncertain"))
     resFamily <- apply(testFamily, 1, function(x) sum(x != 0))
     stopifnot(all(resFamily == 1))
+
 
     ## only non-ambiguous bp
     lSeq <- sapply(cukeDB$Sequence, function(x)
