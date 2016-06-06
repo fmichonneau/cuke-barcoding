@@ -76,6 +76,13 @@ targets:
 
   compare_identifications:
     command: compare_idig_cuke_db(cuke_db = cukeDB)
+
+  cluster_groups_raw:
+    command: cuke_tree_cluster_groups(taxonomy, cuke_tree_raw_phylo4, cukeDB)
+
+  cluster_groups_k2p:
+    command: cuke_tree_cluster_groups(taxonomy, cuke_tree_k2p_phylo4, cukeDB)
+
   data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes:
     command: build_raxml_tree("data/seq/cukeAlg-cleaned.fas")
 
