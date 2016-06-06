@@ -1,77 +1,53 @@
-build_cukeTree_clusterGrps <- function(overwrite=FALSE) {
-    ## To find groups based on the partial dataset
-    cukeDB <- load_cukeDB()
-    taxonomyDf <- load_taxonomyDf()
+cuke_tree_cluster_groups <- function(taxonomy, cuke_tree_phylo4, cuke_db) {
 
-    uniqTaxa <- taxonomyDf$taxa
-    stopifnot(! any(duplicated(uniqTaxa)))
-
-    inputFiles <- c("data/cukeTree-raw-phylo4.rds",
-                    "data/cukeTree-k2p-phylo4.rds")
-
-    ## computer number of species for threshold at
-    ##  1%, 1.5%, 2%, 2.5%, 3%, 3.5%, 4%, 4.5%, 5%, 6%, 7%, 8%
+    st <- storr(driver_environment())
+    uniq_taxa <- taxonomy$taxa
     thresVec <- load_thresholdClusters()
 
-    for (j in 1:length(inputFiles)) {
-
-        for (k in 1:length(uniqTaxa)) {
-
-            outputFiles <- paste(gsub("phylo4.rds$", "", inputFiles[j]),
-                                 uniqTaxa[k], "-",
-                                 gsub("\\.", "", thresVec), ".rds", sep="")
-
-            toKeep <- load_labelsFromTaxa(uniqTaxa[k])
-
-            for (i in 1:length(thresVec)) {
-                if (!file.exists(outputFiles[i]) || overwrite) {
-                    treeTmp <- readRDS(file=inputFiles[j])
-                    stopifnot(all(toKeep %in% tipLabels(treeTmp)) ||
-                              all(!is.na(toKeep)))
-                    if (length(toKeep) == nTips(treeTmp)) {
-                        treeTmpSub <- treeTmp
-                    }
-                    else {
-                        treeTmpSub <- subset(treeTmp, tips.include=toKeep)
-                    }
-                    treeTmpGrp <- findGroups(treeTmpSub, threshold=thresVec[i],
-                                             experimental=FALSE, parallel=TRUE)
-                    saveRDS(treeTmpGrp, file=outputFiles[i])
-                }  else {
-                    message(outputFiles[i], " already exists.")
-                }
-            }
+    for (j in seq_along(uniq_taxa)) {
+        for (i in seq_along(thresVec)) {
+            key <- paste(uniq_taxa[j], gsub("\\.", "", thresVec[i]),
+                         sep = "-")
+            message("Finding groups for ", sQuote(uniq_taxa[j]),
+                    " with threshold of ", sQuote(thresVec[i]),
+                    " ....", appendLF =  FALSE)
+            tmp_grp <- build_cluster_group(tr = cuke_tree_phylo4,
+                                           taxa = uniq_taxa[j],
+                                           threshold = thresVec[i],
+                                           taxonomy = taxonomy,
+                                           cuke_db = cuke_db)
+            message("DONE.")
+            st$set(key, tmp_grp)
         }
     }
-
+    st
 }
 
-load_tree_clusterGrps <- function(distance="raw", taxa="all",
-                                  threshold=0.015) {
+build_cluster_group <- function(tr, taxa, threshold, taxonomy, cuke_db) {
+    lbl_to_keep <- fetch_labels_from_taxa(taxonomy, cuke_db, taxa)
+    stopifnot(all(lbl_to_keep %in% tipLabels(tr)))
+    sub_tr <- subset(tr, tips.include = lbl_to_keep)
+    grp_tr <- findGroups(sub_tr, threshold = threshold,
+                         experimental = FALSE, parallel = TRUE)
+    grp_tr
+}
 
-    taxonomyDf <- load_taxonomyDf()
+load_tree_cluster_groups <- function(cluster_store, taxa="all",
+                                  threshold=0.015, taxonomy) {
+
     thres <- load_thresholdClusters()
-    taxa <- match.arg(as.character(taxa), taxonomyDf$taxa)
-    distance <- match.arg(distance, c("raw", "K80"))
+    taxa <- match.arg(as.character(taxa), taxonomy$taxa)
     stopifnot(length(threshold) == 1 && threshold %in% thres)
 
-    distance <- ifelse(identical(distance, "raw"), "raw", "k2p")
+    key <- paste(taxa, threshold, sep = "-")
 
-    lstFiles <- list.files(path="data", pattern="cukeTree-.+-\\d+.rds$",
-                           full.names=TRUE)
-
-    nmRes <- paste("cukeTree", distance, taxa, gsub("\\.", "", threshold), sep="-")
-    nmRes <- file.path("data", paste0(nmRes, ".rds"))
-
-    if (file.exists(nmRes))
-        readRDS(file=nmRes)
-    else
-        stop("can't find ", nmRes)
+    cluster_store$get(key)
 }
 
-load_species_clusterGrps <- function(distance="raw", taxa="all",
-                                     threshold=0.015) {
-    tr <- load_tree_clusterGrps(distance, taxa, threshold)
+load_species_cluster_groups <- function(cluster_store, taxa="all",
+                                        threshold=0.015, taxonomy) {
+
+    tr <- load_tree_cluster_groups(cluster_store, taxa, threshold, taxonomy)
     grps <- tdata(tr, "tip")[, "Groups", drop=FALSE]
     gg <- factor(grps$Groups)
     split(rownames(grps), gg)
