@@ -3,17 +3,17 @@ init <- function() {
     registerDoMC()
 }
 
-load_labelsFromTaxa <- function(taxa="all") {
-    taxonomyDf <- load_taxonomyDf()
-    taxa <- match.arg(as.character(taxa), taxonomyDf$taxa)
-    cukeDB <- load_cukeDB()
+## fetch the labels found in the trees for a given taxon
+fetch_labels_from_taxa <- function(taxonomy, cuke_db, taxa="all") {
+
+    taxa <- match.arg(as.character(taxa), taxonomy$taxa)
 
     if (taxa == "all") {
-        lbls <- cukeDB[, "Labels_withAmb"]
-    } else if (taxonomyDf[taxonomyDf$taxa == taxa, "rank"] == "Order") {
-        lbls <- cukeDB[cukeDB$order == taxa, "Labels_withAmb"]
-    } else if (taxonomyDf[taxonomyDf$taxa == taxa, "rank"] == "Family") {
-        lbls <- cukeDB[cukeDB$family == taxa, "Labels_withAmb"]
+        lbls <- cuke_db[, "Labels_withAmb"]
+    } else if (taxonomy[taxonomy$taxa == taxa, "rank"] == "Order") {
+        lbls <- cuke_db[cuke_db$order == taxa, "Labels_withAmb"]
+    } else if (taxonomy[taxonomy$taxa == taxa, "rank"] == "Family") {
+        lbls <- cuke_db[cuke_db$family == taxa, "Labels_withAmb"]
     } else {
         stop("something is wrong with ", taxa)
     }
@@ -50,7 +50,7 @@ load_tree_phylo4 <- function(distance="raw", taxa="all") {
         tree
     }
     else {
-        toKeep <- load_labelsFromTaxa(taxa)
+        toKeep <- fetch_labels_from_taxa(taxa)
         tree <- subset(tree, tips.include=toKeep)
         stopifnot(all(toKeep %in% tipLabels(tree)) ||
                   all(!is.na(toKeep)))
@@ -82,7 +82,7 @@ load_tree_raxml_phylo4 <- function(taxa="all", overwrite=FALSE) {
         invisible(tr)
     }
     else {
-        toKeep <- load_labelsFromTaxa(taxa)
+        toKeep <- fetch_labels_from_taxa(taxa)
         tr <- subset(tr, tips.include=toKeep)
         stopifnot(all(toKeep %in% tipLabels(tr)) ||
                   all(!is.na(toKeep)))
