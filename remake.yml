@@ -76,3 +76,8 @@ targets:
 
   compare_identifications:
     command: compare_idig_cuke_db(cuke_db = cukeDB)
+  data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes:
+    command: build_raxml_tree("data/seq/cukeAlg-cleaned.fas")
+
+  cuke_tree_raxml:
+    command: load_tree_raxml("data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes")
