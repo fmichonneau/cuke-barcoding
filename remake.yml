@@ -28,6 +28,7 @@ targets:
       - .init
       - cukeDB
       - compare_identifications
+      - taxonomy
 
   .init:
     command: init()
@@ -42,7 +43,7 @@ targets:
     command: load_cukeDB(cukeDB_noLabels, cuke_tree_raw_phylo4)
 
   taxonomy:
-    command: load_taxonomy_df(cukeDB)
+    command: load_taxonomy(cukeDB)
 
   cuke_alg:
     command: load_cukeAlg("data/seq/cukeAlg-cleaned.fas")
