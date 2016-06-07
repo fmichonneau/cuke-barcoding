@@ -1,5 +1,5 @@
 
-build_raxml_tree <- function(alg_file, raxml_path = "~/Software/RAxML-8.2.4/./raxmlHPC-PTHREADS-SSE3") {
+build_raxml_tree <- function(alg_file, raxml_path = "raxmlHPC-PTHREADS-SSE3") {
     ## targets to create:
     ## - the directory where the magic takes place
     raxml_output <- "data/raxml"
