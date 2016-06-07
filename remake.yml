@@ -15,6 +15,7 @@ packages:
   - tikzDevice
   - reshape2
   - seqinr
+  - phytools
 
 
 sources:
@@ -29,6 +30,8 @@ targets:
       - cukeDB
       - compare_identifications
       - taxonomy
+      - cluster_groups_raw
+      - cuke_tree_raxml_phylo4
 
   .init:
     command: init()
@@ -89,3 +92,6 @@ targets:
 
   cuke_tree_raxml:
     command: load_tree_raxml("data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes")
+
+  cuke_tree_raxml_phylo4:
+    command: load_tree_raxml_phylo4(cuke_tree_raxml)

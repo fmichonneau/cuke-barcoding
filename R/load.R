@@ -58,34 +58,23 @@ load_tree_phylo4 <- function(distance="raw", taxa="all") {
     }
 }
 
-load_tree_raxml_phylo4 <- function(taxa="all", overwrite=FALSE) {
-    fnm <- "data/cukeTree-raxml-phylo4.rds"
-    if (file.exists(fnm) && !overwrite) {
-        tr <- readRDS(fnm)
-    }
-    else {
-        tr <- load_tree_raxml()
-        ## TODO -- double check that using 1 blindly doesn't cause
-        ## any issues
-        ## TODO -- use mid-point rooting, or rooting on longest branch
-        tr <- ape::root(tr, 1, resolve.root=TRUE)
-        tr <- as(tr, "phylo4")
-        bs <- nodeLabels(tr)
-        bs <- data.frame(bs, stringsAsFactors=FALSE)
-        bs$bs <- as.numeric(bs$bs)
-        tr <- phylo4d(tr, node.data=bs)
-        tr <- removeNodeLabels(tr)
-        saveRDS(tr, file=fnm)
-    }
+load_tree_raxml_phylo4 <- function(raxml_tree, taxa="all") {
+    tr <- phytools::midpoint.root(raxml_tree)
+    tr <- as(tr, "phylo4")
+    bs <- nodeLabels(tr)
+    bs <- data.frame(bs, stringsAsFactors=FALSE)
+    bs$bs <- as.numeric(bs$bs)
+    tr <- phylo4d(tr, node.data=bs)
+    tr <- removeNodeLabels(tr)
 
     if (taxa == "all") {
         invisible(tr)
     }
     else {
-        toKeep <- fetch_labels_from_taxa(taxa)
-        tr <- subset(tr, tips.include=toKeep)
-        stopifnot(all(toKeep %in% tipLabels(tr)) ||
-                  all(!is.na(toKeep)))
+        to_keep <- fetch_labels_from_taxa(taxa)
+        tr <- subset(tr, tips.include = to_keep)
+        stopifnot(all(to_keep %in% tipLabels(tr)) ||
+                  all(!is.na(to_keep)))
         invisible(tr)
     }
 }
