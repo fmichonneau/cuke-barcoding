@@ -27,30 +27,55 @@ targets:
   all:
     depends:
       - .init
-      - cukeDB
-      - compare_identifications
-      - taxonomy
-      - cluster_groups_raw
-      - cuke_tree_raxml_phylo4
+      - trees
+      #- compare_identifications
+      #- taxonomy
+      #- cluster_groups_raw
+      #- cuke_tree_raxml_phylo4
 
+  trees:
+    depends:
+      - cuke_tree_raw
+      - cuke_tree_k2p
+      - cuke_tree_raw_phylo4
+      - cuke_tree_k2p_phylo4
+
+  ## global variables ---------------------------------------------------------
   .init:
     command: init()
 
-  echinoDB:
-    command: load_echinoDB("data/raw/20160603.MARBoL_Echinos_current.csv")
+  ## raw data ------------------------------------------------------------------
+  echino_db:
+    command: load_echino_db("data/raw/20160603.MARBoL_Echinos_current.csv")
 
-  cukeDB_noLabels:
-    command: load_cukeDB_noLabels(echinoDB)
+  cuke_db:
+    command: load_cuke_db(echino_db)
 
-  cukeDB:
-    command: load_cukeDB(cukeDB_noLabels, cuke_tree_raw_phylo4)
+  ## sequences -----------------------------------------------------------------
+  cuke_seqs:
+    command: load_cuke_seqs(cuke_db)
 
-  taxonomy:
-    command: load_taxonomy(cukeDB)
+  data/seq/cuke_alg_unaligned.fas:
+    command: generate_unaligned_cuke_fasta(cuke_seqs)
+
+  data/seq/cuke_alg_aligned.fas:
+    command: generate_aligned_cuke_fasta("data/seq/cuke_alg_unaligned.fas")
+
+  data/seq/cuke_alg_cleaned.fas:
+    command: generate_cleaned_cuke_fasta("data/seq/cuke_alg_aligned.fas")
 
   cuke_alg:
-    command: load_cukeAlg("data/seq/cukeAlg-cleaned.fas")
+    command: load_cuke_alg("data/seq/cuke_alg_cleaned.fas")
 
+  ## distance matrices ---------------------------------------------------------
+  cuke_dist_raw:
+    command: load_cuke_dist_raw(cuke_alg)
+
+  cuke_dist_k2p:
+    command: load_cuke_dist_k2p(cuke_alg)
+
+
+  ## trees --------------------------------------------------------------------
   cuke_tree_raw:
     command: load_cuke_tree(cuke_alg, dist_mat = cuke_dist_raw, model=I("raw"), Nrep=I(1))
 
@@ -63,35 +88,33 @@ targets:
   cuke_tree_k2p_phylo4:
     command: load_cuke_tree_k2p_phylo4(cuke_tree_k2p)
 
-  data/seq/cukeAlg-unaligned.fas:
-    command: generate_unaligned_cuke_fasta(cukeDB_noLabels)
-
-  data/seq/cukeAlg-aligned.fas:
-    command: generate_aligned_cuke_fasta("data/seq/cukeAlg-unaligned.fas")
-
-  data/seq/cukeAlg-cleaned.fas:
-    command: generate_cleaned_cuke_fasta("data/seq/cukeAlg-aligned.fas")
-
-  cuke_dist_raw:
-    command: load_cuke_dist_raw(cuke_alg)
-
-  cuke_dist_k2p:
-    command: load_cuke_dist_k2p(cuke_alg)
-
-  compare_identifications:
-    command: compare_idig_cuke_db(cuke_db = cukeDB)
-
-  cluster_groups_raw:
-    command: cuke_tree_cluster_groups(taxonomy, cuke_tree_raw_phylo4, cukeDB)
-
-  cluster_groups_k2p:
-    command: cuke_tree_cluster_groups(taxonomy, cuke_tree_k2p_phylo4, cukeDB)
-
-  data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes:
-    command: build_raxml_tree("data/seq/cukeAlg-cleaned.fas")
-
   cuke_tree_raxml:
     command: load_tree_raxml("data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes")
 
   cuke_tree_raxml_phylo4:
     command: load_tree_raxml_phylo4(cuke_tree_raxml)
+
+
+
+  ##cuke_clusters:
+  ##  command: load_cukeDB(cukeDB_noLabels, cuke_tree_raw_phylo4)
+
+  #taxonomy:
+  #  command: load_taxonomy(cukeDB)
+
+
+
+
+
+
+  # compare_identifications:
+  #   command: compare_idig_cuke_db(cuke_db = cukeDB)
+
+  # cluster_groups_raw:
+  #   command: cuke_tree_cluster_groups(taxonomy, cuke_tree_raw_phylo4, cukeDB)
+
+  # cluster_groups_k2p:
+  #   command: cuke_tree_cluster_groups(taxonomy, cuke_tree_k2p_phylo4, cukeDB)
+
+  # data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes:
+  #   command: build_raxml_tree("data/seq/cukeAlg-cleaned.fas")
