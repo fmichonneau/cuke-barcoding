@@ -50,7 +50,7 @@ build_pairwiseGrpRes <- function(pairwiseGrpMdl, pairwiseGrpTax) {
     i <- 1
     cukeAlg <- load_cukeAlg()
     cukeDB <- load_cukeDB()
-    thresVec <- load_thresholdPairwise()
+    thresVec <- load_threshold_pairwise()
 
     for (eachMdl in 1:length(pairwiseGrpMdl)) {
         for (eachTax in 1:length(pairwiseGrpTax)) {
