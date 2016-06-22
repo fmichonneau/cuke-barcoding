@@ -34,7 +34,7 @@ load_cuke_tree_clusters <- function(taxonomy, cuke_tree_phylo4, cuke_db) {
 
 build_cluster_group <- function(tr, taxa, threshold, taxonomy, cuke_db) {
     lbl_to_keep <- fetch_labels_from_taxa(taxonomy, cuke_db, taxa)
-    stopifnot(all(lbl_to_keep %in% tipLabels(tr)))
+    lbl_to_keep <- intersect(tipLabels(tr), lbl_to_keep)
     sub_tr <- subset(tr, tips.include = lbl_to_keep)
     grp_tr <- findGroups(sub_tr, threshold = threshold,
                          experimental = FALSE, parallel = TRUE)
