@@ -26,7 +26,6 @@ targets:
 
   all:
     depends:
-      - .init
       - trees
       #- compare_identifications
       #- taxonomy
@@ -39,10 +38,6 @@ targets:
       - cuke_tree_k2p
       - cuke_tree_raw_phylo4
       - cuke_tree_k2p_phylo4
-
-  ## global variables ---------------------------------------------------------
-  .init:
-    command: init()
 
   ## raw data ------------------------------------------------------------------
   echino_db:
@@ -74,8 +69,7 @@ targets:
   cuke_dist_k2p:
     command: load_cuke_dist_k2p(cuke_alg)
 
-
-  ## trees --------------------------------------------------------------------
+  ## trees ---------------------------------------------------------------------
   cuke_tree_raw:
     command: load_cuke_tree(cuke_alg, dist_mat = cuke_dist_raw, model=I("raw"), Nrep=I(1))
 
@@ -89,18 +83,20 @@ targets:
     command: load_cuke_tree_k2p_phylo4(cuke_tree_k2p)
 
   cuke_tree_raxml:
-    command: load_tree_raxml("data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes")
+    command: load_tree_raxml("data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes",
+                             cuke_db)
 
   cuke_tree_raxml_phylo4:
     command: load_tree_raxml_phylo4(cuke_tree_raxml)
 
 
+  ## ESU delineation   ---------------------------------------------------------
+  cuke_tree_clusters:
+    command: load_cuke_tree_clusters(taxonomy, cuke_tree_raw_phylo4, cuke_db)
 
-  ##cuke_clusters:
-  ##  command: load_cukeDB(cukeDB_noLabels, cuke_tree_raw_phylo4)
-
-  #taxonomy:
-  #  command: load_taxonomy(cukeDB)
+  ## taxonomy ------------------------------------------------------------------
+  taxonomy:
+    command: load_taxonomy(cuke_db)
 
 
 
@@ -110,11 +106,7 @@ targets:
   # compare_identifications:
   #   command: compare_idig_cuke_db(cuke_db = cukeDB)
 
-  # cluster_groups_raw:
-  #   command: cuke_tree_cluster_groups(taxonomy, cuke_tree_raw_phylo4, cukeDB)
 
-  # cluster_groups_k2p:
-  #   command: cuke_tree_cluster_groups(taxonomy, cuke_tree_k2p_phylo4, cukeDB)
 
   # data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes:
   #   command: build_raxml_tree("data/seq/cukeAlg-cleaned.fas")
