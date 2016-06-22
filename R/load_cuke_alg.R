@@ -16,22 +16,6 @@ genSp <- function(dbTmp) {
   seqNm
 }
 
-
-genFasta <- function(db, out=file.path(tempdir(), paste(format(Sys.time(), "%Y%m%d-%H%M%S"), "seq.fas", sep="_"))) {
-### db -- database in which the data is stored
-### out -- file name of the fasta that will be generated
-  for (i in 1:nrow(db)) {
-    dbTmp <- db[i, ]
-    seqNm <- genLabel(dbTmp)
-    seqNm <- paste(">", seqNm, sep="")
-    seqNm <- gsub("\\s+", "", seqNm)
-    seqTmp <- dbTmp$Sequence
-    cat(seqNm, "\n", dbTmp$Sequence, "\n", file=out,
-        append=ifelse(i == 1, FALSE, TRUE), sep="")
-  }
-  TRUE
-}
-
 generate_unaligned_cuke_fasta <- function(cuke_seqs, out = file.path("data", "seq", "cuke_alg_unaligned.fas")) {
     unlink(out)
     seqs <- apply(cuke_seqs, 1, function(x) {

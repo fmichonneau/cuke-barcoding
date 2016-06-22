@@ -1,8 +1,5 @@
-init <- function() {
-    phylobase.options(allow.duplicated.labels="ok")
-    registerDoMC()
-}
-
+phylobase::phylobase.options(allow.duplicated.labels="ok")
+doMC::registerDoMC()
 
 
 
