@@ -99,6 +99,11 @@ load_cuke_seqs <- function(cuke_db) {
     cuke_db[, c("Sample", "Sequence")]
 }
 
+clean_labels <- function(lbls)  {
+    gsub(":|,|\\(|\\)|;|\\[|\\]|\\'|\\s|\t", "", lbls)
+}
+
+
 load_cuke_clusters <- function(cuke_db, cuke_tree) {
 
     dataLbls <- character(nrow(cuke_db))
@@ -106,8 +111,8 @@ load_cuke_clusters <- function(cuke_db, cuke_tree) {
         dataLbls[i] <- genLabel(cuke_db[i, ])
     }
 
-    ## using the same pattern as in seqManagement::cleanSeqLabels
-    cuke_db$Labels <- gsub(":|,|\\(|\\)|;|\\[|\\]|\\'|\\s|\t", "", dataLbls)
+    ## using the same pattern as in chopper::cleanSeqLabels
+    cuke_db$Labels <- clean_labels(dataLbls)
 
     treeTips <- data.frame(Labels_withAmb = tipLabels(cuke_tree),
                            Labels = gsub("_\\d+amb$", "", tipLabels(cuke_tree)),

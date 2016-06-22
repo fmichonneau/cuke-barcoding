@@ -3,22 +3,6 @@ init <- function() {
     registerDoMC()
 }
 
-## fetch the labels found in the trees for a given taxon
-fetch_labels_from_taxa <- function(taxonomy, cuke_db, taxa="all") {
-
-    taxa <- match.arg(as.character(taxa), taxonomy$taxa)
-
-    if (taxa == "all") {
-        lbls <- cuke_db[, "Labels_withAmb"]
-    } else if (taxonomy[taxonomy$taxa == taxa, "rank"] == "Order") {
-        lbls <- cuke_db[cuke_db$order == taxa, "Labels_withAmb"]
-    } else if (taxonomy[taxonomy$taxa == taxa, "rank"] == "Family") {
-        lbls <- cuke_db[cuke_db$family == taxa, "Labels_withAmb"]
-    } else {
-        stop("something is wrong with ", taxa)
-    }
-    lbls
-}
 
 
 
