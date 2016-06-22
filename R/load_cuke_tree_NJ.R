@@ -31,8 +31,7 @@ build_cuke_tree_phylo4 <- function(tree) {
     treeP4
 }
 
-load_cuke_tree <- function(cuke_alg, dist_mat, model, Nrep, ...) {
-    if(missing(Nrep)) Nrep <- 200
+load_cuke_tree <- function(cuke_alg, dist_mat, model, Nrep = 200, ...) {
     cukeTree <- build_cuke_tree(cuke_alg, dist_mat, model = model, Nrep=Nrep, ...)
     invisible(cukeTree)
 }
