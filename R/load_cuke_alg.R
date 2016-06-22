@@ -64,14 +64,14 @@ generate_cleaned_cuke_fasta <- function(aligned, cleaned = file.path("data", "se
 load_cuke_alg <- function(alg) {
 
     ## identify sequences with ambiguities and rename them
-    amb_seq <- chopper::checkAmbiguity(file = alg, quiet = TRUE)
-    old_nm <- names(amb_seq)
-    new_nm <- paste(old_nm, "_", sapply(amb_seq, length), "amb", sep = "")
+    #amb_seq <- chopper::checkAmbiguity(file = alg, quiet = TRUE)
+    #old_nm <- names(amb_seq)
+    #new_nm <- paste(old_nm, "_", sapply(amb_seq, length), "amb", sep = "")
 
     cuke_alg <- ape::read.dna(file = alg, format = "fasta")
 
-    cuke_alg <- cuke_alg[-match(old_nm, dimnames(cuke_alg)[[1]]), ]
-    cuke_alg <- chopper::cleanSeqLabels(cuke_alg, software = "RAxML")
-    dimnames(cuke_alg)[[1]] <- gsub("\\\"", "", dimnames(cuke_alg)[[1]])
+    #cuke_alg <- cuke_alg[-match(old_nm, dimnames(cuke_alg)[[1]]), ]
+    #cuke_alg <- chopper::cleanSeqLabels(cuke_alg, software = "RAxML")
+    #dimnames(cuke_alg)[[1]] <- gsub("\\\"", "", dimnames(cuke_alg)[[1]])
     invisible(cuke_alg)
 }
