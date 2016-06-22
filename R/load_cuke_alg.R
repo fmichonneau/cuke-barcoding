@@ -52,7 +52,7 @@ generate_cleaned_cuke_fasta <- function(aligned, cleaned = file.path("data", "se
     ## Remove sequences with internal gaps and stop codons
     to_rm <- union(seq_with_stop, seq_with_gap)
 
-    message("Removing: ", to_rm)
+    message("Removing: ", paste(to_rm, collapse = ", "))
     to_rm_ind <- match(to_rm, dimnames(seq_hol)[[1]])
     seq_hol <- seq_hol[-to_rm_ind, ]
 
