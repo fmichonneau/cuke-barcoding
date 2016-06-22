@@ -1,19 +1,28 @@
-cuke_tree_cluster_groups <- function(taxonomy, cuke_tree_phylo4, cuke_db) {
+load_threshold_pairwise <- function() {
+    c(seq(1, 5, by=.5), 6:8)/100
+}
 
-    st <- storr(driver_environment())
+load_threshold_clusters <- function() {
+    load_threshold_pairwise()/2
+}
+
+
+load_cuke_tree_clusters <- function(taxonomy, cuke_tree_phylo4, cuke_db) {
+
+    st <- storr::storr(storr::driver_environment())
     uniq_taxa <- taxonomy$taxa
-    thresVec <- load_thresholdClusters()
+    thres_vec <- load_threshold_clusters()
 
     for (j in seq_along(uniq_taxa)) {
-        for (i in seq_along(thresVec)) {
-            key <- paste(uniq_taxa[j], gsub("\\.", "", thresVec[i]),
+        for (i in seq_along(thres_vec)) {
+            key <- paste(uniq_taxa[j], gsub("\\.", "", thres_vec[i]),
                          sep = "-")
             message("Finding groups for ", sQuote(uniq_taxa[j]),
-                    " with threshold of ", sQuote(thresVec[i]),
+                    " with threshold of ", sQuote(thres_vec[i]),
                     " ....", appendLF =  FALSE)
             tmp_grp <- build_cluster_group(tr = cuke_tree_phylo4,
                                            taxa = uniq_taxa[j],
-                                           threshold = thresVec[i],
+                                           threshold = thres_vec[i],
                                            taxonomy = taxonomy,
                                            cuke_db = cuke_db)
             message("DONE.")
@@ -35,7 +44,7 @@ build_cluster_group <- function(tr, taxa, threshold, taxonomy, cuke_db) {
 load_tree_cluster_groups <- function(cluster_store, taxa="all",
                                   threshold=0.015, taxonomy) {
 
-    thres <- load_thresholdClusters()
+    thres <- load_threshold_clusters()
     taxa <- match.arg(as.character(taxa), taxonomy$taxa)
     stopifnot(length(threshold) == 1 && threshold %in% thres)
 

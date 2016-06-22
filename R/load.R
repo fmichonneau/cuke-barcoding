@@ -20,13 +20,7 @@ fetch_labels_from_taxa <- function(taxonomy, cuke_db, taxa="all") {
     lbls
 }
 
-load_thresholdPairwise <- function() {
-    c(seq(1, 5, by=.5), 6:8)/100
-}
 
-load_thresholdClusters <- function() {
-    load_thresholdPairwise()/2
-}
 
 load_tree_raxml <- function(raxml_tree_file,
                             table_names = "data/raxml/table_names.csv") {
