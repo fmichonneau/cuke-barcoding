@@ -1,7 +1,4 @@
-phylobase::phylobase.options(allow.duplicated.labels="ok")
 doMC::registerDoMC()
-
-
 
 load_tree_raxml <- function(raxml_tree_file,
                             cuke_db) {
