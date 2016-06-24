@@ -119,10 +119,10 @@ findGroups <- function(tr, threshold=.015, experimental=FALSE, parallel=TRUE) {
   ## build a phylo4d object for the results
   dTip <- data.frame(Groups=rep(1:length(grp), sapply(grp, length)))
   rownames(dTip) <- unlist(grp)
-  if (inherits(tr, "phylo4d"))
-    return(addData(tr, tip.data=dTip))
-  else if (inherits(tr, "phylo4"))
-    return(phylo4d(tr, tip.data=dTip))
+    if (inherits(tr, "phylo4d")) {
+        return(addData(tr, tip.data=dTip, rownamesAsLabels = TRUE))
+    } else if (inherits(tr, "phylo4"))
+      return(phylo4d(tr, tip.data=dTip, rownamesAsLabels = TRUE))
 }
 
 
