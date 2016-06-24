@@ -7,26 +7,40 @@ load_threshold_clusters <- function() {
 }
 
 
-load_cuke_tree_clusters <- function(taxonomy, cuke_tree_phylo4, cuke_db) {
+## the ... arguments is used to pass an arbitrary number of trees on
+## which the clustering algorithm is used. The number of trees and the
+## methods used to build them are specified by the 'methods' argument.
+## the phylo4 objects
+load_cuke_tree_clusters <- function(taxonomy, cuke_db, methods, ...) {
 
-    st <- storr::storr(storr::driver_environment())
-    uniq_taxa <- taxonomy$taxa
+    trs <- list(...)
+    if (length(methods) != length(trs)) {
+        stop("The number of trees provided should match the number of methods.")
+    }
+    names(trs) <- methods
+
+    st <- storr::storr_rds("data/storr_clusters")
+    uniq_taxa <- "Phyllophoridae" #taxonomy$taxa
     thres_vec <- load_threshold_clusters()
 
-    for (j in seq_along(uniq_taxa)) {
-        for (i in seq_along(thres_vec)) {
-            key <- paste(uniq_taxa[j], gsub("\\.", "", thres_vec[i]),
-                         sep = "-")
-            message("Finding groups for ", sQuote(uniq_taxa[j]),
-                    " with threshold of ", sQuote(thres_vec[i]),
-                    " ....", appendLF =  FALSE)
-            tmp_grp <- build_cluster_group(tr = cuke_tree_phylo4,
-                                           taxa = uniq_taxa[j],
-                                           threshold = thres_vec[i],
-                                           taxonomy = taxonomy,
-                                           cuke_db = cuke_db)
-            message("DONE.")
-            st$set(key, tmp_grp)
+    for (k in seq_along(trs)) {
+        for (j in seq_along(uniq_taxa)) {
+            for (i in seq_along(thres_vec)) {
+                key <- paste(uniq_taxa[j],
+                             gsub("\\.", "", thres_vec[i]),
+                             methods[k],
+                             sep = "-")
+                message("Finding groups for ", sQuote(uniq_taxa[j]),
+                        " with threshold of ", sQuote(thres_vec[i]),
+                        " .... ", appendLF =  FALSE)
+                tmp_grp <- build_cluster_group(tr = trs[[k]],
+                                               taxa = uniq_taxa[j],
+                                               threshold = thres_vec[i],
+                                               taxonomy = taxonomy,
+                                               cuke_db = cuke_db)
+                message("DONE.")
+                st$set(key, tmp_grp)
+            }
         }
     }
     st
@@ -42,7 +56,7 @@ build_cluster_group <- function(tr, taxa, threshold, taxonomy, cuke_db) {
 }
 
 load_tree_cluster_groups <- function(cluster_store, taxa="all",
-                                  threshold=0.015, taxonomy) {
+                                     threshold=0.015, taxonomy) {
 
     thres <- load_threshold_clusters()
     taxa <- match.arg(as.character(taxa), taxonomy$taxa)
