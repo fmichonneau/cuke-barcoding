@@ -92,7 +92,7 @@ targets:
 
   ## ESU delineation   ---------------------------------------------------------
   cuke_tree_clusters:
-    command: load_cuke_tree_clusters(taxonomy, cuke_tree_raw_phylo4, cuke_db)
+    command: load_cuke_tree_clusters(taxonomy, cuke_db, methods=I(c("raw", "k2p")), cuke_tree_raw_phylo4, cuke_tree_k2p_phylo4)
 
   ## taxonomy ------------------------------------------------------------------
   taxonomy:
