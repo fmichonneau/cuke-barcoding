@@ -1,5 +1,12 @@
 load_echino_db <- function(cuke_file) {
     echino_db <- read.csv(file = cuke_file, stringsAsFactors = FALSE)
+    if (length(nzchar(echino_db$guid)) !=
+        length(echino_db$guid))
+        stop("some records are missing a guid")
+    if (any(is.na(echino_db$guid)))
+        stop("there are NAs in the guid column")
+    if (any(duplicated(echino_db$guid)))
+        stop("duplicated guid!")
     echino_db
 }
 
