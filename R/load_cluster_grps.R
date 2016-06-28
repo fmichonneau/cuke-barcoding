@@ -20,7 +20,7 @@ load_cuke_tree_clusters <- function(taxonomy, cuke_db, methods, ...) {
     names(trs) <- methods
 
     st <- storr::storr_rds("data/storr_clusters")
-    uniq_taxa <- "Phyllophoridae" #taxonomy$taxa
+    uniq_taxa <- taxonomy$taxa
     thres_vec <- load_threshold_clusters()
 
     for (k in seq_along(trs)) {
