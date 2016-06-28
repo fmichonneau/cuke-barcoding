@@ -103,7 +103,7 @@ load_cuke_db <- function(echino_db) {
 }
 
 load_cuke_seqs <- function(cuke_db) {
-    cuke_db[, c("Sample", "Sequence")]
+    cuke_db[, c("guid", "Sequence")]
 }
 
 clean_labels <- function(lbls)  {
