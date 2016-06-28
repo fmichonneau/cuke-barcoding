@@ -1,5 +1,6 @@
 packages:
   - ape
+  - ridigbio
   - phylobase
   - ggplot2
   - igraph
@@ -27,6 +28,8 @@ targets:
   all:
     depends:
       - trees
+      - cuke_idigbio
+      - validate_idigbio
       #- compare_identifications
       #- taxonomy
       #- cluster_groups_raw
@@ -41,10 +44,20 @@ targets:
 
   ## raw data ------------------------------------------------------------------
   echino_db:
-    command: load_echino_db("data/raw/20160603.MARBoL_Echinos_current.csv")
+    command: load_echino_db("data/raw/20160628.MARBoL_Echinos_current.csv")
 
   cuke_db:
     command: load_cuke_db(echino_db)
+
+  ## compare with idigibio -----------------------------------------------------
+  idigbio_ids:
+    command: build_idigbio_ids(cuke_db)
+
+  cuke_idigbio:
+    command: get_idigbio(idigbio_ids)
+
+  validate_idigbio:
+    command: check_idigbio(idigbio_ids, cuke_idigbio)
 
   ## sequences -----------------------------------------------------------------
   cuke_seqs:
