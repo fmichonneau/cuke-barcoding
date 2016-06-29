@@ -89,6 +89,12 @@ targets:
   cuke_tree_k2p:
     command: load_cuke_tree(cuke_alg, dist_mat = cuke_dist_k2p, model=I("K80"), Nrep=I(1))
 
+  data/trees/cuke_tree_raw.tre:
+    command: write_tree(cuke_tree_raw, file = "data/cuke/trees/cuke_tree_raw.tre")
+
+  data/trees/cuke_tree_k2p.tre:
+    command: write_tree(cuke_tree_k2p, file = "data/cuke/trees/cuke_tree_k2p.tre")
+
   cuke_tree_raw_phylo4:
     command: load_cuke_tree_raw_phylo4(cuke_tree_raw)
 
@@ -110,6 +116,10 @@ targets:
   ## taxonomy ------------------------------------------------------------------
   taxonomy:
     command: load_taxonomy(cuke_db)
+
+  ## species-overlap -----------------------------------------------------------
+  species_overlap:
+    command: build_species_overlap()
 
 
   # compare_identifications:
