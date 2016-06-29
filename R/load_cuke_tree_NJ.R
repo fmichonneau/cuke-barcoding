@@ -45,3 +45,7 @@ load_cuke_tree_k2p_phylo4 <- function(cuke_tree_k2p) {
     cukeTree4 <- build_cuke_tree_phylo4(cuke_tree_k2p)
     invisible(cukeTree4)
 }
+
+write_tree <- function(tr, file) {
+    ape::write.tree(tr, file)
+}
