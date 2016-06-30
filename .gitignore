@@ -12,12 +12,10 @@ cache/
 *.log
 *.blg
 *.bbl
-
 ## hpc files
 *.err
 *.out
 *.pbs
-
 ## local only to keep the repository clean
 .Rhistory
 toadd.csv
@@ -26,3 +24,10 @@ zzz_compareWithGenbank/
 zzz_external-data/
 zzz_misc/
 zzz_gps-coordinates-cleanup/
+packrat/lib*/
+.remake
+data/seq/cuke_alg_unaligned.fas
+data/seq/cuke_alg_aligned.fas
+data/seq/cuke_alg_cleaned.fas
+data/trees/cuke_tree_raw.tre
+data/trees/cuke_tree_k2p.tre
