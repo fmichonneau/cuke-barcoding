@@ -1,20 +1,3 @@
-genLabel <- function(dbTmp) {
-  seqNm <- paste(dbTmp$family, dbTmp$genusorhigher, dbTmp$modifier, dbTmp$species, dbTmp$Loc,
-                 paste(dbTmp$"Collection.Code", dbTmp$Catalog_number, sep=""),
-                 dbTmp$Sample, dbTmp$Type, sep="_")
-  if ( dbTmp$Type != "")
-      seqNm <- paste(seqNm, dbTmp$Sample, sep="_")
-  seqNm <- gsub("_{2,}", "_", seqNm)
-  seqNm <- gsub("_$", "", seqNm)
-  seqNm <- gsub("\\s+$", "", seqNm)
-  seqNm
-}
-
-genSp <- function(dbTmp) {
-  seqNm <- paste(dbTmp$genusorhigher, dbTmp$modifier, dbTmp$species, sep="_")
-  seqNm <- gsub("_{2,}", "_", seqNm)
-  seqNm
-}
 
 generate_unaligned_cuke_fasta <- function(cuke_seqs, out = file.path("data", "seq", "cuke_alg_unaligned.fas")) {
     unlink(out)
@@ -43,10 +26,10 @@ generate_cleaned_cuke_fasta <- function(aligned, cleaned = file.path("data", "se
 
     ## Identify sequences with stop codons
     seq_hol <- ape::read.dna(file = aligned, format = "fasta")
-    trans_seq <- foreach (i = 1:nrow(seq_hol)) %dopar% {
+    trans_seq <- mclapply(seq_len(nrow(seq_hol)), function(i) {
         seqinr::translate(as.character(seq_hol[i, ]), frame = 1,
                           numcode = 9)
-    }
+    }, mc.preschedule = FALSE)
     seq_with_stop <- dimnames(seq_hol)[[1]][grep("\\*", trans_seq)]
 
     ## Remove sequences with internal gaps and stop codons

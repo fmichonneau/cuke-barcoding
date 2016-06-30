@@ -5,13 +5,13 @@ packages:
   - ggplot2
   - igraph
   - methods
-  - doMC
   - chopper
   - maps
   - sp
   - rgeos
   - xtable
   - car
+  - parallel
   - wesanderson
   - tikzDevice
   - reshape2
@@ -27,20 +27,22 @@ targets:
 
   all:
     depends:
-      - trees
+      #- trees
+      - init
       - cuke_idigbio
       - validate_idigbio
-      #- compare_identifications
-      #- taxonomy
-      #- cluster_groups_raw
-      #- cuke_tree_raxml_phylo4
+      - clusters
 
   trees:
     depends:
-      - cuke_tree_raw
-      - cuke_tree_k2p
       - cuke_tree_raw_phylo4
       - cuke_tree_k2p_phylo4
+      - data/trees/cuke_tree_raw.tre
+      - data/trees/cuke_tree_k2p.tre
+
+  ## options -------------------------------------------------------------------
+  init:
+    command: initialize()
 
   ## raw data ------------------------------------------------------------------
   echino_db:
@@ -48,6 +50,10 @@ targets:
 
   cuke_db:
     command: load_cuke_db(echino_db)
+
+  ## taxonomy ------------------------------------------------------------------
+  taxonomy:
+    command: load_taxonomy(cuke_db)
 
   ## compare with idigibio -----------------------------------------------------
   idigbio_ids:
@@ -110,22 +116,10 @@ targets:
 
 
   ## ESU delineation   ---------------------------------------------------------
-  cuke_tree_clusters:
-    command: load_cuke_tree_clusters(taxonomy, cuke_db, methods=I(c("raw", "k2p")), cuke_tree_raw_phylo4, cuke_tree_k2p_phylo4)
+  clusters:
+    command: make_cuke_tree_clusters(taxonomy, cuke_db, methods=I(c("raw", "k2p")), cuke_tree_raw_phylo4, cuke_tree_k2p_phylo4)
 
-  ## taxonomy ------------------------------------------------------------------
-  taxonomy:
-    command: load_taxonomy(cuke_db)
 
   ## species-overlap -----------------------------------------------------------
   species_overlap:
     command: build_species_overlap()
-
-
-  # compare_identifications:
-  #   command: compare_idig_cuke_db(cuke_db = cukeDB)
-
-
-
-  # data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes:
-  #   command: build_raxml_tree("data/seq/cukeAlg-cleaned.fas")
