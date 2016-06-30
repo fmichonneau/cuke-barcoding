@@ -14,10 +14,11 @@ load_cuke_db <- function(echino_db) {
 
     cuke_db <- subset(echino_db, class == "Holothuroidea")
     cuke_db <- subset(cuke_db, ! pass.seq %in%  c("GenBank",
-                                                "fix",
-                                                "no_seq_yet",
-                                                "no",
-                                                "duplicate"))
+                                                  "fix",
+                                                  "no_seq_yet",
+                                                  "no",
+                                                  "duplicate",
+                                                  "16S_only_to_check"))
     cuke_db <- subset(cuke_db, Notes != "MH sequence")
     cuke_db <- cuke_db[nzchar(cuke_db$Sample), ]
 
@@ -106,10 +107,6 @@ load_cuke_seqs <- function(cuke_db) {
     cuke_db[, c("guid", "Sequence")]
 }
 
-clean_labels <- function(lbls)  {
-    gsub(":|,|\\(|\\)|;|\\[|\\]|\\'|\\s|\t", "", lbls)
-}
-
 
 load_cuke_clusters <- function(cuke_db, cuke_tree) {
 
@@ -118,7 +115,6 @@ load_cuke_clusters <- function(cuke_db, cuke_tree) {
         dataLbls[i] <- genLabel(cuke_db[i, ])
     }
 
-    ## using the same pattern as in chopper::cleanSeqLabels
     cuke_db$Labels <- clean_labels(dataLbls)
 
     treeTips <- data.frame(Labels_withAmb = tipLabels(cuke_tree),
