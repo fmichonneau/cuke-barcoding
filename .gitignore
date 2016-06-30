@@ -31,3 +31,4 @@ data/seq/cuke_alg_aligned.fas
 data/seq/cuke_alg_cleaned.fas
 data/trees/cuke_tree_raw.tre
 data/trees/cuke_tree_k2p.tre
+packrat/src/*
