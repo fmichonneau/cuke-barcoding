@@ -27,16 +27,14 @@ targets:
 
   all:
     depends:
-      #- trees
+      - trees
       - init
       - cuke_idigbio
       - validate_idigbio
-      - clusters
+      #- clusters
 
   trees:
     depends:
-      - cuke_tree_raw_phylo4
-      - cuke_tree_k2p_phylo4
       - data/trees/cuke_tree_raw.tre
       - data/trees/cuke_tree_k2p.tre
 
@@ -46,7 +44,7 @@ targets:
 
   ## raw data ------------------------------------------------------------------
   echino_db:
-    command: load_echino_db("data/raw/20160628.MARBoL_Echinos_current.csv")
+    command: load_echino_db("data/raw/20160703.MARBoL_Echinos_current.csv")
 
   cuke_db:
     command: load_cuke_db(echino_db)
@@ -96,10 +94,10 @@ targets:
     command: load_cuke_tree(cuke_alg, dist_mat = cuke_dist_k2p, model=I("K80"), Nrep=I(1))
 
   data/trees/cuke_tree_raw.tre:
-    command: write_tree(cuke_tree_raw, file = "data/cuke/trees/cuke_tree_raw.tre")
+    command: write_tree(cuke_tree_raw, file = I("data/trees/cuke_tree_raw.tre"))
 
   data/trees/cuke_tree_k2p.tre:
-    command: write_tree(cuke_tree_k2p, file = "data/cuke/trees/cuke_tree_k2p.tre")
+    command: write_tree(cuke_tree_k2p, file = I("data/trees/cuke_tree_k2p.tre"))
 
   cuke_tree_raw_phylo4:
     command: load_cuke_tree_raw_phylo4(cuke_tree_raw)
@@ -107,13 +105,12 @@ targets:
   cuke_tree_k2p_phylo4:
     command: load_cuke_tree_k2p_phylo4(cuke_tree_k2p)
 
-  cuke_tree_raxml:
-    command: load_tree_raxml("data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes",
-                             cuke_db)
+  #cuke_tree_raxml:
+  #  command: load_tree_raxml("data/raxml/RAxML_bipartitionsBranchLabels.cukeBarcodes",
+  #                           cuke_db)
 
-  cuke_tree_raxml_phylo4:
-    command: load_tree_raxml_phylo4(cuke_tree_raxml)
-
+  #cuke_tree_raxml_phylo4:
+  #  command: load_tree_raxml_phylo4(cuke_tree_raxml)
 
   ## ESU delineation   ---------------------------------------------------------
   clusters:
