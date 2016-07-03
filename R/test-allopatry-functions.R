@@ -213,19 +213,13 @@ testRangeType <- function(tr, distMat, cukeDB, percentOverlap=10) {
                )
 }
 
-build_species_overlap <- function() {
+build_species_overlap <- function(cuke_db) {
     ## constants for this analysis
     thres <- 0.04
     dst <- "raw"
     tax <- "all"
-
-    taxonomyDf <- load_taxonomyDf()
-    ##tax <- taxonomyDf$taxa ## need to double check but I don't think the code below works if used on other taxa
-
-    cukeDB <- load_cukeDB()
-    cukeAlg <- load_cukeAlg()
-
     method <- c("cluster", "pairwise")
+
 
     res <- vector("list", length(method) * length(tax))
     k <- 1
@@ -242,7 +236,7 @@ build_species_overlap <- function() {
             else {
                 tree <- load_tree_pairwiseGrps(distance=dst, taxa=tax[j], threshold=thres)
             }
-            tmpSpatial <- spatialFromSpecies(tree, cukeDB)
+            tmpSpatial <- spatialFromSpecies(tree, cuke_db)
             tmpGeoCtxt <- testRangeType(tree, tmpSpatial[[2]], cukeDistRaw)
             res[[k]] <- tmpGeoCtxt
             k <- k+1
@@ -251,17 +245,6 @@ build_species_overlap <- function() {
     res
 }
 
-load_species_overlap <- function(overwrite=FALSE) {
-    fnm <- "data/species-overlap.rds"
-    if (file.exists(fnm) && !overwrite) {
-        spOver <- readRDS(file=fnm)
-    }
-    else {
-        spOver <- build_species_overlap()
-        saveRDS(spOver, file=fnm)
-    }
-    invisible(spOver)
-}
 
 load_species_overlap_comparison <- function(taxa="all", threshold=0.04) {
      taxonomyDf <- load_taxonomyDf()
