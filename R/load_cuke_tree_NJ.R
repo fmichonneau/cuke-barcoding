@@ -49,3 +49,18 @@ load_cuke_tree_k2p_phylo4 <- function(cuke_tree_k2p) {
 write_tree <- function(tr, file) {
     ape::write.tree(tr, file)
 }
+
+make_pdf_tree <- function(tr, pdf_file, cuke_db, ...)  {
+    tr$tip.label <- make_labels_from_guids(cuke_db, tr$tip.label)
+    pdf(file = pdf_file, height = 280)
+    plot(tr, no.margin = TRUE, cex = .51, font = 1)
+    dev.off()
+}
+
+make_multi_page_tree <- function(pdf_file) {
+    dest <- gsub("\\.pdf$", "_multipage.pdf", pdf_file)
+    pdf_cmd <- paste("pdfposter -p 25x1Let",
+                     pdf_file,
+                     dest)
+    system(pdf_cmd)
+}
