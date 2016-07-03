@@ -1,6 +1,8 @@
 ## project specific
 cuke-barcoding.tex
 cuke-barcoding.pdf
+*.docx
+*.rtf
 tmp/
 cache/
 *~
@@ -12,6 +14,8 @@ cache/
 *.log
 *.blg
 *.bbl
+auto/
+
 ## hpc files
 *.err
 *.out
@@ -19,16 +23,27 @@ cache/
 ## local only to keep the repository clean
 .Rhistory
 toadd.csv
+
+## extra files
 zzz_tmp-genbank/
 zzz_compareWithGenbank/
 zzz_external-data/
 zzz_misc/
 zzz_gps-coordinates-cleanup/
+
+## packrat library
 packrat/lib*/
+packrat/src/*
+
+## data
 .remake
 data/seq/cuke_alg_unaligned.fas
 data/seq/cuke_alg_aligned.fas
 data/seq/cuke_alg_cleaned.fas
 data/trees/cuke_tree_raw.tre
+data/raw/
+data/raxml*
+data/storr_clusters/
 data/trees/cuke_tree_k2p.tre
-packrat/src/*
+data/beast/
+data/idigbio/
