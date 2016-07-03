@@ -15,7 +15,6 @@ cache/
 *.blg
 *.bbl
 auto/
-
 ## hpc files
 *.err
 *.out
@@ -23,18 +22,15 @@ auto/
 ## local only to keep the repository clean
 .Rhistory
 toadd.csv
-
 ## extra files
 zzz_tmp-genbank/
 zzz_compareWithGenbank/
 zzz_external-data/
 zzz_misc/
 zzz_gps-coordinates-cleanup/
-
 ## packrat library
 packrat/lib*/
 packrat/src/*
-
 ## data
 .remake
 data/seq/cuke_alg_unaligned.fas
