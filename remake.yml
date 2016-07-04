@@ -17,6 +17,7 @@ packages:
   - reshape2
   - seqinr
   - phytools
+  - dplyr
 
 
 sources:
@@ -62,6 +63,9 @@ targets:
 
   validate_idigbio:
     command: check_idigbio(idigbio_ids, cuke_idigbio)
+
+  validate_gps_coordinates:
+    command: check_idigbio_coordinates(cuke_db, cuke_idigbio)
 
   ## sequences -----------------------------------------------------------------
   cuke_seqs:
