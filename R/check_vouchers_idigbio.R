@@ -3,6 +3,19 @@ build_idigbio_ids <- function(cuke_db) {
                        cuke_db$Pass.voucher == "yes",
                        c("Repository", "Catalog_number")]
 
+    all_uf_specimens <- cuke_db[cuke_db$Repository == "UF" &
+                                !cuke_db$Catalog_number %in%
+                                 c("need", "no voucher", "not cataloged"), ]
+    n_uf_specimens <- nrow(all_uf_specimens)
+    not_counted <- n_uf_specimens - nrow(uf_spcm)
+
+    if (not_counted > 0) {
+        warning("UF specimens that don't pass voucher QC: ",
+                paste(setdiff(all_uf_specimens$Catalog_number,
+                                   uf_spcm$Catalog_number),
+                      collapse = ", "))
+    }
+
     idig_cat_number <- paste(uf_spcm$Catalog_number, "echinodermata", sep = "-")
     idig_cat_number
 }
