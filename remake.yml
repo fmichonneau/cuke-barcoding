@@ -46,7 +46,7 @@ targets:
 
   ## raw data ------------------------------------------------------------------
   echino_db:
-    command: load_echino_db("data/raw/20160703.MARBoL_Echinos_current.csv")
+    command: load_echino_db("data/raw/20160704.MARBoL_Echinos_current.csv")
 
   cuke_db:
     command: load_cuke_db(echino_db)
@@ -66,7 +66,7 @@ targets:
     command: check_idigbio(idigbio_ids, cuke_idigbio)
 
   validate_gps_coordinates:
-    command: check_idigbio_coordinates(cuke_db, cuke_idigbio)
+    command: check_idigbio_coordinates(idigbio_ids, cuke_idigbio)
 
   ## sequences -----------------------------------------------------------------
   cuke_seqs:
