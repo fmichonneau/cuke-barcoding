@@ -6,7 +6,9 @@ deg2rad <- function(deg) return(deg*pi/180)
 
 ## Calculates the geodesic distance between two points specified by
 ## radian latitude/longitude using the Haversine formula
-gcd.hf <- function(long1, lat1, long2, lat2) {
+gcd.hf <- function(long1, lat1, long2, lat2, warn = TRUE) {
+    if (warn)
+        warning("Did you convert the latitudes in radian first?!")
     R <- 6371 # Earth mean radius [km]
     delta.long <- (long2 - long1)
     delta.lat <- (lat2 - lat1)
