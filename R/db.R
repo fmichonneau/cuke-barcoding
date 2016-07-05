@@ -94,50 +94,6 @@ load_cuke_db <- function(echino_db) {
     ##  - NMV F112128
     ##  - NIWA 38032
 
-    ## fix GPS coordinates
-    cuke_db[cuke_db$decimalLatitude==19.95 & cuke_db$Loc == "MexicoPac",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(20.3, -105.5)
-    cuke_db[cuke_db$Loc == "Tanzania", "decimalLatitude"] <- -cuke_db[cuke_db$Loc == "Tanzania", "decimalLatitude"]
-    cuke_db[cuke_db$Loc == "Eparses", "decimalLatitude"] <- -cuke_db[cuke_db$Loc == "Eparses", "decimalLatitude"]
-    cuke_db[cuke_db$Sample == "MOLAF_0139",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-9.536, 147.289)
-    cuke_db[cuke_db$Sample == "8928",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.14623, 39.13786)
-    cuke_db[cuke_db$Sample == "FRM069",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(NA, NA) ## prob cont.
-    cuke_db[cuke_db$Sample == "8919",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.125, 39.191)
-    cuke_db[cuke_db$Sample == "RUMF-ZE-00072",  ## not from okinawa but Xmas Island
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-10.501823, 105.685488)
-    cuke_db[cuke_db$Sample == "8858F",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(NA, NA) ## prob cont.
-    cuke_db[cuke_db$Sample == "9166",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-22.33917, 40.3388) ## prob cont.
-    cuke_db[cuke_db$Sample == "MOLAF_0108",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-9.536, 147.289)
-    cuke_db[cuke_db$Sample == "8931",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.14623, 39.13786)
-    cuke_db[cuke_db$Sample == "8932",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.14623, 39.13786)
-    cuke_db[cuke_db$Sample == "9190",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-22.34657, 40.33203)
-    cuke_db[cuke_db$Sample == "8937",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.38733, 39.28727)
-    cuke_db[cuke_db$Sample == "Hickman_needed3",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-0.41, -91.48)
-    cuke_db[cuke_db$Sample == "8923",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.146230, 39.13786)
-    cuke_db[cuke_db$Sample == "8933",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.38733, 39.28727)
-    cuke_db[cuke_db$Sample == "8930",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.146230, 39.13786)
-    cuke_db[cuke_db$Sample == "8938",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-6.38733, 39.28727)
-    cuke_db[cuke_db$Sample == "6355",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-21.1008, 55.2437)
-    cuke_db[cuke_db$Sample == "6322",
-           c("decimalLatitude", "decimalLongitude")] <- data.frame(-21.0, 55.2437)
-
     invisible(cuke_db)
 }
 
