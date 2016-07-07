@@ -5,6 +5,7 @@ packages:
   - ggplot2
   - igraph
   - methods
+  - httr
   - chopper
   - maps
   - mapproj
@@ -19,6 +20,7 @@ packages:
   - seqinr
   - phytools
   - dplyr
+  - storr
 
 
 sources:
@@ -31,9 +33,15 @@ targets:
     depends:
       - trees
       - init
-      - cuke_idigbio
-      - validate_idigbio
+      - validate_data
       #- clusters
+
+  validate_data:
+    depends:
+      - validate_idigbio_specimens
+      - validate_idigbio_coordinates
+      - validate_nmv_specimens
+      - validate_nmv_coordinates
 
   trees:
     depends:
@@ -46,7 +54,7 @@ targets:
 
   ## raw data ------------------------------------------------------------------
   echino_db:
-    command: load_echino_db("data/raw/20160704.MARBoL_Echinos_current.csv")
+    command: load_echino_db("data/raw/20160706.MARBoL_Echinos_current.csv")
 
   cuke_db:
     command: load_cuke_db(echino_db)
@@ -60,13 +68,22 @@ targets:
     command: build_idigbio_ids(cuke_db)
 
   cuke_idigbio:
-    command: get_idigbio(idigbio_ids)
+    command: get_idigbio_info(idigbio_ids)
 
-  validate_idigbio:
-    command: check_idigbio(idigbio_ids, cuke_idigbio)
+  validate_idigbio_specimens:
+    command: compare_idigbio_specimens(idigbio_ids, cuke_idigbio)
 
-  validate_gps_coordinates:
-    command: check_idigbio_coordinates(idigbio_ids, cuke_idigbio)
+  validate_idigbio_coordinates:
+    command: compare_idigbio_coordinates(idigbio_ids, cuke_idigbio)
+
+  cuke_nmv:
+    command: get_nmv_info("data/nmv_data.rds")
+
+  validate_nmv_specimens:
+    command: compare_nmv_specimens(cuke_nmv)
+
+  validate_nmv_coordinates:
+    command: compare_nmv_coordinates(cuke_nmv, cuke_db)
 
   ## sequences -----------------------------------------------------------------
   cuke_seqs:

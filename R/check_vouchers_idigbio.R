@@ -5,10 +5,16 @@ check_coll_code <- function(coll_code) {
     }
 }
 
+## build_idigbio_ids_flmnh and build_idigbio_ids_generic
 ## create a data frame from cuke_db that contains 3 columns:
 ## - the catalog numbers (in idigbio's format with phylum name after catalog number)
 ## - the latitude
 ## - the longitude of the specimens
+## We give FLMNH specimen a special treatment that warrant their own function.
+## - we check for specimens that probably have a catalog number but don't have
+##   "yes" in the "pass:voucher" column
+## - the catalog numbers in iDigBio are different but it's not worth changing in
+##   cuke_db, so do it here. They need to have "-echinodermata" after the number
 build_idigbio_ids_flmnh <- function(cuke_db) {
 
     uf_spcm <- cuke_db[cuke_db$Repository == "UF" &
@@ -50,6 +56,7 @@ build_idigbio_ids_flmnh <- function(cuke_db) {
          ))
 }
 
+
 build_idigbio_ids_generic <- function(inst, cuke_db) {
 
     stopifnot(length(inst) == 1)
@@ -79,34 +86,41 @@ build_idigbio_ids_generic <- function(inst, cuke_db) {
 }
 
 
-
+## This is the main function called by remake that builds the data frames
+## in the format expected by get_idigbio (below). Most collections should
+## be ok with build_idigbio_ids_generic,  but FLMNH specimens require
+## special treatment (see above).
 build_idigbio_ids <- function(cuke_db) {
-    inst <- c("CAS")
+    inst <- c("CAS", "MNHN")
     res <- lapply(inst, function(x) build_idigbio_ids_generic(x, cuke_db))
     c(list(build_idigbio_ids_flmnh(cuke_db)), res)
 }
 
 
 
-## Retrieve specimens from FLMNH in iDigBio using catalog numbers
-## found in cuke_db
-get_idigbio <- function(inst_spcm) {
+## Retrieve specimens from FLMNH, CAS and MNHN in iDigBio using
+## catalog numbers found in cuke_db
+get_idigbio_info <- function(inst_spcm) {
     lapply(inst_spcm, function(x) {
-        idig_search_records(list(catalognumber = x[["records"]]$catalognumber,
-                                 institutioncode = x[["institutioncode"]],
-                                 collectioncode = x[["collectioncode"]]))
+        res <- idig_search_records(list(catalognumber = x[["records"]]$catalognumber,
+                                        institutioncode = x[["institutioncode"]],
+                                        collectioncode = x[["collectioncode"]]))
+        if (nrow(res) < 1) {
+            warning("no results for ", x[["institutioncode"]])
+        }
+        res
     })
 }
 
 ## Find catalogued UF's specimens that are in cuke_db but not in
 ## iDigBio
-check_idigbio <- function(sub_cuke_db, idigbio_res) {
+compare_idigbio_specimens <- function(sub_cuke_db, idigbio_res) {
     res <- mapply(function(cdb, idg) {
         tt <- setdiff(cdb[["records"]]$catalognumber,
                       idg$catalognumber)
         if (length(tt) > 1) {
             msg <- paste("For", cdb[["institutioncode"]],
-                         ": \n - ",
+                         ": \n  -",
                          paste(tt, collapse = ", "))
             return(msg)
         }
@@ -116,14 +130,17 @@ check_idigbio <- function(sub_cuke_db, idigbio_res) {
 }
 
 ## Compare the GPS coordinates from cuke_db and iDigBio
-check_idigbio_coordinates <- function(idigbio_ids, idigbio_res) {
+compare_idigbio_coordinates <- function(idigbio_ids, idigbio_res) {
     res <- mapply(function(ids, res) {
         tmp_res <- int_check_idigbio_coordinates(ids[["records"]], res)
         tmp_res$institioncode <- rep(ids[["institutioncode"]], nrow(tmp_res))
         tmp_res$collectioncode <- rep(ids[["collectioncode"]], nrow(tmp_res))
         tmp_res
     }, idigbio_ids, idigbio_res, SIMPLIFY = FALSE)
-    do.call("rbind", res)
+    res <- do.call("rbind", res)
+
+    summary_coordinate_comparison(res)
+    res
 }
 
 int_check_idigbio_coordinates <- function(idigbio_ids, idigbio_res) {
@@ -159,4 +176,17 @@ int_check_idigbio_coordinates <- function(idigbio_ids, idigbio_res) {
     })
 
     res
+}
+
+
+summary_coordinate_comparison <- function(comp) {
+    n_missing <- nrow(comp[comp$status == "missing in cuke_db", ])
+    n_more_than_1km <- nrow(comp[!is.na(comp$distance) & comp$distance > 1, ])
+
+    if (n_missing > 1)
+        warning("Coordinates are missing in cuke_db for ", n_missing,
+                " records.", call. = FALSE)
+    if (n_more_than_1km > 1)
+        warning("Coordinates differ by more than 1 km for ",
+                n_more_than_1km, " records.", call. = FALSE)
 }
