@@ -43,3 +43,5 @@ data/storr_clusters/
 data/trees/cuke_tree_k2p.tre
 data/beast/
 data/idigbio/
+## API keys
+secret/
