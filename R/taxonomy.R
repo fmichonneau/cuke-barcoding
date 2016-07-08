@@ -11,14 +11,16 @@ load_taxonomy <- function(cuke_db) {
     stopifnot(! any(duplicated(uniq_taxa)))
     taxonomy_df <- data.frame(rank = c(rep("Order", length(uniq_order) + 1),
                                        rep("Family", length(uniq_family))),
-                              taxa = c("all", uniq_order, uniq_family))
+                              taxa = c("all", uniq_order, uniq_family),
+                              stringsAsFactors = FALSE)
     stopifnot(! any(duplicated(taxonomy_df$taxa)))
     test_family <- as.matrix(xtabs(~ family + order, data = cuke_db,
                                    subset = !family %in%
                                        c("Dactylochirotida", "?", "Uncertain")))
     which_order <- apply(test_family, 1, function(x) which(x != 0))
     tmp_family <- data.frame(taxa = names(which_order),
-                             higher = dimnames(test_family)[[2]][which_order])
+                             higher = dimnames(test_family)[[2]][which_order],
+                             stringsAsFactors = FALSE)
     taxonomy_df <- merge(taxonomy_df, tmp_family, all.x = TRUE)
     taxonomy_df
 }
