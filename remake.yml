@@ -32,7 +32,6 @@ targets:
   all:
     depends:
       - trees
-      - init
       - validate_data
       #- clusters
 
@@ -47,10 +46,6 @@ targets:
     depends:
       - data/trees/cuke_tree_raw.tre
       - data/trees/cuke_tree_k2p.tre
-
-  ## options -------------------------------------------------------------------
-  init:
-    command: initialize()
 
   ## raw data ------------------------------------------------------------------
   echino_db:

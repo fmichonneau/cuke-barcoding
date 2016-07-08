@@ -10,3 +10,4 @@ initialize <- function() {
     }
     message("number of cores ", getOption("mc.cores"))
 }
+initialize()
