@@ -1,3 +1,15 @@
 #!/usr/bin/env Rscript
 library(methods)
 remake:::main()
+
+
+remake::archive_export("clusters")
+
+libary(gmailr)
+use_secret_file("secret/client_secret_203724723371-pd3jondj83sgmu8jmp8bovvu6islm7ms.apps.googleusercontent.com.json")
+msg <- mime() %>%
+    from("francois.michonneau@gmail.com") %>%
+    to("francois.michonneau@whitney.ufl.edu") %>%
+    subject("this is Joe's server") %>%
+    attach_file("remake.zip")
+send_message(msg)
