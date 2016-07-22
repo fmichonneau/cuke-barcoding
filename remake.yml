@@ -80,6 +80,17 @@ targets:
   validate_nmv_coordinates:
     command: compare_nmv_coordinates(cuke_nmv, cuke_db)
 
+  ## validate geographical information -----------------------------------------
+  external_geodata:
+    command: get_external_geodata(cuke_db)
+
+  add_geodata:
+    command: add_geodata_to_cuke_db(cuke_db, external_geodata)
+
+  ## BOLD specimen data --------------------------------------------------------
+  bold_data:
+    command: generate_bold_data(add_geodata)
+
   ## sequences -----------------------------------------------------------------
   cuke_seqs:
     command: load_cuke_seqs(cuke_db)
