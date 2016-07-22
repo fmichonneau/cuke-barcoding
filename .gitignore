@@ -8,7 +8,6 @@ cache/
 *~
 .~lock*
 .#*
-
 ## latex files
 *.aux
 *.log
@@ -45,3 +44,4 @@ data/beast/
 data/idigbio/
 ## API keys
 secret/
+.httr-oauth
