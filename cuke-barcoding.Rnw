@@ -70,23 +70,24 @@ source("R/load.R")
   magnitude. Molecular taxonomy can greatly speed up screening for diversity and
   evaluating species boundaries, while gaining insights into the biology of the
   species. DNA barcoding with a region of cytochrome oxidase 1 (COI) is now
-  widely used as a first pass for molecular evaluation of diversity, as it has
+  widely used as a first pass for molecular evaluation of diversity, as it offer
   good potential for identifying cryptic species and improving our understanding
   of marine biodiversity. We present the results of a large scale barcoding
   effort for holothuroids (sea cucumbers). We sequenced
   \Sexpr{dim(load_cukeAlg())[1]} individuals from numerous localities spanning
-  the diversity of habitats in which the group occurs, with a particular focus in
-  the shallow tropics (Indo-Pacific and Caribbean) and the Antarctic region. The
-  number of cryptic species is much higher than currently recognized. The vast
-  majority of sister species have allopatric distributions, with species showing
-  genetic differentiation between ocean basins, and some are even differentiated
-  among archipelagos. However, many closely related and sympatric forms, that
-  exhibit distinct color patterns and/or ecology, show little differentiation
-  in, and cannot be separated by, COI sequence data. This pattern is much more
-  common among echinoderms than among molluscs or arthropods, and suggests that
-  echinoderms acquire reproductive isolation at a much faster pace than other
-  marine phyla. Understanding the causes behind such patterns will refine our
-  understanding of diversification and biodiversity in the sea.
+  the diversity of habitats in which the group occurs, with a particular focus
+  in the shallow tropics (Indo-Pacific and Caribbean) and the Antarctic
+  region. The number of cryptic species is much higher than currently
+  recognized. The vast majority of sister species have allopatric distributions,
+  with species showing genetic differentiation between ocean basins, and some
+  are even differentiated among archipelagos. However, many closely related and
+  sympatric forms, that exhibit distinct color patterns and/or ecology, show
+  little differentiation in, and cannot be separated by, COI sequence data. This
+  pattern is much more common among echinoderms than among molluscs or
+  arthropods, and suggests that echinoderms acquire reproductive isolation at a
+  much faster pace than other marine phyla. Understanding the causes behind such
+  patterns will refine our understanding of diversification and biodiversity in
+  the sea.
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -107,7 +108,7 @@ species, and clarify species limits.
 
 The importance of barcoding for species identification has been revived with the
 development of metabarcoding: the DNA-based community analysis of environmental
-samples. Second generation sequencing technologies allows the parallel
+samples. Second generation sequencing technologies has allowed for the parallel
 sequencing of many gene copies, and can therefore be used to identify a
 diversity of species of small size (e.g., meiofauna in marine benthic
 sediments), lacking distinguishing morphological features (e.g., larvae in the
@@ -137,7 +138,7 @@ For species delineation, one of the greatest limitations of single locus
 approaches like barcoding, is that the gene tree (genealogy) may not reflect the
 species tree \cite{Funk2003}. Including independent characters (e.g., nuclear
 loci, morphological, behavioral, ecological, geographical) in analyses provides
-a mechanism for testing for incongruences between gene trees  and species
+a mechanism for testing for incongruences between gene trees and species
 trees. Reciprocal monophyly in two or more independent characters demonstrates
 lack of gene flow and delineates lineages with independent evolutionary
 histories. Such lineages are termed evolutionary significant units (ESU)
@@ -182,10 +183,8 @@ cucumbers. Specifically, we ask: (1) How do estimates of species boundaries and
 diversity based on DNA sequence data compare with our current morpho-taxonomic
 assessment of sea cucumbers? (2) What is proportion of species that share
 haplotypes, or are not monophyletic, and how does it impact the identification
-success using DNA barcoding in this group? (3) How does the type of larval
-development influence the geographical distribution and genetic differentiation
-of species? (4) How does the frequency of sympatry change over time among sister
-species?
+success using DNA barcoding in this group? (3) How does the frequency of
+sympatry change over time among sister species?
 
 Sea cucumbers occur in most marine ecosystems, at all latitudes, from the
 intertidal to hadal depths. They constitute the largest invertebrate fishery in
@@ -204,24 +203,24 @@ indicative of species limits \cite{Michonneau2015-impatiens}. The combination of
 poor taxonomic understanding, and a pressing need to understand species limits,
 make a large-scale barcoding study of sea cucumbers especially important.
 
-In sea cucumbers, as with other marine invertebrates, dispersal typically occurs
-during the larval stage. However, even if larvae can potentially travel long
-distances, their ability to maintain gene flow over long distances has been
-debated. If dispersal is spatially restricted, a pattern of
-isolation-by-distance (IBD), where genetic differentiation increases with
-geographical distance is expected. Larvae can be planktotrophic (they feed in
-the plankton), or lecitotrophic (they feed on yolk reserves). A few species of
-sea cucumbers are brooders, and release juveniles. The type of development and
-larvae influences the dispersal potential of the species, with brooders having
-little dispersal potential except in species prone to rafting, while species
-with planktotrophic larvae might disperse over longer distances. While the
-reproductive biology of most sea cucumber species has not been investigated,
-most species of Aspidochirotida and Apodida appear to have planktotrophic
-larvae, while all investigated species of Dendrochirotida have lecitotrophic
-larvae. Therefore, we hypothesize that (1) species with lecitotrophic
-development (Dendrochirotida) will show a steeper IBD pattern, and (2) smaller
-geographical ranges than species with planktotrophic development (Apodida and
-Aspidochirotida).
+% In sea cucumbers, as with other marine invertebrates, dispersal typically occurs
+% during the larval stage. However, even if larvae can potentially travel long
+% distances, their ability to maintain gene flow over long distances has been
+% debated. If dispersal is spatially restricted, a pattern of
+% isolation-by-distance (IBD), where genetic differentiation increases with
+% geographical distance is expected. Larvae can be planktotrophic (they feed in
+% the plankton), or lecitotrophic (they feed on yolk reserves). A few species of
+% sea cucumbers are brooders, and release juveniles. The type of development and
+% larvae influences the dispersal potential of the species, with brooders having
+% little dispersal potential except in species prone to rafting, while species
+% with planktotrophic larvae might disperse over longer distances. While the
+% reproductive biology of most sea cucumber species has not been investigated,
+% most species of Aspidochirotida and Apodida appear to have planktotrophic
+% larvae, while all investigated species of Dendrochirotida have lecitotrophic
+% larvae. Therefore, we hypothesize that (1) species with lecitotrophic
+% development (Dendrochirotida) will show a steeper IBD pattern, and (2) smaller
+% geographical ranges than species with planktotrophic development (Apodida and
+% Aspidochirotida).
 
 
 %%% TODO -- need paragraph about thresholds in intro
@@ -278,8 +277,8 @@ taxonomic specialists. For most groups, extensive survey of primary literature
 was used to assign the most accurate names.
 
 
-% include proportions of specimens thoroughly identified, number of species that
-% are cryptic complexes
+% TODO -- include proportions of specimens thoroughly identified, number of
+% species that are cryptic complexes
 
 
 \subsection{Sequencing and analysis} % M&M
@@ -372,48 +371,49 @@ measured the error rate of the threshold-based approaches by recording the
 number of ESUs that were oversplit (one ESU included more than one mtLineage) or
 lumped (one mtLineage included more than one ESU) for each threshold.
 
-\subsection{Geography, diversity and diversification}  % M&M
+%\subsection{Geography, diversity and diversification}  % M&M
 
-\subsubsection{Range size and isolation-by-distance}
 
 
 <<esu-stats, cache=TRUE, results='hide', echo=FALSE, warning=FALSE>>=
 
 @
 
-<<isolation-by-distance-data, cache=TRUE, dependson='esu-stats', results='hide', echo=FALSE, warning=FALSE>>=
+% <<isolation-by-distance-data, cache=TRUE, dependson='esu-stats', results='hide', echo=FALSE, warning=FALSE>>=
 
-@
+% @
 
-<<isolation-by-distance-stats, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE, results='asis'>>=
+% <<isolation-by-distance-stats, cache=TRUE, dependson='isolation-by-distance-data', echo=FALSE, results='asis'>>=
 
-@
+% @
 
-To test whether mode of development had an impact on range size, we compared the
-maximum geographical distance between sampled individuals for each mtLineage as
-delineated with the threshold approach (4.5\% threshold with clustering method,
-justification below).
+% \subsubsection{Range size and isolation-by-distance}
 
-% see how to work around the pairwise diff. based on > 4%
+% To test whether mode of development had an impact on range size, we compared the
+% maximum geographical distance between sampled individuals for each mtLineage as
+% delineated with the threshold approach (4.5\% threshold with clustering method,
+% justification below).
 
-To test for evidence of IBD we investigated the relationship between the maximum
-genetic distances within mtLineages and the maximum geographical distances
-sampled for each mtLineage represented by three or more individuals. If
-dispersal is spatially restricted, we expect genetic differentiation to increase
-with geographical distance. To assess if differences in the reproductive modes
-among the orders had an effect of the IBD pattern, we performed an analysis of
-covariance (ANCOVA) on the maximum genetic distance for each species as the
-response variable, the maximum geographic distance as the covariate, and the
-taxonomic order as the independent variable. We performed the analysis on the
-three most represented orders (\Sexpr{paste(orderToInclude, collapse=', ')}),
-which are also the best understood in terms of larval development (Apodida and
-Aspidochirotida predominantly with planktotrophic larvae, Dendrochirotida with
-lecithotrophic larvae). The variances among the orders were homogeneous
-(Levene's test, \Sexpr{leveneIbdFstat}, \Sexpr{leveneIbdP}). To assess if using
-the threshold-based approach might have influenced the results, we compared the
-model obtained with the model estimated from the manually delineated ESUs.
+% % see how to work around the pairwise diff. based on > 4%
 
-\subsubsection{Geography of diversification} % M&M
+% To test for evidence of IBD we investigated the relationship between the maximum
+% genetic distances within mtLineages and the maximum geographical distances
+% sampled for each mtLineage represented by three or more individuals. If
+% dispersal is spatially restricted, we expect genetic differentiation to increase
+% with geographical distance. To assess if differences in the reproductive modes
+% among the orders had an effect of the IBD pattern, we performed an analysis of
+% covariance (ANCOVA) on the maximum genetic distance for each species as the
+% response variable, the maximum geographic distance as the covariate, and the
+% taxonomic order as the independent variable. We performed the analysis on the
+% three most represented orders (\Sexpr{paste(orderToInclude, collapse=', ')}),
+% which are also the best understood in terms of larval development (Apodida and
+% Aspidochirotida predominantly with planktotrophic larvae, Dendrochirotida with
+% lecithotrophic larvae). The variances among the orders were homogeneous
+% (Levene's test, \Sexpr{leveneIbdFstat}, \Sexpr{leveneIbdP}). To assess if using
+% the threshold-based approach might have influenced the results, we compared the
+% model obtained with the model estimated from the manually delineated ESUs.
+
+\subsection{Geography of diversification} % M&M
 
 If speciation occurs in allopatry, recently diverged species may retain
 allopatric distributions for a period of time. To investigate the geographic
@@ -524,43 +524,43 @@ and a 4.5\% threshold to assess mtLineage diversity in subsequent analyses
 
 
 
-\subsection{Geography, diversity and diversification}  % res
+% \subsection{Geography, diversity and diversification}  % res
 
-\subsubsection{Range size and isolation-by-distance}  % res
+% \subsubsection{Range size and isolation-by-distance}  % res
 
-<<range-size-plot, cache=TRUE, echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.cap='Violin plot (widths represent the density estimate) of the maximum range sizes for the Apodida, Aspidochirotida, Dendrochirotida. Note that most Dendrichirotida have smaller distributions.', fig.height=3>>=
+% <<range-size-plot, cache=TRUE, echo=FALSE, warning=FALSE, dependson='isolation-by-distance-data', results='hide', fig.cap='Violin plot (widths represent the density estimate) of the maximum range sizes for the Apodida, Aspidochirotida, Dendrochirotida. Note that most Dendrichirotida have smaller distributions.', fig.height=3>>=
 
-@
+% @
 
-% also add slope for each order
-<<isolation-by-distance-plot,cache=TRUE,echo=FALSE,warning=FALSE,dependson='isolation-by-distance-data',results='hide',fig.scap='Genetic and geographic distances for each order',fig.cap='Maximum genetic distance and maximum geographic distance for mtLineages~identified with the clustering approach 4.5\\% threshold represented by at least 3~ individuals. Dashed lines  represent the model estimated by an ANCOVA using the order as the independent variable. Solid lines represent the linear model for each order.', fig.height=4>>=
+% % also add slope for each order
+% <<isolation-by-distance-plot,cache=TRUE,echo=FALSE,warning=FALSE,dependson='isolation-by-distance-data',results='hide',fig.scap='Genetic and geographic distances for each order',fig.cap='Maximum genetic distance and maximum geographic distance for mtLineages~identified with the clustering approach 4.5\\% threshold represented by at least 3~ individuals. Dashed lines  represent the model estimated by an ANCOVA using the order as the independent variable. Solid lines represent the linear model for each order.', fig.height=4>>=
 
-@
+% @
 
-Apodida and Aspidochirotida had larger range sizes than the Dendrochirotida
-(Fig.~\ref{fig:range-size-plot}, median of the range sizes of
-\Sexpr{formatC(medRgSizeApo, format="d")}~km, \Sexpr{formatC(medRgSizeAsp,
-  format="d")}~km, \Sexpr{formatC(medRgSizeDen, format="d")}~km respectively).
-
-
-We recovered a signal for isolation-by-distance (IBD) in each of the three
-orders included in the analysis (ANCOVA, \Sexpr{ancovaFstat}, \Sexpr{ancovaP},
-Fig.~\ref{fig:isolation-by-distance-plot}, Table~\ref{tab:ibd-stats}). The
-slopes and the intercepts were similar across the three orders (slope
-interaction: \Sexpr{interactionFstat}, \Sexpr{interactionP}; intercept
-interaction: \Sexpr{interceptFstat}, \Sexpr{interceptP}), and were not
-significantly different from the coefficients estimated on the ESUs (intercept:
-\Sexpr{formatC(coefficients(ibdHol)[1,1], digits=2)},
-SE=\Sexpr{formatC(coefficients(ibdHol)[1,2], digits=2)}, slope:
-\Sexpr{formatC(coefficients(ibdHol)[2,1], digits=2)},
-SE=\Sexpr{formatC(coefficients(ibdHol)[2,2])}).
-
-% slope on Dendro alone: 1.451e-06 (SE: 4.49e-07) so still in the SE of the full ANCOVA
+% Apodida and Aspidochirotida had larger range sizes than the Dendrochirotida
+% (Fig.~\ref{fig:range-size-plot}, median of the range sizes of
+% \Sexpr{formatC(medRgSizeApo, format="d")}~km, \Sexpr{formatC(medRgSizeAsp,
+%   format="d")}~km, \Sexpr{formatC(medRgSizeDen, format="d")}~km respectively).
 
 
-<<isolation-by-distance-table, cache=TRUE, results='asis', echo=FALSE, dependson='isolation-by-distance-stats'>>=
+% We recovered a signal for isolation-by-distance (IBD) in each of the three
+% orders included in the analysis (ANCOVA, \Sexpr{ancovaFstat}, \Sexpr{ancovaP},
+% Fig.~\ref{fig:isolation-by-distance-plot}, Table~\ref{tab:ibd-stats}). The
+% slopes and the intercepts were similar across the three orders (slope
+% interaction: \Sexpr{interactionFstat}, \Sexpr{interactionP}; intercept
+% interaction: \Sexpr{interceptFstat}, \Sexpr{interceptP}), and were not
+% significantly different from the coefficients estimated on the ESUs (intercept:
+% \Sexpr{formatC(coefficients(ibdHol)[1,1], digits=2)},
+% SE=\Sexpr{formatC(coefficients(ibdHol)[1,2], digits=2)}, slope:
+% \Sexpr{formatC(coefficients(ibdHol)[2,1], digits=2)},
+% SE=\Sexpr{formatC(coefficients(ibdHol)[2,2])}).
 
-@
+% % slope on Dendro alone: 1.451e-06 (SE: 4.49e-07) so still in the SE of the full ANCOVA
+
+
+% <<isolation-by-distance-table, cache=TRUE, results='asis', echo=FALSE, dependson='isolation-by-distance-stats'>>=
+
+% @
 
 % add global map for each Order to show differences in ranges
 
@@ -573,7 +573,7 @@ SE=\Sexpr{formatC(coefficients(ibdHol)[2,2])}).
 % maximum intra-ESU distance of \Sexpr{round(genMaxDistDendro, 3)}\%.
 
 
-\subsubsection{Geography of diversification}  % res
+\subsection{Geography of diversification}  % res
 
 <<geography-diversification, cache=TRUE, echo=FALSE, fig.height=2, fig.cap='Mean genetic distances between sister ESUs occuring in sympatry, allopatry and parapatry.'>>=
 
@@ -623,9 +623,6 @@ separated by at least 2.5\% divergence.
 
 \section{Discussion}
 
-%% Neutrality of the sequences?
-% Are all protein sequences identical?
-
 \subsection{Diversity}
 
 Sea cucumber diversity is underestimated because many species currently
@@ -635,10 +632,11 @@ we recovered more species than we identified based on accepted taxonomic
 names. In the best data (i.e., the manual assessment of the ESUs for the
 Holothuriidae), the diversity is underestimated by at least 50\%, a proportion
 that will increase with further sampling as evidenced by the high proportion of
-singletons. This family is the best studied: it is easily accessible as it
-inhabits shallow waters, species are large, many are economically important, and
-most species have widespread geographical distributions. Other families likely
-have higher levels of unrecognized diversity.
+ESUs with a single representative. This family is the best studied: it is easily
+accessible as it inhabits shallow waters, species are large, many are
+economically important, and most species have widespread geographical
+distributions. Other families likely have higher levels of unrecognized
+diversity.
 
 Such levels of unrecognized diversity were not expected, and contrast with other
 marine invertebrates that have received more taxonomic attention (8 out of 263
@@ -658,8 +656,8 @@ cucumbers.
 
 \subsection{Species limits}
 
-The ESU approach provides guidelines for identitying of biological species. Even
-if correlation between independent traits does not guarantee that ESUs are
+The ESU approach provides guidelines for identifying biological species. Even if
+correlation between independent traits does not guarantee that ESUs are
 biological species, the concept demonstrates lack of gene flow and provides a
 powerful indirect test for reproductive isolation \cite{Meyer2005-plos}. More
 than \Sexpr{formatC(percentESUMono, digits=2, width=2)}\% (N=\Sexpr{sum(esuMono,
@@ -770,32 +768,31 @@ what we found here using threshold-based approaches.
 
 One of the main applications of DNA barcoding is to facilitate species
 identification, especially when only non-diagnostic parts are available (e.g.,
-when processed for trade \cite{Uthicke2009a}, in larvae \cite{Baldwin2014}, for
-gut contents \cite{Leray2011}). Accurate identification requires a comprehensive
-database of DNA sequences to capture the diversity of species, as well as
-intra-specific variation. If the sequences for the individuals to be identified
-have exact matches in the reference database, the accuracy of the identification
-will only depend on the proportion of species that share haplotypes. However,
-commonly, these unknowns will not be in the database, and the accuracy of a
-positive identification will also depend on the accuracy with which the sequence
-can be predicted to belong to a species included in the database, and the
-probability that species included in the database share unsampled
-haplotypes. The accuracy with which a sequence can be predicted to belong to a
-species included in the database is related to the proportion of species that
-are not monophyletic.
+when processed for trade \cite{Uthicke2009a}, in larvae \cite{Baldwin2014}, or
+in gut contents \cite{Leray2011}). Accurate identification requires a
+comprehensive database of DNA sequences to capture the diversity of species, as
+well as intra-specific variation. If the sequences for the individuals to be
+identified have exact matches in the reference database, the accuracy of the
+identification will only depend on the proportion of species that share
+haplotypes. However, commonly, these unknowns will not be in the database, and
+the accuracy of a positive identification will also depend on the accuracy with
+which the sequence can be predicted to belong to a species included in the
+database, and the probability that species included in the database share
+unsampled haplotypes. The accuracy with which a sequence can be predicted to
+belong to a species included in the database is related to the proportion of
+species that are not monophyletic.
 
-% TODO -- emphasize that even in absence of monophyly can still narrow down
-% species to 2 possibilities.
-
-In our ESU dataset, if the unknown sequences have an exact match in our
-database, individuals can be identified with high accuracy through DNA
+Overall, our data show that species identification from COI sequence can be done
+with confidence for sea cucumbers. If unknown sequences have an exact match in
+our database, individuals can be identified with high accuracy through DNA
 barcoding, as only 7 out of \Sexpr{nESUs} ESUs (\Sexpr{formatC(100*7/nESUs,
   digits=2, width=2)}\%) share haplotypes. If the unknown sequences belong to
 ESUs that are not reciprocally monophyletic, or that are characterized by higher
 intra-ESU distances than the distance to the closest neighboring ESU, they will
 likely be misidentified. Together with the non-monophyletic ESUs, they represent
 \Sexpr{formatC(percentProblemESUs, width=2, digits=2)}\% (N=\Sexpr{nProblemESUs}
-ESUs) of our ESU dataset.
+ESUs) of our ESU dataset. Even in such cases, the DNA sequence will be
+attributable to two or a few species.
 
 Sequences without a match in reference databases are typically assigned to a
 sampled species if the sequences differ by less than a threshold, or are
@@ -803,7 +800,7 @@ considered as unsampled species if the genetic distances are above this
 threshold \cite{Meyer2005-plos}. This is typically done either in the context of
 pairwise genetic distances or in the context of the closest match in a
 Neighbor-Joining tree. Thresholds are estimated based on the extent of overlap
-between intra- and interspecific genetic variation among the species considered,
+between intra- and interspecific genetic variation among the species considered:
 the barcoding gap. One of the issues associated with this concept is that
 increased sampling reduce, and often eliminate, the barcoding gap by capturing
 closely related yet good species, or rare, divergent haplotypes that increase
@@ -822,9 +819,6 @@ features in the sequence that allow species identification \cite{Weitschek2013}.
 % spell out alternative hypotheses for species that show low gene div in
 % sympatry
 
-% add more context from the literature
-
-% look into bird paper for
 
 % something about how diversity of patterns diversity of patterns in the Indian
 % Ocean displacement of Red Sea by expansion of Pacific Ocean species
@@ -836,39 +830,41 @@ after diverging in allopatry species can co-occur, or how often -- if ever --
 species might be able to diverge in sympatry, may contribute to the
 heterogeneity in the spatial distribution of species diversity. In oceans where
 organisms might disperse over large distances and barriers to dispersal are
-rare, opportunities for geographic isolation seem limited. However, species with
-short-lived larvae are expected to have smaller geographic ranges, and higher
-levels of genetic differentiation across their ranges.
+rare, opportunities for geographic isolation seem limited.
+
+% However, species with
+% short-lived larvae are expected to have smaller geographic ranges, and higher
+% levels of genetic differentiation across their ranges.
 
 % TODO -- need to expand the following with real vs. sampled genetic variation
 % size of geographical ranges
-We detected a consistent pattern of isolation-by-distance for the three orders
-we sampled more thoroughly despite differences in dispersal potential. Our
-results suggest that on average, ESUs sampled across larger geographical ranges
-show higher levels of genetic differentiation. Nevertheless some species show
-remarkable powers of dispersal, sharing haplotypes across the entire
-Indo-Pacific, from Africa to America. The type of larva does not seem to affect
-the amount of genetic differentiation expected across the range as evidenced by
-the common slope and intercept estimated across orders. However, the
-Dendrochirotida with their lecithotrophic larvae, have smaller range sizes than
-the orders with planktotrophic larvae. Both Apodida and Aspidochirotida have
-ESUs that span the entire Indo-Pacific while only a few Dendrochirotida have
-ESUs that span either the Indian or the Pacific oceans. These results suggest
-that the type of larvae influence patterns of diversity and modes of
-diversification.
+W% e detected a consistent pattern of isolation-by-distance for the three orders
+% we sampled more thoroughly despite differences in dispersal potential. Our
+% results suggest that on average, ESUs sampled across larger geographical ranges
+% show higher levels of genetic differentiation. Nevertheless some species show
+% remarkable powers of dispersal, sharing haplotypes across the entire
+% Indo-Pacific, from Africa to America. The type of larva does not seem to affect
+% the amount of genetic differentiation expected across the range as evidenced by
+% the common slope and intercept estimated across orders. However, the
+% Dendrochirotida with their lecithotrophic larvae, have smaller range sizes than
+% the orders with planktotrophic larvae. Both Apodida and Aspidochirotida have
+% ESUs that span the entire Indo-Pacific while only a few Dendrochirotida have
+% ESUs that span either the Indian or the Pacific oceans. These results suggest
+% that the type of larvae influence patterns of diversity and modes of
+% diversification.
 
-Dendrochirotida species tend to have restricted ranges, with many species known
-only from single localities, and species within a genus are often strictly
-allopatric. In the Indo-Pacific, most species of Dendrochirotida are restricted
-to continental areas, with \textit{Afrocucumis africana} being the only species
-that reaches the Central Pacific. This pattern could be explained by the
-combination of limited dispersal abilities that make the insular Pacific
-difficult to reach, and the suspension feeding mode of this group that cannot
-inhabit the oligotrophic environments that characterize oceanic islands
-\cite{Michonneau2013}. However, as some Dendrochirotida species are panmictic
-across continental areas of the Indian Ocean, dispersal limitation seem unlikely
-lending support to the importance of ecology to explain the distribution of this
-group.
+% Dendrochirotida species tend to have restricted ranges, with many species known
+% only from single localities, and species within a genus are often strictly
+% allopatric. In the Indo-Pacific, most species of Dendrochirotida are restricted
+% to continental areas, with \textit{Afrocucumis africana} being the only species
+% that reaches the Central Pacific. This pattern could be explained by the
+% combination of limited dispersal abilities that make the insular Pacific
+% difficult to reach, and the suspension feeding mode of this group that cannot
+% inhabit the oligotrophic environments that characterize oceanic islands
+% \cite{Michonneau2013}. However, as some Dendrochirotida species are panmictic
+% across continental areas of the Indian Ocean, dispersal limitation seem unlikely
+% lending support to the importance of ecology to explain the distribution of this
+% group.
 
 % The limited dispersal abilities of the Dendrochirotida also lead to a different
 % mode of diversification where speciation can occur at small spatial scales,
@@ -884,12 +880,15 @@ group.
 
 
 
-As species of Apodida and Aspidochirotida can maintain connectivity across very
-large distances, opportunities for allopatric speciation are
-limited. Nevertheless, most sister ESUs were found in allopatry indicating the
-importance of geographical isolation in the diversification of sea
-cucumbers. Allopatric speciation appears to be the most common mode in animals
-\cite{Coyne2004} and is also the most prevalent mode in marine organisms (e.g.,
+% As species of Apodida and Aspidochirotida can maintain connectivity across very
+% large distances, opportunities for allopatric speciation are
+% limited. Nevertheless,
+
+
+Most sister ESUs were found in allopatry indicating the importance of
+geographical isolation in the diversification of sea cucumbers. Allopatric
+speciation appears to be the most common mode in animals \cite{Coyne2004} and is
+also the most prevalent mode in marine organisms (e.g.,
 \cite{Meyer2005-evolution, Malay2010}). Well known biogeographic barriers have
 served to drive speciation as evidenced by allopatric sister ESUs in the
 Holothuriidae straddling these. Basinal separation between the Indian and the
