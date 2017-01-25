@@ -73,11 +73,11 @@ get_tree_cluster_group <- function(cluster_store, taxa="all",
                               method = c("raw", "k2p"),
                               threshold=0.015, taxonomy) {
 
-    threshold <- match.arg(threshold, load_threshold_clusters())
+    threshold <- match.arg(as.character(threshold), load_threshold_clusters())
     taxa <- match.arg(as.character(taxa), taxonomy$taxa)
     method <- match.arg(method)
 
-    key <- paste(taxa, threshold, method, sep = "-")
+    key <- build_cluster_key(taxa, threshold, method)
 
     cluster_store$get(key)
 }
