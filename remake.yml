@@ -148,3 +148,19 @@ targets:
   ## species-overlap -----------------------------------------------------------
   species_overlap:
     command: build_species_overlap()
+
+  ## morphospecies statistics --------------------------------------------------
+  all_spp:
+    command: make_all_spp(cuke_db, cuke_alg, taxonomy)
+
+  uniq_spp:
+    command: make_uniq_spp(all_spp, taxonomy)
+
+  n_spp:
+    command: calc_nspp(uniq_spp)
+
+  prop_hol:
+    command: calc_prop_hol(cuke_db, cuke_alg)
+
+  undesc_spp:
+    command: make_undesc_spp(all_spp)

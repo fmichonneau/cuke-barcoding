@@ -48,44 +48,6 @@ northmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray40", colour="g
 
 multiplot(pacificmap, northmap, southmap, layout=matrix(c(1,1,2,3), ncol=2, byrow=T))
 
-### ---- morphospecies-stats ----
-taxonomyDf <- load_taxonomyDf()
-cukeDB <- load_cukeDB()
-cukeAlg <- load_cukeAlg()
-
-cukeDBTmp <- cukeDB[match(dimnames(cukeAlg)[[1]], cukeDB$Labels_withAmb), ]
-genera <- unique(cukeDBTmp$genusorhigher)
-genera <- genera[-grep("\\?", genera)]
-
-allSpp <- cukeDBTmp[cukeDBTmp$genusorhigher %in% genera,
-                    c("family", "genusorhigher", "species")]
-allSpp <- allSpp[-which(is.na(allSpp$family)), ]
-uniqSpp <- unique(paste(allSpp$family, allSpp$genusorhigher, allSpp$species, sep="_"))
-uniqSpp <- uniqSpp[-grep("\\d", uniqSpp)]
-uniqSpp <- uniqSpp[-grep("n_?sp|new\\s?species|unique\\s?species", uniqSpp)]
-uniqSpp <- uniqSpp[-grep("(cf|aff)\\.?\\s", uniqSpp)]
-uniqSpp <- uniqSpp[-grep("_.{1,3}$", uniqSpp)] # too generous, removes H. bo
-uniqSpp <- uniqSpp[-grep("pink|gray", uniqSpp)]
-uniqSpp <- uniqSpp[-grep("_$", uniqSpp)]
-
-fams <- sapply(strsplit(uniqSpp, "_"), function(x) x[1])
-uniqSpp <- data.frame(family=fams, species=uniqSpp)
-uniqSpp <- merge(uniqSpp, taxonomyDf, by.x="family", by.y="taxa", all.x=TRUE)
-
-nSppAll <- nrow(uniqSpp)
-nSppAsp <- nrow(subset(uniqSpp, higher=="Aspidochirotida"))
-nSppHol <- nrow(subset(uniqSpp, family=="Holothuriidae"))
-
-nSppApo <- nrow(subset(uniqSpp, higher=="Apodida"))
-nSppDen <- nrow(subset(uniqSpp, higher=="Dendrochirotida"))
-nSppEla <- nrow(subset(uniqSpp, higher=="Elasipodida"))
-
-undescSpp <- unique(paste(allSpp$family, allSpp$genusorhigher, allSpp$species, sep="_"))
-undescSpp <- grep("(n)?_sp(_|\\.|\\s|nov)?\\d?", undescSpp, value=T)
-undescSpp <- undescSpp[-grep("spic|spin|spect", undescSpp)]
-
-propHol <- 100*length(grep("^Holothuriidae", dimnames(cukeAlg)[[1]]))/dim(cukeAlg)[1]
-
 
 ### ---- esu-stats ----
 isMonophyletic <- function(lbl, tree) {
