@@ -1,4 +1,4 @@
-spatialFromSpecies <- function(listSpecies, cukeDB) {
+spatial_from_species <- function(listSpecies, cukeDB) {
 
     allHll <- allSpatial <- vector("list", length(listSpecies))
 
@@ -132,7 +132,7 @@ esuPairs <- function(tr) {
     res
 }
 
-interESUDist <- function(ind1, ind2, distMat) {
+inter_esu_dist <- function(ind1, ind2, distMat) {
     ind1 <- gsub("\\\"", "", ind1)
     ind2 <- gsub("\\\"", "", ind2)
 
@@ -153,7 +153,7 @@ interESUDist <- function(ind1, ind2, distMat) {
     }
 }
 
-intraESUDist <- function(listSpecies, distMat) {
+intra_esu_dist <- function(listSpecies, distMat) {
     listSpecies <- gsub("\\\"", "", listSpecies)
     sppLbl <- match(listSpecies, dimnames(distMat)[[1]])
     if (any(is.na(sppLbl))) stop("problem with the labels")
@@ -187,7 +187,7 @@ testRangeType <- function(tr, distMat, cukeDB, percentOverlap=10) {
     grps <- tdata(tr, "tip")[, "Groups", drop=FALSE]
     sppGrps <- split(rownames(grps), grps$Groups)
 
-    polygons <- spatialFromSpecies(sppGrps, cukeDB)[[2]]
+    polygons <- spatial_from_species(sppGrps, cukeDB)[[2]]
 
     esuPrs <- esuPairs(tr)
 
@@ -201,7 +201,7 @@ testRangeType <- function(tr, distMat, cukeDB, percentOverlap=10) {
     interDist <- lapply(esuPrs, function(x) {
         ind1 <- sppGrps[[x[1]]]
         ind2 <- sppGrps[[x[2]]]
-        interESUDist(ind1, ind2, distMat)
+        inter_esu_dist(ind1, ind2, distMat)
     })
 
     data.frame(species = unlist(do.call("rbind", lapply(rgType, function(x) x$species))),
@@ -236,7 +236,7 @@ build_species_overlap <- function(cuke_db) {
             else {
                 tree <- load_tree_pairwiseGrps(distance=dst, taxa=tax[j], threshold=thres)
             }
-            tmpSpatial <- spatialFromSpecies(tree, cuke_db)
+            tmpSpatial <- spatial_from_species(tree, cuke_db)
             tmpGeoCtxt <- testRangeType(tree, tmpSpatial[[2]], cukeDistRaw)
             res[[k]] <- tmpGeoCtxt
             k <- k+1

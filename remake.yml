@@ -164,3 +164,22 @@ targets:
 
   undesc_spp:
     command: make_undesc_spp(all_spp)
+
+  ## ESUs statistics -----------------------------------------------------------
+  man_esu:
+    command: load_man_esu(file="data/raw/manualESUs.csv")
+
+  man_esu_grps:
+    command: load_man_esu_grps(man_esu)
+
+  local_gap:
+    command: load_local_gap(taxa=I("Holothuriidae"), cuke_dist_raw, cuke_db, cuke_alg, man_esu_grps)
+
+  n_esus:
+    command: calc_n_esus(man_esu)
+
+  n_cryptic:
+    command: calc_n_cryptic(man_esu)
+
+  n_new_spp:
+    command: calc_n_new_spp(man_esu)

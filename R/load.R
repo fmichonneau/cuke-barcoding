@@ -83,18 +83,6 @@ load_tree_pairwiseGrps <- function(distance="raw", taxa="all",
 
 
 
-load_manESU <- function(taxa="Holothuriidae") {
-    manESU <- read.csv(file="data/raw/manualESUs.csv", stringsAsFactors=FALSE)
-    manESU$ESU_noGeo <- gsub("_[A-Z]{2}$", "", manESU$ESU_genetic)
-    manESU <- manESU[-grep("\\d+amb$", manESU$Labels), ]
-    manESU
-}
-
-load_species_manualGrps <- function(taxa="Holothuriidae") {
-    manESU <- load_manESU()
-    split(manESU$Labels, manESU$ESU_noGeo)
-}
-
 load_tree_manualGrps <- function(taxa="Holothuriidae", overwrite=FALSE) {
     fnm <- "data/cukeTree-manualESUs.rds"
     ##distance <- match.arg(distance, c("raw", "K80"))
@@ -103,17 +91,7 @@ load_tree_manualGrps <- function(taxa="Holothuriidae", overwrite=FALSE) {
         manESU <- readRDS(file=fnm)
     }
     else {
-        ## holTree <- load_tree_clusterGrps("raw", "Holothuriidae", threshold=0.02)
-        ## write.csv(tdata(holTree, "tip"), file="data/raw_manualESUs.csv")
-        ## ESU coding
-        ## - for ESU_genetic: name of the species, (genus_species), followed
-        ##   by alphanum to distinguish ESUs, (_1, _1a, _2, _ESU1), followed
-        ##   by geography as needed (_IO, _PO):
-        ##   - If same complex but different ESUs (e.g., the ind from a region
-        ##     form a rec. monophyletic clade): hol_ver_1a_IO and hol_ver_1b_PO
-        ##   - If same complex and same ESUs: hol_ver_1_IO and hol_ver_1_PO
-        ##     (IO or PO not rec. monophyletic, or sing. ind. w/ low div.)
-        ##   - If different ESUs but not sisters: hol_ver_1 and hol_ver_2
+
         manESU <- load_manESU()
         tree <- load_tree_raxml_phylo4(taxa)
         tDat <- data.frame(as.numeric(factor(manESU$ESU_noGeo)))
@@ -123,60 +101,4 @@ load_tree_manualGrps <- function(taxa="Holothuriidae", overwrite=FALSE) {
         saveRDS(manESU, file=fnm)
     }
     invisible(manESU)
-}
-
-load_localGap <- function(taxa="Holothuriidae", overwrite=FALSE) {
-
-    fnm <- "data/localGap-manualESUs.rds"
-    taxa <- match.arg(taxa) # only Holothuriidae for now
-    if (file.exists(fnm) && !overwrite) {
-        localGap <- readRDS(file=fnm)
-    } else {
-        summaryInterDist <- function(listSpecies, cukeAlg) {
-            lapply(listSpecies, function(x) {
-                lapply(listSpecies, function(y) {
-                    interESUDist(x, y, cukeDistRaw)
-                })
-            })
-        }
-        manESU <- load_manESU()
-        cukeDistRaw <- load_cukeDist_raw()
-        cukeDB <- load_cukeDB()
-
-        noGeoGrps <- load_species_manualGrps()
-
-        summInterDist <- summaryInterDist(noGeoGrps, load_cukeAlg())
-
-        minInter <- mapply(function(summ, nm) {
-            minDist <- sapply(summ, function(x) x$min)
-            minDist <- minDist[-match(nm, names(minDist))]
-            minDist[which.min(minDist)]
-        }, summInterDist, names(summInterDist))
-
-        intraDist <- lapply(noGeoGrps, intraESUDist, cukeDistRaw)
-        maxIntra <- sapply(intraDist, function(x) x$max)
-
-        esuSpatial <- spatialFromSpecies(noGeoGrps, cukeDB)
-        nmEsuSpatial <- names(esuSpatial[[1]])
-
-        rgType <- lapply(names(minInter), function(x) {
-            spp <- unlist(strsplit(x, "\\."))
-            i <- grep(paste0("^", spp[1], "-"), nmEsuSpatial)
-            j <- grep(paste0("^", spp[2], "-"), nmEsuSpatial)
-            rangeType(i, j, esuSpatial[[2]])
-        })
-
-        localGap <- data.frame(minInter, maxIntra, row.names=names(minInter))
-
-        localGap$rangeType <- sapply(rgType, function(x) x$rangeType)
-        localGap$rangeType[is.na(localGap$rangeType)] <- "unknown"
-        localGap <- localGap[complete.cases(localGap), ]
-
-        localGap$species <- NA
-        localGap$species[localGap$maxIntra > localGap$minInter] <-
-            rownames(localGap)[localGap$maxIntra > localGap$minInter]
-
-        saveRDS(localGap, file=fnm)
-    }
-    localGap
 }

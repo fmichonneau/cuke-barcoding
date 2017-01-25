@@ -50,52 +50,24 @@ multiplot(pacificmap, northmap, southmap, layout=matrix(c(1,1,2,3), ncol=2, byro
 
 
 ### ---- esu-stats ----
-isMonophyletic <- function(lbl, tree) {
-    if (length(lbl) < 2) {
-        NA
-    } else {
-        desc <- descendants(tree, MRCA(tree, lbl), "tips")
-        if (length(desc) == length(lbl))
-            TRUE
-        else FALSE
-    }
-}
+p_singleton_hol <- 100 * sum(sapply(man_esu_grp, function(x) length(x) == 1))/length(man_esu_grps)
 
-source("R/test-allopatry-functions.R")
-manESU <- load_manESU()
-cukeDistRaw <- load_cukeDist_raw()
-localGap <- load_localGap()
+n_gap <- sum(is.na(local_gap$species))
+p_gap <- 100 * sum(is.na(local_gap$species))/nrow(local_gap)
 
-manGrps <- load_species_manualGrps()
-
-nESUs <- length(unique(manESU$ESU_noGeo))
-
-esus <- strsplit(unique(manESU$ESU_noGeo), "_")
-hasCryptic <- sapply(esus, function(x) length(x) > 2 & length(grep("nsp", x)) < 1)
-esuCryptic <- esus[hasCryptic]
-esuCryptic <- sapply(esuCryptic, function(x) paste0(x[1:2], collapse="_"))
-nCryptic <- length(unique(esuCryptic))
-
-newSpp <- sum(sapply(esus, function(x) length(grep("nsp", x)) > 0))
-
-percentSinglHol <- 100*sum(sapply(manGrps, function(x) length(x) == 1))/length(manGrps)
-
-percentGap   <- 100*sum(is.na(localGap$species))/nrow(localGap)
-nGap <- sum(is.na(localGap$species))
-
-nGreater02 <- sum(localGap$minInter > 0.02)
-percentGreater02 <- 100*nGreater02/nrow(localGap)
+n_greater_02 <- sum(local_gap$min_inter > 0.02)
+p_greater_02 <- 100*n_greater_02/nrow(local_gap)
 
 holTree <- load_cukeTree_raw_phylo4()
 toKeep <- intersect(manESU$Labels, tipLabels(holTree))
 holTree <- subset(holTree, tips.include=toKeep)
 
 taxLbl <- split(manESU$Labels, manESU$ESU_taxonomy)
-taxMono <- sapply(taxLbl, function(x) isMonophyletic(x, holTree))
+taxMono <- sapply(taxLbl, function(x) is_monophyletic(x, holTree))
 percentTaxMono <- 100*(1 - sum(taxMono, na.rm=TRUE)/sum(!is.na(taxMono)))
 
 esuLbl <- load_species_manualGrps()
-esuMono <- sapply(esuLbl, function(x) isMonophyletic(x, holTree))
+esuMono <- sapply(esuLbl, function(x) is_monophyletic(x, holTree))
 percentESUNotMono <- 100*(1 - sum(esuMono, na.rm=TRUE)/sum(!is.na(esuMono)))
 percentESUMono <- 100 - percentESUNotMono
 
