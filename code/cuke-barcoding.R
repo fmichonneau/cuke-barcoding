@@ -1,11 +1,3 @@
-### ---- load-packages ---
-source("R/packages.R")
-source("R/load.R")
-library(xtable)
-library(car)
-library(wesanderson)
-library(tikzDevice)
-library(reshape2)
 
 ### ---- sampling-maps ----
 cukeDB <- load_cukeDB()
