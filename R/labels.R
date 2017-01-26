@@ -50,7 +50,11 @@ make_labels_from_guids <- function(cuke_db, guids,
                                         "Catalog_number",
                                         "Sample"
                                     )) {
-    dt <- cuke_db[match(guids, cuke_db$guid), fields]
+    mtch <- match(guids, cuke_db$guid)
+    if (any(is.na(mtch))) {
+        stop("guids not found in cuke_db: ", paste(guids[is.na(mtch)], collapse = ",  "))
+    }
+    dt <- cuke_db[mtch, fields]
     lbl <- apply(dt, 1, paste, collapse = "_")
     gsub("_{2,}", "_", lbl)
 }
