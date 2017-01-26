@@ -167,7 +167,7 @@ targets:
 
   ## ESUs statistics -----------------------------------------------------------
   man_esu:
-    command: load_man_esu(file="data/raw/manualESUs.csv")
+    command: load_man_esu(file="data/raw/edited_manualESUs.csv")
 
   man_esu_grps:
     command: load_man_esu_grps(man_esu)

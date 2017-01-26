@@ -23,6 +23,7 @@ boh_sub,Bohadschia subrubra
 boh_vit,Bohadschia vitiensis
 hol_alb,Holothuria albiventer
 hol_anu,Holothuria annulifera
+hol_arc,Holothuria arenacava
 hol_are,Holothuria arenicola
 hol_atr,Holothuria atra
 hol_aus,Holothuria austrinabassa
@@ -39,6 +40,7 @@ hol_dif,Holothuria diffcilis
 hol_dis,Holothuria discrepans
 hol_dof,Holothuria dofleini
 hol_edu,Holothuria edulis
+hol_gra,Holothuria gracilis
 hol_nig,Holothuria nigralutea
 hol_eri,Holothuria erinacea
 hol_exc,Holothuria excellens
@@ -51,6 +53,7 @@ hol_fru,Holothuria fuscorubra
 hol_fus,Holothuria fuscogilva
 hol_gla,Holothuria glaberrima
 hol_ham,Holothuria hamata
+hol_har,Holothuria hartmeyeri
 hol_haw,Holothuria hawaiiensis
 hol_hil,Holothuria hilla
 hol_imi,Holothuria imitans
@@ -62,7 +65,6 @@ hol_ino,Holothuria inornata
 hol_ins,Holothuria insignis
 hol_int,Holothuria integra
 hol_isu,Holothuria isuga
-hol_jou,Holothuria jousseaumi
 hol_kef,Holothuria kefersteini
 hol_kur,Holothuria kurti
 hol_lan,Holothuria languens
@@ -82,11 +84,11 @@ hol_nob,Holothuria nobilis
 hol_not,Holothuria notabilis
 hol_nsp,Holothuria n. sp.
 hol_occ,Holothuria occidentalis
-hol_oce,Holothuria ocellata
 hol_oli,Holothuria olivacea
 hol_par,Holothuria parva
 hol_pen,Holothuria pentard
 hol_per,Holothuria pervicax
+hol_phi,Holothuria philippinensis
 hol_pla,Holothuria platei
 hol_plu,Holothuria pluricuriosa
 hol_pol,Holothuria polii
