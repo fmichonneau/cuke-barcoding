@@ -17,6 +17,31 @@ generate_aligned_cuke_fasta <- function(unaligned, aligned = file.path("data", "
         stop("Something is wrong... empty file for ", sQuote(aligned), ". Make sure mafft is installed.")
 }
 
+
+guess_reading_frame <- function(alg, subsample = 25, verbose = TRUE) {
+    alg_sub <- alg[sample(seq_len(dim(alg)[1]), size = subsample), ]
+    n_nonsense <- integer(3)
+    for (i in 1:3) {
+        trans_alg <- mclapply(seq_len(nrow(alg_sub)), function(j) {
+            seqinr::translate(as.character(alg_sub[j, ]), frame = i, numcode = 9)
+        }, mc.preschedule = FALSE)
+        n_stops_total <- vapply(trans_alg, function(x)
+            sum(grepl("\\*", x)),
+            numeric(1))
+        n_nonsense[i] <- sum(n_stops_total > 0)
+    }
+    if (verbose) {
+        message("Number of non sense codons for positions 1, 2 and 3 respectively: ",
+                paste(n_nonsense, collapse = ", "), ".")
+    }
+    if (diff(sort(n_nonsense))[1] < subsample/5)
+        warning("Not a lot of difference to be sure it's the correct frame.")
+    if (min(n_nonsense) >  subsample * 0.05)
+        warning("It seems like a very high error rate in the best frame.")
+    which.min(n_nonsense)
+}
+
+
 generate_cleaned_cuke_fasta <- function(aligned, cleaned = file.path("data", "seq", "cuke_alg_cleaned.fas")) {
     ## Identify sequences with internal gaps
     seq_hol_c <- ape::read.dna(file = aligned, format = "fasta",
@@ -29,8 +54,9 @@ generate_cleaned_cuke_fasta <- function(aligned, cleaned = file.path("data", "se
 
     ## Identify sequences with stop codons
     seq_hol <- ape::read.dna(file = aligned, format = "fasta")
+    frame <- guess_reading_frame(seq_hol)
     trans_seq <- mclapply(seq_len(nrow(seq_hol)), function(i) {
-        seqinr::translate(as.character(seq_hol[i, ]), frame = 1,
+        seqinr::translate(as.character(seq_hol[i, ]), frame = frame,
                           numcode = 9)
     }, mc.preschedule = FALSE)
     seq_with_stop <- dimnames(seq_hol)[[1]][grep("\\*", trans_seq)]
