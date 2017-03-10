@@ -5,13 +5,16 @@ generate_unaligned_cuke_fasta <- function(cuke_seqs, out = file.path("data", "se
         paste0(">", x[1], "\n", x[2], collapse = "\n")
     })
     cat(seqs, sep = "\n", file = out, append = TRUE)
+    if (file.info(aligned)$size < 1)
+        stop("Something is wrong... empty file for ", sQuote(out), ".")
 }
 
 generate_aligned_cuke_fasta <- function(unaligned, aligned = file.path("data", "seq", "cuke_alg_aligned.fas")) {
     mafftCmd <- paste("mafft --auto --op 10 --thread -1",
                       unaligned, ">", aligned)
-
     system(mafftCmd)
+    if (file.info(aligned)$size < 1)
+        stop("Something is wrong... empty file for ", sQuote(aligned), ". Make sure mafft is installed.")
 }
 
 generate_cleaned_cuke_fasta <- function(aligned, cleaned = file.path("data", "seq", "cuke_alg_cleaned.fas")) {
