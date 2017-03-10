@@ -20,8 +20,9 @@ build_idigbio_ids_flmnh <- function(cuke_db) {
     uf_spcm <- cuke_db[cuke_db$Repository == "UF" &
                        cuke_db$Pass.voucher == "yes",
                        c("Repository", "Catalog_number",
-                         "collection_code",
-                         "decimalLatitude", "decimalLongitude")]
+                         "collection_code", "decimalLatitude",
+                         "decimalLongitude", "genusorhigher",
+                         "species")]
 
     ## check the only collection_code is "invertebrate zoology"
     coll_code <- tolower(unique(uf_spcm$collection_code))
@@ -36,7 +37,7 @@ build_idigbio_ids_flmnh <- function(cuke_db) {
     not_counted <- n_uf_specimens - nrow(uf_spcm)
 
     if (not_counted > 0) {
-        warning("UF specimens that don't pass voucher QC: ",
+        warning("UF specimens with Catalog Number that don't pass voucher QC: ",
                 paste(setdiff(all_uf_specimens$Catalog_number,
                               uf_spcm$Catalog_number),
                       collapse = ", "))
@@ -44,12 +45,13 @@ build_idigbio_ids_flmnh <- function(cuke_db) {
 
     ## add phylum info to catalog number
     idig_cat_number <- paste(uf_spcm$Catalog_number, "echinodermata",
-                             sep = "-")
+                            sep = "-")
 
-    list(institutioncode = "flmnh",
+    list(institutioncode = "uf",
          collectioncode = "invertebrate zoology",
          records =  data.frame(
              catalognumber = idig_cat_number,
+             scientificname = gsub("\\s+$", "", tolower(paste(uf_spcm$genusorhigher, uf_spcm$species, sep = " "))),
              decimalLatitude = uf_spcm$decimalLatitude,
              decimalLongitude = uf_spcm$decimalLongitude,
              stringsAsFactors = FALSE
@@ -65,7 +67,8 @@ build_idigbio_ids_generic <- function(inst, cuke_db) {
                     cuke_db$Pass.voucher == "yes",
                     c("Repository", "collection_code",
                       "Catalog_number", "decimalLatitude",
-                      "decimalLongitude")]
+                      "decimalLongitude", "genusorhigher",
+                      "species")]
 
     if (nrow(spcm) < 1)
         stop("Invalid institution.", sQuote(inst),
@@ -74,11 +77,11 @@ build_idigbio_ids_generic <- function(inst, cuke_db) {
     coll_code <- unique(tolower(spcm$collection_code))
     check_coll_code(coll_code)
 
-
     list(institutioncode = tolower(inst),
          collectioncode = coll_code,
          records = data.frame(
              catalognumber = spcm$Catalog_number,
+             scientificname = gsub("\\s+$", "", tolower(paste(spcm$genusorhigher, spcm$species, sep = " "))),
              decimalLatitude = spcm$decimalLatitude,
              decimalLongitude = spcm$decimalLongitude,
              stringsAsFactors = FALSE
@@ -93,7 +96,8 @@ build_idigbio_ids_generic <- function(inst, cuke_db) {
 build_idigbio_ids <- function(cuke_db) {
     inst <- c("CAS", "MNHN")
     res <- lapply(inst, function(x) build_idigbio_ids_generic(x, cuke_db))
-    c(list(build_idigbio_ids_flmnh(cuke_db)), res)
+    flmnh <- build_idigbio_ids_flmnh(cuke_db)
+    c(list(flmnh), res)
 }
 
 
@@ -103,6 +107,7 @@ build_idigbio_ids <- function(cuke_db) {
 get_idigbio_info <- function(inst_spcm) {
     lapply(inst_spcm, function(x) {
         res <- idig_search_records(list(catalognumber = x[["records"]]$catalognumber,
+                                        `data.dwc:phylum` = "echinodermata",
                                         institutioncode = x[["institutioncode"]],
                                         collectioncode = x[["collectioncode"]]))
         if (nrow(res) < 1) {
@@ -127,7 +132,30 @@ compare_idigbio_specimens <- function(sub_cuke_db, idigbio_res) {
     }, sub_cuke_db, idigbio_res)
     warning("These specimens are not in iDigBio: \n",
             paste(res, collapse = "\n"), call. = FALSE)
+
+    ## compare identifications
+    res <- mapply(function(cdb, idg) {
+        if (nrow(idg) < 1) return(NULL)
+        dplyr::left_join(cdb[["records"]], idg, by = "catalognumber") %>%
+            rename_("scientificname_cukedb" = "scientificname.x",
+                    "scientificname_idig" = "scientificname.y") %>%
+            mutate_(.dots = setNames(list(~if_else(is.na(scientificname_idig), "", scientificname_idig)), "scientificname_idig")) %>%
+            filter_("scientificname_cukedb != scientificname_idig")
+
+    }, sub_cuke_db, idigbio_res)
+    names(res) <- vapply(sub_cuke_db, function(x) x$institutioncode, character(1))
+    res <- dplyr::bind_rows(res, .id = "institutioncode")
+
+    if (nrow(res) > 0) {
+        f <- "tmp/identification_mismatches.csv"
+        write.csv(res[, c("institutioncode", "catalognumber",
+                          "scientificname_cukedb", "scientificname_idig")],
+                  file = f, row.names = FALSE)
+        message(nrow(res), " do not match. Mismatches written to: ", f)
+    }
+    res
 }
+
 
 ## Compare the GPS coordinates from cuke_db and iDigBio
 compare_idigbio_coordinates <- function(idigbio_ids, idigbio_res) {
