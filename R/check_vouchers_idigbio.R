@@ -218,3 +218,35 @@ summary_coordinate_comparison <- function(comp) {
         warning("Coordinates differ by more than 1 km for ",
                 n_more_than_1km, " records.", call. = FALSE)
 }
+
+
+## Compare within ESU identifications useful to make sure that
+## discrepencies are real (e.g., failure for DNA barcoding to
+## recognize different morphological species)
+get_id_within_esu <- function(cuke_db, clusters) {
+    grps <- tdata(clusters, "tip")
+    grps <- split(rownames(grps), grps$Groups)
+
+    res <- lapply(grps, function(x) {
+        .r <- make_labels_from_guids(cuke_db, x, fields = c("family", "genusorhigher", "species", "modifier"))
+        tibble(
+            guid = x,
+            ids = .r
+        )
+    })
+    res
+}
+
+compare_id_within_esu <- function(cuke_db, clusters) {
+    ids <- get_id_within_esu(cuke_db, clusters)
+    with_conflicts <- vapply(ids, function(x)
+        length(unique(x$ids)) > 1, logical(1))
+    res <- ids[with_conflicts]
+    res <- lapply(res, function(x) {
+        to_add <- tibble(repository = make_labels_from_guids(cuke_db = cuke_db, guids = x$guid, fields = "Repository"),
+                         catalog_number = make_labels_from_guids(cuke_db, x$guid, "Catalog_number"),
+                         sample = make_labels_from_guids(cuke_db, x$guid, "Sample"))
+        dplyr::bind_cols(x, to_add)
+    })
+    dplyr::bind_rows(res, .id = "group")
+}
