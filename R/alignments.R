@@ -5,7 +5,7 @@ generate_unaligned_cuke_fasta <- function(cuke_seqs, out = file.path("data", "se
         paste0(">", x[1], "\n", x[2], collapse = "\n")
     })
     cat(seqs, sep = "\n", file = out, append = TRUE)
-    if (file.info(aligned)$size < 1)
+    if (file.info(out)$size < 1)
         stop("Something is wrong... empty file for ", sQuote(out), ".")
 }
 
