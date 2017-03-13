@@ -60,5 +60,6 @@ make_labels_from_guids <- function(cuke_db, guids,
     }
     dt <- cuke_db[mtch, fields, drop = FALSE]
     lbl <- apply(dt, 1, paste, collapse = "_")
-    gsub("_{2,}", "_", lbl)
+    lbl <- gsub("_{2,}", "_", lbl)
+    gsub("_$", "", lbl)
 }
