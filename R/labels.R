@@ -52,9 +52,12 @@ make_labels_from_guids <- function(cuke_db, guids,
                                     )) {
     mtch <- match(guids, cuke_db$guid)
     if (any(is.na(mtch))) {
-        stop("guids not found in cuke_db: ", paste(guids[is.na(mtch)], collapse = ",  "))
+        stop("guids not found in cuke_db: ", paste(guids[is.na(mtch)], collapse = ", "))
     }
-    dt <- cuke_db[mtch, fields]
+    chk_col <- match(fields, names(cuke_db))
+    if (any(is.na(chk_col))) {
+        stop("fields not found in cuke_db: ", paste(fields[is.na(chk_col)], collapse = ", "))
+    }
     lbl <- apply(dt, 1, paste, collapse = "_")
     gsub("_{2,}", "_", lbl)
 }
