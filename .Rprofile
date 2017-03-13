@@ -3,3 +3,4 @@ source("packrat/init.R")
 #### -- End Packrat Autoloader -- ####
 
 source("secret/google-api-key.R")
+Sys.setenv(MAKEFLAGS = "-j7")
