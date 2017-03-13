@@ -55,11 +55,6 @@ options(tikzDefaultEngine = "xetex")
 options(tikzDocumentDeclaration = paste(getOption("tikzDocumentDeclaration"),
             "\n\\renewcommand*{\\familydefault}{\\sfdefault}", sep=""))
 read_chunk("code/cuke-barcoding.R")
-read_chunk("code/isolation-by-distance.R")
-source("R/load.R")
-@ %$
-
-<<load-packages, echo=FALSE, cache=FALSE, include=FALSE>>=
 @
 
 \maketitle
@@ -74,7 +69,7 @@ source("R/load.R")
   good potential for identifying cryptic species and improving our understanding
   of marine biodiversity. We present the results of a large scale barcoding
   effort for holothuroids (sea cucumbers). We sequenced
-  \Sexpr{dim(load_cukeAlg())[1]} individuals from numerous localities spanning
+  \Sexpr{dim(cuke_alg)[1]} individuals from numerous localities spanning
   the diversity of habitats in which the group occurs, with a particular focus
   in the shallow tropics (Indo-Pacific and Caribbean) and the Antarctic
   region. The number of cryptic species is much higher than currently
@@ -258,7 +253,7 @@ samples are stored in the Genetic Resources Repository at UF.
 Additional samples were obtained through collaborators either from newly
 collected material or from preserved specimens deposited at other institutions.
 
-\Sexpr{dim(load_cukeAlg())[1]} individuals were identified and sequenced. They
+\Sexpr{dim(cuke_alg)[1]} individuals were identified and sequenced. They
 represent the worldwide diversity of sea cucumbers, with a particular focus on
 species of the Indo-Pacific and the Antarctic regions
 (Fig.\ref{fig:sampling-maps}). The northern hemisphere and deep-water species
@@ -324,7 +319,7 @@ across the class to identify species to currently valid species names. For this
 assessment we used these names at face value, although we are aware of cryptic
 morphological variation in many species we have studied in depth, and such
 variation likely also exists in many less-studied forms. Overall,
-\Sexpr{length(undescSpp)} morphospecies could not be assigned to a name. Some of
+\Sexpr{length(undesc_spp} morphospecies could not be assigned to a name. Some of
 the material included in this study was provided to us as tissues, and the
 specimens were not evaluated to be identified with confidence. For some groups,
 taxonomic understanding is limited, and species names cannot be assigned
@@ -334,7 +329,7 @@ assign a name might match already described species, but others are undescribed.
 Second we used the evolutionary significant unit (ESU) concept (\textit{sensu}
 \cite{Moritz1994}) to evaluate diversity within the holothuriids (= family
 Holothuriidae vs. holothuroids = class Holothuroidea). They were the most
-densely sampled and comprise almost half (\Sexpr{formatC(propHol, width=2,
+densely sampled and comprise almost half (\Sexpr{formatC(prop_hol, width=2,
   format="d")}\%) of our dataset; they are also the focus of our taxonomic work
 and are the best known to us at the morpho-species level to assign all
 individuals to ESUs. Individuals were assigned to ESUs based on differentiation
@@ -358,7 +353,7 @@ more appropriate when comparing genetic distances between closely related
 species and may lead to higher rates of identification success
 \cite{Collins2012}. We estimated the number of species recovered from our sample
 while varying the pairwise threshold value:
-\Sexpr{paste0(load_thresholdPairwise(), collapse=", ")}. Additionally, we
+\Sexpr{paste0(load_threshold_pairwise(), collapse=", ")}. Additionally, we
 estimated the proportion of singletons (proportion of the number species
 represented by a single individual) for each of these threshold values.
 
@@ -461,31 +456,31 @@ of the boundaries separating allopatric sister ESUs.
 % (paraphyly/polyphyly), long branches
 % - [results] adequate sampling across the range of the species
 
-Among the \Sexpr{dim(cukeAlg)[1]} individuals sequenced, \Sexpr{nSppAll}
+Among the \Sexpr{dim(cuke_alg)[1]} individuals sequenced, \Sexpr{n_spp$all}
 identified species were included. All orders of sea cucumbers were
 represented. The Aspidochirotida, and in particular the Holothuriidae were the
-most comprehensively sampled (\Sexpr{formatC(100*nSppAsp/nSppAll, width=2,
-  format="d")}\% and \Sexpr{formatC(100*nSppHol/nSppAll, width=2, format="d")}\%
+most comprehensively sampled (\Sexpr{formatC(100*n_spp$asp/n_spp$ll, width=2,
+  format="d")}\% and \Sexpr{formatC(100*n_spp$hol/n_spp$all, width=2, format="d")}\%
 of the total number of individuals respectively), with all genera and subgenera
 of the Holothuriidae represented, and 65\% for the currently accepted species.
 
-Manual delineation of the ESUs in the Holothuriidae revealed \Sexpr{nESUs} ESUs,
-\Sexpr{formatC(100*(nESUs-nSppHol)/nSppHol, digits=2, width=2)}\% more than
-named species (N=\Sexpr{nSppHol}). About one quarter (N=\Sexpr{nCryptic}) of
+Manual delineation of the ESUs in the Holothuriidae revealed \Sexpr{n_esus} ESUs,
+\Sexpr{formatC(100*(n_esus-nSppHol)/nSppHol, digits=2, width=2)}\% more than
+named species (N=\Sexpr{nSppHol}). About one quarter (N=\Sexpr{n_cryptic}) of
 named species were complexes, each including between 2 and 13
-ESUs. Additionally, \Sexpr{newSpp} ESUs appeared to be undescribed species (not
-directly referable to a named species). \Sexpr{formatC(percentSinglHol,
+ESUs. Additionally, \Sexpr{n_new_spp} ESUs appeared to be undescribed species (not
+directly referable to a named species). \Sexpr{formatC(p_singleton_hol,
   digits=2, width=2)}\% of the ESUs were singletons. Most but not all named
 species were reciprocally monophyletic (\Sexpr{formatC(percentESUNotMono, digits=2,
   width=2)}\%, N=\Sexpr{sum(!is.na(esuMono))-sum(esuMono, na.rm=TRUE)} of the
 ESUs were non-monophyletic).
 
 The distance to the nearest neighboring ESU was greater than the maximum
-intra-ESU distance for \Sexpr{formatC(percentGap, digits=2, width=2)}\%
+intra-ESU distance for \Sexpr{formatC(p_gap, digits=2, width=2)}\%
 (N=\Sexpr{nGap}) of the manually delineated ESUs
 (Fig.~\ref{fig:local-gap-plot}). The minimum inter-ESU distance varied greatly,
-but was $>$ 2\% for \Sexpr{formatC(percentGreater02, digits=2, width=2)}\%
-(N=\Sexpr{nGreater02}).
+but was $>$ 2\% for \Sexpr{formatC(p_greater_02, digits=2, width=2)}\%
+(N=\Sexpr{n_greater_02}).
 
 <<local-gap-plot, cache=TRUE, dependson='esu-stats', results='hide', echo=FALSE, warning=FALSE, fig.cap='Comparison of inter- and intra-ESU uncorrected COI distances. For each ESU we compared the maximum intra-ESU genetic distance with the minimum inter-ESU distances, ESU above (gray) the 1:1 dotted line can be easily delineated with the barcoding gap, the ESUs falling below the line (colored) cannot.', fig.height=4.5>>=
 
@@ -508,11 +503,11 @@ the approach and the type of distance used (Fig.~\ref{fig:groups-comparison-plot
 
 The greatest correspondence among threshold methods compared to ESUs delineated
 was with the clustering method and a threshold of 4.5\%; this method delineated
-\Sexpr{formatC(100*(minError$nSplits+minError$nLumps)/nESUs, digits=2,
+\Sexpr{formatC(100*(minError$nSplits+minError$nLumps)/n_esus, digits=2,
   width=2)}\% (N=\Sexpr{minError$nSplits+minError$nLumps}) of the ESUs
 incorrectly. The number of mtLineages estimated with this method was slightly
 lower than the number of ESUs (\Sexpr{length(load_species_clusterGrps('raw',
-  'Holothuriidae', 0.025))} and \Sexpr{nESUs} respectively) as more ESUs were
+  'Holothuriidae', 0.025))} and \Sexpr{n_esus} respectively) as more ESUs were
 lumped than split (\Sexpr{minError$nLumps} and \Sexpr{minError$nSplits}
 respectively). Thus, we chose the clustering method, using uncorrected distances
 and a 4.5\% threshold to assess mtLineage diversity in subsequent analyses
@@ -785,7 +780,7 @@ species that are not monophyletic.
 Overall, our data show that species identification from COI sequence can be done
 with confidence for sea cucumbers. If unknown sequences have an exact match in
 our database, individuals can be identified with high accuracy through DNA
-barcoding, as only 7 out of \Sexpr{nESUs} ESUs (\Sexpr{formatC(100*7/nESUs,
+barcoding, as only 7 out of \Sexpr{n_esus} ESUs (\Sexpr{formatC(100*7/n_esus,
   digits=2, width=2)}\%) share haplotypes. If the unknown sequences belong to
 ESUs that are not reciprocally monophyletic, or that are characterized by higher
 intra-ESU distances than the distance to the closest neighboring ESU, they will
