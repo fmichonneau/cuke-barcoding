@@ -49,7 +49,7 @@ targets:
 
   ## raw data ------------------------------------------------------------------
   echino_db:
-    command: load_echino_db("data/raw/20160722.MARBoL_Echinos_current.csv")
+    command: load_echino_db("data/raw/20170309.MARBoL_Echinos_current.csv")
 
   cuke_db:
     command: load_cuke_db(echino_db)
