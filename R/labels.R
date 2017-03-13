@@ -58,6 +58,7 @@ make_labels_from_guids <- function(cuke_db, guids,
     if (any(is.na(chk_col))) {
         stop("fields not found in cuke_db: ", paste(fields[is.na(chk_col)], collapse = ", "))
     }
+    dt <- cuke_db[mtch, fields, drop = FALSE]
     lbl <- apply(dt, 1, paste, collapse = "_")
     gsub("_{2,}", "_", lbl)
 }
