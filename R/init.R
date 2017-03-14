@@ -4,7 +4,7 @@ initialize <- function() {
         identical(cmptr_name, "francois-XPS-15-9560")) {
         options("mc.cores" = 8)
     } else if (identical(cmptr_name, "ryanlab.whitney.ufl.edu")) {
-        options("mc.cores" = 22)
+        options("mc.cores" = 12)
     } else {
         options("mc.cores" = 1)
         message("no parallelization")
