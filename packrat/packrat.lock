@@ -494,6 +494,11 @@ Source: CRAN
 Version: 1.1.2
 Hash: ceef88c244d792a874bdacf72b6a30da
 
+Package: purrr
+Source: CRAN
+Version: 0.2.2
+Hash: e06b50a541f3a0965edd8e8533ff28ac
+
 Package: quadprog
 Source: CRAN
 Version: 1.5-5
