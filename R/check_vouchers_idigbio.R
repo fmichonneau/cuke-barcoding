@@ -37,10 +37,11 @@ build_idigbio_ids_flmnh <- function(cuke_db) {
     not_counted <- n_uf_specimens - nrow(uf_spcm)
 
     if (not_counted > 0) {
-        warning("UF specimens with Catalog Number that don't pass voucher QC: ",
-                paste(setdiff(all_uf_specimens$Catalog_number,
+        warning("UF specimens with Catalog Number that don't pass voucher QC: \n",
+                paste(" -", setdiff(all_uf_specimens$Catalog_number,
                               uf_spcm$Catalog_number),
-                      collapse = ", "))
+                      collapse = "\n"),
+                call. = FALSE)
     }
 
     ## add phylum info to catalog number
@@ -111,7 +112,7 @@ get_idigbio_info <- function(inst_spcm) {
                                         institutioncode = x[["institutioncode"]],
                                         collectioncode = x[["collectioncode"]]))
         if (nrow(res) < 1) {
-            warning("no results for ", x[["institutioncode"]])
+            warning("No iDigBio results for ", x[["institutioncode"]], call. = FALSE)
         }
         res
     })
@@ -233,14 +234,18 @@ int_check_idigbio_coordinates <- function(idigbio_ids, idigbio_res) {
 
 summary_coordinate_comparison <- function(comp) {
     n_missing <- nrow(comp[comp$status == "missing in cuke_db", ])
-    n_more_than_1km <- nrow(comp[!is.na(comp$distance) & comp$distance > 1, ])
+    test_distance <- !is.na(comp$distance) & comp$distance > 1
+    n_more_than_1km <- nrow(comp[test_distance, ])
 
     if (n_missing > 1)
         warning("Coordinates are missing in cuke_db for ", n_missing,
                 " records.", call. = FALSE)
     if (n_more_than_1km > 1)
         warning("Coordinates differ by more than 1 km for ",
-                n_more_than_1km, " records.", call. = FALSE)
+                n_more_than_1km, " records:\n",
+                paste0("  - ", comp$catalognumber[test_distance],
+                       " (", comp$distance[test_distance], ")", collapse = "\n"),
+                call. = FALSE)
 }
 
 
