@@ -160,6 +160,7 @@ compare_idigbio_specimens <- function(sub_cuke_db, idigbio_res) {
 ## Compare the GPS coordinates from cuke_db and iDigBio
 compare_idigbio_coordinates <- function(idigbio_ids, idigbio_res) {
     res <- mapply(function(ids, res) {
+        if (nrow(res) < 1) return(NULL)
         tmp_res <- int_check_idigbio_coordinates(ids[["records"]], res)
         tmp_res$institioncode <- rep(ids[["institutioncode"]], nrow(tmp_res))
         tmp_res$collectioncode <- rep(ids[["collectioncode"]], nrow(tmp_res))
@@ -171,37 +172,60 @@ compare_idigbio_coordinates <- function(idigbio_ids, idigbio_res) {
     res
 }
 
+is_in_idigbio <- function(idig_lat, idig_lon) {
+    !(is.na(idig_lat) & is.na(idig_lon))
+}
+
+is_in_uf <- function(uf_lat, uf_lon) {
+    !(is.na(uf_lat) & is.na(uf_lon))
+}
+
+check_coord_status <- function(idig_lat, idig_lon,
+                               uf_lat, uf_lon, ...) {
+    if (is_in_idigbio(idig_lat, idig_lon) &&
+        !is_in_uf(uf_lat, uf_lon))
+        res <- "missing in UF"
+    else if (!is_in_idigbio(idig_lat, idig_lon) &&
+             is_in_uf(uf_lat, uf_lon)) {
+        res <- "missing in iDigBio"
+    } else if (!is_in_idigbio(idig_lat, idig_lon) &&
+               !is_in_uf(uf_lat, uf_lon)){
+        res <- "missing in both"
+    } else if (identical(uf_lat, idig_lat) &&
+               identical(uf_lon, idig_lon))
+        res <- "identical coordinates"
+    else {
+        res <- "different coordinates"
+    }
+    res
+}
+
+calc_coord_distance <- function(status, idig_lat, idig_lon,
+                                 uf_lat, uf_lon, ...) {
+    if (identical(status, "different coordinates")) {
+        gcd.hf(deg2rad(as.numeric(uf_lon)),
+               deg2rad(as.numeric(uf_lat)),
+               deg2rad(as.numeric(idig_lon)),
+               deg2rad(as.numeric(idig_lat)),
+               warn = FALSE)
+    } else NA_real_
+}
+
+
 int_check_idigbio_coordinates <- function(idigbio_ids, idigbio_res) {
     res <- left_join(idigbio_ids,
-                     idigbio_res[, c("catalognumber", "geopoint.lat", "geopoint.lon")])
+                     idigbio_res[, c("catalognumber", "geopoint.lat", "geopoint.lon")]
+                     ) %>%
+        rename(idig_lat = geopoint.lat,
+               idig_lon = geopoint.lon,
+               uf_lat = decimalLatitude,
+               uf_lon = decimalLongitude)
 
-    res$status <- apply(res, 1, function(x) {
-        if ((!is.na(x[2]) & !is.na(x[3])) &
-            (is.na(x[4]) & is.na(x[5])))
-            return("missing in iDigBio")
-        if ((is.na(x[2]) & is.na(x[3])) &
-            (!is.na(x[4]) & !is.na(x[5])))
-            return("missing in UF")
-        if ((is.na(x[2]) & is.na(x[3])) &
-            (is.na(x[4]) & is.na(x[5])))
-            return("missing in both")
-        if (identical(x[2], x[4]) &
-            identical(x[3],  x[5]))
-            return("identical coordinates")
-        return("different coordinates")
-    })
+    res$status <- res %>%
+        purrr::pmap_chr(check_coord_status)
 
-    res$distance <- apply(res, 1, function(x) {
-        if (x[6] == "different coordinates") {
-            gcd.hf(deg2rad(as.numeric(x[2])),
-                   deg2rad(as.numeric(x[3])),
-                   deg2rad(as.numeric(x[4])),
-                   deg2rad(as.numeric(x[5])),
-                   warn = FALSE)
-        } else {
-            NA
-        }
-    })
+    res$distance <- res %>%
+        purrr::pmap_dbl(calc_coord_distance)
 
     res
 }
