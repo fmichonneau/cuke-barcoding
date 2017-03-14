@@ -21,6 +21,7 @@ packages:
   - phytools
   - dplyr
   - storr
+  - purrr
 
 
 sources:
