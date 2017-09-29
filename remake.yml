@@ -1,6 +1,7 @@
 packages:
   - ape
   - ridigbio
+  - purrr
   - phylobase
   - ggplot2
   - igraph
@@ -21,7 +22,7 @@ packages:
   - phytools
   - dplyr
   - storr
-  - purrr
+  - knitr
 
 
 sources:
@@ -171,7 +172,7 @@ targets:
     command: load_man_esu(file="data/raw/edited_manualESUs.csv")
 
   man_esu_grps:
-    command: load_man_esu_grps(man_esu)
+    command: load_manual_esu_grps(man_esu)
 
   local_gap:
     command: load_local_gap(taxa=I("Holothuriidae"), cuke_dist_raw, cuke_db, cuke_alg, man_esu_grps)
@@ -184,3 +185,39 @@ targets:
 
   n_new_spp:
     command: calc_n_new_spp(man_esu)
+
+  p_singleton_hol:
+    command: calc_p_singleton_hol(man_esu_grps)
+
+  p_esu_mono:
+    command: calc_p_esu_mono(man_esu_grps, cuke_tree_raw_phylo4)
+
+  p_gap:
+    command: calc_p_gap(local_gap)
+
+  greater_02:
+    command: calc_greater_02(local_gap)
+
+  ## sampling map --------------------------------------------------------------
+
+  sampling_map:
+    command: make_sampling_map(cuke_db)
+
+  ## Manuscript
+
+  cuke-barcoding.tex:
+    depends:
+      - sampling_map
+      - cuke_alg
+      - undesc_spp
+      - prop_hol
+      - n_spp
+      - uniq_spp
+      - n_esus
+      - n_cryptic
+      - n_new_spp
+      - p_singleton_hol
+      - p_esu_mono
+      - p_gap
+      - greater_02
+    knitr: true

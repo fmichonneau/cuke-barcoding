@@ -117,12 +117,14 @@ load_man_esu <- function(file) {
     manESU <- read.csv(file=file, stringsAsFactors=FALSE)
     validate_manual_esus(file)
     manESU$ESU_noGeo <- gsub("_[A-Z]{2}$", "", manESU$ESU_genetic)
-    manESU <- manESU[-grep("\\d+amb$", manESU$Labels), ]
+    rm_ambiguities <- grep("\\d+amb$", manESU$labels)
+    if (length(rm_ambiguities) > 0)
+        manESU <- manESU[-rm_ambiguities, ]
     manESU
 }
 
 load_manual_esu_grps <- function(man_esu) {
-    split(man_esu$Labels, manESU$ESU_noGeo)
+    split(man_esu$guids, man_esu$ESU_noGeo)
 }
 
 
@@ -147,10 +149,10 @@ load_local_gap <- function(taxa="Holothuriidae", cuke_dist_raw,
         min_dist[which.min(min_dist)]
     }, summ_inter_dist, names(summ_inter_dist))
 
-    intra_dist <- lapply(species_manual_grps, intra_esu_dist, cuke_dist_raw)
+    intra_dist <- lapply(species_manual_grp, intra_esu_dist, cuke_dist_raw)
     max_intra <- vapply(intra_dist, function(x) x$max, numeric(1))
 
-    esuSpatial <- spatial_from_species(species_manual_grps, cuke_db)
+    esu_spatial <- spatial_from_species(species_manual_grp, cuke_db)
     nm_esu_spatial <- names(esu_spatial[[1]])
 
     rg_type <- lapply(names(min_inter), function(x) {
@@ -182,8 +184,8 @@ calc_n_cryptic <- function(man_esu) {
     has_cryptic <- sapply(esus, function(x) length(x) > 2 & length(grep("nsp", x)) < 1)
     esu_cryptic <- esus[has_cryptic]
     esu_cryptic <- sapply(esu_cryptic, function(x) paste0(x[1:2], collapse="_"))
-    nCryptic <- length(unique(esu_cryptic))
-    nCryptic
+    n_cryptic <- length(unique(esu_cryptic))
+    n_cryptic
 }
 
 calc_n_new_spp <- function(man_esu) {
@@ -195,4 +197,37 @@ calc_n_new_spp <- function(man_esu) {
 get_hol_tree <- function(cuke_db, man_esu, taxonomy) {
     to_keep <- intersect(man_esu$Labels, fetch_guids_from_taxa(taxonomy, cuke_db, taxa = "Holothuriidae"))
     hol_tree <- subset()
+}
+
+
+calc_p_singleton_hol <- function(man_esu_grp) {
+    100 * sum(sapply(man_esu_grp, function(x) length(x) == 1))/length(man_esu_grp)
+}
+
+calc_p_esu_mono <- function(man_esu_grp, hol_tree) {
+    esu_mono <- vapply(man_esu_grp, function(x) is_monophyletic(x, hol_tree),
+                       logical(1))
+    percent_esu_not_mono <- 100*(1 - sum(esu_mono, na.rm=TRUE)/sum(!is.na(esu_mono)))
+    percent_esu_mono <- 100 - percent_esu_not_mono
+    list(
+        esu_mono = esu_mono,
+        percent_esu_not_mono = percent_esu_not_mono,
+        percent_esu_mono = percent_esu_mono
+    )
+}
+
+calc_p_gap <- function(local_gap) {
+    list(
+        n_gap = sum(is.na(local_gap$species)),
+        p_gap = 100 * sum(is.na(local_gap$species))/nrow(local_gap)
+    )
+}
+
+calc_greater_02 <- function(local_gap) {
+    n_greater_02 <- sum(local_gap$min_inter > 0.02)
+    list(
+        n_greater_02 = n_greater_02,
+        p_greater_02 = 100*n_greater_02/nrow(local_gap)
+    )
+
 }

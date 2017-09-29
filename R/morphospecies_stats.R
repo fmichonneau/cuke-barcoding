@@ -29,10 +29,10 @@ calc_nspp <- function(uniq_spp) {
     list(
         all = nrow(uniq_spp),
         asp = nrow(subset(uniq_spp, higher == "Aspidochirotida")),
-        hol = nrow(subset(uniqSpp, family=="Holothuriidae")),
-        apo = nrow(subset(uniqSpp, higher=="Apodida")),
-        den = nrow(subset(uniqSpp, higher=="Dendrochirotida")),
-        ela = nrow(subset(uniqSpp, higher=="Elasipodida"))
+        hol = nrow(subset(uniq_spp, family=="Holothuriidae")),
+        apo = nrow(subset(uniq_spp, higher=="Apodida")),
+        den = nrow(subset(uniq_spp, higher=="Dendrochirotida")),
+        ela = nrow(subset(uniq_spp, higher=="Elasipodida"))
     )
 }
 

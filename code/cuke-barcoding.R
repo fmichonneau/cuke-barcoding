@@ -1,75 +1,14 @@
-
-### ---- sampling-maps ----
-cukeDB <- load_cukeDB()
-
-summGPS <- data.frame(uniq=paste(cukeDB$decimalLatitude, cukeDB$decimalLongitude, sep="/"))
-tabuGPS <- table(summGPS)
-summGPS <- data.frame(latitude=sapply(names(tabuGPS), function(x) strsplit(x, "/")[[1]][1]),
-                      longitude=sapply(names(tabuGPS), function(x) strsplit(x, "/")[[1]][2]),
-                      nInd=as.numeric(tabuGPS), row.names=1:length(tabuGPS), stringsAsFactors=FALSE)
-summGPS <- summGPS[-c(1, nrow(summGPS)), ]
-summGPS$latitude <- as.numeric(summGPS$latitude)
-summGPS$longitude <- as.numeric(summGPS$longitude)
-
-center <- 0
-summGPS$long.recenter <- ifelse(summGPS$longitude < center - 180, summGPS$longitude + 360, summGPS$longitude)
-globalMap <- map_data("world")
-
-pacificmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x = long.recenter, y = latitude, size= nInd), colour="red", data=summGPS) +
-    coord_map(projection = "mercator", orientation=c(90, 160, 0)) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position="top",
-          axis.title.x = element_blank(),
-          axis.title.y = element_blank(),
-          plot.margin=unit(rep(0, 4), "mm")) +
-    scale_size_continuous(name="Number of individuals", range=c(1, 4)) +
-    ylim(c(-45,45))
-
-southmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x = long.recenter, y = latitude, size= nInd), colour="red", data=summGPS) +
-    coord_map(projection = "ortho", orientation=c(-90, 0, 0)) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position = "none",
-          axis.title.x = element_blank(),
-          axis.title.y = element_blank(),
-          plot.margin=unit(rep(0, 4), "mm")) +
-    ylim(c(-90, -45))
-
-northmap <- ggplot(summGPS) + annotation_map(globalMap, fill="gray40", colour="gray40") +
-    geom_point(aes(x = long.recenter, y = latitude, size= nInd), colour="red", data=summGPS) +
-    coord_map(projection = "ortho", orientation=c(90, 0, 0)) +
-    theme(panel.background = element_rect(fill="aliceblue"),
-          legend.position="none",
-          axis.title.x = element_blank(),
-          axis.title.y = element_blank(),
-          plot.margin=unit(rep(0, 4), "mm")) +
-    ylim(c(45, 90))
-
-multiplot(pacificmap, northmap, southmap, layout=matrix(c(1,1,2,3), ncol=2, byrow=T))
-
-
 ### ---- esu-stats ----
-p_singleton_hol <- 100 * sum(sapply(man_esu_grp, function(x) length(x) == 1))/length(man_esu_grps)
 
-n_gap <- sum(is.na(local_gap$species))
-p_gap <- 100 * sum(is.na(local_gap$species))/nrow(local_gap)
+## holTree <- load_cukeTree_raw_phylo4()
+## toKeep <- intersect(manESU$Labels, tipLabels(holTree))
+## holTree <- subset(holTree, tips.include=toKeep)
 
-n_greater_02 <- sum(local_gap$min_inter > 0.02)
-p_greater_02 <- 100*n_greater_02/nrow(local_gap)
+## taxLbl <- split(manESU$Labels, manESU$ESU_taxonomy)
+## taxMono <- sapply(taxLbl, function(x) is_monophyletic(x, holTree))
+## percentTaxMono <- 100*(1 - sum(taxMono, na.rm=TRUE)/sum(!is.na(taxMono)))
 
-holTree <- load_cukeTree_raw_phylo4()
-toKeep <- intersect(manESU$Labels, tipLabels(holTree))
-holTree <- subset(holTree, tips.include=toKeep)
 
-taxLbl <- split(manESU$Labels, manESU$ESU_taxonomy)
-taxMono <- sapply(taxLbl, function(x) is_monophyletic(x, holTree))
-percentTaxMono <- 100*(1 - sum(taxMono, na.rm=TRUE)/sum(!is.na(taxMono)))
-
-esuLbl <- load_species_manualGrps()
-esuMono <- sapply(esuLbl, function(x) is_monophyletic(x, holTree))
-percentESUNotMono <- 100*(1 - sum(esuMono, na.rm=TRUE)/sum(!is.na(esuMono)))
-percentESUMono <- 100 - percentESUNotMono
 
 ### ---- cluster-groups-data ----
 taxonomyDf <- load_taxonomyDf()
@@ -227,71 +166,6 @@ print(sampXtab, include.rownames=FALSE, hline.after=c(-1, 0, hlinePos, nrow(samp
 
 
 ### ---- compare-manual-cluster-ESUs-data ----
-accuracyGrps <- function(tree) {
-    clstrGrps <- tdata(tree, "tip")[, "Groups", drop=FALSE]
-    clstrGrps <- cbind(Labels=rownames(clstrGrps), clstrGrps=clstrGrps)
-    manGrps <- manESU[, c("Labels", "ESU_noGeo")]
-    manGrps$manGrps <- as.numeric(factor(manESU$ESU_noGeo))
-    compGrps <- merge(clstrGrps, manGrps, by="Labels")
-
-    uniqGrps <- unique(compGrps$manGrps)
-    compRes <- vector("list", length(uniqGrps))
-    for (i in 1:length(uniqGrps)) {
-        tmpDt <- subset(compGrps, manGrps == uniqGrps[i])
-        if (length(unique(tmpDt$Groups)) > 1)
-            splits <- unique(tmpDt$Groups)
-        else splits <- NA
-        tmpDt2 <- subset(compGrps, Groups %in% unique(tmpDt$Groups))
-        if( length(unique(tmpDt2$manGrps)) > 1)
-            lumps <- unique(tmpDt2$manGrps)
-        else lumps <- NA
-        compRes[[i]] <- list(splits=splits, lumps=lumps)
-    }
-    nLumps <- sapply(compRes, function(x) x$lumps)
-    nLumps <- unlist(nLumps)
-    nLumps <- length(unique(nLumps[!is.na(nLumps)]))
-    nSplits <- sapply(compRes, function(x) x$splits)
-    nSplits <- unlist(nSplits)
-    nSplits <- length(unique(nSplits[!is.na(nSplits)]))
-    list(nLumps=nLumps, nSplits=nSplits)
-}
-
-pwiseTreeRaw <- lapply(load_thresholdPairwise(), function(x) load_tree_pairwiseGrps("raw", taxa="Holothuriidae", x))
-pwiseTreeK80 <- lapply(load_thresholdPairwise(), function(x) load_tree_pairwiseGrps("K80", taxa="Holothuriidae", x))
-clstrTreeRaw <- lapply(load_thresholdClusters(), function(x) load_tree_clusterGrps("raw", taxa="Holothuriidae", x))
-clstrTreeK80 <- lapply(load_thresholdClusters(), function(x) load_tree_clusterGrps("K80", taxa="Holothuriidae", x))
-
-pwiseGrpsRaw <- lapply(pwiseTreeRaw, accuracyGrps)
-pwiseGrpsK80 <- lapply(pwiseTreeK80, accuracyGrps)
-clstrGrpsRaw <- lapply(clstrTreeRaw, accuracyGrps)
-clstrGrpsK80 <- lapply(clstrTreeK80, accuracyGrps)
-
-pwiseDatRaw <- data.frame(method="pairwise", distance="raw", do.call("rbind", lapply(pwiseGrpsRaw, function(x) c(x[1], x[2]))))
-pwiseDatK80 <- data.frame(method="pairwise", distance="K2P", do.call("rbind", lapply(pwiseGrpsK80, function(x) c(x[1], x[2]))))
-clstrDatRaw <- data.frame(method="clustering", distance="raw", do.call("rbind", lapply(clstrGrpsRaw, function(x) c(x[1], x[2]))))
-clstrDatK80 <- data.frame(method="clustering", distance="K2P", do.call("rbind", lapply(clstrGrpsK80, function(x) c(x[1], x[2]))))
-
-compareManESUs <- rbind(pwiseDatRaw, pwiseDatK80, clstrDatRaw, clstrDatK80)
-
-nGrps <- sapply(c(pwiseTreeRaw, pwiseTreeK80, clstrTreeRaw, clstrTreeK80),
-                function(x) max(tdata(x, "tip")[, "Groups"]))
-
-compareManESUs <- data.frame(threshold=rep(load_thresholdPairwise(), 4), compareManESUs, nGrps=nGrps)
-compareManESUs$nSplits <- as.numeric(compareManESUs$nSplits)
-compareManESUs$nLumps <- as.numeric(compareManESUs$nLumps)
-allErrors <- compareManESUs$nSplits + compareManESUs$nLumps
-compareManESUs <- cbind(compareManESUs, allErrors=allErrors)
-
-compareManESUs$pLumps <- compareManESUs$nLumps/compareManESUs$nGrps
-compareManESUs$pSplits <- compareManESUs$nSplits/compareManESUs$nGrps
-
-saveRDS(compareManESUs, file="tmp/compareManESUs.rds")
-
-minError <- compareManESUs[which(allErrors <= min(allErrors)), ]
-
-if (nrow(minError) > 1) {
-    minError <- minError[which.min(nESUs - minError$nGrps), ]
-}
 
 ### ---- compare-manual-cluster-ESUs-plot ----
 compareManESUs <- melt(compareManESUs, id.vars=c("threshold", "method", "distance"),

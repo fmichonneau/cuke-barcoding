@@ -1,4 +1,3 @@
-
 \documentclass[12pt]{article}
 
 %\usepackage{natbib}
@@ -49,12 +48,12 @@
 \begin{document}
 
 <<setup, echo=FALSE, cache=FALSE, include=FALSE>>=
-opts_chunk$set(fig.path="figures/latex-", cache.path="cache/latex-", dev="tikz",
+knitr::opts_chunk$set(fig.path="figures/latex-", cache.path="cache/latex-", dev="tikz",
                 external=TRUE, fig.width=6.5, fig.height=4, fig.align="center") #$
 options(tikzDefaultEngine = "xetex")
 options(tikzDocumentDeclaration = paste(getOption("tikzDocumentDeclaration"),
             "\n\\renewcommand*{\\familydefault}{\\sfdefault}", sep=""))
-read_chunk("code/cuke-barcoding.R")
+##read_chunk("code/cuke-barcoding.R")
 @
 
 \maketitle
@@ -233,11 +232,6 @@ make a large-scale barcoding study of sea cucumbers especially important.
 
 \section{Materials and Methods}
 
-<<basic-stats, cache=TRUE, echo=FALSE>>=
-cukeAlg <- load_cukeAlg()
-propHol <- length(grep("^Holothuriidae_", dimnames(cukeAlg)[[1]]))/dim(cukeAlg)[1]
-@
-
 \subsection{Sampling} % M&M
 
 
@@ -260,7 +254,7 @@ species of the Indo-Pacific and the Antarctic regions
 outside of the Antarctic region are under-represented.
 
 <<sampling-maps, cache=TRUE, echo=FALSE, warning=FALSE, fig.height=6, fig.cap='Locations sampled'>>=
-
+sampling_map
 @
 
 
@@ -319,7 +313,7 @@ across the class to identify species to currently valid species names. For this
 assessment we used these names at face value, although we are aware of cryptic
 morphological variation in many species we have studied in depth, and such
 variation likely also exists in many less-studied forms. Overall,
-\Sexpr{length(undesc_spp} morphospecies could not be assigned to a name. Some of
+\Sexpr{length(undesc_spp)} morphospecies could not be assigned to a name. Some of
 the material included in this study was provided to us as tissues, and the
 specimens were not evaluated to be identified with confidence. For some groups,
 taxonomic understanding is limited, and species names cannot be assigned
@@ -459,28 +453,28 @@ of the boundaries separating allopatric sister ESUs.
 Among the \Sexpr{dim(cuke_alg)[1]} individuals sequenced, \Sexpr{n_spp$all}
 identified species were included. All orders of sea cucumbers were
 represented. The Aspidochirotida, and in particular the Holothuriidae were the
-most comprehensively sampled (\Sexpr{formatC(100*n_spp$asp/n_spp$ll, width=2,
+most comprehensively sampled (\Sexpr{formatC(100*n_spp$asp/n_spp$all, width=2,
   format="d")}\% and \Sexpr{formatC(100*n_spp$hol/n_spp$all, width=2, format="d")}\%
 of the total number of individuals respectively), with all genera and subgenera
 of the Holothuriidae represented, and 65\% for the currently accepted species.
 
 Manual delineation of the ESUs in the Holothuriidae revealed \Sexpr{n_esus} ESUs,
-\Sexpr{formatC(100*(n_esus-nSppHol)/nSppHol, digits=2, width=2)}\% more than
-named species (N=\Sexpr{nSppHol}). About one quarter (N=\Sexpr{n_cryptic}) of
+\Sexpr{formatC(100*(n_esus-n_spp$hol)/n_spp$hol, digits=2, width=2)}\% more than
+named species (N=\Sexpr{n_spp$hol}). About one quarter (N=\Sexpr{n_cryptic}) of
 named species were complexes, each including between 2 and 13
 ESUs. Additionally, \Sexpr{n_new_spp} ESUs appeared to be undescribed species (not
 directly referable to a named species). \Sexpr{formatC(p_singleton_hol,
   digits=2, width=2)}\% of the ESUs were singletons. Most but not all named
-species were reciprocally monophyletic (\Sexpr{formatC(percentESUNotMono, digits=2,
-  width=2)}\%, N=\Sexpr{sum(!is.na(esuMono))-sum(esuMono, na.rm=TRUE)} of the
+species were reciprocally monophyletic (\Sexpr{formatC(p_esu_mono$percent_esu_not_mono, digits=2,
+  width=2)}\%, N=\Sexpr{sum(!is.na(p_esu_mono$esu_mono))-sum(p_esu_mono$esu_mono, na.rm=TRUE)} of the
 ESUs were non-monophyletic).
 
 The distance to the nearest neighboring ESU was greater than the maximum
-intra-ESU distance for \Sexpr{formatC(p_gap, digits=2, width=2)}\%
-(N=\Sexpr{nGap}) of the manually delineated ESUs
+intra-ESU distance for \Sexpr{formatC(p_gap$p_gap, digits=2, width=2)}\%
+(N=\Sexpr{p_gap$n_gap}) of the manually delineated ESUs
 (Fig.~\ref{fig:local-gap-plot}). The minimum inter-ESU distance varied greatly,
-but was $>$ 2\% for \Sexpr{formatC(p_greater_02, digits=2, width=2)}\%
-(N=\Sexpr{n_greater_02}).
+but was $>$ 2\% for \Sexpr{formatC(greater_02$p_greater_02, digits=2, width=2)}\%
+(N=\Sexpr{greater_02$n_greater_02}).
 
 <<local-gap-plot, cache=TRUE, dependson='esu-stats', results='hide', echo=FALSE, warning=FALSE, fig.cap='Comparison of inter- and intra-ESU uncorrected COI distances. For each ESU we compared the maximum intra-ESU genetic distance with the minimum inter-ESU distances, ESU above (gray) the 1:1 dotted line can be easily delineated with the barcoding gap, the ESUs falling below the line (colored) cannot.', fig.height=4.5>>=
 

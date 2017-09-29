@@ -12,7 +12,7 @@ spatial_from_species <- function(listSpecies, cukeDB) {
     listSpecies <- lapply(listSpecies, function(x) gsub("\\\"", "", x))
 
     ## Check that all species match labels in the database
-    tipLbl <- cukeDB$Labels_withAmb
+    tipLbl <- cukeDB$guid
     chkLbl <- all(sapply(listSpecies, function(x) all(x %in% tipLbl)))
     stopifnot(chkLbl)
 
