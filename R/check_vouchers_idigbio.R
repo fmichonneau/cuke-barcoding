@@ -283,3 +283,16 @@ compare_id_within_esu <- function(cuke_db, clusters, conflict_only = TRUE) {
     })
     dplyr::bind_rows(res, .id = "group")
 }
+
+### add idigbio identifications to the table
+### comp_esu: output from compare_id_within_esu (using `conflict_only = FALSE`)
+### idig: output from get_idigbio_info
+compare_id_with_idigbio <- function(comp_esu, idig) {
+    idig <- dplyr::bind_rows(idig)
+    comp_esu %>%
+        dplyr::mutate(catalognumber = paste(catalog_number, "echinodermata",
+                                            sep = "-")) %>%
+        dplyr::left_join(dplyr::select(idig, catalognumber, scientificname),
+                  by = "catalognumber") %>%
+        dplyr::select(-catalognumber)
+}
