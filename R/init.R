@@ -10,5 +10,7 @@ initialize <- function() {
         message("no parallelization")
     }
     message("number of cores ", getOption("mc.cores"))
+    if (!dir.exists("tmp"))
+        dir.create("tmp")
 }
 initialize()

@@ -49,14 +49,17 @@ make_labels_from_guids <- function(cuke_db, guids,
                                         "Repository",
                                         "Catalog_number",
                                         "Sample"
-                                    )) {
+                                    ), missing_ok = FALSE) {
     mtch <- match(guids, cuke_db$guid)
+    if (missing_ok)
+        f <- warning
+    else f <- stop
     if (any(is.na(mtch))) {
-        stop("guids not found in cuke_db: ", paste(guids[is.na(mtch)], collapse = ", "))
+        f("guids not found in cuke_db: ", paste(guids[is.na(mtch)], collapse = ", "))
     }
     chk_col <- match(fields, names(cuke_db))
     if (any(is.na(chk_col))) {
-        stop("fields not found in cuke_db: ", paste(fields[is.na(chk_col)], collapse = ", "))
+        f("fields not found in cuke_db: ", paste(fields[is.na(chk_col)], collapse = ", "))
     }
     dt <- cuke_db[mtch, fields, drop = FALSE]
     lbl <- apply(dt, 1, paste, collapse = "_")
