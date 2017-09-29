@@ -266,11 +266,15 @@ get_id_within_esu <- function(cuke_db, clusters) {
     res
 }
 
-compare_id_within_esu <- function(cuke_db, clusters) {
+compare_id_within_esu <- function(cuke_db, clusters, conflict_only = TRUE) {
     ids <- get_id_within_esu(cuke_db, clusters)
     with_conflicts <- vapply(ids, function(x)
         length(unique(x$ids)) > 1, logical(1))
-    res <- ids[with_conflicts]
+    if (conflict_only) {
+        res <- ids[with_conflicts]
+    } else {
+        res <- ids
+    }
     res <- lapply(res, function(x) {
         to_add <- tibble(repository = make_labels_from_guids(cuke_db = cuke_db, guids = x$guid, fields = "Repository"),
                          catalog_number = make_labels_from_guids(cuke_db, x$guid, "Catalog_number"),
