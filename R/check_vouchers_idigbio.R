@@ -140,7 +140,8 @@ compare_idigbio_specimens <- function(sub_cuke_db, idigbio_res) {
         dplyr::left_join(cdb[["records"]], idg, by = "catalognumber") %>%
             rename_("scientificname_cukedb" = "scientificname.x",
                     "scientificname_idig" = "scientificname.y") %>%
-            mutate_(.dots = setNames(list(~if_else(is.na(scientificname_idig), "", scientificname_idig)), "scientificname_idig")) %>%
+            mutate_(.dots = setNames(list(~if_else(is.na(scientificname_idig), "", scientificname_idig)),
+                                     "scientificname_idig")) %>%
             filter_("scientificname_cukedb != scientificname_idig")
 
     }, sub_cuke_db, idigbio_res)
