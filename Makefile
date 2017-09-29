@@ -1,4 +1,6 @@
-### Manuscript
+RSCRIPT = Rscript
+
+## Manuscript
 all: cuke-barcoding.tex cuke-barcoding_nourl.bib clean-partial
 	-xelatex -interaction=nonstopmode "\input" cuke-barcoding.tex
 	-bibtex cuke-barcoding
