@@ -7,30 +7,30 @@ load_threshold_clusters <- function() {
 }
 
 
-build_cluster_key <- function(taxa, threshold, method) {
+build_cluster_key <- function(taxa, threshold, distance) {
     ## the keys for the store holding the cluster info looks like
     ## Phyllophoridae-0015-k2p
-    paste(taxa, gsub("\\.", "", threshold), method, sep = "-")
+    paste(taxa, gsub("\\.", "", threshold), distance, sep = "-")
 }
 
 ## the ... arguments is used to pass an arbitrary number of trees on
 ## which the clustering algorithm is used. The number of trees and the
-## methods used to build them are specified by the 'methods' argument.
+## methods used to build them are specified by the 'distances' argument.
 ## the phylo4 objects
 make_cuke_tree_clusters <- function(taxonomy, cuke_db,
-                                    methods = c("raw", "k2p"), ...) {
+                                    distances = c("raw", "k2p"), ...) {
 
     ## extract the trees from ...
     trs <- list(...)
 
-    methods <- match.arg(methods, several.ok = TRUE)
+    distances <- match.arg(distances, several.ok = TRUE)
 
-    ## make sure that the number of methods specified matches the
-    ## number of trees (built using the methods) specified
-    if (length(methods) != length(trs)) {
-        stop("The number of trees provided should match the number of methods.")
+    ## make sure that the number of distances specified matches the
+    ## number of trees (built using the distances) specified
+    if (length(distances) != length(trs)) {
+        stop("The number of trees provided should match the number of distances.")
     }
-    names(trs) <- methods
+    names(trs) <- distances
 
     st <- storr::storr_rds("data/storr_clusters")
     uniq_taxa <- taxonomy$taxa
@@ -40,10 +40,10 @@ make_cuke_tree_clusters <- function(taxonomy, cuke_db,
         for (j in seq_along(uniq_taxa)) {
             for (i in seq_along(thres_vec)) {
                 key <- build_cluster_key(uniq_taxa[j], thres_vec[i],
-                                         methods[k])
+                                         distances[k])
                 message("Finding groups for ", sQuote(uniq_taxa[j]),
                         " with threshold of ", sQuote(thres_vec[i]),
-                        " on tree built using ", sQuote(methods[k]), " distance",
+                        " on tree built using ", sQuote(distances[k]), " distance",
                         " .... ", appendLF =  FALSE)
                 tmp_grp <- build_cluster_group(tr = trs[[k]],
                                                taxa = uniq_taxa[j],
@@ -70,23 +70,22 @@ build_cluster_group <- function(tr, taxa, threshold, taxonomy, cuke_db) {
 }
 
 get_tree_cluster_group <- function(cluster_store, taxa="all",
-                              method = c("raw", "k2p"),
-                              threshold=0.015, taxonomy) {
+                                   distance = c("raw", "k2p"),
+                                   threshold=0.015, taxonomy) {
 
     threshold <- match.arg(as.character(threshold), load_threshold_clusters())
     taxa <- match.arg(as.character(taxa), taxonomy$taxa)
-    method <- match.arg(method)
+    distance <- match.arg(distance)
 
-    key <- build_cluster_key(taxa, threshold, method)
+    key <- build_cluster_key(taxa, threshold, distance)
 
     cluster_store$get(key)
 }
 
-load_species_cluster_groups <- function(cluster_store, taxa="all",
+load_species_cluster_groups <- function(cluster_store, taxa="all", distance,
                                         threshold=0.015, taxonomy) {
-
-    tr <- load_tree_cluster_groups(cluster_store, taxa, threshold, taxonomy)
+    tr <- get_tree_cluster_group(cluster_store, taxa, distance, threshold, taxonomy)
     grps <- tdata(tr, "tip")[, "Groups", drop=FALSE]
-    gg <- factor(grps$Groups)
-    split(rownames(grps), gg)
+    grps$Groups <- factor(grps$Groups)
+    split(rownames(grps), grps)
 }
